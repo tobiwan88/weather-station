@@ -114,13 +114,13 @@ ZBUS_LISTENER_DEFINE(fake_hum_listener, fake_hum_trigger_cb);
 DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_HUM_REGISTRY_ENTRY_DECL)
 
 #define FAKE_HUM_REGISTRY_REGISTER(node_id)                                                        \
-	do {                                                                                       \
+	{                                                                                          \
 		int _rc = sensor_registry_register(&fake_hum_reg_##node_id);                       \
 		if (_rc != 0 && _rc != -EEXIST) {                                                  \
 			LOG_ERR("registry register uid 0x%04x failed: %d",                         \
 				DT_PROP(node_id, sensor_uid), _rc);                                \
 		}                                                                                  \
-	} while (0)
+	}
 
 static int fake_hum_init(void)
 {

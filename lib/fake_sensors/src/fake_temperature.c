@@ -148,13 +148,13 @@ SYS_INIT(fake_temp_auto_timer_start, APPLICATION, 99);
 DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_TEMP_REGISTRY_ENTRY_DECL)
 
 #define FAKE_TEMP_REGISTRY_REGISTER(node_id)                                                       \
-	do {                                                                                       \
+	{                                                                                          \
 		int _rc = sensor_registry_register(&fake_temp_reg_##node_id);                      \
 		if (_rc != 0 && _rc != -EEXIST) {                                                  \
 			LOG_ERR("registry register uid 0x%04x failed: %d",                         \
 				DT_PROP(node_id, sensor_uid), _rc);                                \
 		}                                                                                  \
-	} while (0)
+	}
 
 static int fake_temp_init(void)
 {

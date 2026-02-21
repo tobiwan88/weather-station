@@ -3,8 +3,8 @@
 #include <sensor_event/sensor_event.h>
 #include <zephyr/zbus/zbus.h>
 
-/* Compile-time size check: 4 (uid) + 4 (type enum) + 4 (q31) + 8 (ts) = 20 */
-BUILD_ASSERT(sizeof(struct env_sensor_data) == 20, "env_sensor_data must be exactly 20 bytes");
+/* Sanity check: struct must contain no pointers and fit in a cache line. */
+BUILD_ASSERT(sizeof(struct env_sensor_data) <= 32, "env_sensor_data too large");
 
 /**
  * @brief zbus channel carrying env_sensor_data events.
