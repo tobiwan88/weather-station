@@ -10,6 +10,8 @@
  * the rest of the application is unaffected.
  */
 
+#include <errno.h>
+
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/net/sntp.h>
@@ -61,7 +63,15 @@ static int do_sntp_sync(void)
 
 	rc = clock_settime(CLOCK_REALTIME, &ts);
 	if (rc != 0) {
-		LOG_WRN("clock_settime failed: %d", rc);
+		if (errno == EPERM) {
+			/* No CAP_SYS_TIME (e.g. devcontainer). On native_sim
+			 * CLOCK_REALTIME reads the host clock directly, so the
+			 * time is already correct — treat as synced. */
+			LOG_DBG("clock_settime EPERM; using host clock as-is");
+			atomic_set(&synced, 1);
+			return 0;
+		}
+		LOG_WRN("clock_settime failed: errno=%d", errno);
 		return rc;
 	}
 
