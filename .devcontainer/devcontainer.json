@@ -19,7 +19,14 @@
   // Ensure venv is created and requirements installed on container creation
   // onCreateCommand removed: all setup is handled in Dockerfile
 
-  "postStartCommand": "if [ ! -d /home/zephyr/workspace/.west ]; then cd /home/zephyr/workspace/weather-station && west init -l . && west update --narrow; fi",
+  "postStartCommand": "sudo chronyd -q 'pool pool.ntp.org iburst' 2>/dev/null || true; if [ ! -d /home/zephyr/workspace/.west ]; then cd /home/zephyr/workspace/weather-station && west init -l . && west update --narrow; fi",
+
+  "runArgs": [
+    "--cap-add=NET_ADMIN",
+    "--cap-add=NET_RAW",
+    "--cap-add=SYS_TIME",
+    "--device=/dev/net/tun"
+  ],
 
   "customizations": {
     "vscode": {

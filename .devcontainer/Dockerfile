@@ -19,6 +19,19 @@ RUN apt-get update && \
         python3-venv \
         unzip \
         ca-certificates \
+        screen \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install TAP/bridge networking tools + general network utilities for native_sim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        iproute2 \
+        bridge-utils \
+        iptables \
+        iputils-ping \
+        net-tools \
+        dnsutils \
+        chrony \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Node.js LTS (required for Claude Code CLI)
@@ -32,6 +45,11 @@ RUN chsh -s /usr/bin/zsh zephyr
 
 # Install Claude Code CLI globally (npm package, not the curl installer)
 RUN npm install -g @anthropic-ai/claude-code
+
+# Allow zephyr user to manage TAP interfaces without a password
+RUN echo "zephyr ALL=(root) NOPASSWD: /usr/sbin/ip, /usr/sbin/sysctl, /sbin/iptables, /usr/sbin/iptables, /usr/sbin/chronyd" \
+    > /etc/sudoers.d/zephyr-netadmin && \
+    chmod 0440 /etc/sudoers.d/zephyr-netadmin
 
 # Switch back to zephyr user
 USER zephyr
