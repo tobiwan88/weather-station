@@ -1,0 +1,33 @@
+description: |
+  Fake humidity sensor for native_sim and testing.
+
+  Each DT node with this compatible is instantiated as an independent
+  software sensor driver. The driver subscribes to sensor_trigger_chan
+  and publishes env_sensor_data events on sensor_event_chan.
+
+compatible: "fake,humidity"
+
+properties:
+  sensor-uid:
+    type: int
+    required: true
+    description: |
+      Unique sensor identifier assigned at design time. Must be unique
+      across the entire system (both local and remote nodes). Used as
+      the identity key in sensor_registry and in env_sensor_data events.
+
+  location:
+    type: string
+    required: true
+    description: |
+      Human-readable physical location label, e.g. "living_room",
+      "outdoor", "node_0". Used by the sensor registry and display
+      consumers.
+
+  initial-value-mpct:
+    type: int
+    required: true
+    description: |
+      Initial relative humidity value in milli-percent (%RH × 1000).
+      For example, 50000 represents 50.000 %RH.
+      Range: 0 .. 100000

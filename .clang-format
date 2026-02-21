@@ -1,0 +1,52 @@
+---
+# Zephyr-compatible clang-format configuration.
+# Based on the upstream Zephyr project style.
+
+Language:        Cpp
+BasedOnStyle:    LLVM
+
+# Indentation
+IndentWidth:     8
+TabWidth:        8
+UseTab:          ForContinuationAndIndentation
+ContinuationIndentWidth: 8
+
+# Column limit (Zephyr uses 100, some files go to 120)
+ColumnLimit:     100
+
+# Braces
+BreakBeforeBraces: Linux
+
+# Alignment
+AlignConsecutiveMacros: true
+AlignConsecutiveAssignments: false
+AlignTrailingComments: true
+
+# Includes
+SortIncludes:    true
+IncludeBlocks:   Preserve
+
+# Pointer alignment
+PointerAlignment: Right
+
+# Spacing
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInCStyleCastParentheses: false
+
+# Short constructs — keep on one line only for simple cases
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine:        false
+AllowShortFunctionsOnASingleLine:    None
+AllowShortBlocksOnASingleLine:       Empty
+
+# Comments
+ReflowComments: false
+
+# Macros
+IndentPPDirectives: AfterHash
+MacroBlockBegin: ''
+MacroBlockEnd:   ''
+
+# Penalty (prefer not breaking function parameters)
+PenaltyReturnTypeOnItsOwnLine: 1000

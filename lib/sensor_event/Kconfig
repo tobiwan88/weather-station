@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig SENSOR_EVENT
+	bool "Sensor event channel (zbus)"
+	depends on ZBUS
+	help
+	  Enables the sensor_event_chan zbus channel and the env_sensor_data
+	  struct definition used by all weather-station sensor drivers.

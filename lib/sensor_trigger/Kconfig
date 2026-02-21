@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig SENSOR_TRIGGER
+	bool "Sensor trigger channel (zbus)"
+	depends on ZBUS
+	help
+	  Enables the sensor_trigger_chan zbus channel. Any publisher
+	  (timer, button, MQTT) can fire a sensor_trigger_event; each fake
+	  sensor driver independently listens and publishes to
+	  sensor_event_chan when triggered.

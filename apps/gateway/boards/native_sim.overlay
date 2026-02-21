@@ -1,0 +1,47 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Gateway DT overlay for native_sim.
+ *
+ * Defines four fake sensors:
+ *   - Two indoor sensors (living room): temperature + humidity
+ *   - Two outdoor sensors: temperature + humidity
+ *
+ * UIDs 0x0001–0x000F are reserved for gateway local sensors.
+ * UIDs 0x0011–0x001F are reserved for gateway outdoor sensors.
+ * UIDs 0x0021+ are for remote sensor nodes.
+ */
+
+/ {
+	fake_temp_indoor: fake-temp-indoor {
+		compatible = "fake,temperature";
+		sensor-uid = <0x0001>;
+		location = "living_room";
+		initial-value-mdegc = <21000>;
+		status = "okay";
+	};
+
+	fake_hum_indoor: fake-hum-indoor {
+		compatible = "fake,humidity";
+		sensor-uid = <0x0002>;
+		location = "living_room";
+		initial-value-mpct = <50000>;
+		status = "okay";
+	};
+
+	fake_temp_outdoor: fake-temp-outdoor {
+		compatible = "fake,temperature";
+		sensor-uid = <0x0011>;
+		location = "outdoor";
+		initial-value-mdegc = <4000>;
+		status = "okay";
+	};
+
+	fake_hum_outdoor: fake-hum-outdoor {
+		compatible = "fake,humidity";
+		sensor-uid = <0x0012>;
+		location = "outdoor";
+		initial-value-mpct = <30000>;
+		status = "okay";
+	};
+};

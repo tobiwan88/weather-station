@@ -1,0 +1,8 @@
+tests:
+  weather_station.sensor_event:
+    platform_allow:
+      - native_sim
+    harness: ztest
+    tags:
+      - sensor_event
+      - weather_station

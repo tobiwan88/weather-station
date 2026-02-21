@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# Module-level CMakeLists.txt for weather-station.
+# This is NOT the application entry point — it is loaded by Zephyr's
+# module infrastructure (after Zephyr has been found) in the application's
+# own CMakeLists.txt.
+
+cmake_minimum_required(VERSION 3.20.0)
+
+add_subdirectory_ifdef(CONFIG_SENSOR_EVENT    lib/sensor_event)
+add_subdirectory_ifdef(CONFIG_SENSOR_TRIGGER  lib/sensor_trigger)
+add_subdirectory_ifdef(CONFIG_SENSOR_REGISTRY lib/sensor_registry)
+add_subdirectory_ifdef(CONFIG_FAKE_SENSORS    lib/fake_sensors)

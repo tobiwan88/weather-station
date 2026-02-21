@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+
+rsource "sensor_event/Kconfig"
+rsource "sensor_trigger/Kconfig"
+rsource "sensor_registry/Kconfig"
+rsource "fake_sensors/Kconfig"

@@ -1,0 +1,49 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run gateway (native_sim)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/zephyr/zephyr.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "west: build gateway (native_sim)",
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "name": "Run sensor-node (native_sim)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/zephyr/zephyr.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "west: build sensor-node (native_sim)",
+      "internalConsoleOptions": "openOnSessionStart"
+    }
+  ]
+}

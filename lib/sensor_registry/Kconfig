@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig SENSOR_REGISTRY
+	bool "Sensor registry (uid → metadata)"
+	depends on ZBUS
+	help
+	  Maintains a runtime map from sensor_uid to human-readable metadata
+	  (location label, remote flag). Display and MQTT consumers use the
+	  registry rather than hardcoding UIDs. Sensor drivers register
+	  themselves during SYS_INIT at APPLICATION priority.

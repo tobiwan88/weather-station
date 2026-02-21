@@ -1,0 +1,29 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Sensor-node DT overlay for native_sim.
+ *
+ * Defines two fake sensors for node_0:
+ *   - One temperature sensor
+ *   - One humidity sensor
+ *
+ * UIDs 0x0021–0x002F are reserved for sensor-node 0.
+ */
+
+/ {
+	fake_temp_node: fake-temp-node {
+		compatible = "fake,temperature";
+		sensor-uid = <0x0021>;
+		location = "node_0";
+		initial-value-mdegc = <5000>;
+		status = "okay";
+	};
+
+	fake_hum_node: fake-hum-node {
+		compatible = "fake,humidity";
+		sensor-uid = <0x0022>;
+		location = "node_0";
+		initial-value-mpct = <70000>;
+		status = "okay";
+	};
+};

@@ -1,0 +1,53 @@
+{
+  "name": "weather-station (Zephyr)",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "zephyr",
+
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/zephyr/workspace/weather-station,type=bind,consistency=cached",
+  "workspaceFolder": "/home/zephyr/workspace/weather-station",
+
+  "mounts": [
+    "source=weather-station-west-cache,target=/home/zephyr/workspace/.west,type=volume"
+  ],
+
+  // Cleaned up environment: only set what is strictly needed at runtime, avoid pre-setting VIRTUAL_ENV and ZEPHYR_BASE here.
+  "remoteEnv": {
+    "PATH": "/home/zephyr/.venv/bin:${containerEnv:PATH}"
+  },
+
+  // Ensure venv is created and requirements installed on container creation
+  // onCreateCommand removed: all setup is handled in Dockerfile
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "anthropic.claude-vscode",
+        "trond-snekvik.devicetree",
+        "trond-snekvik.kconfig",
+        "marus25.cortex-debug",
+        "ms-vscode.cmake-tools"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash",
+            "args": ["--init-file", "/home/zephyr/.venv/bin/activate"]
+          }
+        },
+        "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+        "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "[c]": {
+          "editor.defaultFormatter": "ms-vscode.cpptools"
+        }
+      },
+      "tasks": "${localWorkspaceFolder}/.devcontainer/tasks.json",
+      "launch": "${localWorkspaceFolder}/.devcontainer/launch.json"
+    }
+  }
+}

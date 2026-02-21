@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig FAKE_SENSORS
+	bool "Fake sensor drivers (native_sim / testing)"
+	depends on ZBUS
+	depends on SENSOR_EVENT
+	depends on SENSOR_TRIGGER
+	depends on SENSOR_REGISTRY
+	help
+	  Enables software-emulated temperature and humidity sensor drivers
+	  instantiated from DT nodes with compatible "fake,temperature" or
+	  "fake,humidity". Each driver subscribes to sensor_trigger_chan and
+	  publishes env_sensor_data events on sensor_event_chan.
+
+	  Useful for native_sim targets and unit testing without real hardware.
+
+if FAKE_SENSORS
+
+config FAKE_SENSORS_AUTO_PUBLISH_MS
+	int "Auto-publish interval in milliseconds (0 = disabled)"
+	default 0
+	help
+	  When non-zero, a kernel timer fires at this interval and broadcasts
+	  a TRIGGER_SOURCE_TIMER event so all fake sensors self-publish
+	  without any external trigger.
+
+config FAKE_SENSORS_SHELL
+	bool "Shell commands for fake sensors"
+	default y
+	depends on SHELL
+	help
+	  Registers the 'fake_sensors' shell command group with sub-commands:
+	    list            — print all registered fake sensors
+	    temperature_set — <uid_hex> <mdegC>  set temperature
+	    humidity_set    — <uid_hex> <m%RH>   set humidity
+
+endif # FAKE_SENSORS

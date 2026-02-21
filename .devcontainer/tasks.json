@@ -1,0 +1,89 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "west: init + update",
+      "type": "shell",
+      "command": "source ~/.venv/bin/activate && west init -l . && west update --narrow",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "west: build gateway (native_sim)",
+      "type": "shell",
+      "command": "source ~/.venv/bin/activate && west build -p always -b native_sim apps/gateway",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "west: build sensor-node (native_sim)",
+      "type": "shell",
+      "command": "source ~/.venv/bin/activate && west build -p always -b native_sim apps/sensor-node",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "west: run gateway",
+      "type": "shell",
+      "command": "source ~/.venv/bin/activate && west build -b native_sim apps/gateway && west build -t run",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "west: twister (all tests)",
+      "type": "shell",
+      "command": "source ~/.venv/bin/activate && west twister -p native_sim -T tests/ --inline-logs -v -N",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "pre-commit: run all",
+      "type": "shell",
+      "command": "source ~/.venv/bin/activate && pre-commit run --all-files",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
