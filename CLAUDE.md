@@ -95,14 +95,34 @@ west build -p always -b native_sim/native/64 apps/sensor-node
 ```
 If the build fails, fix it before touching anything else.
 
-### 3. Test gate (when source code is touched)
+### 3. Shell smoke-test
+After a successful build, run the binary and probe it via the shell to
+verify observable runtime behaviour before running the full suite.
+Use `-uart_stdinout` so the shell is available on stdin/stdout for piping:
+
+```bash
+# Quick sanity check — pipe commands, capture output
+printf "help\nfake_sensors list\nkernel uptime\n" | \
+  timeout 10 /home/zephyr/workspace/build/zephyr/zephyr.exe \
+  -uart_stdinout 2>&1
+```
+
+Check for:
+- `help` lists `fake_sensors` (shell is up, library linked)
+- `fake_sensors list` shows the sensors from the DT overlay (DT wiring correct)
+- Startup log shows expected sensor init messages and auto-publish events
+
+If the output is wrong, fix it before running Twister.
+Run this check after **every** build when touching sensor, zbus, or shell code.
+
+### 4. Test gate (when source code is touched)
 Run the full test suite after every non-trivial change:
 ```bash
 west twister -p native_sim -T tests/ --inline-logs -v -N
 ```
 All tests must be green before committing. Never commit a red suite.
 
-### 4. Commit per logical unit
+### 5. Commit per logical unit
 Once build and tests are green, run pre-commit and commit:
 ```bash
 pre-commit run --all-files
@@ -114,9 +134,9 @@ Commit message conventions:
 - **scope**: library or app name, e.g. `fake_sensors`, `gateway`
 - **summary**: imperative, ≤72 chars, no period
 
-Repeat steps 2–4 for each logical unit of work.
+Repeat steps 2–5 for each logical unit of work.
 
-### 5. Hand off to user for merge
+### 6. Hand off to user for merge
 When all work on the branch is done, tell the user:
 > "Branch `<name>` is ready. All builds pass and tests are green.
 > Run `git merge --no-ff <name>` or open a PR to merge into main."
