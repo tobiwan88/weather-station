@@ -22,8 +22,8 @@ Full rationale is in [`docs/adr/`](docs/adr/README.md).
 west init -l .                       # first-time workspace setup
 west update --narrow                 # fetch Zephyr + allowlist modules
 
-west build -p always -b native_sim apps/gateway
-west build -p always -b native_sim apps/sensor-node
+west build -p always -b native_sim/native/64 apps/gateway
+west build -p always -b native_sim/native/64 apps/sensor-node
 west build -t run                    # run the last built app
 
 west twister -p native_sim -T tests/ --inline-logs -v -N
@@ -45,7 +45,7 @@ struct env_sensor_data {
     enum sensor_type type;          // what physical quantity
     int32_t          q31_value;     // Q31 fixed-point value
     int64_t          timestamp_ms;  // k_uptime_get()
-};                                  // sizeof == 20 — enforced by BUILD_ASSERT
+};                                  // no pointers; fits in a cache line
 ```
 
 **3. No sensor manager. No polling. No tight coupling.**
@@ -90,8 +90,8 @@ Never commit directly to `main` or `master`.
 ### 2. Incremental changes + build gate
 Make the smallest possible logical change, then verify it compiles:
 ```bash
-west build -p always -b native_sim apps/gateway
-west build -p always -b native_sim apps/sensor-node
+west build -p always -b native_sim/native/64 apps/gateway
+west build -p always -b native_sim/native/64 apps/sensor-node
 ```
 If the build fails, fix it before touching anything else.
 

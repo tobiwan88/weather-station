@@ -9,4 +9,8 @@ if(CONFIG_FAKE_SENSORS)
   zephyr_library_include_directories(include)
   zephyr_include_directories(include)
 
+  # Provide the linker section for fake_sensor_entry so the linker script
+  # generates _fake_sensor_entry_list_start/end used by STRUCT_SECTION_FOREACH.
+  zephyr_linker_sources(SECTIONS fake_sensors_iterables.ld)
+
 endif()

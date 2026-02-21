@@ -8,17 +8,18 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/zephyr/workspace/weather-station,type=bind,consistency=cached",
   "workspaceFolder": "/home/zephyr/workspace/weather-station",
 
-  "mounts": [
-    "source=weather-station-west-cache,target=/home/zephyr/workspace/.west,type=volume"
-  ],
+  // Removed .west mount to allow it to be a regular directory
+  "mounts": [],
 
   // Cleaned up environment: only set what is strictly needed at runtime, avoid pre-setting VIRTUAL_ENV and ZEPHYR_BASE here.
   "remoteEnv": {
     "PATH": "/home/zephyr/.venv/bin:${containerEnv:PATH}"
   },
 
-  // Install pre-commit into the venv after the container is created
-  "postCreateCommand": "pip install pre-commit && pre-commit install",
+  // Ensure venv is created and requirements installed on container creation
+  // onCreateCommand removed: all setup is handled in Dockerfile
+
+  "postStartCommand": "if [ ! -d /home/zephyr/workspace/.west ]; then cd /home/zephyr/workspace/weather-station && west init -l . && west update --narrow; fi",
 
   "customizations": {
     "vscode": {
