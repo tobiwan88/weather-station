@@ -8,6 +8,4 @@ project(gateway VERSION 0.1.0)
 target_sources(app PRIVATE src/main.c)
 
 # Expose the shared include/ directory so weather_messages.h is reachable.
-target_include_directories(app PRIVATE
-    ${CMAKE_SOURCE_DIR}/../../include
-)
+target_include_directories(app PRIVATE ${CMAKE_SOURCE_DIR}/../../include)

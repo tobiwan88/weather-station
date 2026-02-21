@@ -74,6 +74,56 @@ No `target_link_libraries()` in app `CMakeLists.txt`.
 See [ADR-001](docs/adr/ADR-001-repo-and-workspace-structure.md).
 
 ---
+
+## Agent workflow (non-negotiable)
+
+Follow this workflow for **every** task that touches source code.
+
+### 1. Branch first
+Before writing any code, create a feature branch from `main`:
+```bash
+git checkout main && git pull
+git checkout -b <short-kebab-description>   # e.g. feat/sensor-uid-logging
+```
+Never commit directly to `main` or `master`.
+
+### 2. Incremental changes + build gate
+Make the smallest possible logical change, then verify it compiles:
+```bash
+west build -p always -b native_sim apps/gateway
+west build -p always -b native_sim apps/sensor-node
+```
+If the build fails, fix it before touching anything else.
+
+### 3. Test gate (when source code is touched)
+Run the full test suite after every non-trivial change:
+```bash
+west twister -p native_sim -T tests/ --inline-logs -v -N
+```
+All tests must be green before committing. Never commit a red suite.
+
+### 4. Commit per logical unit
+Once build and tests are green, run pre-commit and commit:
+```bash
+pre-commit run --all-files
+git add <changed files>
+git commit -m "<type>(<scope>): <imperative summary>"
+```
+Commit message conventions:
+- **type**: `feat` | `fix` | `refactor` | `test` | `docs` | `chore`
+- **scope**: library or app name, e.g. `fake_sensors`, `gateway`
+- **summary**: imperative, ≤72 chars, no period
+
+Repeat steps 2–4 for each logical unit of work.
+
+### 5. Hand off to user for merge
+When all work on the branch is done, tell the user:
+> "Branch `<name>` is ready. All builds pass and tests are green.
+> Run `git merge --no-ff <name>` or open a PR to merge into main."
+
+Do **not** merge, push, or open a PR yourself unless explicitly asked.
+
+---
 ## What NOT to create
 
 - A `sensor_manager` module of any kind

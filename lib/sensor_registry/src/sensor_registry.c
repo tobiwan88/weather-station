@@ -1,9 +1,9 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 
-#include <zephyr/kernel.h>
-#include <zephyr/sys/printk.h>
 #include <errno.h>
 #include <sensor_registry/sensor_registry.h>
+#include <zephyr/kernel.h>
+#include <zephyr/sys/printk.h>
 
 static const struct sensor_registry_entry *registry[SENSOR_REGISTRY_MAX_ENTRIES];
 static int registry_count;
@@ -52,9 +52,8 @@ const struct sensor_registry_entry *sensor_registry_lookup(uint32_t uid)
 	return NULL;
 }
 
-void sensor_registry_foreach(int (*cb)(const struct sensor_registry_entry *e,
-				       void *user_data),
-			      void *user_data)
+void sensor_registry_foreach(int (*cb)(const struct sensor_registry_entry *e, void *user_data),
+			     void *user_data)
 {
 	k_mutex_lock(&registry_mutex, K_FOREVER);
 	for (int i = 0; i < registry_count; i++) {

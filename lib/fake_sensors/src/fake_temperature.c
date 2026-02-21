@@ -1,17 +1,17 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 
-#include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
-#include <zephyr/logging/log.h>
-#include <zephyr/zbus/zbus.h>
-#include <zephyr/sys/iterable_sections.h>
 #include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/sys/iterable_sections.h>
+#include <zephyr/zbus/zbus.h>
 
-#include <sensor_event/sensor_event.h>
-#include <sensor_trigger/sensor_trigger.h>
-#include <sensor_registry/sensor_registry.h>
 #include <fake_sensors/fake_sensors.h>
+#include <sensor_event/sensor_event.h>
+#include <sensor_registry/sensor_registry.h>
+#include <sensor_trigger/sensor_trigger.h>
 
 LOG_MODULE_REGISTER(fake_temperature, LOG_LEVEL_INF);
 
@@ -37,9 +37,9 @@ LOG_MODULE_REGISTER(fake_temperature, LOG_LEVEL_INF);
 #define FAKE_TEMP_PUBLISH(entry_ptr)                                                               \
 	do {                                                                                       \
 		struct env_sensor_data evt = {                                                     \
-			.sensor_uid   = (entry_ptr)->uid,                                          \
-			.type         = SENSOR_TYPE_TEMPERATURE,                                   \
-			.q31_value    = temperature_c_to_q31(*(entry_ptr)->value_milli / 1000.0),  \
+			.sensor_uid = (entry_ptr)->uid,                                            \
+			.type = SENSOR_TYPE_TEMPERATURE,                                           \
+			.q31_value = temperature_c_to_q31(*(entry_ptr)->value_milli / 1000.0),     \
 			.timestamp_ms = k_uptime_get(),                                            \
 		};                                                                                 \
 		int rc = zbus_chan_pub(&sensor_event_chan, &evt, K_NO_WAIT);                       \
@@ -56,31 +56,30 @@ DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_TEMP_PUBLISH_FN_DECL)
 
 /* Per-instance milli-°C storage. */
 #define FAKE_TEMP_DATA_DECL(node_id)                                                               \
-	static int32_t fake_temp_mdegc_##node_id =                                                 \
-		DT_PROP(node_id, initial_value_mdegc);
+	static int32_t fake_temp_mdegc_##node_id = DT_PROP(node_id, initial_value_mdegc);
 
 DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_TEMP_DATA_DECL)
 
 /* Per-instance fake_sensor_entry in iterable section. */
 #define FAKE_TEMP_ENTRY_DECL(node_id)                                                              \
 	STRUCT_SECTION_ITERABLE(fake_sensor_entry, fake_temp_entry_##node_id) = {                  \
-		.uid         = DT_PROP(node_id, sensor_uid),                                       \
-		.kind        = FAKE_SENSOR_KIND_TEMPERATURE,                                       \
-		.label       = DT_NODE_FULL_NAME(node_id),                                         \
-		.location    = DT_PROP(node_id, location),                                         \
+		.uid = DT_PROP(node_id, sensor_uid),                                               \
+		.kind = FAKE_SENSOR_KIND_TEMPERATURE,                                              \
+		.label = DT_NODE_FULL_NAME(node_id),                                               \
+		.location = DT_PROP(node_id, location),                                            \
 		.value_milli = &fake_temp_mdegc_##node_id,                                         \
-		.publish     = fake_temp_publish_##node_id,                                        \
+		.publish = fake_temp_publish_##node_id,                                            \
 	};
 
 DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_TEMP_ENTRY_DECL)
 
 /* Per-instance publish function implementation. */
 #define FAKE_TEMP_PUBLISH_FN_IMPL(node_id)                                                         \
-	static void fake_temp_publish_##node_id(struct fake_sensor_entry *entry)               \
+	static void fake_temp_publish_##node_id(struct fake_sensor_entry *entry)                   \
 	{                                                                                          \
 		FAKE_TEMP_PUBLISH(entry);                                                          \
-		LOG_DBG("uid 0x%04x: %.2f °C",                                                    \
-			entry->uid, (double)(*entry->value_milli) / 1000.0);                      \
+		LOG_DBG("uid 0x%04x: %.2f °C", entry->uid,                                         \
+			(double)(*entry->value_milli) / 1000.0);                                   \
 	}
 
 DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_TEMP_PUBLISH_FN_IMPL)
@@ -93,7 +92,8 @@ static void fake_temp_trigger_cb(const struct zbus_channel *chan)
 {
 	const struct sensor_trigger_event *trig = zbus_chan_const_msg(chan);
 
-	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry) {
+	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry)
+	{
 		if (entry->kind != FAKE_SENSOR_KIND_TEMPERATURE) {
 			continue;
 		}
@@ -115,7 +115,7 @@ static void fake_temp_timer_handler(struct k_timer *timer)
 {
 	ARG_UNUSED(timer);
 	struct sensor_trigger_event trig = {
-		.source     = TRIGGER_SOURCE_TIMER,
+		.source = TRIGGER_SOURCE_TIMER,
 		.target_uid = 0,
 	};
 	zbus_chan_pub(&sensor_trigger_chan, &trig, K_NO_WAIT);
@@ -125,8 +125,7 @@ K_TIMER_DEFINE(fake_temp_auto_timer, fake_temp_timer_handler, NULL);
 
 static int fake_temp_auto_timer_start(void)
 {
-	k_timer_start(&fake_temp_auto_timer,
-		      K_MSEC(CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS),
+	k_timer_start(&fake_temp_auto_timer, K_MSEC(CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS),
 		      K_MSEC(CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS));
 	return 0;
 }
@@ -140,9 +139,9 @@ SYS_INIT(fake_temp_auto_timer_start, APPLICATION, 99);
 
 #define FAKE_TEMP_REGISTRY_ENTRY_DECL(node_id)                                                     \
 	static const struct sensor_registry_entry fake_temp_reg_##node_id = {                      \
-		.uid       = DT_PROP(node_id, sensor_uid),                                         \
-		.label     = DT_NODE_FULL_NAME(node_id),                                           \
-		.location  = DT_PROP(node_id, location),                                           \
+		.uid = DT_PROP(node_id, sensor_uid),                                               \
+		.label = DT_NODE_FULL_NAME(node_id),                                               \
+		.location = DT_PROP(node_id, location),                                            \
 		.is_remote = false,                                                                \
 	};
 
@@ -152,7 +151,7 @@ DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_TEMP_REGISTRY_ENTRY_DECL)
 	do {                                                                                       \
 		int _rc = sensor_registry_register(&fake_temp_reg_##node_id);                      \
 		if (_rc != 0 && _rc != -EEXIST) {                                                  \
-			LOG_ERR("registry register uid 0x%04x failed: %d",                        \
+			LOG_ERR("registry register uid 0x%04x failed: %d",                         \
 				DT_PROP(node_id, sensor_uid), _rc);                                \
 		}                                                                                  \
 	} while (0)
@@ -172,7 +171,7 @@ static int fake_temp_init(void)
 
 	/* Fire a startup trigger so consumers see an initial value. */
 	struct sensor_trigger_event startup = {
-		.source     = TRIGGER_SOURCE_STARTUP,
+		.source = TRIGGER_SOURCE_STARTUP,
 		.target_uid = 0,
 	};
 	zbus_chan_pub(&sensor_trigger_chan, &startup, K_MSEC(100));
