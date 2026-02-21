@@ -21,8 +21,17 @@ RUN apt-get update && \
         ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Node.js LTS (required for Claude Code CLI)
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
+    apt-get install -y --no-install-recommends nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+
 # Set zsh as default shell for the zephyr user
 RUN chsh -s /usr/bin/zsh zephyr
+
+# Install Claude Code CLI globally (npm package, not the curl installer)
+RUN npm install -g @anthropic-ai/claude-code
 
 # Switch back to zephyr user
 USER zephyr
@@ -30,16 +39,5 @@ WORKDIR /home/zephyr/workspace/weather-station
 
 # Optional: Set up oh-my-zsh for a better shell experience
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
-
-# Optional: Install Claude CLI (if available as a script or pip package)
-# Example for a bash installer (replace with actual install if different)
-RUN curl -fsSL https://claude.ai/install.sh | bash || true
-
-
-# Ensure venv is created and requirements installed on container creation
-# (devcontainer.json will still handle this via onCreateCommand)
-
-# Additional developer tools can be added here as needed
-# e.g., RUN pip install ipython black flake8
 
 # End of Dockerfile
