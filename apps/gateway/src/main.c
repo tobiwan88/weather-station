@@ -31,22 +31,19 @@ static void gateway_event_cb(const struct zbus_channel *chan)
 	switch (evt->type) {
 	case SENSOR_TYPE_TEMPERATURE:
 		type_str = "temp";
-		LOG_INF("uid=0x%04x type=%-4s q31=0x%08x (%.2f C) ts=%lld ms",
-			evt->sensor_uid, type_str, evt->q31_value,
-			q31_to_temperature_c(evt->q31_value),
+		LOG_INF("uid=0x%04x type=%-4s q31=0x%08x (%.2f C) ts=%lld ms", evt->sensor_uid,
+			type_str, evt->q31_value, q31_to_temperature_c(evt->q31_value),
 			evt->timestamp_ms);
 		break;
 	case SENSOR_TYPE_HUMIDITY:
 		type_str = "hum";
-		LOG_INF("uid=0x%04x type=%-4s q31=0x%08x (%.1f %%RH) ts=%lld ms",
-			evt->sensor_uid, type_str, evt->q31_value,
-			q31_to_humidity_pct(evt->q31_value),
+		LOG_INF("uid=0x%04x type=%-4s q31=0x%08x (%.1f %%RH) ts=%lld ms", evt->sensor_uid,
+			type_str, evt->q31_value, q31_to_humidity_pct(evt->q31_value),
 			evt->timestamp_ms);
 		break;
 	default:
-		LOG_INF("uid=0x%04x type=%d q31=0x%08x ts=%lld ms",
-			evt->sensor_uid, evt->type, evt->q31_value,
-			evt->timestamp_ms);
+		LOG_INF("uid=0x%04x type=%d q31=0x%08x ts=%lld ms", evt->sensor_uid, evt->type,
+			evt->q31_value, evt->timestamp_ms);
 		break;
 	}
 }
@@ -55,8 +52,7 @@ ZBUS_LISTENER_DEFINE(gateway_event_listener, gateway_event_cb);
 
 static int gateway_init(void)
 {
-	int rc = zbus_chan_add_obs(&sensor_event_chan,
-				   &gateway_event_listener, K_NO_WAIT);
+	int rc = zbus_chan_add_obs(&sensor_event_chan, &gateway_event_listener, K_NO_WAIT);
 	if (rc != 0) {
 		LOG_ERR("Failed to subscribe to sensor_event_chan: %d", rc);
 	}

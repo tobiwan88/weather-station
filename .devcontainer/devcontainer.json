@@ -17,8 +17,8 @@
     "PATH": "/home/zephyr/.venv/bin:${containerEnv:PATH}"
   },
 
-  // Ensure venv is created and requirements installed on container creation
-  // onCreateCommand removed: all setup is handled in Dockerfile
+  // Install pre-commit into the venv after the container is created
+  "postCreateCommand": "pip install pre-commit && pre-commit install",
 
   "customizations": {
     "vscode": {

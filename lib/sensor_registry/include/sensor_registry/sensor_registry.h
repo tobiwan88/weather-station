@@ -13,8 +13,8 @@
 #ifndef SENSOR_REGISTRY_SENSOR_REGISTRY_H_
 #define SENSOR_REGISTRY_SENSOR_REGISTRY_H_
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,10 +25,10 @@ extern "C" {
 
 /** Metadata record for one sensor. */
 struct sensor_registry_entry {
-	uint32_t uid;            /**< Unique sensor identifier (from DT)   */
-	const char *label;       /**< Human-readable name, e.g. "indoor"   */
-	const char *location;    /**< Physical location, e.g. "living_room" */
-	bool is_remote;          /**< true if sensor lives on a remote node */
+	uint32_t uid;         /**< Unique sensor identifier (from DT)   */
+	const char *label;    /**< Human-readable name, e.g. "indoor"   */
+	const char *location; /**< Physical location, e.g. "living_room" */
+	bool is_remote;       /**< true if sensor lives on a remote node */
 };
 
 /**
@@ -57,9 +57,8 @@ const struct sensor_registry_entry *sensor_registry_lookup(uint32_t uid);
  * @param cb Callback invoked for each entry. Return non-zero to stop.
  * @param user_data Passed verbatim to the callback.
  */
-void sensor_registry_foreach(int (*cb)(const struct sensor_registry_entry *e,
-				       void *user_data),
-			      void *user_data);
+void sensor_registry_foreach(int (*cb)(const struct sensor_registry_entry *e, void *user_data),
+			     void *user_data);
 
 /**
  * @brief Return the number of registered sensors.

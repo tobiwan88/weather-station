@@ -1,13 +1,13 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 
 #include <stdlib.h>
+#include <zephyr/logging/log.h>
 #include <zephyr/shell/shell.h>
 #include <zephyr/sys/iterable_sections.h>
-#include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
 
-#include <sensor_trigger/sensor_trigger.h>
 #include <fake_sensors/fake_sensors.h>
+#include <sensor_trigger/sensor_trigger.h>
 
 LOG_MODULE_REGISTER(fake_sensors_shell, LOG_LEVEL_INF);
 
@@ -19,20 +19,17 @@ static int cmd_list(const struct shell *sh, size_t argc, char **argv)
 	ARG_UNUSED(argc);
 	ARG_UNUSED(argv);
 
-	shell_print(sh, "%-6s  %-12s  %-20s  %s",
-		    "UID", "Kind", "Location", "Current value");
+	shell_print(sh, "%-6s  %-12s  %-20s  %s", "UID", "Kind", "Location", "Current value");
 	shell_print(sh, "------  ------------  --------------------  ----------------");
 
-	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry) {
-		const char *kind_str = (entry->kind == FAKE_SENSOR_KIND_TEMPERATURE)
-					       ? "temperature"
-					       : "humidity";
-		const char *unit_str = (entry->kind == FAKE_SENSOR_KIND_TEMPERATURE)
-					       ? "mdeg C"
-					       : "m%RH";
-		shell_print(sh, "0x%04x  %-12s  %-20s  %d %s",
-			    entry->uid, kind_str, entry->location,
-			    *entry->value_milli, unit_str);
+	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry)
+	{
+		const char *kind_str =
+			(entry->kind == FAKE_SENSOR_KIND_TEMPERATURE) ? "temperature" : "humidity";
+		const char *unit_str =
+			(entry->kind == FAKE_SENSOR_KIND_TEMPERATURE) ? "mdeg C" : "m%RH";
+		shell_print(sh, "0x%04x  %-12s  %-20s  %d %s", entry->uid, kind_str,
+			    entry->location, *entry->value_milli, unit_str);
 	}
 	return 0;
 }
@@ -50,7 +47,8 @@ static int cmd_temperature_set(const struct shell *sh, size_t argc, char **argv)
 	uint32_t uid = (uint32_t)strtoul(argv[1], NULL, 16);
 	int32_t mdegc = (int32_t)strtol(argv[2], NULL, 10);
 
-	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry) {
+	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry)
+	{
 		if (entry->uid != uid || entry->kind != FAKE_SENSOR_KIND_TEMPERATURE) {
 			continue;
 		}
@@ -77,7 +75,8 @@ static int cmd_humidity_set(const struct shell *sh, size_t argc, char **argv)
 	uint32_t uid = (uint32_t)strtoul(argv[1], NULL, 16);
 	int32_t mpct = (int32_t)strtol(argv[2], NULL, 10);
 
-	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry) {
+	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry)
+	{
 		if (entry->uid != uid || entry->kind != FAKE_SENSOR_KIND_HUMIDITY) {
 			continue;
 		}
@@ -98,7 +97,7 @@ static int cmd_humidity_set(const struct shell *sh, size_t argc, char **argv)
 static int cmd_trigger(const struct shell *sh, size_t argc, char **argv)
 {
 	struct sensor_trigger_event trig = {
-		.source     = TRIGGER_SOURCE_BUTTON,
+		.source = TRIGGER_SOURCE_BUTTON,
 		.target_uid = 0,
 	};
 
@@ -126,19 +125,14 @@ static int cmd_trigger(const struct shell *sh, size_t argc, char **argv)
  * -------------------------------------------------------------------------- */
 SHELL_STATIC_SUBCMD_SET_CREATE(
 	fake_sensors_cmds,
-	SHELL_CMD_ARG(list, NULL,
-		      "List all registered fake sensors with current values",
-		      cmd_list, 1, 0),
-	SHELL_CMD_ARG(temperature_set, NULL,
-		      "Set temperature: <uid_hex> <mdegC>",
+	SHELL_CMD_ARG(list, NULL, "List all registered fake sensors with current values", cmd_list,
+		      1, 0),
+	SHELL_CMD_ARG(temperature_set, NULL, "Set temperature: <uid_hex> <mdegC>",
 		      cmd_temperature_set, 3, 0),
-	SHELL_CMD_ARG(humidity_set, NULL,
-		      "Set humidity: <uid_hex> <m_pct_rh>",
-		      cmd_humidity_set, 3, 0),
-	SHELL_CMD_ARG(trigger, NULL,
-		      "Fire a manual trigger [uid_hex] (omit for broadcast)",
+	SHELL_CMD_ARG(humidity_set, NULL, "Set humidity: <uid_hex> <m_pct_rh>", cmd_humidity_set, 3,
+		      0),
+	SHELL_CMD_ARG(trigger, NULL, "Fire a manual trigger [uid_hex] (omit for broadcast)",
 		      cmd_trigger, 1, 1),
 	SHELL_SUBCMD_SET_END);
 
-SHELL_CMD_REGISTER(fake_sensors, &fake_sensors_cmds,
-		   "Fake sensor driver controls", NULL);
+SHELL_CMD_REGISTER(fake_sensors, &fake_sensors_cmds, "Fake sensor driver controls", NULL);

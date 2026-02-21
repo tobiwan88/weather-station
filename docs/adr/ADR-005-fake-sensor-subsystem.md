@@ -163,7 +163,7 @@ struct fake_sensor_entry {
     }
 ```
 
-The linker collects all `STRUCT_SECTION_ITERABLE(fake_sensor_entry, ...)` 
+The linker collects all `STRUCT_SECTION_ITERABLE(fake_sensor_entry, ...)`
 instances into a contiguous array. `fake_sensors_find(uid)` iterates this
 array — no dynamic allocation, no hash map.
 

@@ -8,14 +8,14 @@
  *   fake_hum_test  (uid=0x0102, "fake,humidity")
  */
 
-#include <zephyr/ztest.h>
 #include <zephyr/kernel.h>
-#include <zephyr/zbus/zbus.h>
 #include <zephyr/sys/iterable_sections.h>
+#include <zephyr/zbus/zbus.h>
+#include <zephyr/ztest.h>
 
+#include <fake_sensors/fake_sensors.h>
 #include <sensor_event/sensor_event.h>
 #include <sensor_trigger/sensor_trigger.h>
-#include <fake_sensors/fake_sensors.h>
 
 /* Semaphore posted by the test's event listener when an event arrives. */
 static K_SEM_DEFINE(event_received_sem, 0, 1);
@@ -36,8 +36,7 @@ ZBUS_LISTENER_DEFINE(test_event_listener, test_event_cb);
 static void *suite_setup(void)
 {
 	/* Subscribe test listener to sensor_event_chan. */
-	int rc = zbus_chan_add_obs(&sensor_event_chan,
-				   &test_event_listener, K_NO_WAIT);
+	int rc = zbus_chan_add_obs(&sensor_event_chan, &test_event_listener, K_NO_WAIT);
 	zassert_ok(rc, "Failed to add event observer: %d", rc);
 	return NULL;
 }
@@ -56,14 +55,14 @@ ZTEST(fake_sensors_suite, test_fake_sensor_count)
 {
 	int count = 0;
 
-	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry) {
+	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry)
+	{
 		ARG_UNUSED(entry);
 		count++;
 	}
 
-	zassert_true(count > 0,
-		     "STRUCT_SECTION_COUNT(fake_sensor_entry) == 0; "
-		     "no fake sensors found — check DT overlay");
+	zassert_true(count > 0, "STRUCT_SECTION_COUNT(fake_sensor_entry) == 0; "
+				"no fake sensors found — check DT overlay");
 }
 
 /**
@@ -82,7 +81,7 @@ ZTEST(fake_sensors_suite, test_trigger_produces_event)
 	k_sem_reset(&event_received_sem);
 
 	struct sensor_trigger_event trig = {
-		.source     = TRIGGER_SOURCE_TIMER,
+		.source = TRIGGER_SOURCE_TIMER,
 		.target_uid = 0,
 	};
 
@@ -92,12 +91,10 @@ ZTEST(fake_sensors_suite, test_trigger_produces_event)
 
 	/* Wait up to 1 s for an event to arrive. */
 	rc = k_sem_take(&event_received_sem, K_SECONDS(1));
-	zassert_ok(rc,
-		   "No sensor event received within 1 s after trigger publish");
+	zassert_ok(rc, "No sensor event received within 1 s after trigger publish");
 
 	/* Basic sanity on the received event. */
-	zassert_true(last_event.sensor_uid != 0,
-		     "Received event has sensor_uid == 0");
+	zassert_true(last_event.sensor_uid != 0, "Received event has sensor_uid == 0");
 	zassert_true(last_event.type == SENSOR_TYPE_TEMPERATURE ||
 			     last_event.type == SENSOR_TYPE_HUMIDITY,
 		     "Received event has unexpected type %d", last_event.type);

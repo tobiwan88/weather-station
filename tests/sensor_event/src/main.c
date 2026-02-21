@@ -4,9 +4,9 @@
  * @brief Unit tests for Q31 helpers and env_sensor_data layout.
  */
 
-#include <zephyr/ztest.h>
 #include <math.h>
 #include <sensor_event/sensor_event.h>
+#include <zephyr/ztest.h>
 
 ZTEST_SUITE(sensor_event_suite, NULL, NULL, NULL, NULL, NULL);
 
@@ -57,6 +57,5 @@ ZTEST(sensor_event_suite, test_q31_humidity_roundtrip)
 ZTEST(sensor_event_suite, test_env_sensor_data_size)
 {
 	zassert_equal(sizeof(struct env_sensor_data), 20,
-		      "env_sensor_data size is %zu, expected 20",
-		      sizeof(struct env_sensor_data));
+		      "env_sensor_data size is %zu, expected 20", sizeof(struct env_sensor_data));
 }

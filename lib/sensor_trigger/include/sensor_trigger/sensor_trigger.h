@@ -34,8 +34,8 @@ enum trigger_source {
  * @brief Trigger event transmitted on sensor_trigger_chan.
  */
 struct sensor_trigger_event {
-	enum trigger_source source;  /**< Who originated the trigger */
-	uint32_t target_uid;         /**< 0 = broadcast all sensors  */
+	enum trigger_source source; /**< Who originated the trigger */
+	uint32_t target_uid;        /**< 0 = broadcast all sensors  */
 };
 
 /** zbus channel carrying sensor_trigger_event (defined in sensor_trigger.c). */
