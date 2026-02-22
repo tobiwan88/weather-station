@@ -34,11 +34,49 @@ Full design rationale: [`docs/adr/`](docs/adr/README.md)
 #    onCreateCommand runs west init + west update automatically
 
 # 2. Build and run
-west build -p always -b native_sim apps/gateway
+west build -b native_sim/native/64 apps/gateway
 west build -t run
 ```
 
 For all build commands, architecture rules, and Kconfig options: see [`CLAUDE.md`](CLAUDE.md).
+
+---
+
+## Interactive shell
+
+Both `gateway` and `sensor-node` expose a Zephyr shell on UART0.
+When you start the binary it prints the pseudoterminal it is listening on:
+
+```
+uart connected to pseudotty: /dev/pts/2
+```
+
+Connect from a second terminal:
+
+```bash
+screen /dev/pts/2
+# or
+minicom -D /dev/pts/2
+```
+
+At the `uart:~$` prompt:
+
+```
+help                                   # list all commands
+fake_sensors list                      # show all sensors from the DT overlay
+fake_sensors set <uid> temp 25000      # set value in milli-°C
+fake_sensors trigger <uid>             # fire a one-shot sample
+kernel uptime                          # simulated uptime in ms
+```
+
+Press `Ctrl-A K` (screen) or `Ctrl-A X` (minicom) to disconnect without stopping the simulation.
+
+For scripted use (CI, pipe), pass `-uart_stdinout` to redirect the shell to stdin/stdout:
+
+```bash
+printf "help\nfake_sensors list\n" | timeout 8 \
+  /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe -uart_stdinout 2>&1
+```
 
 ---
 

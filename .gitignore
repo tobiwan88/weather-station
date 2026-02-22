@@ -2,6 +2,7 @@
 build/
 twister-out/
 
+twister-out*/
 # West workspace (populated by `west init` / `west update`)
 .west/
 

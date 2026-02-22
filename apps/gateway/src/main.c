@@ -9,11 +9,10 @@
  * activated by the Kconfig options in prj.conf.
  */
 
+#include <common/weather_messages.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
-
-#include <common/weather_messages.h>
 
 LOG_MODULE_REGISTER(gateway, LOG_LEVEL_INF);
 
@@ -26,24 +25,25 @@ LOG_MODULE_REGISTER(gateway, LOG_LEVEL_INF);
 static void gateway_event_cb(const struct zbus_channel *chan)
 {
 	const struct env_sensor_data *evt = zbus_chan_const_msg(chan);
-	const char *type_str;
+	int64_t ts_ms = evt->timestamp_ms;
+	int hh = (int)((ts_ms / 3600000LL) % 24);
+	int mm = (int)((ts_ms / 60000LL) % 60);
+	int ss = (int)((ts_ms / 1000LL) % 60);
 
 	switch (evt->type) {
 	case SENSOR_TYPE_TEMPERATURE:
-		type_str = "temp";
-		LOG_INF("uid=0x%04x type=%-4s q31=0x%08x (%.2f C) ts=%lld ms", evt->sensor_uid,
-			type_str, evt->q31_value, q31_to_temperature_c(evt->q31_value),
-			evt->timestamp_ms);
+		LOG_INF("uid=0x%04x type=temp q31=0x%08x (%.2f C) uptime=%02d:%02d:%02d",
+			evt->sensor_uid, evt->q31_value, q31_to_temperature_c(evt->q31_value), hh,
+			mm, ss);
 		break;
 	case SENSOR_TYPE_HUMIDITY:
-		type_str = "hum";
-		LOG_INF("uid=0x%04x type=%-4s q31=0x%08x (%.1f %%RH) ts=%lld ms", evt->sensor_uid,
-			type_str, evt->q31_value, q31_to_humidity_pct(evt->q31_value),
-			evt->timestamp_ms);
+		LOG_INF("uid=0x%04x type=hum  q31=0x%08x (%.1f %%RH) uptime=%02d:%02d:%02d",
+			evt->sensor_uid, evt->q31_value, q31_to_humidity_pct(evt->q31_value), hh,
+			mm, ss);
 		break;
 	default:
-		LOG_INF("uid=0x%04x type=%d q31=0x%08x ts=%lld ms", evt->sensor_uid, evt->type,
-			evt->q31_value, evt->timestamp_ms);
+		LOG_INF("uid=0x%04x type=%d q31=0x%08x uptime=%02d:%02d:%02d", evt->sensor_uid,
+			evt->type, evt->q31_value, hh, mm, ss);
 		break;
 	}
 }
