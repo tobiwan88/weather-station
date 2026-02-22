@@ -10,12 +10,16 @@
  * the rest of the application is unaffected.
  */
 
+/* Enable POSIX clock API via host glibc on native_sim (must precede all includes). */
+#undef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#include <time.h>
+
 #include <errno.h>
 
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/net/sntp.h>
-#include <zephyr/posix/time.h>
 
 #include <sntp_sync/sntp_sync.h>
 
@@ -92,8 +96,7 @@ static struct k_work_delayable resync_work;
 static void resync_handler(struct k_work *work)
 {
 	do_sntp_sync();
-	k_work_reschedule(&resync_work,
-			  K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
+	k_work_reschedule(&resync_work, K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
 }
 
 #endif /* CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S > 0 */
@@ -108,8 +111,7 @@ static int sntp_sync_init(void)
 
 #if CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S > 0
 	k_work_init_delayable(&resync_work, resync_handler);
-	k_work_reschedule(&resync_work,
-			  K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
+	k_work_reschedule(&resync_work, K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
 #endif
 
 	return 0;
