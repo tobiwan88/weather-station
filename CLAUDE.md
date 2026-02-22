@@ -142,6 +142,18 @@ Commit message conventions:
 - **type**: `feat` | `fix` | `refactor` | `test` | `docs` | `chore`
 - **scope**: library or app name, e.g. `fake_sensors`, `gateway`
 - **summary**: imperative, ≤72 chars, no period
+- **body** (optional): add a short body when the change is non-obvious —
+  one sentence per key decision or side-effect, enough for an agent to
+  reconstruct *what changed and why* if bisecting a regression.
+  Keep it factual: file paths, symbol names, config keys changed.
+  Example:
+  ```
+  feat(fake_sensor): publish humidity as separate zbus event
+
+  Split env_sensor_publish() into two calls — one per sensor_type.
+  Updated tests/fake_sensor/src/main.c expectations accordingly.
+  No Kconfig or DTS changes.
+  ```
 
 Repeat steps 2–5 for each logical unit of work.
 
