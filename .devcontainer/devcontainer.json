@@ -8,8 +8,12 @@
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/zephyr/workspace/weather-station,type=bind,consistency=cached",
   "workspaceFolder": "/home/zephyr/workspace/weather-station",
 
-  // Removed .west mount to allow it to be a regular directory
-  "mounts": [],
+  // Bind-mount the host's ~/.claude so credentials and global settings survive
+  // container restarts without re-authentication.
+  // ${localEnv:HOME} resolves to the host user's home directory.
+  "mounts": [
+    "source=${localEnv:HOME}/.claude,target=/home/zephyr/.claude,type=bind,consistency=cached"
+  ],
 
   // Cleaned up environment: only set what is strictly needed at runtime, avoid pre-setting VIRTUAL_ENV and ZEPHYR_BASE here.
   "remoteEnv": {
@@ -19,7 +23,7 @@
   // Ensure venv is created and requirements installed on container creation
   // onCreateCommand removed: all setup is handled in Dockerfile
 
-  "postStartCommand": "sudo chronyd -q 'pool pool.ntp.org iburst' 2>/dev/null || true; if [ ! -d /home/zephyr/workspace/.west ]; then cd /home/zephyr/workspace/weather-station && west init -l . && west update --narrow; fi",
+  "postStartCommand": "bash /home/zephyr/workspace/weather-station/.devcontainer/setup-claude.sh; sudo chronyd -q 'pool pool.ntp.org iburst' 2>/dev/null || true; if [ ! -d /home/zephyr/workspace/.west ]; then cd /home/zephyr/workspace/weather-station && west init -l . && west update --narrow; fi",
 
   "runArgs": [
     "--cap-add=NET_ADMIN",
