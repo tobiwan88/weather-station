@@ -21,7 +21,24 @@
       "WebSearch",
       "WebFetch(domain:docs.zephyrproject.org)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(find /home/zephyr/workspace/weather-station/tests -name \"*.conf\" -o -name \"*.overlay\" | sort | xargs ls -la 2>/dev/null)",
+      "Bash(git checkout master && git pull 2>&1 || true)",
+      "Bash(git checkout -b chore/zephyr-4.3-upgrade 2>&1)",
+      "Bash(cd /home/zephyr/workspace && west update --narrow 2>&1)",
+      "Bash(cd /home/zephyr/workspace && west build -p always -b native_sim/native/64 apps/sensor-node 2>&1)",
+      "Bash(west build -p always -b native_sim/native/64 apps/sensor-node 2>&1)",
+      "Bash(pip install jsonschema 2>&1)",
+      "Bash(west build -p always -b native_sim/native/64 apps/gateway --build-dir /home/zephyr/workspace/build/native_sim_native_64/gateway 2>&1)",
+      "Bash(find /home/zephyr/workspace/zephyr/samples/net/sockets/sntp_client -name \"*.conf\" 2>/dev/null | xargs grep -l \"POSIX\\\\|TIME\" 2>/dev/null)",
+      "Bash(west build -b native_sim/native/64 apps/gateway --build-dir /home/zephyr/workspace/build/native_sim_native_64/gateway 2>&1 | tail -30)",
+      "Bash(west build -b native_sim/native/64 apps/gateway --build-dir /home/zephyr/workspace/build/native_sim_native_64/gateway 2>&1 | tail -20)",
+      "Bash(printf \"help\\\\nfake_sensors list\\\\nkernel uptime\\\\n\" | \\\\\n  timeout 10 /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe \\\\\n  -uart_stdinout 2>&1)",
+      "Bash(west twister -p native_sim -T tests/ --inline-logs -v -N 2>&1)",
+      "Bash(west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N 2>&1)",
+      "Bash(west build -p always -b native_sim/native/64 tests/fake_sensors --build-dir /tmp/test_build 2>&1 | head -50)",
+      "Bash(west build -p always -b native_sim/native/64 apps/sensor-node 2>&1 | tail -5 && \\\\\nwest build -p always -b native_sim/native/64 apps/gateway --build-dir /home/zephyr/workspace/build/native_sim_native_64/gateway 2>&1 | tail -5)",
+      "Bash(pre-commit run --all-files 2>&1)"
     ]
   }
 }
