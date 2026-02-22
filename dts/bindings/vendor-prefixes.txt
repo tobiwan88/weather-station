@@ -1,0 +1,5 @@
+# Project-local DT vendor prefix registry.
+#
+# Format: <vendor-prefix><TAB><Full name of vendor>
+
+fake	Fake sensors (simulation and testing only)
