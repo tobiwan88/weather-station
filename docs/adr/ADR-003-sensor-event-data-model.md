@@ -204,6 +204,26 @@ the new type simply ignore the event (pattern: `switch(evt.type) { ... default: 
 
 ---
 
+## Serialisation (cross-device boundary)
+
+`env_sensor_data` is **intentionally not a wire format**.  It is an in-memory
+zbus message: the struct layout may differ between 32-bit and 64-bit builds
+(natural sizeof is 20 bytes on 32-bit, 24 bytes on 64-bit due to alignment
+padding before `int64_t`), and it must never be cast to a byte array and
+transmitted as-is to another device.
+
+When a sensor event must cross a device boundary — LoRa radio, MQTT broker,
+BLE, USB — a dedicated encoding layer will translate `env_sensor_data` into
+a portable wire representation.  The format has not been chosen yet; options
+include protobuf / nanopb, CBOR / zcbor, or a hand-rolled compact layout.  See
+the backlog item **[SERIALIZATION]** for evaluation criteria and acceptance
+conditions.
+
+**Rule:** No code outside `lib/sensor_codec` (to be created) may serialise or
+deserialise `env_sensor_data` directly.
+
+---
+
 ## Alternatives considered
 
 | Alternative | Rejected because |
