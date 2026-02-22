@@ -1,0 +1,34 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig SNTP_SYNC
+	bool "SNTP wall-clock synchronisation"
+	depends on NETWORKING
+	depends on SNTP
+	depends on POSIX_TIMERS
+	help
+	  Synchronises CLOCK_REALTIME via sntp_simple() at boot and periodically
+	  thereafter. On native_sim use CONFIG_NET_NATIVE_OFFLOADED_SOCKETS so no
+	  TAP device is required.
+
+if SNTP_SYNC
+
+config SNTP_SYNC_SERVER
+	string "NTP server hostname or IP"
+	default "pool.ntp.org"
+	help
+	  Hostname or IP address of the NTP server to query.
+
+config SNTP_SYNC_TIMEOUT_MS
+	int "SNTP query timeout in milliseconds"
+	default 5000
+	help
+	  Maximum time to wait for a response from the NTP server.
+
+config SNTP_SYNC_RESYNC_INTERVAL_S
+	int "Periodic resync interval in seconds"
+	default 3600
+	help
+	  How often to re-query the NTP server after the initial sync.
+	  Set to 0 to disable periodic resync.
+
+endif # SNTP_SYNC
