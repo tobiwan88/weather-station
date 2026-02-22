@@ -1,7 +1,7 @@
 tests:
   weather_station.fake_sensors:
     platform_allow:
-      - native_sim
+      - native_sim/native/64
     harness: ztest
     tags:
       - fake_sensors

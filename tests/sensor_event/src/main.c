@@ -52,6 +52,7 @@ ZTEST(sensor_event_suite, test_q31_humidity_roundtrip)
  * @brief Verify env_sensor_data is exactly 20 bytes.
  *
  * Layout: uint32_t(4) + enum(4) + int32_t(4) + int64_t(8) = 20 bytes.
+ * __packed removes struct-level alignment padding on 64-bit.
  * This must hold for correct binary transmission over LoRa.
  */
 ZTEST(sensor_event_suite, test_env_sensor_data_size)
