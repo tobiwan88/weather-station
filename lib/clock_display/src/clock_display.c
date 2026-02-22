@@ -7,9 +7,13 @@
  * first tick already reflects the synchronised wall-clock time.
  */
 
+/* Enable POSIX clock API via host glibc on native_sim (must precede all includes). */
+#undef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#include <time.h>
+
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/posix/time.h>
 
 LOG_MODULE_REGISTER(clock_display, LOG_LEVEL_INF);
 
