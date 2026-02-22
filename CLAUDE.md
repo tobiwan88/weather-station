@@ -22,8 +22,9 @@ Full rationale is in [`docs/adr/`](docs/adr/README.md).
 west init -l .                       # first-time workspace setup
 west update --narrow                 # fetch Zephyr + allowlist modules
 
-west build -p always -b native_sim/native/64 apps/gateway
-west build -p always -b native_sim/native/64 apps/sensor-node
+west build -b native_sim/native/64 apps/gateway              # incremental (own build dir)
+west build -b native_sim/native/64 apps/sensor-node
+west build -p always -b native_sim/native/64 apps/gateway    # pristine (Kconfig/DTS changes)
 west build -t run                    # run the last built app
 
 west twister -p native_sim -T tests/ --inline-logs -v -N
@@ -88,10 +89,18 @@ git checkout -b <short-kebab-description>   # e.g. feat/sensor-uid-logging
 Never commit directly to `main` or `master`.
 
 ### 2. Incremental changes + build gate
-Make the smallest possible logical change, then verify it compiles:
+Make the smallest possible logical change, then verify it compiles.
+
+Each app/board combination gets its own build directory (`build/{board}/{app}/`)
+so you can build both apps without wiping each other:
+
 ```bash
+# Incremental rebuild — normal case for source-only changes
+west build -b native_sim/native/64 apps/gateway
+west build -b native_sim/native/64 apps/sensor-node
+
+# Pristine rebuild — only needed after Kconfig or DTS changes
 west build -p always -b native_sim/native/64 apps/gateway
-west build -p always -b native_sim/native/64 apps/sensor-node
 ```
 If the build fails, fix it before touching anything else.
 
@@ -103,7 +112,7 @@ Use `-uart_stdinout` so the shell is available on stdin/stdout for piping:
 ```bash
 # Quick sanity check — pipe commands, capture output
 printf "help\nfake_sensors list\nkernel uptime\n" | \
-  timeout 10 /home/zephyr/workspace/build/zephyr/zephyr.exe \
+  timeout 10 /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe \
   -uart_stdinout 2>&1
 ```
 

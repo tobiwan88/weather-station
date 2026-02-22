@@ -34,7 +34,7 @@ Full design rationale: [`docs/adr/`](docs/adr/README.md)
 #    onCreateCommand runs west init + west update automatically
 
 # 2. Build and run
-west build -p always -b native_sim apps/gateway
+west build -b native_sim/native/64 apps/gateway
 west build -t run
 ```
 
@@ -75,7 +75,7 @@ For scripted use (CI, pipe), pass `-uart_stdinout` to redirect the shell to stdi
 
 ```bash
 printf "help\nfake_sensors list\n" | timeout 8 \
-  /home/zephyr/workspace/build/zephyr/zephyr.exe -uart_stdinout 2>&1
+  /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe -uart_stdinout 2>&1
 ```
 
 ---
