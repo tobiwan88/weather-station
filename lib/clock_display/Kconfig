@@ -2,7 +2,6 @@
 
 menuconfig CLOCK_DISPLAY
 	bool "Console clock display (HH:MM UTC)"
-	depends on POSIX_TIMERS || EXTERNAL_LIBC
 	help
 	  Logs the current wall-clock time as HH:MM UTC every 60 seconds via
 	  a delayable work item. Useful as a minimal clock widget for a
