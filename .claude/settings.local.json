@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(west build:*)",
+      "Bash(west twister:*)",
+      "Bash(cd /home/zephyr/workspace && west:*)",
+      "Bash(pre-commit run:*)",
+      "Bash(printf:*)",
+      "Bash(echo:*)",
+      "Bash(timeout:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(chmod:*)",
+      "Bash(ls:*)",
+      "Bash(tail:*)",
+      "Bash(which:*)",
+      "Bash(python3:*)",
+      "Bash(pip:*)",
+      "Bash(pip3:*)",
+      "WebSearch",
+      "WebFetch(domain:docs.zephyrproject.org)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}
