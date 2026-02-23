@@ -34,6 +34,16 @@ RUN apt-get update && \
         chrony \
     && rm -rf /var/lib/apt/lists/*
 
+# Install SDL2 and X11 libraries for LVGL native_sim display rendering
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        pkg-config \
+        libsdl2-dev \
+        libx11-dev \
+        libxext-dev \
+        x11-apps \
+        xauth \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install Node.js LTS (required for Claude Code CLI)
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y --no-install-recommends nodejs && \

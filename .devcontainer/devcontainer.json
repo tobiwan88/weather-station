@@ -12,12 +12,15 @@
   // container restarts without re-authentication.
   // ${localEnv:HOME} resolves to the host user's home directory.
   "mounts": [
-    "source=${localEnv:HOME}/.claude,target=/home/zephyr/.claude,type=bind,consistency=cached"
+    "source=${localEnv:HOME}/.claude,target=/home/zephyr/.claude,type=bind,consistency=cached",
+    "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached"
   ],
 
   // Cleaned up environment: only set what is strictly needed at runtime, avoid pre-setting VIRTUAL_ENV and ZEPHYR_BASE here.
   "remoteEnv": {
-    "PATH": "/home/zephyr/.venv/bin:${containerEnv:PATH}"
+    "PATH": "/home/zephyr/.venv/bin:${containerEnv:PATH}",
+    "DISPLAY": "${localEnv:DISPLAY}",
+    "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}"
   },
 
   // Ensure venv is created and requirements installed on container creation
