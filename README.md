@@ -80,6 +80,40 @@ printf "help\nfake_sensors list\n" | timeout 8 \
 
 ---
 
+## Graphical display (SDL window)
+
+When `CONFIG_LVGL_DISPLAY=y` is enabled (gateway default), the app opens a
+320×240 SDL window showing the clock and live sensor readings.
+
+### Headless (no display server)
+
+```bash
+SDL_VIDEODRIVER=offscreen \
+  printf "help\nfake_sensors list\nkernel uptime\n" | \
+  timeout 15 \
+  /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe \
+  -uart_stdinout 2>&1
+```
+
+### With X forwarding (interactive window)
+
+**Linux host:**
+```bash
+xhost +local:docker   # allow the container to connect
+west build -t run     # SDL window appears on your desktop
+```
+
+**macOS host (XQuartz):**
+1. Install [XQuartz](https://www.xquartz.org/) and enable *Allow connections from network clients* in Preferences → Security.
+2. Restart XQuartz, then: `xhost +localhost`
+3. `DISPLAY` is forwarded automatically via `devcontainer.json`.
+
+> **Note:** the devcontainer image must include `pkg-config` and `libsdl2-dev`
+> (added to `Dockerfile`). Rebuild the container if you see
+> `Could NOT find PkgConfig` during cmake.
+
+---
+
 ## Project status / roadmap
 
 | Phase | Status |
