@@ -7,9 +7,11 @@
  * first tick already reflects the synchronised wall-clock time.
  */
 
+#include <time.h>
+
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/posix/time.h>
+#include <zephyr/sys/clock.h>
 
 LOG_MODULE_REGISTER(clock_display, LOG_LEVEL_INF);
 
@@ -19,10 +21,12 @@ static void clock_tick(struct k_work *work)
 {
 	struct timespec ts;
 
-	clock_gettime(CLOCK_REALTIME, &ts);
-	struct tm t = *gmtime(&ts.tv_sec);
+	sys_clock_gettime(SYS_CLOCK_REALTIME, &ts);
+	int64_t sod = ts.tv_sec % 86400;
+	int hour = (int)(sod / 3600);
+	int min = (int)((sod % 3600) / 60);
 
-	LOG_INF("clock_display: %02d:%02d UTC", t.tm_hour, t.tm_min);
+	LOG_INF("clock_display: %02d:%02d UTC", hour, min);
 
 	k_work_reschedule(&clock_work, K_SECONDS(60));
 }

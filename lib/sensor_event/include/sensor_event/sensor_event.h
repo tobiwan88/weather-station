@@ -36,8 +36,12 @@ enum sensor_type {
 /**
  * @brief Sensor measurement event transmitted on sensor_event_chan.
  *
- * Size on 32-bit: 20 bytes. Size on 64-bit: 24 bytes (4-byte trailing
- * padding due to int64_t alignment).  No pointers; safe to copy.
+ * In-memory transport only — no pointers, safe to memcpy within the same
+ * firmware image.  Wire serialisation (cross-device, LoRa, MQTT) is handled
+ * by a dedicated encoding layer (protobuf or similar); see backlog and ADR-003.
+ *
+ * sizeof on 64-bit: 24 bytes (4-byte padding before int64_t).
+ * sizeof on 32-bit: 20 bytes.
  */
 struct env_sensor_data {
 	uint32_t sensor_uid;   /**< DT-assigned unique sensor identifier   */

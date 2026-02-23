@@ -4,9 +4,8 @@ menuconfig SNTP_SYNC
 	bool "SNTP wall-clock synchronisation"
 	depends on NETWORKING
 	depends on SNTP
-	depends on POSIX_TIMERS
 	help
-	  Synchronises CLOCK_REALTIME via sntp_simple() at boot and periodically
+	  Synchronises SYS_CLOCK_REALTIME via sntp_simple() at boot and periodically
 	  thereafter. On native_sim use CONFIG_NET_NATIVE_OFFLOADED_SOCKETS so no
 	  TAP device is required.
 

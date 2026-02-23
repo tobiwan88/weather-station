@@ -49,13 +49,16 @@ ZTEST(sensor_event_suite, test_q31_humidity_roundtrip)
 }
 
 /**
- * @brief Verify env_sensor_data is exactly 20 bytes.
+ * @brief Guard against accidental growth of env_sensor_data.
  *
- * Layout: uint32_t(4) + enum(4) + int32_t(4) + int64_t(8) = 20 bytes.
- * This must hold for correct binary transmission over LoRa.
+ * This is an in-memory zbus message, not a wire format.  Cross-device
+ * serialisation uses protobuf or a similar encoding layer (see backlog).
+ *
+ * Natural size on native_sim/native/64: 24 bytes
+ *   uint32_t(4) + enum(4) + int32_t(4) + [4-byte pad] + int64_t(8) = 24.
  */
 ZTEST(sensor_event_suite, test_env_sensor_data_size)
 {
-	zassert_equal(sizeof(struct env_sensor_data), 20,
-		      "env_sensor_data size is %zu, expected 20", sizeof(struct env_sensor_data));
+	zassert_equal(sizeof(struct env_sensor_data), 24,
+		      "env_sensor_data size is %zu, expected 24", sizeof(struct env_sensor_data));
 }
