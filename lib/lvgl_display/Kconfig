@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig LVGL_DISPLAY
+	bool "LVGL graphical weather-station display"
+	depends on LVGL && DISPLAY && ZBUS && SENSOR_EVENT && ZBUS_RUNTIME_OBSERVERS
+	help
+	  SDL-backed 320x240 window showing the weather-station title, a large
+	  HH:MM clock (updated from SYS_CLOCK_REALTIME), and the last reading per
+	  sensor UID/type pair. Subscribes to sensor_event_chan via a zbus
+	  listener; uses lv_async_call() for thread-safe LVGL widget updates.
+	  SYS_INIT at APPLICATION priority 91 (after LVGL workqueue at 90).

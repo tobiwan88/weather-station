@@ -53,7 +53,26 @@
       "Bash(find /home/zephyr/workspace/zephyr/lib/os -name \"Kconfig*\" 2>/dev/null | xargs ls -la)",
       "Bash(west build -b native_sim/native/64 apps/gateway 2>&1 | tail -20)",
       "Bash(west build --build-dir /home/zephyr/workspace/build/native_sim_native_64/gateway -b native_sim/native/64 apps/gateway 2>&1 | tail -20)",
-      "Bash(west build --build-dir /home/zephyr/workspace/build/native_sim_native_64/sensor-node -b native_sim/native/64 apps/sensor-node 2>&1 | tail -10)"
+      "Bash(west build --build-dir /home/zephyr/workspace/build/native_sim_native_64/sensor-node -b native_sim/native/64 apps/sensor-node 2>&1 | tail -10)",
+      "Bash(git -C /home/zephyr/workspace/weather-station branch -a)",
+      "Bash(find /home/zephyr/workspace/zephyr -name \"*Kconfig*lvgl*\" -o -path \"*lvgl*\" -name \"Kconfig*\" 2>/dev/null | head -20)",
+      "Bash(find /home/zephyr/workspace/zephyr/samples/modules/lvgl -name \"README*\" -o -name \"*.rst\" 2>/dev/null | head -10)",
+      "Bash(git -C /home/zephyr/workspace/weather-station log --oneline feat/ntp-clock-display..master | head -10)",
+      "Bash(git -C /home/zephyr/workspace/weather-station log --oneline master..feat/ntp-clock-display | head -10)",
+      "Bash(git -C /home/zephyr/workspace/weather-station show feat/ntp-clock-display:lib/clock_display/src/clock_display.c 2>/dev/null | head -50)",
+      "Bash(find /home/zephyr/workspace -path '*/zephyr/boards/native/native_sim*' -name '*.conf' 2>/dev/null | head -10)",
+      "Bash(find /home/zephyr/workspace/zephyr -path '*/lvgl*' -name 'Kconfig' 2>/dev/null | head -5)",
+      "Bash(find /home/zephyr/workspace/zephyr/samples/modules/lvgl -name 'prj.conf' | head -3 | xargs -I{} sh -c 'echo \"=== {} ===\"; cat {}')",
+      "Bash(find /home/zephyr/workspace/zephyr/samples/modules/lvgl -name 'native_sim*' 2>/dev/null | head -10)",
+      "Bash(find /home/zephyr/workspace/lvgl -name 'lv_async*' 2>/dev/null | head -5)",
+      "Bash(find /home/zephyr/workspace -name 'lv_async*' 2>/dev/null | grep -v \".git\\\\|build\\\\|twister\" | head -10)",
+      "Bash(find /home/zephyr/workspace/zephyr/modules/lvgl -name 'Kconfig*' 2>/dev/null | head -10)",
+      "Bash(dpkg -l | grep -i sdl 2>/dev/null; apt list --installed 2>/dev/null | grep -i sdl | head -10)",
+      "Bash(find /home/zephyr/workspace/zephyr/drivers/display -name '*sdl*' 2>/dev/null | head -5)",
+      "Bash(find /home/zephyr/workspace -name \"lv_font_montserrat_*.c\" 2>/dev/null | head -20)",
+      "Bash(git checkout master && git checkout -b feat/lvgl-sdl-display)",
+      "Bash(which pkg-config 2>/dev/null || echo \"not found\"; dpkg -l | grep -E 'pkg-config|libsdl2' | head -10)",
+      "Bash(git add \\\\\n  lib/lvgl_display/ \\\\\n  lib/Kconfig \\\\\n  CMakeLists.txt \\\\\n  apps/gateway/prj.conf \\\\\n  apps/gateway/boards/native_sim.overlay \\\\\n  apps/gateway/boards/native_sim_native_64.conf \\\\\n  .devcontainer/Dockerfile \\\\\n  .devcontainer/devcontainer.json \\\\\n  docs/x-forwarding.md)"
     ]
   }
 }
