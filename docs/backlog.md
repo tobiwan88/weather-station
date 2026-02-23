@@ -1,5 +1,28 @@
 # Backlog
 
+## [SERIALIZATION] Choose and implement cross-device serialisation format
+
+`env_sensor_data` is an in-memory zbus message, not a wire format.  When
+sensor events need to cross a device boundary (LoRa, MQTT, BLE, USB) a proper
+encoding layer is required.
+
+**Candidates to evaluate:**
+- **Protocol Buffers (nanopb)** — compact binary, schema-enforced, good MCU
+  support via nanopb; adds a code-generation step
+- **CBOR** — schemaless binary, self-describing, Zephyr has a built-in encoder
+  (`zephyr/net/buf.h` + zcbor); no code-gen step
+- **Custom fixed layout** — simple, zero overhead, but brittle across firmware
+  versions
+
+**Decision criteria:** wire size on LoRa (≤ 20 bytes target per reading),
+toolchain integration, versioning story, multi-language decode (Python gateway).
+
+**Acceptance:** an ADR documents the choice; a `lib/sensor_codec` library
+encodes/decodes `env_sensor_data` to/from the chosen format; unit tests cover
+round-trip correctness.
+
+Reference: ADR-003 §Serialisation, ADR-006.
+
 ## [DISPLAY] Add LVGL + SDL graphical clock/sensor display for native_sim
 
 Replace the console clock log with a real pixel window using:

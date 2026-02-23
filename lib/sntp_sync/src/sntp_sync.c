@@ -1,21 +1,19 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
  * @file sntp_sync.c
- * @brief SNTP-based wall-clock synchronisation via CLOCK_REALTIME.
+ * @brief SNTP-based wall-clock synchronisation via SYS_CLOCK_REALTIME.
  *
  * Runs at SYS_INIT APPLICATION priority 80 (before the gateway listener at 95)
- * so that CLOCK_REALTIME is set before sensor events are first logged.
+ * so that SYS_CLOCK_REALTIME is set before sensor events are first logged.
  *
  * On failure, logs a WRN and continues — the clock stays at boot epoch but
  * the rest of the application is unaffected.
  */
 
-#include <errno.h>
-
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/net/sntp.h>
-#include <zephyr/posix/time.h>
+#include <zephyr/sys/clock.h>
 
 #include <sntp_sync/sntp_sync.h>
 
@@ -36,7 +34,7 @@ int64_t sntp_sync_get_epoch_ms(void)
 {
 	struct timespec ts;
 
-	clock_gettime(CLOCK_REALTIME, &ts);
+	sys_clock_gettime(SYS_CLOCK_REALTIME, &ts);
 	return (int64_t)ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
@@ -61,17 +59,9 @@ static int do_sntp_sync(void)
 		.tv_nsec = ((long)sntp_time.fraction * 1000000000LL) >> 32,
 	};
 
-	rc = clock_settime(CLOCK_REALTIME, &ts);
+	rc = sys_clock_settime(SYS_CLOCK_REALTIME, &ts);
 	if (rc != 0) {
-		if (errno == EPERM) {
-			/* No CAP_SYS_TIME (e.g. devcontainer). On native_sim
-			 * CLOCK_REALTIME reads the host clock directly, so the
-			 * time is already correct — treat as synced. */
-			LOG_DBG("clock_settime EPERM; using host clock as-is");
-			atomic_set(&synced, 1);
-			return 0;
-		}
-		LOG_WRN("clock_settime failed: errno=%d", errno);
+		LOG_WRN("sys_clock_settime failed: rc=%d", rc);
 		return rc;
 	}
 
@@ -92,8 +82,7 @@ static struct k_work_delayable resync_work;
 static void resync_handler(struct k_work *work)
 {
 	do_sntp_sync();
-	k_work_reschedule(&resync_work,
-			  K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
+	k_work_reschedule(&resync_work, K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
 }
 
 #endif /* CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S > 0 */
@@ -108,8 +97,7 @@ static int sntp_sync_init(void)
 
 #if CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S > 0
 	k_work_init_delayable(&resync_work, resync_handler);
-	k_work_reschedule(&resync_work,
-			  K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
+	k_work_reschedule(&resync_work, K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
 #endif
 
 	return 0;
