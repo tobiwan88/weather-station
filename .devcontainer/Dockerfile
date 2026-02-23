@@ -59,8 +59,11 @@ RUN npm install -g @anthropic-ai/claude-code
 # Install pre-commit
 RUN pip3 install --break-system-packages pre-commit
 
-# Allow zephyr user to manage TAP interfaces without a password
-RUN echo "zephyr ALL=(root) NOPASSWD: /usr/sbin/ip, /usr/sbin/sysctl, /sbin/iptables, /usr/sbin/iptables, /usr/sbin/chronyd" \
+# Set a known password for the zephyr user (useful for sudo prompts and SSH)
+RUN echo "zephyr:zephyr" | chpasswd
+
+# Allow zephyr user to manage TAP interfaces and fix bind-mount ownership without a password
+RUN echo "zephyr ALL=(root) NOPASSWD: /usr/sbin/ip, /usr/sbin/sysctl, /sbin/iptables, /usr/sbin/iptables, /usr/sbin/chronyd, /usr/bin/chown" \
     > /etc/sudoers.d/zephyr-netadmin && \
     chmod 0440 /etc/sudoers.d/zephyr-netadmin
 

@@ -14,6 +14,10 @@ MEMORY_DIR="${CLAUDE_DIR}/projects/-home-zephyr-workspace-weather-station/memory
 # 1. Ensure directory exists (first run on a host that never had Claude installed)
 mkdir -p "${CLAUDE_DIR}"
 
+# Fix ownership if Docker created the bind-mount dir as root (common on first container start).
+# Fails silently when running without sudo — that's fine, it means the dir is already owned correctly.
+sudo chown -R zephyr:zephyr "${CLAUDE_DIR}" 2>/dev/null || true
+
 # 2. Initialise settings.json if absent or empty
 if [ ! -s "${SETTINGS}" ]; then
     echo '{}' > "${SETTINGS}"
