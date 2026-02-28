@@ -26,6 +26,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#include <zephyr/device.h>
+#include <zephyr/drivers/display.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/clock.h>
@@ -72,6 +74,9 @@ static char clock_text_buf[8]; /* "HH:MM\0" */
 static void clock_async_update(void *unused)
 {
 	ARG_UNUSED(unused);
+	if (clock_label == NULL) {
+		return;
+	}
 	lv_label_set_text(clock_label, clock_text_buf);
 }
 
@@ -99,6 +104,9 @@ static void clock_tick(struct k_work *work)
 static void sensor_async_update(void *unused)
 {
 	ARG_UNUSED(unused);
+	if (sensor_labels[0] == NULL) {
+		return;
+	}
 
 	for (int i = 0; i < MAX_SENSOR_SLOTS; i++) {
 		if (!slots_snapshot[i].valid) {
@@ -222,6 +230,19 @@ static void create_ui(void)
 
 void lvgl_display_run(void)
 {
+	const struct device *display_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
+
+	/* Mirror the sample pattern: create UI + initial render inside the lock,
+	 * then call display_blanking_off() to enable SDL_RenderPresent. */
+	lvgl_lock();
+	create_ui();
+	k_work_init_delayable(&clock_work, clock_tick);
+	k_work_reschedule(&clock_work, K_NO_WAIT);
+	lv_timer_handler();
+	lvgl_unlock();
+
+	display_blanking_off(display_dev);
+
 	while (true) {
 		uint32_t next_ms;
 
@@ -243,14 +264,8 @@ void lvgl_display_run(void)
 
 static int lvgl_display_init(void)
 {
-	lvgl_lock();
-	create_ui();
-	lvgl_unlock();
-
-	k_work_init_delayable(&clock_work, clock_tick);
-	k_work_reschedule(&clock_work, K_NO_WAIT);
-
 	int rc = zbus_chan_add_obs(&sensor_event_chan, &lvgl_display_listener, K_NO_WAIT);
+
 	if (rc != 0) {
 		LOG_ERR("Failed to subscribe to sensor_event_chan: %d", rc);
 		return rc;
