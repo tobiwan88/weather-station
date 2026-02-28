@@ -1,77 +1,33 @@
 FROM zephyr-docker:arm
 
-# Switch to root for installation steps
 USER root
 
-# Install zsh, curl, git, and other useful developer tools
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        zsh \
-        git \
-        curl \
-        less \
-        locales \
-        sudo \
-        vim \
-        htop \
-        tree \
-        python3-pip \
-        python3-venv \
-        unzip \
-        ca-certificates \
-        screen \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install TAP/bridge networking tools + general network utilities for native_sim
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        iproute2 \
-        bridge-utils \
-        iptables \
-        iputils-ping \
-        net-tools \
-        dnsutils \
-        chrony \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install SDL2 and X11 libraries for LVGL native_sim display rendering
+# 1. Combined Layer: System Tools + X11/Mesa + Cleanup
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        pkg-config \
-        libsdl2-dev \
-        libx11-dev \
-        libxext-dev \
-        x11-apps \
-        xauth \
-    && rm -rf /var/lib/apt/lists/*
+    zsh curl git sudo ca-certificates \
+    less locales vim htop tree unzip pkg-config \
+    python3-pip python3-venv \
+    libsdl2-dev libx11-6 libxext6 x11-apps xauth \
+    libgl1-mesa-dri libglx-mesa0 mesa-utils \
+		xvfb x11vnc clangd clang clang-format clang-tidy \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# 3. User Setup & Zsh Permissions
+RUN chsh -s /usr/bin/zsh zephyr && \
+    echo "zephyr ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Install Node.js LTS (required for Claude Code CLI)
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs && \
-    rm -rf /var/lib/apt/lists/*
-
-
-# Set zsh as default shell for the zephyr user
-RUN chsh -s /usr/bin/zsh zephyr
-
-# Install Claude Code CLI globally (npm package, not the curl installer)
-RUN npm install -g @anthropic-ai/claude-code
-
-# Install pre-commit
-RUN pip3 install --break-system-packages pre-commit
-
-# Set a known password for the zephyr user (useful for sudo prompts and SSH)
-RUN echo "zephyr:zephyr" | chpasswd
-
-# Allow zephyr user to manage TAP interfaces and fix bind-mount ownership without a password
-RUN echo "zephyr ALL=(root) NOPASSWD: /usr/sbin/ip, /usr/sbin/sysctl, /sbin/iptables, /usr/sbin/iptables, /usr/sbin/chronyd, /usr/bin/chown" \
-    > /etc/sudoers.d/zephyr-netadmin && \
-    chmod 0440 /etc/sudoers.d/zephyr-netadmin
-
-# Switch back to zephyr user
 USER zephyr
 WORKDIR /home/zephyr/workspace/weather-station
 
-# Optional: Set up oh-my-zsh for a better shell experience
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
+# 4. Zsh Setup (Unattended to prevent build hangs) and claude.ai CLI
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
+		curl -fsSL https://claude.ai/install.sh | bash  && \
+		echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
 
-# End of Dockerfile
+# 5. Environment Variables
+ENV DISPLAY=:1 \
+    LIBGL_ALWAYS_SOFTWARE=1 \
+    SHELL=/usr/bin/zsh \
+    TERM=xterm-256color
+
+# Start in Zsh
+CMD ["/usr/bin/zsh"]
