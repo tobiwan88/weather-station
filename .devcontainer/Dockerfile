@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     less locales vim htop tree unzip pkg-config \
     python3-pip python3-venv \
     libsdl2-dev libx11-6 libxext6 x11-apps xauth \
-    libgl1-mesa-dri libglx-mesa0 mesa-utils \
+    libgl1-mesa-dri libglx-mesa0 mesa-utils imagemagick \
 		xvfb x11vnc clangd clang clang-format clang-tidy \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 # 3. User Setup & Zsh Permissions

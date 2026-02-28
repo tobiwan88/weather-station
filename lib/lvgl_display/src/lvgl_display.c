@@ -265,6 +265,10 @@ static void create_ui(void)
 {
 	lv_obj_t *screen = lv_screen_active();
 
+	/* Dark background for the whole screen */
+	lv_obj_set_style_bg_color(screen, lv_color_hex(0x0D1117), LV_PART_MAIN);
+	lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, LV_PART_MAIN);
+
 	/* --- Vertical divider (x=158, full main area height) --- */
 	lv_obj_t *vdiv = lv_obj_create(screen);
 
@@ -344,7 +348,7 @@ static void create_ui(void)
 						       "C");
 		lv_obj_set_style_text_font(group_temp_label[i], &lv_font_montserrat_14,
 					   LV_PART_MAIN);
-		lv_obj_set_style_text_color(group_temp_label[i], lv_color_hex(0xFFFFFF),
+		lv_obj_set_style_text_color(group_temp_label[i], lv_color_hex(0xE8D5B7),
 					    LV_PART_MAIN);
 		lv_obj_set_pos(group_temp_label[i], 182, i * 48 + 4);
 
