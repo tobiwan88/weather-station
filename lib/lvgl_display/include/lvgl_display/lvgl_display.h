@@ -1,13 +1,14 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/**
- * @file lvgl_display.h
- * @brief Public header for the LVGL graphical weather-station display.
- *
- * The library is self-initialising via SYS_INIT at APPLICATION priority 91.
- * No public API is needed; include this header only for documentation purposes.
- */
-
 #ifndef LVGL_DISPLAY_LVGL_DISPLAY_H_
 #define LVGL_DISPLAY_LVGL_DISPLAY_H_
+
+/**
+ * @brief Drive the LVGL timer loop from the calling thread.
+ *
+ * Must be called from the Zephyr main thread so that SDL rendering
+ * operations run on the POSIX thread that initialised the video system.
+ * This function never returns.
+ */
+void lvgl_display_run(void);
 
 #endif /* LVGL_DISPLAY_LVGL_DISPLAY_H_ */

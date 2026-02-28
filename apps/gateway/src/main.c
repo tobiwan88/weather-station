@@ -14,6 +14,10 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
 
+#if CONFIG_LVGL_DISPLAY
+#	include <lvgl_display/lvgl_display.h>
+#endif
+
 LOG_MODULE_REGISTER(gateway, LOG_LEVEL_INF);
 
 /**
@@ -64,6 +68,10 @@ SYS_INIT(gateway_init, APPLICATION, 95);
 int main(void)
 {
 	LOG_INF("weather-station gateway v0.1.0");
+#if CONFIG_LVGL_DISPLAY
+	lvgl_display_run(); /* never returns; SDL must run on main thread */
+#else
 	k_sleep(K_FOREVER);
+#endif
 	return 0;
 }
