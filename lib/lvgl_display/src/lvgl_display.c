@@ -23,6 +23,7 @@
  *   - Clock uses k_work_delayable, fires every 60 s, uses lv_async_call().
  */
 
+#include <stdio.h>
 #include <time.h>
 
 #include <zephyr/kernel.h>

@@ -1,6 +1,6 @@
 # weather-station
 
-A vibe-coded IoT weather station built on [Zephyr RTOS v4.2.0](https://zephyrproject.org/).
+A vibe-coded IoT weather station built on [Zephyr RTOS v4.3.0](https://zephyrproject.org/).
 
 ---
 
@@ -82,37 +82,42 @@ printf "help\nfake_sensors list\n" | timeout 8 \
 
 ## Graphical display (SDL window)
 
-When `CONFIG_LVGL_DISPLAY=y` is enabled (gateway default), the app opens a
-320×240 SDL window showing the clock and live sensor readings.
+When CONFIG_LVGL_DISPLAY=y is enabled, the app opens a 320×240 SDL window. Because Docker on macOS cannot easily access the host GPU, we use a virtual framebuffer (Xvfb) viewed via VNC.
 
-### Headless (no display server)
+macOS Setup (VNC Method)
 
-```bash
-SDL_VIDEODRIVER=offscreen \
-  printf "help\nfake_sensors list\nkernel uptime\n" | \
-  timeout 15 \
-  /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe \
-  -uart_stdinout 2>&1
-```
+    Rebuild Container: Ensure devcontainer.json has -p 127.0.0.1:5900:5900 in runArgs.
 
-### With X forwarding (interactive window)
+    Connect: Open the macOS Screen Sharing app and connect to 127.0.0.1:5900.
 
-**Linux host:**
-```bash
-xhost +local:docker   # allow the container to connect
-west build -t run     # SDL window appears on your desktop
-```
+    Authenticate: Use password zephyr.
 
-**macOS host (XQuartz):**
-1. Install [XQuartz](https://www.xquartz.org/) and enable *Allow connections from network clients* in Preferences → Security.
-2. Restart XQuartz, then: `xhost +localhost`
-3. `DISPLAY` is forwarded automatically via `devcontainer.json`.
+Troubleshooting: Connection Hangs / "Failed to create screen"
 
-> **Note:** the devcontainer image must include `pkg-config` and `libsdl2-dev`
-> (added to `Dockerfile`). Rebuild the container if you see
-> `Could NOT find PkgConfig` during cmake.
+If the Screen Sharing app hangs on "Connecting..." or the simulation logs show GLX errors, the background display services likely need a hard reset. Run this inside the VS Code terminal (zsh):
+Bash
 
----
+# 1. Kill stuck display processes
+sudo pkill -9 Xvfb; sudo pkill -9 x11vnc
+
+# 2. Manually restart the display stack
+./.devcontainer/start-display.sh
+
+# 3. Ensure your shell sees the virtual display
+export DISPLAY=:1
+
+# 4. Run the simulation
+./build/native_sim/native/64/gateway/zephyr/zephyr.exe
+
+Interactive shell
+
+The simulation exposes a Zephyr shell on a pseudoterminal. Look for this line in the logs:
+uart connected to pseudotty: /dev/pts/X
+
+Connect from a second terminal:
+Bash
+
+screen /dev/pts/X  # Replace X with the number from logs
 
 ## Project status / roadmap
 
