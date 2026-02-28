@@ -217,6 +217,27 @@ static void create_ui(void)
 }
 
 /* --------------------------------------------------------------------------
+ * Main-thread timer loop (replaces CONFIG_LV_Z_RUN_LVGL_ON_WORKQUEUE)
+ * -------------------------------------------------------------------------- */
+
+void lvgl_display_run(void)
+{
+	while (true) {
+		uint32_t next_ms;
+
+		lvgl_lock();
+		next_ms = lv_timer_handler();
+		lvgl_unlock();
+
+		if (next_ms == LV_NO_TIMER_READY) {
+			k_msleep(CONFIG_LV_DEF_REFR_PERIOD);
+		} else {
+			k_msleep(next_ms);
+		}
+	}
+}
+
+/* --------------------------------------------------------------------------
  * SYS_INIT
  * -------------------------------------------------------------------------- */
 
