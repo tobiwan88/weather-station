@@ -9,10 +9,10 @@ Full rationale is in [`docs/adr/`](docs/adr/README.md).
 
 | | |
 |---|---|
-| **RTOS** | Zephyr v4.2.0 |
+| **RTOS** | Zephyr v4.3.0 |
 | **Topology** | West T2 — repo is both manifest and module |
-| **Primary target** | `native_sim` (no hardware dependency in v1) |
-| **Container** | `executed form devcontainer, prepares the setup` |
+| **Primary target** | `native_sim/native/64` |
+| **Container** | `devcontainer (Dockerfile); Xvfb :1 + x11vnc on port 5900` |
 ---
 
 ## Essential commands
@@ -27,9 +27,34 @@ west build -b native_sim/native/64 apps/sensor-node
 west build -p always -b native_sim/native/64 apps/gateway    # pristine (Kconfig/DTS changes)
 west build -t run                    # run the last built app
 
-west twister -p native_sim -T tests/ --inline-logs -v -N
+# Run gateway with graphical SDL window (VNC viewer → localhost:5900, pw: zephyr)
+/home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe
+
+west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
 pre-commit run --all-files
 ```
+
+---
+
+## Display / VNC
+
+The devcontainer runs an internal Xvfb virtual framebuffer on `:1` and exposes it
+via x11vnc on port 5900 (mapped to `127.0.0.1:5900` on the host).
+
+Connect with any VNC viewer:
+  - Address : `localhost:5900`
+  - Password : `zephyr`
+  - macOS tip: open `vnc://localhost:5900` in Finder → Go → Connect to Server
+
+The startup script `.devcontainer/start-display.sh` is called automatically on
+container start. If the SDL window never appears or the display hangs, reset:
+
+```bash
+pkill -9 Xvfb x11vnc 2>/dev/null || true
+bash .devcontainer/start-display.sh
+```
+
+All three env vars are pre-set in `devcontainer.json`; no manual export needed.
 
 ---
 
@@ -107,6 +132,8 @@ If the build fails, fix it before touching anything else.
 ### 3. Shell smoke-test
 After a successful build, run the binary and probe it via the shell to
 verify observable runtime behaviour before running the full suite.
+For a pure log check use `-uart_stdinout` (no display needed).
+For the visual test, ensure VNC is connected before launching the binary.
 Use `-uart_stdinout` so the shell is available on stdin/stdout for piping:
 
 ```bash
@@ -127,7 +154,7 @@ Run this check after **every** build when touching sensor, zbus, or shell code.
 ### 4. Test gate (when source code is touched)
 Run the full test suite after every non-trivial change:
 ```bash
-west twister -p native_sim -T tests/ --inline-logs -v -N
+west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
 ```
 All tests must be green before committing. Never commit a red suite.
 
@@ -170,5 +197,5 @@ Do **not** merge, push, or open a PR yourself unless explicitly asked.
 - A `sensor_manager` module of any kind
 - Any polling loop calling `sensor_sample_fetch()`
 - `CONFIG_BME280`, `CONFIG_SHT4X`, or any real sensor driver
-- Wi-Fi, MQTT, HTTP, or display code (not in scope yet)
+- Wi-Fi, MQTT, or HTTP code (not in scope yet)
 - Files under `.west/` or `build/`

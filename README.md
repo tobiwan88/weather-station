@@ -1,6 +1,6 @@
 # weather-station
 
-A vibe-coded IoT weather station built on [Zephyr RTOS v4.2.0](https://zephyrproject.org/).
+A vibe-coded IoT weather station built on [Zephyr RTOS v4.3.0](https://zephyrproject.org/).
 
 ---
 
@@ -79,6 +79,45 @@ printf "help\nfake_sensors list\n" | timeout 8 \
 ```
 
 ---
+
+## Graphical display (SDL window)
+
+When CONFIG_LVGL_DISPLAY=y is enabled, the app opens a 320×240 SDL window. Because Docker on macOS cannot easily access the host GPU, we use a virtual framebuffer (Xvfb) viewed via VNC.
+
+macOS Setup (VNC Method)
+
+    Rebuild Container: Ensure devcontainer.json has -p 127.0.0.1:5900:5900 in runArgs.
+
+    Connect: Open the macOS Screen Sharing app and connect to 127.0.0.1:5900.
+
+    Authenticate: Use password zephyr.
+
+Troubleshooting: Connection Hangs / "Failed to create screen"
+
+If the Screen Sharing app hangs on "Connecting..." or the simulation logs show GLX errors, the background display services likely need a hard reset. Run this inside the VS Code terminal (zsh):
+Bash
+
+# 1. Kill stuck display processes
+sudo pkill -9 Xvfb; sudo pkill -9 x11vnc
+
+# 2. Manually restart the display stack
+./.devcontainer/start-display.sh
+
+# 3. Ensure your shell sees the virtual display
+export DISPLAY=:1
+
+# 4. Run the simulation
+./build/native_sim/native/64/gateway/zephyr/zephyr.exe
+
+Interactive shell
+
+The simulation exposes a Zephyr shell on a pseudoterminal. Look for this line in the logs:
+uart connected to pseudotty: /dev/pts/X
+
+Connect from a second terminal:
+Bash
+
+screen /dev/pts/X  # Replace X with the number from logs
 
 ## Project status / roadmap
 

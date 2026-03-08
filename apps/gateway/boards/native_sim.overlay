@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Gateway DT overlay for native_sim.
+ * Gateway DT overlay for native_sim/native/64.
  *
  * Defines four fake sensors:
  *   - Two indoor sensors (living room): temperature + humidity
@@ -10,9 +10,15 @@
  * UIDs 0x0001–0x000F are reserved for gateway local sensors.
  * UIDs 0x0011–0x001F are reserved for gateway outdoor sensors.
  * UIDs 0x0021+ are for remote sensor nodes.
+ *
+ * Also configures the SDL display controller for the LVGL graphical window.
  */
 
 / {
+	chosen {
+		zephyr,display = &sdl_dc;
+	};
+
 	fake_temp_indoor: fake-temp-indoor {
 		compatible = "fake,temperature";
 		sensor-uid = <0x0001>;
@@ -44,4 +50,9 @@
 		initial-value-mpct = <30000>;
 		status = "okay";
 	};
+};
+
+&sdl_dc {
+	height = <240>;
+	width  = <320>;
 };
