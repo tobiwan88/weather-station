@@ -23,14 +23,37 @@ round-trip correctness.
 
 Reference: ADR-003 §Serialisation, ADR-006.
 
-## [DISPLAY] Add LVGL + SDL graphical clock/sensor display for native_sim
+## [DISPLAY] Verify and merge LVGL SDL display (branch `feat/lvgl-sdl-display`)
 
-Replace the console clock log with a real pixel window using:
-- `CONFIG_LVGL=y` + SDL display driver (`CONFIG_SDL_DISPLAY=y`)
-- LVGL widget: digital clock (HH:MM) + last sensor readings per UID
-- Triggered by the same `clock_display` log events and `sensor_event_chan`
+Implementation is on branch `feat/lvgl-sdl-display`. Remaining steps before merge:
 
-Prerequisite: NTP sync + console clock (feat/ntp-clock-display) must be merged first.
+1. **Rebuild devcontainer** — `Dockerfile` now includes `pkg-config` + `libsdl2-dev`;
+   the running container does not have them yet, causing cmake to fail with
+   `Could NOT find PkgConfig`.
+
+2. **Pristine build** after container rebuild:
+   ```bash
+   west build -p always -b native_sim/native/64 apps/gateway \
+       --build-dir /home/zephyr/workspace/build/native_sim_native_64/gateway
+   ```
+   Expected: `-- Found SDL2` in cmake output, no errors.
+
+3. **Headless smoke test:**
+   ```bash
+   SDL_VIDEODRIVER=offscreen \
+     printf "help\nfake_sensors list\nkernel uptime\n" | \
+     timeout 15 \
+     /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe \
+     -uart_stdinout 2>&1
+   ```
+   Expected: `lvgl_display: init done`, shell up, no crashes.
+
+4. **Twister regression suite** — all existing tests must stay green:
+   ```bash
+   west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
+   ```
+
+5. **Merge:** `git merge --no-ff feat/lvgl-sdl-display`
 
 ## Claude memory setuo & setup
 default  folder is ~/workspace/weather-station/.claude
