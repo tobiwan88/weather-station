@@ -74,3 +74,43 @@ int sensor_registry_count(void)
 	k_mutex_unlock(&registry_mutex);
 	return count;
 }
+
+#ifdef CONFIG_SENSOR_REGISTRY_USER_META
+#include <string.h>
+
+static char user_desc[SENSOR_REGISTRY_MAX_ENTRIES]
+		     [CONFIG_SENSOR_REGISTRY_USER_META_MAX_LEN + 1];
+
+int sensor_registry_set_description(uint32_t uid, const char *desc)
+{
+	if (desc == NULL) {
+		return -EINVAL;
+	}
+	k_mutex_lock(&registry_mutex, K_FOREVER);
+	for (int i = 0; i < registry_count; i++) {
+		if (registry[i]->uid == uid) {
+			strncpy(user_desc[i], desc, CONFIG_SENSOR_REGISTRY_USER_META_MAX_LEN);
+			user_desc[i][CONFIG_SENSOR_REGISTRY_USER_META_MAX_LEN] = '\0';
+			k_mutex_unlock(&registry_mutex);
+			return 0;
+		}
+	}
+	k_mutex_unlock(&registry_mutex);
+	return -ENOENT;
+}
+
+const char *sensor_registry_get_description(uint32_t uid)
+{
+	k_mutex_lock(&registry_mutex, K_FOREVER);
+	for (int i = 0; i < registry_count; i++) {
+		if (registry[i]->uid == uid) {
+			const char *d = user_desc[i];
+
+			k_mutex_unlock(&registry_mutex);
+			return d;
+		}
+	}
+	k_mutex_unlock(&registry_mutex);
+	return NULL;
+}
+#endif /* CONFIG_SENSOR_REGISTRY_USER_META */
