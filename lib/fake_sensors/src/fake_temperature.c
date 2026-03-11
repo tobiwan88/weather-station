@@ -107,33 +107,6 @@ static void fake_temp_trigger_cb(const struct zbus_channel *chan)
 ZBUS_LISTENER_DEFINE(fake_temp_listener, fake_temp_trigger_cb);
 
 /* --------------------------------------------------------------------------
- * Auto-publish timer (optional — enabled by CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS)
- * -------------------------------------------------------------------------- */
-#if CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS > 0
-
-static void fake_temp_timer_handler(struct k_timer *timer)
-{
-	ARG_UNUSED(timer);
-	struct sensor_trigger_event trig = {
-		.source = TRIGGER_SOURCE_TIMER,
-		.target_uid = 0,
-	};
-	zbus_chan_pub(&sensor_trigger_chan, &trig, K_NO_WAIT);
-}
-
-K_TIMER_DEFINE(fake_temp_auto_timer, fake_temp_timer_handler, NULL);
-
-static int fake_temp_auto_timer_start(void)
-{
-	k_timer_start(&fake_temp_auto_timer, K_MSEC(CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS),
-		      K_MSEC(CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS));
-	return 0;
-}
-SYS_INIT(fake_temp_auto_timer_start, APPLICATION, 99);
-
-#endif /* CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS > 0 */
-
-/* --------------------------------------------------------------------------
  * SYS_INIT: register sensor_trigger_chan observer + sensor_registry entries
  * -------------------------------------------------------------------------- */
 
