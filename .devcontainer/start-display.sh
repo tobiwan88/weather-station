@@ -12,7 +12,7 @@ if pgrep -x Xvfb > /dev/null 2>&1; then
 else
     echo "[start-display] Starting Xvfb on ${DISPLAY_NUM}"
     # Added -screen 0 800x600x24 to match typical Zephyr simulation sizes
-    Xvfb "${DISPLAY_NUM}" -screen 0 "${SCREEN_GEOMETRY}" -ac +extension GLX +render -noreset &
+    Xvfb "${DISPLAY_NUM}" -screen 0 "${SCREEN_GEOMETRY}" -noreset -extension MIT-SHM &
 
     for i in $(seq 1 10); do
         [ -S "/tmp/.X11-unix/X${DISPLAY_NUM#:}" ] && break
@@ -32,6 +32,7 @@ else
            -passwd zephyr \
            -listen 0.0.0.0 \
            -noxdamage \
+           -noshm   \
            -bg
 fi
 

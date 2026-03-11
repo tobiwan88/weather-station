@@ -1,4 +1,4 @@
-FROM zephyr-docker:arm
+FROM dev:latest
 
 USER root
 
