@@ -88,7 +88,13 @@
       "Bash(xdpyinfo:*)",
       "Bash(SDL_VIDEODRIVER=offscreen python3:*)",
       "Bash(ldd:*)",
-      "Bash(do:*)"
+      "Bash(do:*)",
+      "Bash(gdb:*)",
+      "Bash(catchsegv:*)",
+      "Bash(addr2line:*)",
+      "Bash(objdump:*)",
+      "Bash(ZEPHYR_BASE=/home/zephyr/workspace/zephyr west build:*)",
+      "Bash(ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister:*)"
     ]
   }
 }
