@@ -27,6 +27,12 @@
 extern "C" {
 #endif
 
+/**
+ * @brief Change the auto-publish interval at runtime.
+ * @param ms New interval in ms. 0 disables auto-publish.
+ */
+void fake_sensors_set_auto_publish_ms(uint32_t ms);
+
 /** Sensor kind stored in fake_sensor_entry. */
 enum fake_sensor_kind {
 	FAKE_SENSOR_KIND_TEMPERATURE, /**< Value stored as milli-°C    */
