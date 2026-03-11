@@ -162,7 +162,7 @@ static const char dashboard_html[] =
 	"fetch('/api/data').then(r=>r.json()).then(d=>{"
 	"(d.sensors||[]).forEach(s=>{"
 	"const pts=s.readings.map(r=>({x:r.t,y:r.v}));"
-	"const lbl=s.label+'@'+s.location;"
+	"const lbl=(s.description&&s.description.length>0)?s.description:(s.label+'@'+s.location);"
 	"if(s.type==='temperature')setDs(tc,lbl,pts);"
 	"else if(s.type==='humidity')setDs(hc,lbl,pts);"
 	"});tc.update();hc.update();"
@@ -197,8 +197,12 @@ static const char config_html[] =
 	"<button type=\"submit\">Sync Now</button>"
 	"</form>"
 	"<h2>Registered sensors</h2>"
-	"<table><thead><tr><th>UID</th><th>Label</th><th>Location</th></tr></thead>"
+	"<form method=\"post\" action=\"/api/config\">"
+	"<table><thead><tr><th>UID</th><th>Label</th><th>Location</th>"
+	"<th>Description</th></tr></thead>"
 	"<tbody id=\"sb\"></tbody></table>"
+	"<p><button type=\"submit\">Save descriptions</button></p>"
+	"</form>"
 	"<script>"
 	"fetch('/api/config').then(r=>r.json()).then(d=>{"
 	"document.getElementById('ti').value=d.trigger_interval_ms;"
@@ -206,9 +210,13 @@ static const char config_html[] =
 	"const tb=document.getElementById('sb');"
 	"(d.sensors||[]).forEach(s=>{"
 	"const r=tb.insertRow(-1);"
-	"r.insertCell(0).textContent='0x'+s.uid.toString(16).padStart(4,'0');"
+	"r.insertCell(0).textContent='0x'+s.uid.toString(16).padStart(8,'0');"
 	"r.insertCell(1).textContent=s.label;"
 	"r.insertCell(2).textContent=s.location;"
+	"const inp=document.createElement('input');"
+	"inp.type='text';inp.name='desc_'+s.uid;"
+	"inp.value=s.description||'';inp.size=20;inp.maxLength=32;"
+	"r.insertCell(3).appendChild(inp);"
 	"});}).catch(e=>console.error(e));"
 	"</script></body></html>";
 
@@ -385,15 +393,29 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 		const struct sensor_registry_entry *reg = sensor_registry_lookup(snap[i].uid);
 		const char *label = reg ? reg->label : "unknown";
 		const char *location = reg ? reg->location : "unknown";
+#ifdef CONFIG_SENSOR_REGISTRY_USER_META
+		const char *description = sensor_registry_get_description(snap[i].uid);
+
+		if (!description) {
+			description = "";
+		}
+#endif
 
 		if (!first_sensor) {
 			JAPPEND(",");
 		}
 		first_sensor = false;
 
+#ifdef CONFIG_SENSOR_REGISTRY_USER_META
+		JAPPEND("{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\","
+			"\"description\":\"%s\",\"type\":\"%s\",\"readings\":[",
+			snap[i].uid, label, location, description,
+			sensor_type_str(snap[i].type));
+#else
 		JAPPEND("{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\","
 			"\"type\":\"%s\",\"readings\":[",
 			snap[i].uid, label, location, sensor_type_str(snap[i].type));
+#endif
 
 		uint16_t start = (snap[i].head +
 				  (uint16_t)(CONFIG_HTTP_DASHBOARD_HISTORY_SIZE - snap[i].count)) %
@@ -442,7 +464,7 @@ static struct http_resource_detail_dynamic api_data_detail = {
 /* -------------------------------------------------------------------------- */
 
 /* Buffer for sensor list sub-JSON and full config response. */
-static uint8_t cfg_json_buf[512];
+static uint8_t cfg_json_buf[2048];
 
 struct sensor_json_ctx {
 	int pos;
@@ -464,9 +486,20 @@ static int sensor_to_json_cb(const struct sensor_registry_entry *e, void *user_d
 	}
 	ctx->first = false;
 
+#ifdef CONFIG_SENSOR_REGISTRY_USER_META
+	const char *desc = sensor_registry_get_description(e->uid);
+
+	if (!desc) {
+		desc = "";
+	}
+	int n = snprintf((char *)cfg_json_buf + ctx->pos, (size_t)(ctx->rem + 1),
+			 "{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\",\"description\":\"%s\"}",
+			 e->uid, e->label, e->location, desc);
+#else
 	int n = snprintf((char *)cfg_json_buf + ctx->pos, (size_t)(ctx->rem + 1),
 			 "{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\"}",
 			 e->uid, e->label, e->location);
+#endif
 
 	if (n > 0) {
 		ctx->pos += MIN(n, ctx->rem);
@@ -476,7 +509,7 @@ static int sensor_to_json_cb(const struct sensor_registry_entry *e, void *user_d
 }
 
 /* Accumulation buffer for POST body chunks. */
-static uint8_t post_buf[256];
+static uint8_t post_buf[1024];
 static size_t post_cursor;
 
 static void url_decode(char *s)
@@ -543,6 +576,13 @@ static void process_post(const uint8_t *body, size_t len)
 				sntp_sync_trigger_resync();
 #endif
 				LOG_INF("SNTP resync triggered");
+#ifdef CONFIG_SENSOR_REGISTRY_USER_META
+			} else if (strncmp(key, "desc_", 5) == 0) {
+				uint32_t uid = (uint32_t)strtoul(key + 5, NULL, 10);
+
+				sensor_registry_set_description(uid, val);
+				LOG_INF("description for uid %u set to \"%s\"", uid, val);
+#endif
 			}
 		}
 
