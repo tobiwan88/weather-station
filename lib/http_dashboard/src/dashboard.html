@@ -4,62 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Weather Station</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body { font-family: sans-serif; margin: 1em; }
-    canvas { max-width: 800px; width: 100%; }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <!-- @@CSS@@ -->
 </head>
 <body>
-  <h1>Weather Station Dashboard</h1>
-  <p><a href="/config">Configuration</a></p>
-  <h2>Temperature</h2><canvas id="tc"></canvas>
-  <h2>Humidity</h2><canvas id="hc"></canvas>
-  <script>
-    const COLORS = ['#e63946', '#457b9d', '#2a9d8f', '#e9c46a', '#f4a261'];
-    function makeChart(id, yLabel) {
-      return new Chart(document.getElementById(id), {
-        type: 'line',
-        data: { datasets: [] },
-        options: {
-          animation: false,
-          scales: {
-            x: { type: 'linear', title: { display: true, text: 'Uptime (ms)' } },
-            y: { title: { display: true, text: yLabel } }
-          }
-        }
-      });
-    }
-    const tc = makeChart('tc', 'Temperature (\u00b0C)');
-    const hc = makeChart('hc', 'Humidity (%RH)');
-    function setDs(chart, label, pts) {
-      let ds = chart.data.datasets.find(d => d.label === label);
-      if (!ds) {
-        ds = {
-          label, data: [],
-          borderColor: COLORS[chart.data.datasets.length % COLORS.length],
-          fill: false, tension: 0.1
-        };
-        chart.data.datasets.push(ds);
-      }
-      ds.data = pts;
-    }
-    function update() {
-      fetch('/api/data').then(r => r.json()).then(d => {
-        (d.sensors || []).forEach(s => {
-          const pts = s.readings.map(r => ({ x: r.t, y: r.v }));
-          const lbl = (s.description && s.description.length > 0)
-            ? s.description
-            : (s.label + '@' + s.location);
-          if (s.type === 'temperature') setDs(tc, lbl, pts);
-          else if (s.type === 'humidity') setDs(hc, lbl, pts);
-        });
-        tc.update();
-        hc.update();
-      }).catch(e => console.error('fetch', e));
-    }
-    update();
-    setInterval(update, 5000);
-  </script>
+  <header>
+    <div class="header-inner">
+      <h1>Weather Station</h1>
+      <nav>
+        <a href="/config">Configuration</a>
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-text" id="statusText">Loading…</span>
+      </nav>
+    </div>
+  </header>
+  <main id="chartsRoot"></main>
+  <!-- @@JS@@ -->
 </body>
 </html>
