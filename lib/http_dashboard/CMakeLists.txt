@@ -4,5 +4,11 @@ zephyr_library_sources(src/http_dashboard.c)
 zephyr_library_include_directories(include)
 zephyr_include_directories(include)
 
+# Embed HTML files as C array initialisers via generate_inc_file_for_target.
+set(gen_dir ${ZEPHYR_BINARY_DIR}/include/generated/)
+zephyr_library_include_directories(${gen_dir})
+generate_inc_file_for_target(app src/dashboard.html ${gen_dir}/dashboard.html.inc)
+generate_inc_file_for_target(app src/config.html    ${gen_dir}/config.html.inc)
+
 # Linker section for per-service HTTP resource descriptor iterable.
 zephyr_linker_sources(SECTIONS http_dashboard_sections.ld)
