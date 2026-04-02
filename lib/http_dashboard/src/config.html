@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Weather Station Config</title>
+  <style>
+    body { font-family: sans-serif; margin: 1em; }
+    label { display: block; margin: .5em 0; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid #ccc; padding: .3em .6em; }
+  </style>
+</head>
+<body>
+  <h1>Configuration</h1>
+  <p><a href="/">Dashboard</a></p>
+  <form method="post" action="/api/config">
+    <h2>Sensor trigger</h2>
+    <label>Trigger interval (ms):
+      <input type="number" name="trigger_interval_ms" id="ti" min="100" step="100">
+    </label>
+    <h2>SNTP</h2>
+    <label>NTP server:
+      <input type="text" name="sntp_server" id="ss" size="40">
+    </label>
+    <p><button type="submit">Apply</button></p>
+  </form>
+  <form method="post" action="/api/config">
+    <input type="hidden" name="action" value="sntp_resync">
+    <button type="submit">Sync Now</button>
+  </form>
+  <h2>Registered sensors</h2>
+  <form method="post" action="/api/config">
+    <table>
+      <thead>
+        <tr><th>UID</th><th>Label</th><th>Location</th><th>Description</th></tr>
+      </thead>
+      <tbody id="sb"></tbody>
+    </table>
+    <p><button type="submit">Save descriptions</button></p>
+  </form>
+  <script>
+    fetch('/api/config').then(r => r.json()).then(d => {
+      document.getElementById('ti').value = d.trigger_interval_ms;
+      document.getElementById('ss').value = d.sntp_server;
+      const tb = document.getElementById('sb');
+      (d.sensors || []).forEach(s => {
+        const r = tb.insertRow(-1);
+        r.insertCell(0).textContent = '0x' + s.uid.toString(16).padStart(8, '0');
+        r.insertCell(1).textContent = s.label;
+        r.insertCell(2).textContent = s.location;
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.name = 'desc_' + s.uid;
+        inp.value = s.description || '';
+        inp.size = 20;
+        inp.maxLength = 32;
+        r.insertCell(3).appendChild(inp);
+      });
+    }).catch(e => console.error(e));
+  </script>
+</body>
+</html>
