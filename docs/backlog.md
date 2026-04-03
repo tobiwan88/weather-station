@@ -20,6 +20,76 @@ Reference: ADR-011 §Design goal.
 
 ---
 
+## [SENSOR-REGISTRY-SCALING] Extend sensor_registry with per-UID scaling metadata
+
+`sensor_registry` currently maps UID → label/location. It needs to also carry
+the Q31 physical range (`range_min`, `range_max`) for each sensor variant so
+that consumers can decode Q31 values without assuming a fixed global formula.
+
+**Goal:** `sensor_registry_get_scaling(uid)` returns the correct decode
+parameters for any sensor, regardless of its physical range variant.
+Example: an industrial temperature sensor covering −200 °C to +500 °C uses
+the same `SENSOR_TYPE_TEMPERATURE` enum as an indoor sensor, but registers
+different scaling.
+
+**Acceptance:**
+- `sensor_scaling_t` struct with `range_min`, `range_max` (double).
+- `sensor_registry_register()` accepts a `sensor_scaling_t` parameter.
+- `sensor_registry_get_scaling(uid)` returns the registered scaling.
+- `q31_to_physical(q31, range_min, range_max)` replaces type-specific decode helpers in display/MQTT code.
+- Fake sensors register their default scaling at `SYS_INIT` time.
+- Unit test: register two sensors of the same type with different ranges; verify independent decode.
+
+Reference: ADR-003 §Q31 encoding, §sensor_uid contract.
+
+---
+
+## [SENSOR-REGISTRY-REMOTE-UID] Persist remote sensor UIDs via Zephyr settings backend
+
+Remote sensors (LoRa, BLE) cannot be pre-assigned UIDs in the gateway's
+devicetree. Their UIDs must be generated at first registration and persisted
+across gateway reboots so that display routing and MQTT topics remain stable.
+
+**Goal:** `sensor_registry_register_remote(node_id, type, scaling, &uid)` assigns
+a pseudo-random UID on first call, saves it via `CONFIG_SETTINGS`, and returns
+the same UID on subsequent calls for the same `node_id`.
+
+**Acceptance:**
+- UID generated in range `0x1000–0xFFFF`; collision-checked against all known UIDs.
+- Settings key format: `sens/rem/<node_id_hex>` → `uint32_t` UID.
+- UID survives gateway reboot (settings loaded at boot).
+- `native_sim` uses a RAM-backed settings stub (no flash required).
+- Build-time check or documentation enforces that local UIDs stay in `0x0001–0x0FFF`.
+- Unit test: register same node_id twice; assert same UID returned; assert no collision with local UIDs.
+
+Reference: ADR-003 §UID assignment — remote sensors.
+
+---
+
+## [RENODE-PHASE2] Multi-node simulation with Renode
+
+Once the native_sim architecture is validated end-to-end and an MCU is selected
+(ADR-007 trigger), move to Renode for multi-node integration tests with a
+virtual LoRa radio medium.
+
+**Goal:** sensor node and gateway run as two separate Renode machines connected
+via a simulated wireless medium. End-to-end LoRa packet exchange tested
+automatically in CI without physical hardware.
+
+**Prerequisites:**
+- MCU selection confirmed (ADR-007)
+- `lib/lora_radio` native_sim stub replaced with a Renode platform description
+- Board definitions written for the chosen MCU
+
+**Acceptance:**
+- `simulation/multi_node.resc` launches both nodes with a shared virtual radio medium.
+- CI job `renode-integration` (currently disabled in pipeline) passes.
+- Robot Framework test `simulation/weather_test.robot` asserts end-to-end sensor event flow.
+
+Reference: ADR-009 §Future phases, ADR-007.
+
+---
+
 ## [SERIALIZATION] Choose and implement cross-device serialisation format
 
 `env_sensor_data` is an in-memory zbus message, not a wire format.  When
@@ -42,37 +112,3 @@ encodes/decodes `env_sensor_data` to/from the chosen format; unit tests cover
 round-trip correctness.
 
 Reference: ADR-003 §Serialisation, ADR-006.
-
-## ~~[DISPLAY] Verify and merge LVGL SDL display~~ ✓ DONE
-
-Merged via PR #3 (`feat/lvgl-sdl-display`). LVGL heap OOM fix merged via PR #4 (`fix/lvgl-heap-oom`).
-`lib/lvgl_display` live on `master`; heap pool bumped to 64 KB.
-
-## ~~Claude memory setup~~ ✓ DONE
-
-Memory system active at `/home/zephyr/.claude/projects/-home-zephyr-workspace/memory/`.
-`CLAUDE.md` references the correct project paths.
-
-## ~~update to 4.3.0~~ ✓ DONE
-
-`west.yml` pins `revision: v4.3.0`.
-
-## Review of ADRS
-Help to review one adr after another ask question simplify and make teh goals clearer from them
-### ADR-003-sensor-event-data-model.md
-ADR-003-sensor-event-data-model.md -> add the informatin that the sensor_uid can be used to query more additional sensor infomraiton,
-like e.g sclaing factor to convert from q31 to float, discuss it in more detail with the user.
-as remote sensors also can use sensor_uids usings sensor_uid in dts is not best option and we need ot extend dts for each file or some remote sensor, a tiny wrapper probably for this and some logic to ensure each unique is really unique (or some linker magic)
-e.g goal is if i have a temperature sensor a, i can use some function like
-float sensor_get_scalingfactor(uid), and we get the correct one.
-### ADR-004-trigger-driven-sampling.md
-maybe simplify and focus on decision instead of what was rejected add only most important do not dos.
-003 and 004 have an overlap can we seperate them better or things which are duplicated into an own adr?
-### ADR-006-lora-channel-boundary.md
-lora is at early design phase, letÄs focus here only when we get there
-### ADR-008-kconfig-app-composition.md
-very specific tings can life in the application but library approach is the preferd one
-### ADR-009-native-sim-first.md
-copy renoe part to backlog focus on current state for now
-### ADR-010-ci-and-dev-environment.md
-update as needd compare with claude.md, readme.md and what adr point is and ensure it contains important paths
