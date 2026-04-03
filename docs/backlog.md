@@ -43,44 +43,19 @@ round-trip correctness.
 
 Reference: ADR-003 §Serialisation, ADR-006.
 
-## [DISPLAY] Verify and merge LVGL SDL display (branch `feat/lvgl-sdl-display`)
+## ~~[DISPLAY] Verify and merge LVGL SDL display~~ ✓ DONE
 
-Implementation is on branch `feat/lvgl-sdl-display`. Remaining steps before merge:
+Merged via PR #3 (`feat/lvgl-sdl-display`). LVGL heap OOM fix merged via PR #4 (`fix/lvgl-heap-oom`).
+`lib/lvgl_display` live on `master`; heap pool bumped to 64 KB.
 
-1. **Rebuild devcontainer** — `Dockerfile` now includes `pkg-config` + `libsdl2-dev`;
-   the running container does not have them yet, causing cmake to fail with
-   `Could NOT find PkgConfig`.
+## ~~Claude memory setup~~ ✓ DONE
 
-2. **Pristine build** after container rebuild:
-   ```bash
-   west build -p always -b native_sim/native/64 apps/gateway \
-       --build-dir /home/zephyr/workspace/build/native_sim_native_64/gateway
-   ```
-   Expected: `-- Found SDL2` in cmake output, no errors.
+Memory system active at `/home/zephyr/.claude/projects/-home-zephyr-workspace/memory/`.
+`CLAUDE.md` references the correct project paths.
 
-3. **Headless smoke test:**
-   ```bash
-   SDL_VIDEODRIVER=offscreen \
-     printf "help\nfake_sensors list\nkernel uptime\n" | \
-     timeout 15 \
-     /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe \
-     -uart_stdinout 2>&1
-   ```
-   Expected: `lvgl_display: init done`, shell up, no crashes.
+## ~~update to 4.3.0~~ ✓ DONE
 
-4. **Twister regression suite** — all existing tests must stay green:
-   ```bash
-   west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
-   ```
-
-5. **Merge:** `git merge --no-ff feat/lvgl-sdl-display`
-
-## Claude memory setuo & setup
-default  folder is ~/workspace/weather-station/.claude
-suggest way to forward local setup too
-
-## update to 4.3.0 (maybe also the main docker)
-4.3.0 is out
+`west.yml` pins `revision: v4.3.0`.
 
 ## Review of ADRS
 Help to review one adr after another ask question simplify and make teh goals clearer from them
