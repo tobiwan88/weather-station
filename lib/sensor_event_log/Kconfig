@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig SENSOR_EVENT_LOG
+	bool "Sensor event console logger"
+	depends on ZBUS
+	depends on SENSOR_EVENT
+	help
+	  Subscribes a zbus listener to sensor_event_chan and logs every
+	  env_sensor_data event to the console in a human-readable format:
+
+	    [00:01:23.456]  0x1234  TEMP   23.45 °C
+	    [00:01:23.456]  0x1234  HUM    65.2 %RH
+
+	  No public API — enable with CONFIG_SENSOR_EVENT_LOG=y and the
+	  library registers itself via SYS_INIT.
