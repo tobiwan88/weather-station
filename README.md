@@ -119,11 +119,49 @@ Bash
 
 screen /dev/pts/X  # Replace X with the number from logs
 
+## Web dashboard
+
+When `CONFIG_HTTP_DASHBOARD=y` is set (enabled by default in the gateway), the app
+serves a browser-accessible dashboard on port **8080**.
+
+| URL | Description |
+|-----|-------------|
+| `http://localhost:8080/` | Live Chart.js timeseries for temperature and humidity |
+| `http://localhost:8080/config` | Configuration page (trigger interval, SNTP resync) |
+| `http://localhost:8080/api/data` | JSON sensor history (ring buffer) |
+| `http://localhost:8080/api/config` | JSON current runtime config (GET) / update config (POST) |
+
+Start the gateway binary, then open `http://localhost:8080` in a browser.
+The dashboard auto-refreshes by polling `/api/data`.
+
+To change the sampling interval at runtime:
+
+```bash
+curl -X POST http://localhost:8080/api/config -d "trigger_interval_ms=2000"
+```
+
+To trigger an immediate SNTP resync:
+
+```bash
+curl -X POST http://localhost:8080/api/config -d "action=sntp_resync"
+```
+
+Kconfig options (in `apps/gateway/prj.conf`):
+
+| Symbol | Default | Purpose |
+|--------|---------|---------|
+| `CONFIG_HTTP_DASHBOARD_PORT` | `8080` | TCP port |
+| `CONFIG_HTTP_DASHBOARD_HISTORY_SIZE` | `60` | Samples per sensor per type |
+| `CONFIG_HTTP_DASHBOARD_MAX_SENSORS` | `16` | Max sensor × type slots |
+
+---
+
 ## Project status / roadmap
 
 | Phase | Status |
 |-------|--------|
 | v1: `native_sim` gateway + sensor-node | done |
+| v1.1: HTTP dashboard (Chart.js + config API) | done |
 | Phase 2: Renode emulation | planned |
 | Phase 3: Real hardware (LoRa + display) | planned |
 

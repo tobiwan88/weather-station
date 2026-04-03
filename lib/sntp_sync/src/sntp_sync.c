@@ -88,6 +88,22 @@ static void resync_handler(struct k_work *work)
 #endif /* CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S > 0 */
 
 /* -------------------------------------------------------------------------- */
+/* Immediate resync (API)                                                      */
+/* -------------------------------------------------------------------------- */
+
+static struct k_work_delayable immediate_work;
+
+static void immediate_resync_handler(struct k_work *work)
+{
+	do_sntp_sync();
+}
+
+void sntp_sync_trigger_resync(void)
+{
+	k_work_reschedule(&immediate_work, K_NO_WAIT);
+}
+
+/* -------------------------------------------------------------------------- */
 /* SYS_INIT                                                                    */
 /* -------------------------------------------------------------------------- */
 
@@ -99,6 +115,8 @@ static int sntp_sync_init(void)
 	k_work_init_delayable(&resync_work, resync_handler);
 	k_work_reschedule(&resync_work, K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
 #endif
+
+	k_work_init_delayable(&immediate_work, immediate_resync_handler);
 
 	return 0;
 }

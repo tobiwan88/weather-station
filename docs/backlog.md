@@ -1,5 +1,25 @@
 # Backlog
 
+## [HTTP-DASHBOARD] Decouple HTML/JS from C source via LittleFS
+
+The current implementation embeds the dashboard HTML, CSS, and Chart.js glue code as C string
+literals in `lib/http_dashboard/src/http_dashboard.c`. This makes web asset editing difficult
+and prevents live-reload workflows.
+
+**Goal:** serve static assets (HTML, CSS, JS) from LittleFS. The C layer becomes an HTTP router
+only. Web assets live in a dedicated source directory, compiled into a filesystem image at build
+time.
+
+**Acceptance:**
+- No HTML/CSS/JS in `.c` files; all web assets in a dedicated directory.
+- Build produces a LittleFS image mounted at a known path.
+- HTTP handler reads files from the filesystem; responds with `404` for missing assets.
+- Existing endpoints (`/`, `/config`, `/api/data`, `/api/config`) continue to work.
+
+Reference: ADR-011 §Design goal.
+
+---
+
 ## [SERIALIZATION] Choose and implement cross-device serialisation format
 
 `env_sensor_data` is an in-memory zbus message, not a wire format.  When
