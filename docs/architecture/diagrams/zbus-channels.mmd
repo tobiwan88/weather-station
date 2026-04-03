@@ -1,0 +1,59 @@
+---
+title: zbus Channel Map
+---
+graph LR
+    subgraph TRIGGERS["Trigger Sources"]
+        TMR["fake_sensors_timer\nk_timer periodic"]
+        BOOT["SYS_INIT startup\none-shot at boot"]
+        HTTP_CFG["HTTP POST /api/config\ninterval change"]
+        BTN["button ISR\n(future)"]
+        MQTT_CMD["MQTT command\n(future)"]
+    end
+
+    subgraph CHAN_T["sensor_trigger_chan (zbus)"]
+        ST["struct sensor_trigger_event\n{ source, target_uid }"]
+    end
+
+    subgraph SENSORS["Sensor Listeners"]
+        FT["fake_temperature\nlistener"]
+        FH["fake_humidity\nlistener"]
+        RD["real drivers\n(future)"]
+    end
+
+    subgraph CHAN_E["sensor_event_chan (zbus)"]
+        SE["struct env_sensor_data\n{ uid, type, q31_value, timestamp_ms }"]
+    end
+
+    subgraph CONSUMERS["Event Consumers"]
+        GWL["gateway listener\nLOG_INF per event"]
+        HTTPL["http_dashboard\nring buffer append"]
+        MQTTP["MQTT publisher\n(future)"]
+        FLASH["flash storage\n(future)"]
+        DISP["display manager\n(future)"]
+    end
+
+    TMR -->|pub K_NO_WAIT| ST
+    BOOT -->|pub K_NO_WAIT| ST
+    HTTP_CFG -.->|reschedule timer| TMR
+    BTN -->|pub K_NO_WAIT| ST
+    MQTT_CMD -->|pub K_NO_WAIT| ST
+
+    ST -->|sub| FT
+    ST -->|sub| FH
+    ST -->|sub| RD
+
+    FT -->|pub K_NO_WAIT| SE
+    FH -->|pub K_NO_WAIT| SE
+    RD -->|pub K_NO_WAIT| SE
+
+    SE -->|sub| GWL
+    SE -->|sub| HTTPL
+    SE -->|sub| MQTTP
+    SE -->|sub| FLASH
+    SE -->|sub| DISP
+
+    style CHAN_T fill:#fef9c3,stroke:#ca8a04
+    style CHAN_E fill:#fef9c3,stroke:#ca8a04
+    style TRIGGERS fill:#dbeafe,stroke:#3b82f6
+    style SENSORS fill:#dcfce7,stroke:#16a34a
+    style CONSUMERS fill:#fce7f3,stroke:#db2777

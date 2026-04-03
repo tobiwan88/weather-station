@@ -1,0 +1,54 @@
+---
+title: Library Dependency Graph
+---
+graph TD
+    APP["apps/gateway\n(application)"]
+
+    SE["sensor_event\nenv_sensor_data + chan"]
+    ST["sensor_trigger\ntrigger event + chan"]
+    SR["sensor_registry\nuid → metadata"]
+    FS["fake_sensors\nDT-driven drivers"]
+    SNTP["sntp_sync\nwall-clock SNTP"]
+    HTTP["http_dashboard\nweb dashboard + API"]
+    CLK["clock_display\nHH:MM ticker"]
+    LVGL["lvgl_display\nSDL window"]
+
+    ZBUS(["ZBUS\n(Zephyr)"])
+    NET(["NETWORKING\n(Zephyr)"])
+    HTTPD(["HTTP_SERVER\n(Zephyr)"])
+    LVGLLIB(["LVGL + DISPLAY\n(Zephyr)"])
+    SNTPLIB(["SNTP\n(Zephyr)"])
+
+    APP -->|Kconfig| SE
+    APP -->|Kconfig| ST
+    APP -->|Kconfig| SR
+    APP -->|Kconfig| FS
+    APP -->|Kconfig| SNTP
+    APP -->|Kconfig| HTTP
+    APP -->|Kconfig| CLK
+    APP -->|Kconfig| LVGL
+
+    FS --> SE
+    FS --> ST
+    FS --> SR
+
+    HTTP --> SE
+    HTTP --> SR
+    HTTP --> HTTPD
+
+    SE --> ZBUS
+    ST --> ZBUS
+    SR --> ZBUS
+
+    SNTP --> NET
+    SNTP --> SNTPLIB
+    HTTP --> NET
+
+    LVGL --> LVGLLIB
+
+    style APP fill:#dbeafe,stroke:#3b82f6
+    style ZBUS fill:#fce7f3,stroke:#db2777
+    style NET fill:#fce7f3,stroke:#db2777
+    style HTTPD fill:#fce7f3,stroke:#db2777
+    style LVGLLIB fill:#fce7f3,stroke:#db2777
+    style SNTPLIB fill:#fce7f3,stroke:#db2777

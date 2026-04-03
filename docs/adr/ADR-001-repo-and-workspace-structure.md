@@ -59,13 +59,15 @@ weather-station/               ← git repo root, also west manifest
 │   └── sensor-node/           ← LoRa TX beacon
 │
 ├── lib/                       ← shared reusable libraries (west modules)
-│   ├── sensor_event/
-│   ├── sensor_trigger/
-│   ├── sensor_registry/
-│   ├── fake_sensors/
-│   ├── lora_radio/
-│   ├── connectivity/
-│   └── display_manager/
+│   ├── sensor_event/          ← env_sensor_data struct, Q31 helpers, zbus channel
+│   ├── sensor_trigger/        ← sensor_trigger_event struct, zbus channel
+│   ├── sensor_registry/       ← uid → label/location/scaling metadata
+│   ├── fake_sensors/          ← DT-instantiated fake drivers + auto-publish timer
+│   ├── sntp_sync/             ← SNTP time sync with runtime resync
+│   ├── clock_display/         ← wall-clock widget for LVGL display
+│   ├── lvgl_display/          ← LVGL display manager (sensor tiles)
+│   └── http_dashboard/        ← Chart.js timeseries + config REST API
+│                                 (lora_radio, connectivity: future)
 │
 ├── include/common/            ← shared headers (zbus channel declarations,
 │                                 data structs, Q31 helpers)
@@ -75,7 +77,7 @@ weather-station/               ← git repo root, also west manifest
 ├── boards/                    ← custom board definitions (future)
 │
 ├── tests/                     ← twister test suites
-├── simulation/                ← Renode .resc and Robot Framework scripts
+├── simulation/                ← Renode .resc and Robot Framework scripts (future)
 │
 ├── .devcontainer/             ← VS Code devcontainer (tobiwan88/zephyr_docker)
 └── .github/workflows/         ← CI (build + twister + Renode)
