@@ -12,16 +12,42 @@ menuconfig SENSOR_REGISTRY
 if SENSOR_REGISTRY
 
 config SENSOR_REGISTRY_USER_META
-	bool "User-settable sensor metadata (description)"
+	bool "User-settable sensor metadata"
 	help
-	  Adds runtime-writable description strings, queryable by sensor_uid.
-	  Costs SENSOR_REGISTRY_MAX_ENTRIES * (SENSOR_REGISTRY_USER_META_MAX_LEN+1)
-	  bytes of BSS when enabled.
+	  Adds a per-sensor runtime metadata block containing a user-editable
+	  display name, location override, description, and enabled flag.
+	  Values are pre-seeded from Devicetree defaults on registration and
+	  can be overwritten at runtime (e.g. via the HTTP dashboard).
+	  Memory cost: SENSOR_REGISTRY_MAX_ENTRIES * sizeof(sensor_registry_meta).
 
-config SENSOR_REGISTRY_USER_META_MAX_LEN
-	int "Maximum description string length (bytes, excluding NUL)"
+if SENSOR_REGISTRY_USER_META
+
+config SENSOR_REGISTRY_META_NAME_LEN
+	int "Maximum display-name length (bytes, excluding NUL)"
 	default 32
+	range 8 64
+
+config SENSOR_REGISTRY_META_LOCATION_LEN
+	int "Maximum location string length (bytes, excluding NUL)"
+	default 32
+	range 8 64
+
+config SENSOR_REGISTRY_META_DESC_LEN
+	int "Maximum description string length (bytes, excluding NUL)"
+	default 64
 	range 8 128
-	depends on SENSOR_REGISTRY_USER_META
+
+config SENSOR_REGISTRY_SETTINGS
+	bool "Persist sensor metadata via Zephyr settings subsystem"
+	depends on SETTINGS
+	help
+	  When enabled, sensor_registry_set_meta() saves each changed field
+	  via settings_save_one() and a SYS_INIT at APPLICATION 95 restores
+	  saved values after all sensor drivers have registered (at 90/91).
+	  Settings keys: sreg/<uid_hex>/name, .../loc, .../desc, .../en.
+	  For native_sim use CONFIG_SETTINGS_RUNTIME; for real hardware use
+	  CONFIG_SETTINGS_NVS or CONFIG_SETTINGS_FCB.
+
+endif # SENSOR_REGISTRY_USER_META
 
 endif # SENSOR_REGISTRY
