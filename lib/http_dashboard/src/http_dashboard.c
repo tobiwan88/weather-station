@@ -307,15 +307,28 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 			continue;
 		}
 
-		const struct sensor_registry_entry *reg = sensor_registry_lookup(snap[i].uid);
+#ifdef CONFIG_SENSOR_REGISTRY_USER_META
+		/* Skip sensors the user has disabled. */
+		struct sensor_registry_meta smeta;
+
+		if (sensor_registry_get_meta(snap[i].uid, &smeta) == 0 && !smeta.enabled) {
+			continue;
+		}
+		const char *label = sensor_registry_get_display_name(snap[i].uid);
+		const char *location = sensor_registry_get_location(snap[i].uid);
+
+		if (!label) {
+			label = "unknown";
+		}
+		if (!location) {
+			location = "unknown";
+		}
+		const char *description = smeta.description;
+#else
+		const struct sensor_registry_entry *reg =
+			sensor_registry_lookup(snap[i].uid);
 		const char *label = reg ? reg->label : "unknown";
 		const char *location = reg ? reg->location : "unknown";
-#ifdef CONFIG_SENSOR_REGISTRY_USER_META
-		const char *description = sensor_registry_get_description(snap[i].uid);
-
-		if (!description) {
-			description = "";
-		}
 #endif
 
 		if (!first_sensor) {
@@ -404,14 +417,17 @@ static int sensor_to_json_cb(const struct sensor_registry_entry *e, void *user_d
 	ctx->first = false;
 
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
-	const char *desc = sensor_registry_get_description(e->uid);
+	struct sensor_registry_meta smeta;
 
-	if (!desc) {
-		desc = "";
-	}
+	sensor_registry_get_meta(e->uid, &smeta);
 	int n = snprintf((char *)cfg_json_buf + ctx->pos, (size_t)(ctx->rem + 1),
-			 "{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\",\"description\":\"%s\"}",
-			 e->uid, e->label, e->location, desc);
+			 "{\"uid\":%u"
+			 ",\"dt_label\":\"%s\",\"dt_location\":\"%s\""
+			 ",\"display_name\":\"%s\",\"location\":\"%s\""
+			 ",\"description\":\"%s\",\"enabled\":%s}",
+			 e->uid, e->label, e->location,
+			 smeta.display_name, smeta.location,
+			 smeta.description, smeta.enabled ? "true" : "false");
 #else
 	int n = snprintf((char *)cfg_json_buf + ctx->pos, (size_t)(ctx->rem + 1),
 			 "{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\"}",
@@ -451,7 +467,8 @@ static void url_decode(char *s)
 
 static void process_post(const uint8_t *body, size_t len)
 {
-	static char buf[257];
+	/* Buffer must hold the full accumulated POST body (post_buf is 1024 B). */
+	static char buf[1025];
 	size_t copy_len = MIN(len, sizeof(buf) - 1);
 
 	memcpy(buf, body, copy_len);
@@ -494,11 +511,46 @@ static void process_post(const uint8_t *body, size_t len)
 #endif
 				LOG_INF("SNTP resync triggered");
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
-			} else if (strncmp(key, "desc_", 5) == 0) {
-				uint32_t uid = (uint32_t)strtoul(key + 5, NULL, 10);
+			} else if (strncmp(key, "sensor_", 7) == 0) {
+				/* sensor_<uid>_<field>: name, loc, desc, en */
+				char tmp[64];
 
-				sensor_registry_set_description(uid, val);
-				LOG_INF("description for uid %u set to \"%s\"", uid, val);
+				strncpy(tmp, key + 7, sizeof(tmp) - 1);
+				tmp[sizeof(tmp) - 1] = '\0';
+
+				char *last_us = strrchr(tmp, '_');
+
+				if (last_us && last_us != tmp) {
+					*last_us = '\0';
+					uint32_t uid =
+						(uint32_t)strtoul(tmp, NULL, 10);
+					const char *field = last_us + 1;
+					struct sensor_registry_meta m;
+
+					if (sensor_registry_get_meta(uid, &m) == 0) {
+						if (strcmp(field, "name") == 0) {
+							strncpy(m.display_name, val,
+								CONFIG_SENSOR_REGISTRY_META_NAME_LEN);
+							m.display_name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN] =
+								'\0';
+						} else if (strcmp(field, "loc") == 0) {
+							strncpy(m.location, val,
+								CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN);
+							m.location[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN] =
+								'\0';
+						} else if (strcmp(field, "desc") == 0) {
+							strncpy(m.description, val,
+								CONFIG_SENSOR_REGISTRY_META_DESC_LEN);
+							m.description[CONFIG_SENSOR_REGISTRY_META_DESC_LEN] =
+								'\0';
+						} else if (strcmp(field, "en") == 0) {
+							m.enabled = (strcmp(val, "1") == 0);
+						}
+						sensor_registry_set_meta(uid, &m);
+						LOG_DBG("sensor %u %s=\"%s\"", uid,
+							field, val);
+					}
+				}
 #endif
 			}
 		}

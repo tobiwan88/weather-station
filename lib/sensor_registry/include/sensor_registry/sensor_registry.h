@@ -23,11 +23,11 @@ extern "C" {
 /** Maximum number of sensors that can be registered. */
 #define SENSOR_REGISTRY_MAX_ENTRIES 16
 
-/** Metadata record for one sensor. */
+/** Compile-time metadata record for one sensor (populated from DT, immutable). */
 struct sensor_registry_entry {
-	uint32_t uid;         /**< Unique sensor identifier (from DT)   */
-	const char *label;    /**< Human-readable name, e.g. "indoor"   */
-	const char *location; /**< Physical location, e.g. "living_room" */
+	uint32_t uid;         /**< Unique sensor identifier (from DT)    */
+	const char *label;    /**< DT node name, e.g. "fake-temp-indoor" */
+	const char *location; /**< DT location property, e.g. "living_room" */
 	bool is_remote;       /**< true if sensor lives on a remote node */
 };
 
@@ -66,21 +66,67 @@ void sensor_registry_foreach(int (*cb)(const struct sensor_registry_entry *e, vo
 int sensor_registry_count(void);
 
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
-/**
- * @brief Set a runtime user description for a registered sensor.
- * @param uid  Sensor uid (must already be registered).
- * @param desc NUL-terminated string (truncated to MAX_LEN if longer).
- * @return 0, -ENOENT if uid not found, -EINVAL if desc is NULL.
- */
-int sensor_registry_set_description(uint32_t uid, const char *desc);
 
 /**
- * @brief Get the user description for a sensor.
- * @param uid Sensor uid.
- * @return Pointer to the stored string (never NULL — empty string if unset),
- *         or NULL if uid is not registered.
+ * @brief User-editable runtime metadata for a sensor.
+ *
+ * Pre-seeded from DT defaults on sensor_registry_register(). All fields
+ * can be updated at runtime (e.g. via the HTTP dashboard).
+ *
+ * To add new fields in the future: extend this struct, add a settings key
+ * handler case in sensor_registry.c, and extend the dashboard JSON.
  */
-const char *sensor_registry_get_description(uint32_t uid);
+struct sensor_registry_meta {
+	/** User-friendly display name (defaults to DT label). */
+	char display_name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN + 1];
+	/** Location override (defaults to DT location property). */
+	char location[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN + 1];
+	/** Free-text description / notes. */
+	char description[CONFIG_SENSOR_REGISTRY_META_DESC_LEN + 1];
+	/** When false the sensor is excluded from dashboard output. */
+	bool enabled;
+};
+
+/**
+ * @brief Write user metadata for a registered sensor.
+ *
+ * @param uid  Sensor uid (must already be registered).
+ * @param meta Metadata to copy in. Must not be NULL.
+ * @return 0, -ENOENT if uid not found, -EINVAL if meta is NULL.
+ */
+int sensor_registry_set_meta(uint32_t uid, const struct sensor_registry_meta *meta);
+
+/**
+ * @brief Read user metadata for a registered sensor.
+ *
+ * @param uid Sensor uid.
+ * @param out Buffer to copy metadata into. Must not be NULL.
+ * @return 0, -ENOENT if uid not found, -EINVAL if out is NULL.
+ */
+int sensor_registry_get_meta(uint32_t uid, struct sensor_registry_meta *out);
+
+/**
+ * @brief Return the display name for a sensor.
+ *
+ * Returns meta.display_name if non-empty, otherwise falls back to the
+ * DT label from sensor_registry_entry.
+ *
+ * @param uid Sensor uid.
+ * @return Display name string, or NULL if uid is not registered.
+ */
+const char *sensor_registry_get_display_name(uint32_t uid);
+
+/**
+ * @brief Return the effective location string for a sensor.
+ *
+ * Returns meta.location if non-empty, otherwise falls back to the DT
+ * location from sensor_registry_entry.
+ *
+ * @param uid Sensor uid.
+ * @return Location string, or NULL if uid is not registered.
+ */
+const char *sensor_registry_get_location(uint32_t uid);
+
 #endif /* CONFIG_SENSOR_REGISTRY_USER_META */
 
 #ifdef __cplusplus
