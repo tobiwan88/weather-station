@@ -45,11 +45,13 @@ tools via a PR to `tobiwan88/zephyr_docker`.
 | Image | `ghcr.io/tobiwan88/zephyr_docker:latest` |
 | Base | Debian Trixie Slim |
 | Zephyr SDK | v0.17.4 |
-| Zephyr version | v4.2.0 compatible |
+| Zephyr version | v4.3.0 |
 | User | `zephyr` (UID 1000, non-root) |
 | Python venv | `/home/zephyr/.venv` |
 | SDK path | `/home/zephyr/zephyr-sdk` |
-| Workspace | `/home/zephyr/workspace` |
+| Workspace (west topdir) | `/home/zephyr/workspace` |
+| Zephyr source | `/home/zephyr/workspace/zephyr` |
+| Gateway binary | `/home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe` |
 | West activation | `source ~/.venv/bin/activate` required before all west commands |
 
 Tag strategy:
@@ -101,17 +103,27 @@ jobs:
           west update --narrow -o=--depth=1
       - run: |
           source ~/.venv/bin/activate
-          west build -b native_sim apps/gateway
+          ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
+            west build -b native_sim/native/64 weather-station/apps/gateway
 ```
 
 Every `run:` step activates the venv first — exactly as in the devcontainer
 terminal. The same `west build` command used locally works in CI without
 modification.
 
+**`ZEPHYR_BASE` override — critical:** The default `ZEPHYR_BASE` in the
+container image points to a path that does not exist in the west T2 workspace
+layout. All `west build` and `west twister` commands must be prefixed with
+`ZEPHYR_BASE=/home/zephyr/workspace/zephyr`. If a build fails with a missing
+Zephyr path, also delete `build/CMakeCache.txt` — it caches the old value.
+
+**Board target:** Always use `native_sim/native/64`. The shorthand `native_sim`
+selects a 32-bit variant and produces a different binary path.
+
 ### CI pipeline structure
 
 ```
-push / PR to main or develop
+push / PR to master or feature branches
          │
          ▼
 ┌────────────────────────────────────────────────────────────┐
@@ -136,7 +148,8 @@ push / PR to main or develop
                    ▼
 ┌────────────────────────────────────────────────────────────┐
 │  job: test-native-sim                                      │
-│  west twister -p native_sim -T tests/                     │
+│  ZEPHYR_BASE=.../zephyr west twister                       │
+│    -p native_sim/native/64 -T weather-station/tests/      │
 │  ├── tests/q31/           (Q31 round-trip accuracy)        │
 │  ├── tests/sensor_event/  (zbus pub/sub)                   │
 │  └── tests/fake_sensors/  (trigger→publish, shell set)     │

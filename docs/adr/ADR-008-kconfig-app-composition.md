@@ -189,8 +189,32 @@ menuconfig DISPLAY_MANAGER
 ### `main.c` 50-line rule
 
 The 50-line rule is enforced by design, not tooling. If `main.c` grows beyond
-50 lines, the excess logic belongs in a library. The rule forces the right
-question: "Which library owns this?" instead of "How do I make main.c work?"
+50 lines, the excess logic *probably* belongs in a library. The rule forces the
+right question: "Which library owns this?" instead of "How do I make main.c work?"
+
+### When app-level C code is acceptable
+
+The library approach is strongly preferred, but not every line of C must live
+in a library. Code may stay in `apps/*/src/` when it satisfies **both**:
+
+1. **Tightly coupled to this application's specific policy or hardware** —
+   it encodes decisions (timing strategy, startup sequence, board-specific
+   wiring) that are unique to this firmware image and would be rewritten
+   from scratch for a different app.
+2. **No reuse value** — it would never make sense to enable this via Kconfig
+   in another app.
+
+| Code | Where it belongs | Why |
+|------|-----------------|-----|
+| Startup trigger + sampling timer in `main.c` | App | Gateway policy — a sensor-node app has a completely different timing strategy |
+| `SYS_INIT` call that wires two libraries for this specific image | App | The wiring is image-specific, not reusable |
+| Display layout logic | Library (`lib/display_manager`) | Another app might use the same display |
+| Q31 encode/decode helpers | Library (`lib/sensor_event`) | Needed by every sensor driver |
+| LoRa channel config specific to this deployment | App | Deployment-specific, not a reusable abstraction |
+
+**Rule of thumb:** if you find yourself wanting to write a Kconfig symbol for
+it, it belongs in a library. If it would be nonsensical to reuse it in any
+other app, it can stay in `apps/*/src/`.
 
 Current `apps/gateway/src/main.c`:
 
@@ -267,9 +291,13 @@ int main(void)
 **Constrained:**
 - App `CMakeLists.txt` must never contain feature-selection logic. If a
   reviewer sees `if(SOME_CONDITION) target_link_libraries(...)` in an app
-  `CMakeLists.txt`, it is a violation of this ADR.
+  `CMakeLists.txt`, it is a violation of this ADR. This rule is absolute —
+  it applies to CMake only, not to C source in `apps/*/src/` (see "When
+  app-level C code is acceptable" above).
 - Library `CMakeLists.txt` may only gate on `if(CONFIG_...)` — the direct
   Kconfig condition. No custom CMake variables.
+- When in doubt, put it in a library. Extracting app-level code into a library
+  later is cheap; untangling a bloated app is not.
 
 ---
 
