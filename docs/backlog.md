@@ -1,26 +1,5 @@
 # Backlog
 
-## [ADR-002-FIX] Replace direct function calls in http_dashboard with zbus commands
-
-`lib/http_dashboard/src/http_dashboard.c` violates ADR-002 by calling
-`fake_sensors_set_auto_publish_ms()` (line 500) and `sntp_sync_trigger_resync()`
-(line 510) directly instead of publishing commands on a zbus channel.
-
-**Goal:** `http_dashboard` publishes a command event; `fake_sensors` and
-`sntp_sync` subscribe as listeners. No direct function calls across module
-boundaries.
-
-**Acceptance:**
-- New zbus channel (e.g. `config_cmd_chan`) defined in a suitable library.
-- `http_dashboard` publishes a `config_cmd_event` with the requested action/value.
-- `fake_sensors` and `sntp_sync` subscribe and handle the event independently.
-- `http_dashboard` no longer includes headers from `fake_sensors` or `sntp_sync`.
-- Existing HTTP POST behaviour (interval change, SNTP resync) unchanged.
-
-Reference: ADR-002 §"Producers never know who their consumers are."
-
----
-
 ## [ADR-008-REVIEW] Review main.c files exceeding 50-line rule
 
 Both app `main.c` files exceed the ADR-008 50-line rule:
