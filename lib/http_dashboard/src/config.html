@@ -48,17 +48,18 @@
 
     <section class="card">
       <h2>Registered Sensors</h2>
+      <p class="hint"><em>DT label / DT location</em> are read-only (from firmware). Edit the remaining columns to customise the dashboard.</p>
       <form method="post" action="/api/config" id="sensorsForm">
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>UID</th><th>Label</th><th>Location</th><th>Description</th></tr>
+              <tr><th>UID</th><th>DT label</th><th>DT location</th><th>Display name</th><th>Location</th><th>Description</th><th>Enabled</th></tr>
             </thead>
             <tbody id="sb"></tbody>
           </table>
         </div>
         <div class="actions">
-          <button type="submit" class="btn-primary">Save descriptions</button>
+          <button type="submit" class="btn-primary">Save sensor config</button>
         </div>
       </form>
     </section>
