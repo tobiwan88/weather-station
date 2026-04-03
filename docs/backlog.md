@@ -1,5 +1,73 @@
 # Backlog
 
+## [ADR-002-FIX] Replace direct function calls in http_dashboard with zbus commands
+
+`lib/http_dashboard/src/http_dashboard.c` violates ADR-002 by calling
+`fake_sensors_set_auto_publish_ms()` (line 500) and `sntp_sync_trigger_resync()`
+(line 510) directly instead of publishing commands on a zbus channel.
+
+**Goal:** `http_dashboard` publishes a command event; `fake_sensors` and
+`sntp_sync` subscribe as listeners. No direct function calls across module
+boundaries.
+
+**Acceptance:**
+- New zbus channel (e.g. `config_cmd_chan`) defined in a suitable library.
+- `http_dashboard` publishes a `config_cmd_event` with the requested action/value.
+- `fake_sensors` and `sntp_sync` subscribe and handle the event independently.
+- `http_dashboard` no longer includes headers from `fake_sensors` or `sntp_sync`.
+- Existing HTTP POST behaviour (interval change, SNTP resync) unchanged.
+
+Reference: ADR-002 §"Producers never know who their consumers are."
+
+---
+
+## [ADR-008-REVIEW] Review main.c files exceeding 50-line rule
+
+Both app `main.c` files exceed the ADR-008 50-line rule:
+- `apps/gateway/src/main.c`: 77 lines — contains a zbus listener callback with
+  sensor event logging logic
+- `apps/sensor-node/src/main.c`: 66 lines — same pattern
+
+**Goal:** Assess whether the excess logic qualifies as app-specific policy (and
+is therefore acceptable per the "When app-level C code is acceptable" section)
+or should be extracted to a library.
+
+**Acceptance:**
+- Decision documented: either the ADR's 50-line limit is adjusted for these
+  specific cases with justification, or the logic is extracted to a library.
+
+Reference: ADR-008 §`main.c` 50-line rule.
+
+---
+
+## [ADR-010-DEVCONTAINER] Align devcontainer and CI on single approved image
+
+**Status: BLOCKED** — remote container build currently does not work.
+
+`devcontainer.json` uses a local `Dockerfile` with `FROM dev:latest` instead
+of pulling `ghcr.io/tobiwan88/zephyr_docker:latest` directly. This diverges
+from the ADR-010 requirement that local and CI use the same image.
+
+**Goal:** Decide between:
+- **Option A (remote image):** `devcontainer.json` references
+  `ghcr.io/tobiwan88/zephyr_docker:latest` directly — no local Dockerfile.
+  Requires the remote image build to be working.
+- **Option B (local build):** Keep the local `Dockerfile` but base it on the
+  approved image (`FROM ghcr.io/tobiwan88/zephyr_docker:latest`) and update
+  ADR-010 to document the local-build approach.
+
+Additional CI gaps to fix alongside:
+- Add `ZEPHYR_BASE=/home/zephyr/workspace/zephyr` prefix to all `west build`
+  and `west twister` commands in `.github/workflows/ci.yml`.
+- Replace `native_sim` shorthand with `native_sim/native/64` in CI matrix and
+  test job.
+- Add `zephyr-checkpatch-diff` hook to `.pre-commit-config.yaml`.
+- Add `ci-success` aggregator job to block PR merge on failure.
+
+Reference: ADR-010.
+
+---
+
 ## [HTTP-DASHBOARD] Decouple HTML/JS from C source via LittleFS
 
 The current implementation embeds the dashboard HTML, CSS, and Chart.js glue code as C string

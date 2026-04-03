@@ -120,7 +120,11 @@ Zero changes to any existing file:
 - **Do not give LoRa RX a trigger listener.** Remote sensor data arrives asynchronously; `lora_rx` publishes directly to `sensor_event_chan` when a packet arrives.
 - **Do not start per-sensor timers.** The shared trigger channel is the only sampling clock — it allows coordinated reads (button press refreshes all sensors together).
 
-The periodic timer that publishes to `sensor_trigger_chan` lives in `lib/sensor_trigger/` and is configured via `CONFIG_SENSOR_POLL_INTERVAL_S`. See ADR-008 for the `main.c` rule.
+The periodic timer is currently implemented in `lib/fake_sensors/src/fake_sensors_timer.c`
+and configured via `CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS`. It starts automatically
+via `SYS_INIT` — no call from `main.c` is needed. When real sensor drivers replace
+fake sensors, the timer will move to `lib/sensor_trigger/` with a board-agnostic
+`CONFIG_SENSOR_POLL_INTERVAL_S`. See ADR-008 for the `main.c` rule.
 
 ---
 

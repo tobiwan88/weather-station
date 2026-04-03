@@ -79,8 +79,11 @@ struct env_sensor_data {
 };
 ```
 
-Size: **16 bytes** — fits comfortably in a zbus message, a LoRa packet sample,
-and a flash log record.
+Size: **20 bytes on 32-bit, 24 bytes on 64-bit** (4-byte alignment padding before
+`int64_t`). The struct is intentionally kept small — new sensor types extend
+`enum sensor_type` only; the struct fields never change. Exact size may grow
+if fields are added in future, but the flat, pointer-free layout is a hard
+constraint.
 
 ### The `sensor_uid` contract
 
