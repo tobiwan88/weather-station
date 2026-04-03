@@ -6,6 +6,7 @@ menuconfig HTTP_DASHBOARD
 	depends on SENSOR_EVENT
 	depends on SENSOR_REGISTRY
 	select NET_TCP
+	select CONFIG_CMD
 	help
 	  Serves a browser-accessible dashboard on an HTTP port with two pages:
 	    /        — live Chart.js timeseries for temperature and humidity

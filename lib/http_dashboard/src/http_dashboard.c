@@ -24,16 +24,9 @@
 #include <zephyr/net/http/service.h>
 #include <zephyr/zbus/zbus.h>
 
+#include <config_cmd/config_cmd.h>
 #include <sensor_event/sensor_event.h>
 #include <sensor_registry/sensor_registry.h>
-
-#if defined(CONFIG_FAKE_SENSORS)
-#include <fake_sensors/fake_sensors.h>
-#endif
-
-#if defined(CONFIG_SNTP_SYNC)
-#include <sntp_sync/sntp_sync.h>
-#endif
 
 LOG_MODULE_REGISTER(http_dashboard, LOG_LEVEL_INF);
 
@@ -61,18 +54,9 @@ static struct k_spinlock history_lock;
 /* Snapshot taken under spinlock, serialised outside — one HTTP req at a time. */
 static struct sensor_history snap[CONFIG_HTTP_DASHBOARD_MAX_SENSORS];
 
-/* Runtime configurable values. */
-#if defined(CONFIG_SNTP_SYNC)
-static char sntp_server_buf[64] = CONFIG_SNTP_SYNC_SERVER;
-#else
-static char sntp_server_buf[64] = "n/a";
-#endif
-
-#if defined(CONFIG_FAKE_SENSORS)
-static uint32_t trigger_interval_ms = CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS;
-#else
+/* Runtime configurable values (last values POSTed via /api/config). */
+static char sntp_server_buf[64];
 static uint32_t trigger_interval_ms;
-#endif
 
 /* -------------------------------------------------------------------------- */
 /* zbus listener                                                               */
@@ -494,11 +478,17 @@ static void process_post(const uint8_t *body, size_t len)
 
 			if (strcmp(key, "trigger_interval_ms") == 0) {
 				uint32_t ms = (uint32_t)strtoul(val, NULL, 10);
+				struct config_cmd_event cmd = {
+					.cmd = CONFIG_CMD_SET_TRIGGER_INTERVAL,
+					.arg = ms,
+				};
 
 				trigger_interval_ms = ms;
-#if defined(CONFIG_FAKE_SENSORS)
-				fake_sensors_set_auto_publish_ms(ms);
-#endif
+				int rc = zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+
+				if (rc != 0) {
+					LOG_WRN("config_cmd_chan pub failed: %d", rc);
+				}
 				LOG_INF("trigger interval set to %u ms", ms);
 			} else if (strcmp(key, "sntp_server") == 0) {
 				strncpy(sntp_server_buf, val, sizeof(sntp_server_buf) - 1);
@@ -506,9 +496,15 @@ static void process_post(const uint8_t *body, size_t len)
 				LOG_INF("sntp server set to %s", sntp_server_buf);
 			} else if (strcmp(key, "action") == 0 &&
 				   strcmp(val, "sntp_resync") == 0) {
-#if defined(CONFIG_SNTP_SYNC)
-				sntp_sync_trigger_resync();
-#endif
+				struct config_cmd_event cmd = {
+					.cmd = CONFIG_CMD_SNTP_RESYNC,
+					.arg = 0,
+				};
+				int rc = zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+
+				if (rc != 0) {
+					LOG_WRN("config_cmd_chan pub failed: %d", rc);
+				}
 				LOG_INF("SNTP resync triggered");
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
 			} else if (strncmp(key, "sensor_", 7) == 0) {
