@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig HTTP_DASHBOARD
+	bool "HTTP weather dashboard (Chart.js timeseries + config page)"
+	depends on HTTP_SERVER
+	depends on SENSOR_EVENT
+	depends on SENSOR_REGISTRY
+	select NET_TCP
+	help
+	  Serves a browser-accessible dashboard on an HTTP port with two pages:
+	    /        — live Chart.js timeseries for temperature and humidity
+	    /config  — configuration page (trigger interval, SNTP resync)
+	  JSON APIs at /api/data and /api/config support the pages.
+
+if HTTP_DASHBOARD
+
+config HTTP_DASHBOARD_PORT
+	int "Listening TCP port"
+	default 8080
+	depends on HTTP_DASHBOARD
+
+config HTTP_DASHBOARD_HISTORY_SIZE
+	int "Samples retained per sensor per type (ring buffer)"
+	default 60
+	depends on HTTP_DASHBOARD
+
+config HTTP_DASHBOARD_MAX_SENSORS
+	int "Max sensor x type slots (uid + type = one slot)"
+	default 16
+	depends on HTTP_DASHBOARD
+
+endif # HTTP_DASHBOARD

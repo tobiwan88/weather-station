@@ -65,6 +65,24 @@ void sensor_registry_foreach(int (*cb)(const struct sensor_registry_entry *e, vo
  */
 int sensor_registry_count(void);
 
+#ifdef CONFIG_SENSOR_REGISTRY_USER_META
+/**
+ * @brief Set a runtime user description for a registered sensor.
+ * @param uid  Sensor uid (must already be registered).
+ * @param desc NUL-terminated string (truncated to MAX_LEN if longer).
+ * @return 0, -ENOENT if uid not found, -EINVAL if desc is NULL.
+ */
+int sensor_registry_set_description(uint32_t uid, const char *desc);
+
+/**
+ * @brief Get the user description for a sensor.
+ * @param uid Sensor uid.
+ * @return Pointer to the stored string (never NULL — empty string if unset),
+ *         or NULL if uid is not registered.
+ */
+const char *sensor_registry_get_description(uint32_t uid);
+#endif /* CONFIG_SENSOR_REGISTRY_USER_META */
+
 #ifdef __cplusplus
 }
 #endif

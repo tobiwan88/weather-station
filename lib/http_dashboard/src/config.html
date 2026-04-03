@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Weather Station — Config</title>
+  <!-- @@CSS@@ -->
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Configuration</h1>
+      <nav>
+        <a href="/">Dashboard</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div id="flashMsg" class="flash hidden"></div>
+
+    <section class="card">
+      <h2>Sensor Trigger</h2>
+      <form method="post" action="/api/config" id="triggerForm">
+        <div class="field">
+          <label for="ti">Trigger interval (ms)</label>
+          <input type="number" name="trigger_interval_ms" id="ti" min="100" step="100">
+        </div>
+        <div class="field">
+          <label for="ss">NTP server</label>
+          <input type="text" name="sntp_server" id="ss" size="40">
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn-primary">Apply</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>SNTP Resync</h2>
+      <form method="post" action="/api/config" id="sntpForm">
+        <input type="hidden" name="action" value="sntp_resync">
+        <p class="hint">Trigger an immediate NTP synchronisation.</p>
+        <div class="actions">
+          <button type="submit" class="btn-secondary">Sync Now</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Registered Sensors</h2>
+      <form method="post" action="/api/config" id="sensorsForm">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>UID</th><th>Label</th><th>Location</th><th>Description</th></tr>
+            </thead>
+            <tbody id="sb"></tbody>
+          </table>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn-primary">Save descriptions</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <!-- @@JS@@ -->
+</body>
+</html>

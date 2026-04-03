@@ -16,3 +16,6 @@ bool sntp_sync_is_ready(void);
  * (i.e. milliseconds since boot, not since epoch).
  */
 int64_t sntp_sync_get_epoch_ms(void);
+
+/** @brief Trigger an immediate NTP resync (non-blocking; submits work). */
+void sntp_sync_trigger_resync(void);
