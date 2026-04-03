@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather-Station Architecture Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; background: #f8fafc; color: #1e293b; }
+    h1   { border-bottom: 2px solid #3b82f6; padding-bottom: .5rem; }
+    h2   { margin-top: 2.5rem; color: #1d4ed8; }
+    .diagram { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; overflow-x: auto; }
+    .mermaid { text-align: center; }
+    footer { margin-top: 3rem; font-size: .85rem; color: #94a3b8; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>Weather-Station Architecture Diagrams</h1>
+  <p>Generated from Mermaid sources in <code>docs/architecture/diagrams/</code>.<br>
+     For SVG/PNG output install <code>mmdc</code>: <code>npm install -g @mermaid-js/mermaid-cli</code></p>
+
+  <h2>Weather-Station System Architecture</h2>
+  <div class="diagram">
+    <div class="mermaid">
+graph TB
+    subgraph APP[&quot;APPLICATION LAYER&quot;]
+        GW[&quot;apps/gateway\nmain.c &amp;lt;50 lines\nprj.conf (features)&quot;]
+        SN[&quot;apps/sensor-node\n(future)&quot;]
+    end
+
+    subgraph LIBS[&quot;LIBRARY LAYER (lib/)&quot;]
+        direction TB
+        subgraph CHANNELS[&quot;zbus Channels&quot;]
+            SEC[&quot;sensor_event\n(env_sensor_data)&quot;]
+            STC[&quot;sensor_trigger\n(trigger event)&quot;]
+        end
+        subgraph SENSORS[&quot;Sensor Layer&quot;]
+            FS[&quot;fake_sensors\nDT-driven drivers\n+ auto-publish timer&quot;]
+            SR[&quot;sensor_registry\nuid → metadata&quot;]
+        end
+        subgraph SERVICES[&quot;Services&quot;]
+            SNTP[&quot;sntp_sync\nwall-clock SNTP&quot;]
+            HTTP[&quot;http_dashboard\nChart.js + config API\nport 8080&quot;]
+            CLK[&quot;clock_display\nHH:MM UTC ticker&quot;]
+            LVGL[&quot;lvgl_display\nSDL window (native_sim)&quot;]
+        end
+    end
+
+    subgraph RTOS[&quot;ZEPHYR RTOS&quot;]
+        ZBUS[&quot;zbus pub/sub&quot;]
+        KTIMER[&quot;k_timer&quot;]
+        KWORK[&quot;k_work_delayable&quot;]
+        KSPIN[&quot;k_spinlock&quot;]
+        KMUX[&quot;k_mutex&quot;]
+        HTTPD[&quot;HTTP_SERVER&quot;]
+        NET[&quot;NET_SOCKETS / SNTP&quot;]
+        LVGLLIB[&quot;LVGL / SDL2&quot;]
+    end
+
+    GW --&gt;|&quot;Kconfig selects&quot;| LIBS
+    SN --&gt;|&quot;Kconfig selects&quot;| LIBS
+
+    FS --&gt;|publishes| SEC
+    FS --&gt;|subscribes| STC
+    HTTP --&gt;|subscribes| SEC
+    HTTP --&gt;|reads| SR
+    FS --&gt;|registers| SR
+
+    SEC --&gt; ZBUS
+    STC --&gt; ZBUS
+    SNTP --&gt; NET
+    HTTP --&gt; HTTPD
+    CLK --&gt; KWORK
+    SNTP --&gt; KWORK
+    FS --&gt; KTIMER
+    HTTP --&gt; KSPIN
+    SR --&gt; KMUX
+    LVGL --&gt; LVGLLIB
+
+    style APP fill:#dbeafe,stroke:#3b82f6
+    style LIBS fill:#dcfce7,stroke:#16a34a
+    style CHANNELS fill:#fef9c3,stroke:#ca8a04
+    style SENSORS fill:#f0fdf4,stroke:#16a34a
+    style SERVICES fill:#f0fdf4,stroke:#16a34a
+    style RTOS fill:#fce7f3,stroke:#db2777
+    </div>
+  </div>
+
+  <h2>zbus Channel Map</h2>
+  <div class="diagram">
+    <div class="mermaid">
+graph LR
+    subgraph TRIGGERS[&quot;Trigger Sources&quot;]
+        TMR[&quot;fake_sensors_timer\nk_timer periodic&quot;]
+        BOOT[&quot;SYS_INIT startup\none-shot at boot&quot;]
+        HTTP_CFG[&quot;HTTP POST /api/config\ninterval change&quot;]
+        BTN[&quot;button ISR\n(future)&quot;]
+        MQTT_CMD[&quot;MQTT command\n(future)&quot;]
+    end
+
+    subgraph CHAN_T[&quot;sensor_trigger_chan (zbus)&quot;]
+        ST[&quot;struct sensor_trigger_event\n{ source, target_uid }&quot;]
+    end
+
+    subgraph SENSORS[&quot;Sensor Listeners&quot;]
+        FT[&quot;fake_temperature\nlistener&quot;]
+        FH[&quot;fake_humidity\nlistener&quot;]
+        RD[&quot;real drivers\n(future)&quot;]
+    end
+
+    subgraph CHAN_E[&quot;sensor_event_chan (zbus)&quot;]
+        SE[&quot;struct env_sensor_data\n{ uid, type, q31_value, timestamp_ms }&quot;]
+    end
+
+    subgraph CONSUMERS[&quot;Event Consumers&quot;]
+        GWL[&quot;gateway listener\nLOG_INF per event&quot;]
+        HTTPL[&quot;http_dashboard\nring buffer append&quot;]
+        MQTTP[&quot;MQTT publisher\n(future)&quot;]
+        FLASH[&quot;flash storage\n(future)&quot;]
+        DISP[&quot;display manager\n(future)&quot;]
+    end
+
+    TMR --&gt;|pub K_NO_WAIT| ST
+    BOOT --&gt;|pub K_NO_WAIT| ST
+    HTTP_CFG -.-&gt;|reschedule timer| TMR
+    BTN --&gt;|pub K_NO_WAIT| ST
+    MQTT_CMD --&gt;|pub K_NO_WAIT| ST
+
+    ST --&gt;|sub| FT
+    ST --&gt;|sub| FH
+    ST --&gt;|sub| RD
+
+    FT --&gt;|pub K_NO_WAIT| SE
+    FH --&gt;|pub K_NO_WAIT| SE
+    RD --&gt;|pub K_NO_WAIT| SE
+
+    SE --&gt;|sub| GWL
+    SE --&gt;|sub| HTTPL
+    SE --&gt;|sub| MQTTP
+    SE --&gt;|sub| FLASH
+    SE --&gt;|sub| DISP
+
+    style CHAN_T fill:#fef9c3,stroke:#ca8a04
+    style CHAN_E fill:#fef9c3,stroke:#ca8a04
+    style TRIGGERS fill:#dbeafe,stroke:#3b82f6
+    style SENSORS fill:#dcfce7,stroke:#16a34a
+    style CONSUMERS fill:#fce7f3,stroke:#db2777
+    </div>
+  </div>
+
+  <h2>Sensor Data Flow (Event-Driven)</h2>
+  <div class="diagram">
+    <div class="mermaid">
+sequenceDiagram
+    participant TMR as fake_sensors_timer&lt;br/&gt;(k_timer ISR)
+    participant TRIG as sensor_trigger_chan&lt;br/&gt;(zbus)
+    participant FTEMP as fake_temperature&lt;br/&gt;(zbus listener)
+    participant FHUM as fake_humidity&lt;br/&gt;(zbus listener)
+    participant EVCHAN as sensor_event_chan&lt;br/&gt;(zbus)
+    participant GW as gateway listener&lt;br/&gt;(LOG_INF)
+    participant DASH as http_dashboard&lt;br/&gt;(ring buffer)
+    participant BROWSER as Browser&lt;br/&gt;GET /api/data
+
+    Note over TMR: Every AUTO_PUBLISH_MS
+    TMR-&gt;&gt;TRIG: pub sensor_trigger_event&lt;br/&gt;{ source=TIMER, target_uid=0 }
+
+    Note over TRIG,FHUM: zbus dispatches to all listeners
+    TRIG-&gt;&gt;FTEMP: listener callback
+    FTEMP-&gt;&gt;FTEMP: read milli-°C → Q31 encode
+    FTEMP-&gt;&gt;EVCHAN: pub env_sensor_data&lt;br/&gt;{ uid, TEMPERATURE, q31, ts }
+
+    TRIG-&gt;&gt;FHUM: listener callback
+    FHUM-&gt;&gt;FHUM: read milli-%RH → Q31 encode
+    FHUM-&gt;&gt;EVCHAN: pub env_sensor_data&lt;br/&gt;{ uid, HUMIDITY, q31, ts }
+
+    Note over EVCHAN,DASH: zbus dispatches to all subscribers
+    EVCHAN-&gt;&gt;GW: listener callback → LOG_INF
+    EVCHAN-&gt;&gt;DASH: listener callback
+
+    Note over DASH: acquire k_spinlock
+    DASH-&gt;&gt;DASH: append (ts, q31) to ring buffer
+    Note over DASH: release k_spinlock
+
+    Note over BROWSER,DASH: Later — HTTP GET /api/data
+    BROWSER-&gt;&gt;DASH: HTTP GET /api/data
+    Note over DASH: acquire k_spinlock
+    DASH-&gt;&gt;DASH: memcpy snapshot
+    Note over DASH: release k_spinlock
+    DASH-&gt;&gt;DASH: serialize snapshot → JSON&lt;br/&gt;(no lock held)
+    DASH--&gt;&gt;BROWSER: 200 OK { sensors: [...] }
+    </div>
+  </div>
+
+  <h2>Library Dependency Graph</h2>
+  <div class="diagram">
+    <div class="mermaid">
+graph TD
+    APP[&quot;apps/gateway\n(application)&quot;]
+
+    SE[&quot;sensor_event\nenv_sensor_data + chan&quot;]
+    ST[&quot;sensor_trigger\ntrigger event + chan&quot;]
+    SR[&quot;sensor_registry\nuid → metadata&quot;]
+    FS[&quot;fake_sensors\nDT-driven drivers&quot;]
+    SNTP[&quot;sntp_sync\nwall-clock SNTP&quot;]
+    HTTP[&quot;http_dashboard\nweb dashboard + API&quot;]
+    CLK[&quot;clock_display\nHH:MM ticker&quot;]
+    LVGL[&quot;lvgl_display\nSDL window&quot;]
+
+    ZBUS([&quot;ZBUS\n(Zephyr)&quot;])
+    NET([&quot;NETWORKING\n(Zephyr)&quot;])
+    HTTPD([&quot;HTTP_SERVER\n(Zephyr)&quot;])
+    LVGLLIB([&quot;LVGL + DISPLAY\n(Zephyr)&quot;])
+    SNTPLIB([&quot;SNTP\n(Zephyr)&quot;])
+
+    APP --&gt;|Kconfig| SE
+    APP --&gt;|Kconfig| ST
+    APP --&gt;|Kconfig| SR
+    APP --&gt;|Kconfig| FS
+    APP --&gt;|Kconfig| SNTP
+    APP --&gt;|Kconfig| HTTP
+    APP --&gt;|Kconfig| CLK
+    APP --&gt;|Kconfig| LVGL
+
+    FS --&gt; SE
+    FS --&gt; ST
+    FS --&gt; SR
+
+    HTTP --&gt; SE
+    HTTP --&gt; SR
+    HTTP --&gt; HTTPD
+
+    SE --&gt; ZBUS
+    ST --&gt; ZBUS
+    SR --&gt; ZBUS
+
+    SNTP --&gt; NET
+    SNTP --&gt; SNTPLIB
+    HTTP --&gt; NET
+
+    LVGL --&gt; LVGLLIB
+
+    style APP fill:#dbeafe,stroke:#3b82f6
+    style ZBUS fill:#fce7f3,stroke:#db2777
+    style NET fill:#fce7f3,stroke:#db2777
+    style HTTPD fill:#fce7f3,stroke:#db2777
+    style LVGLLIB fill:#fce7f3,stroke:#db2777
+    style SNTPLIB fill:#fce7f3,stroke:#db2777
+    </div>
+  </div>
+
+  <h2>SYS_INIT Boot Sequence (APPLICATION Priority)</h2>
+  <div class="diagram">
+    <div class="mermaid">
+sequenceDiagram
+    participant KERNEL as Zephyr Kernel
+    participant SNTP as sntp_sync&lt;br/&gt;priority 80
+    participant FT as fake_temperature&lt;br/&gt;priority 90
+    participant FH as fake_humidity&lt;br/&gt;priority 91
+    participant GW as gateway_init&lt;br/&gt;priority 95
+    participant DASH as http_dashboard&lt;br/&gt;priority 97
+    participant TMR as fake_sensors_timer&lt;br/&gt;priority 99
+    participant CLK as clock_display&lt;br/&gt;priority 99
+    participant MAIN as main()
+
+    KERNEL-&gt;&gt;SNTP: sntp_sync_init()
+    SNTP-&gt;&gt;SNTP: initial SNTP query (blocking)
+    SNTP-&gt;&gt;SNTP: schedule periodic_work (K_SECONDS(3600))
+    SNTP--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;FT: fake_temperature_init()
+    FT-&gt;&gt;FT: sensor_registry_register(uid, ...)
+    FT-&gt;&gt;FT: zbus_chan_add_obs(sensor_trigger_chan)
+    FT-&gt;&gt;FT: pub sensor_trigger_event(STARTUP)
+    FT--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;FH: fake_humidity_init()
+    FH-&gt;&gt;FH: sensor_registry_register(uid, ...)
+    FH-&gt;&gt;FH: zbus_chan_add_obs(sensor_trigger_chan)
+    FH-&gt;&gt;FH: pub sensor_trigger_event(STARTUP)
+    FH--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;GW: gateway_init()
+    GW-&gt;&gt;GW: zbus_chan_add_obs(sensor_event_chan)
+    GW-&gt;&gt;GW: LOG_INF(&quot;Gateway started&quot;)
+    GW--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;DASH: http_dashboard_init()
+    DASH-&gt;&gt;DASH: zbus_chan_add_obs(sensor_event_chan)
+    DASH-&gt;&gt;DASH: HTTP_SERVICE start on port 8080
+    DASH--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;TMR: fake_sensors_timer_init()
+    TMR-&gt;&gt;TMR: k_timer_start(AUTO_PUBLISH_MS)
+    TMR--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;CLK: clock_display_init()
+    CLK-&gt;&gt;CLK: k_work_reschedule(K_NO_WAIT)
+    CLK--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;MAIN: main()
+    Note over MAIN: if CONFIG_LVGL_DISPLAY:&lt;br/&gt;  lvgl_display_run() — never returns&lt;br/&gt;else:&lt;br/&gt;  k_sleep(K_FOREVER)
+    </div>
+  </div>
+
+  <h2>HTTP Dashboard — POST /api/config Side-Effects</h2>
+  <div class="diagram">
+    <div class="mermaid">
+sequenceDiagram
+    participant BR as Browser
+    participant HTTP as HTTP Server Thread
+    participant FS as fake_sensors_timer
+    participant SNTP as sntp_sync
+    participant SR as sensor_registry
+
+    BR-&gt;&gt;HTTP: POST /api/config&lt;br/&gt;trigger_interval_ms=2000&lt;br/&gt;sntp_server=ntp.ubuntu.com&lt;br/&gt;action=sntp_resync&lt;br/&gt;sensor_1_name=Kitchen
+
+    Note over HTTP: Parse URL-encoded body
+
+    alt trigger_interval_ms present
+        HTTP-&gt;&gt;FS: fake_sensors_set_auto_publish_ms(2000)
+        FS-&gt;&gt;FS: k_timer_start(&amp;g_auto_timer,&lt;br/&gt;K_MSEC(2000), K_MSEC(2000))
+    end
+
+    alt sntp_server present
+        HTTP-&gt;&gt;HTTP: update sntp_server_buf
+    end
+
+    alt action=sntp_resync
+        HTTP-&gt;&gt;SNTP: sntp_sync_trigger_resync()
+        SNTP-&gt;&gt;SNTP: k_work_reschedule(&amp;immediate_work, K_NO_WAIT)
+        Note over SNTP: Runs async in work queue&lt;br/&gt;performs SNTP query
+    end
+
+    alt sensor_&lt;uid&gt;_name present and USER_META enabled
+        HTTP-&gt;&gt;SR: sensor_registry_set_meta(uid, .display_name=&quot;Kitchen&quot;)
+        alt SETTINGS enabled
+            SR-&gt;&gt;SR: settings_save_subtree(...)
+        end
+    end
+
+    HTTP--&gt;&gt;BR: 303 See Other → /config
+    </div>
+  </div>
+
+  <footer>Generated by generate-diagrams.sh (html backend)</footer>
+  <script>mermaid.initialize({{ startOnLoad: true, theme: 'neutral' }});</script>
+</body>
+</html>
