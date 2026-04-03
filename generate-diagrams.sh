@@ -1,0 +1,216 @@
+#!/usr/bin/env bash
+# generate-diagrams.sh
+#
+# Renders all Mermaid diagram sources under docs/architecture/diagrams/
+# into SVG (default) or PNG files under docs/architecture/diagrams/rendered/.
+#
+# Supported backends (tried in order):
+#   1. mmdc       — @mermaid-js/mermaid-cli (npm install -g @mermaid-js/mermaid-cli)
+#   2. Docker     — docker run minlag/mermaid-js (no local install needed)
+#   3. Preview    — generates a standalone HTML file viewable in any browser
+#
+# Usage:
+#   ./generate-diagrams.sh           # auto-detect backend, render SVG
+#   ./generate-diagrams.sh --png     # render PNG (mmdc/Docker only)
+#   ./generate-diagrams.sh --html    # force HTML preview output
+#   ./generate-diagrams.sh --check   # print detected backend and exit
+#
+# Installing mmdc (recommended):
+#   npm install -g @mermaid-js/mermaid-cli
+#   # or locally inside the repo:
+#   npm install @mermaid-js/mermaid-cli
+#   export PATH="$PWD/node_modules/.bin:$PATH"
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DIAGRAM_DIR="${SCRIPT_DIR}/docs/architecture/diagrams"
+RENDER_DIR="${DIAGRAM_DIR}/rendered"
+
+FORMAT="svg"
+FORCE_HTML=false
+
+for arg in "$@"; do
+    case "${arg}" in
+        --png)  FORMAT="png" ;;
+        --html) FORCE_HTML=true ;;
+        --check) : ;;  # handled below
+    esac
+done
+
+DIAGRAMS=(
+    system-overview
+    zbus-channels
+    data-flow
+    library-deps
+    init-sequence
+    http-flow
+)
+
+# ── Backend detection ─────────────────────────────────────────────────────────
+
+detect_backend() {
+    if command -v mmdc &>/dev/null; then
+        echo "mmdc"
+    elif command -v docker &>/dev/null && docker info &>/dev/null 2>&1; then
+        echo "docker"
+    else
+        echo "html"
+    fi
+}
+
+BACKEND="$(detect_backend)"
+[[ "${FORCE_HTML}" == "true" ]] && BACKEND="html"
+
+if [[ "${1:-}" == "--check" ]]; then
+    echo "Backend : ${BACKEND}"
+    case "${BACKEND}" in
+        mmdc)   echo "Version : $(mmdc --version 2>/dev/null || echo unknown)" ;;
+        docker) echo "Docker  : $(docker --version)" ;;
+        html)   echo "Note    : install mmdc or Docker for SVG/PNG output" ;;
+    esac
+    exit 0
+fi
+
+# ── Render helpers ────────────────────────────────────────────────────────────
+
+render_mmdc() {
+    local src="$1" out="$2"
+    mmdc --input "${src}" --output "${out}" --backgroundColor transparent --quiet 2>/dev/null
+}
+
+render_docker() {
+    local src="$1" out="$2"
+    docker run --rm \
+        -v "${DIAGRAM_DIR}:/data" \
+        minlag/mermaid-js \
+        -i "/data/$(basename "${src}")" \
+        -o "/data/rendered/$(basename "${out}")" \
+        --backgroundColor transparent \
+        --quiet 2>/dev/null
+}
+
+render_html() {
+    # Generates a single standalone HTML file with all diagrams embedded.
+    local out="${RENDER_DIR}/diagrams-preview.html"
+    mkdir -p "${RENDER_DIR}"
+    python3 - "${DIAGRAM_DIR}" "${out}" "${DIAGRAMS[@]}" <<'PYEOF'
+import sys, os, html
+
+diagram_dir = sys.argv[1]
+out_path    = sys.argv[2]
+names       = sys.argv[3:]
+
+blocks = []
+for name in names:
+    src = os.path.join(diagram_dir, f"{name}.mmd")
+    if not os.path.isfile(src):
+        continue
+    with open(src) as f:
+        content = f.read()
+    # Strip frontmatter (--- ... ---)
+    lines = content.splitlines()
+    if lines and lines[0].strip() == "---":
+        end = next((i for i, l in enumerate(lines[1:], 1) if l.strip() == "---"), -1)
+        title = next((l.split(":",1)[1].strip() for l in lines[1:end] if l.startswith("title:")), name)
+        content = "\n".join(lines[end+1:]).strip()
+    else:
+        title = name
+    blocks.append((name, title, content))
+
+page = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather-Station Architecture Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <style>
+    body {{ font-family: system-ui, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; background: #f8fafc; color: #1e293b; }}
+    h1   {{ border-bottom: 2px solid #3b82f6; padding-bottom: .5rem; }}
+    h2   {{ margin-top: 2.5rem; color: #1d4ed8; }}
+    .diagram {{ background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; overflow-x: auto; }}
+    .mermaid {{ text-align: center; }}
+    footer {{ margin-top: 3rem; font-size: .85rem; color: #94a3b8; text-align: center; }}
+  </style>
+</head>
+<body>
+  <h1>Weather-Station Architecture Diagrams</h1>
+  <p>Generated from Mermaid sources in <code>docs/architecture/diagrams/</code>.<br>
+     For SVG/PNG output install <code>mmdc</code>: <code>npm install -g @mermaid-js/mermaid-cli</code></p>
+"""
+
+for name, title, content in blocks:
+    page += f"""
+  <h2>{html.escape(title)}</h2>
+  <div class="diagram">
+    <div class="mermaid">
+{html.escape(content)}
+    </div>
+  </div>
+"""
+
+page += """
+  <footer>Generated by generate-diagrams.sh (html backend)</footer>
+  <script>mermaid.initialize({{ startOnLoad: true, theme: 'neutral' }});</script>
+</body>
+</html>
+"""
+
+with open(out_path, "w") as f:
+    f.write(page)
+print(f"Written: {out_path}")
+PYEOF
+}
+
+# ── Main render loop ──────────────────────────────────────────────────────────
+
+mkdir -p "${RENDER_DIR}"
+
+if [[ "${BACKEND}" == "html" ]]; then
+    echo "Backend: html (browser preview)"
+    render_html
+    echo ""
+    echo "Open in browser: ${RENDER_DIR}/diagrams-preview.html"
+    exit 0
+fi
+
+echo "Backend: ${BACKEND} (format: ${FORMAT})"
+echo ""
+
+ok=0
+fail=0
+
+for name in "${DIAGRAMS[@]}"; do
+    src="${DIAGRAM_DIR}/${name}.mmd"
+    out="${RENDER_DIR}/${name}.${FORMAT}"
+
+    if [[ ! -f "${src}" ]]; then
+        echo "SKIP  ${name}.mmd (not found)"
+        continue
+    fi
+
+    printf "%-40s -> %-30s ... " "${name}.mmd" "${name}.${FORMAT}"
+
+    render_ok=false
+    case "${BACKEND}" in
+        mmdc)   render_mmdc   "${src}" "${out}" && render_ok=true ;;
+        docker) render_docker "${src}" "${out}" && render_ok=true ;;
+    esac
+
+    if ${render_ok}; then
+        echo "OK"
+        (( ok++ )) || true
+    else
+        echo "FAILED"
+        (( fail++ )) || true
+    fi
+done
+
+echo ""
+echo "Done: ${ok} rendered, ${fail} failed."
+echo "Output: ${RENDER_DIR}/"
+
+if [[ "${fail}" -gt 0 ]]; then
+    exit 1
+fi

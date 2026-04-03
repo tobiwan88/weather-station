@@ -38,12 +38,13 @@ in simulation.
 The development progression is:
 
 ```
-Phase 1: native_sim         Phase 2: Renode            Phase 3: Real hardware
-─────────────────────       ─────────────────          ─────────────────────
-Single binary               Two binaries in            Real MCU boards
-Full app logic              simulated network           Full integration
-Shell interaction           Multi-node test             Flash + debug
-Fast iteration              Automated assertions        Production config
+Phase 1: native_sim  ◄── CURRENT     Phase 2: Renode            Phase 3: Real hardware
+─────────────────────                ─────────────────          ─────────────────────
+Single binary                        Two binaries in            Real MCU boards
+Full app logic                       simulated network          Full integration
+Shell interaction                    Multi-node test            Flash + debug
+Fast iteration                       Automated assertions       Production config
+                                     (see backlog [RENODE-PHASE2])
 ```
 
 ### What works on native_sim without any change
@@ -138,38 +139,12 @@ natively:
 
 No emulator setup, no QEMU, no hardware. Tests complete in seconds.
 
-### Transition to Renode (Phase 2)
+### Future phases
 
-Renode simulates multiple Zephyr nodes with a virtual radio medium. When the
-LoRa stub on native_sim is replaced with a proper Renode platform description,
-end-to-end multi-node tests run automatically in CI:
-
-```
-# simulation/multi_node.resc
-mach create "sensor_node"
-machine LoadPlatformDescription @nrf52840.repl
-sysbus LoadELF @artifacts/sensor_node.elf
-
-mach create "gateway"
-machine LoadPlatformDescription @nrf52840.repl
-sysbus LoadELF @artifacts/gateway.elf
-
-emulation CreateWirelessMedium "lora_medium"
-# ... connect radios to medium
-```
-
-The Renode phase requires MCU selection (ADR-007 trigger) and is not in scope
-for v1.
-
-### Transition to real hardware (Phase 3)
-
-Adding a real hardware target requires:
-1. Write `boards/<vendor>/<board>/` board definition (or use an upstream one).
-2. Write `apps/gateway/boards/<board>.overlay` and `<board>.conf`.
-3. Set `CONFIG_FAKE_SENSORS=n`, `CONFIG_BME280=y`, `CONFIG_I2C=y`, etc.
-4. Add a new row to the CI build matrix.
-
-Application source code (`lib/`, `apps/*/src/`) is unchanged.
+Phase 2 (Renode multi-node simulation) and Phase 3 (real hardware) are out of
+scope until the native_sim architecture is validated end-to-end. See backlog
+item `[RENODE-PHASE2]` for the Renode transition plan. Real hardware requires
+MCU selection (ADR-007 trigger) before board definitions can be written.
 
 ---
 

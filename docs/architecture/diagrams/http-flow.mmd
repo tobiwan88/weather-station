@@ -1,0 +1,37 @@
+---
+title: HTTP Dashboard — POST /api/config Side-Effects
+---
+sequenceDiagram
+    participant BR as Browser
+    participant HTTP as HTTP Server Thread
+    participant FS as fake_sensors_timer
+    participant SNTP as sntp_sync
+    participant SR as sensor_registry
+
+    BR->>HTTP: POST /api/config<br/>trigger_interval_ms=2000<br/>sntp_server=ntp.ubuntu.com<br/>action=sntp_resync<br/>sensor_1_name=Kitchen
+
+    Note over HTTP: Parse URL-encoded body
+
+    alt trigger_interval_ms present
+        HTTP->>FS: fake_sensors_set_auto_publish_ms(2000)
+        FS->>FS: k_timer_start(&g_auto_timer,<br/>K_MSEC(2000), K_MSEC(2000))
+    end
+
+    alt sntp_server present
+        HTTP->>HTTP: update sntp_server_buf
+    end
+
+    alt action=sntp_resync
+        HTTP->>SNTP: sntp_sync_trigger_resync()
+        SNTP->>SNTP: k_work_reschedule(&immediate_work, K_NO_WAIT)
+        Note over SNTP: Runs async in work queue<br/>performs SNTP query
+    end
+
+    alt sensor_<uid>_name present and USER_META enabled
+        HTTP->>SR: sensor_registry_set_meta(uid, .display_name="Kitchen")
+        alt SETTINGS enabled
+            SR->>SR: settings_save_subtree(...)
+        end
+    end
+
+    HTTP-->>BR: 303 See Other → /config

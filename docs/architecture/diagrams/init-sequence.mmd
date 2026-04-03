@@ -1,0 +1,51 @@
+---
+title: SYS_INIT Boot Sequence (APPLICATION Priority)
+---
+sequenceDiagram
+    participant KERNEL as Zephyr Kernel
+    participant SNTP as sntp_sync<br/>priority 80
+    participant FT as fake_temperature<br/>priority 90
+    participant FH as fake_humidity<br/>priority 91
+    participant GW as gateway_init<br/>priority 95
+    participant DASH as http_dashboard<br/>priority 97
+    participant TMR as fake_sensors_timer<br/>priority 99
+    participant CLK as clock_display<br/>priority 99
+    participant MAIN as main()
+
+    KERNEL->>SNTP: sntp_sync_init()
+    SNTP->>SNTP: initial SNTP query (blocking)
+    SNTP->>SNTP: schedule periodic_work (K_SECONDS(3600))
+    SNTP-->>KERNEL: return 0
+
+    KERNEL->>FT: fake_temperature_init()
+    FT->>FT: sensor_registry_register(uid, ...)
+    FT->>FT: zbus_chan_add_obs(sensor_trigger_chan)
+    FT->>FT: pub sensor_trigger_event(STARTUP)
+    FT-->>KERNEL: return 0
+
+    KERNEL->>FH: fake_humidity_init()
+    FH->>FH: sensor_registry_register(uid, ...)
+    FH->>FH: zbus_chan_add_obs(sensor_trigger_chan)
+    FH->>FH: pub sensor_trigger_event(STARTUP)
+    FH-->>KERNEL: return 0
+
+    KERNEL->>GW: gateway_init()
+    GW->>GW: zbus_chan_add_obs(sensor_event_chan)
+    GW->>GW: LOG_INF("Gateway started")
+    GW-->>KERNEL: return 0
+
+    KERNEL->>DASH: http_dashboard_init()
+    DASH->>DASH: zbus_chan_add_obs(sensor_event_chan)
+    DASH->>DASH: HTTP_SERVICE start on port 8080
+    DASH-->>KERNEL: return 0
+
+    KERNEL->>TMR: fake_sensors_timer_init()
+    TMR->>TMR: k_timer_start(AUTO_PUBLISH_MS)
+    TMR-->>KERNEL: return 0
+
+    KERNEL->>CLK: clock_display_init()
+    CLK->>CLK: k_work_reschedule(K_NO_WAIT)
+    CLK-->>KERNEL: return 0
+
+    KERNEL->>MAIN: main()
+    Note over MAIN: if CONFIG_LVGL_DISPLAY:<br/>  lvgl_display_run() — never returns<br/>else:<br/>  k_sleep(K_FOREVER)

@@ -79,15 +79,44 @@ struct env_sensor_data {
 };
 ```
 
-Size: **16 bytes** — fits comfortably in a zbus message, a LoRa packet sample,
-and a flash log record.
+Size: **20 bytes on 32-bit, 24 bytes on 64-bit** (4-byte alignment padding before
+`int64_t`). The struct is intentionally kept small — new sensor types extend
+`enum sensor_type` only; the struct fields never change. Exact size may grow
+if fields are added in future, but the flat, pointer-free layout is a hard
+constraint.
 
 ### The `sensor_uid` contract
 
-`sensor_uid` is assigned in devicetree and never changes across firmware
-updates or reboots. It is the stable identity of a *physical measurement source*
-— not a device. A BME280 with both temperature and humidity channels has
-**two** sensor UIDs.
+`sensor_uid` is the stable identity of a *physical measurement source* — not a
+device. A BME280 with both temperature and humidity channels has **two** sensor
+UIDs. UIDs are stable across firmware updates and reboots (see assignment rules
+below).
+
+The `sensor_registry` library maps UIDs to metadata at runtime. It is the
+single source of truth for everything a consumer needs to interpret an event:
+
+```c
+/* All lookups go through sensor_registry — never hardcode UIDs in consumers */
+const char *label    = sensor_registry_get_label(uid);      /* "Indoor Temp" */
+const char *location = sensor_registry_get_location(uid);   /* "living_room" */
+sensor_scaling_t sc  = sensor_registry_get_scaling(uid);    /* Q31 decode params */
+
+/* Decode Q31 → physical value using per-UID scaling */
+double temp_c = sc.range_min + ((double)evt.q31_value / INT32_MAX)
+                * (sc.range_max - sc.range_min);
+```
+
+`sensor_scaling_t` carries the physical range (`range_min`, `range_max`) for
+the specific sensor variant. This is necessary because two sensors of the same
+`sensor_type` may cover different physical ranges — a standard indoor
+temperature sensor spans −40 °C to +85 °C, while an industrial variant might
+span −200 °C to +500 °C. Both publish `SENSOR_TYPE_TEMPERATURE` events; the
+correct decode parameters come from the registry, not from the type enum.
+
+### UID assignment — local sensors
+
+Local sensors (connected via I2C/SPI/GPIO) are assigned UIDs in devicetree.
+The UID never changes.
 
 ```dts
 /* native_sim.overlay */
@@ -101,48 +130,85 @@ fake_hum_indoor: fake_humidity@0 {
 };
 ```
 
-The `sensor_registry` library maps UIDs to metadata (location string, label)
-at runtime. Display and MQTT code look up metadata by UID — they never
-hardcode locations.
+Local UIDs live in the range `0x0001–0x0FFF`. Uniqueness is enforced by
+convention (maintained in `docs/sensor-uid-registry.md`). A build-time
+assertion or linker table check is a future improvement — see backlog item
+`[SENSOR-REGISTRY-REMOTE-UID]`.
+
+### UID assignment — remote sensors
+
+Remote sensors (LoRa, BLE) cannot be pre-defined in the gateway's devicetree.
+Their UIDs are **pseudo-randomly generated at first registration** and persisted
+via the Zephyr settings subsystem so they survive gateway reboots.
+
+Assignment flow:
+
+```
+Remote node announces itself (LoRa packet with node_id)
+        │
+        ▼
+sensor_registry_register_remote(node_id, sensor_type, scaling)
+        │
+        ├─ settings_load("sens/rem/<node_id>") ──► UID found → reuse it
+        │
+        └─ UID not found:
+               generate pseudo-random UID in range 0x1000–0xFFFF
+               collision-check against all registered UIDs
+               settings_save("sens/rem/<node_id>", uid)
+               register in registry with provided scaling
+```
+
+Remote UIDs occupy the range `0x1000–0xFFFF`. The node_id (e.g. LoRa device
+address or BLE MAC) is the stable key used to retrieve or generate the UID.
+See backlog item `[SENSOR-REGISTRY-REMOTE-UID]` for implementation tasks.
 
 ### Q31 encoding
 
 Q31 represents a signed value in the range **[-1.0, +1.0)** as a 32-bit
-integer. Each sensor type maps its physical range onto this interval:
+integer. Each sensor maps its physical range onto this interval. The ranges
+below are **standard defaults** registered for well-known sensor variants; a
+sensor with a different physical range registers its own `range_min`/`range_max`
+in `sensor_registry` and consumers decode via `sensor_registry_get_scaling(uid)`.
 
 ```
-                   Physical range        Q31 encoding
-                   ──────────────        ────────────
-TEMPERATURE:   [-40°C .. +85°C]   →   [-1.0 .. +1.0)
-  Formula:  q31 = (temp_c - (-40)) / 125 * INT32_MAX
-  Inverse:  temp_c = q31 / INT32_MAX * 125 + (-40)
+                   Default physical range   Q31 encoding
+                   ──────────────────────   ────────────
+TEMPERATURE:   [-40°C .. +85°C]          →   [-1.0 .. +1.0)
+  Encode:  q31 = (temp_c - (-40)) / 125 * INT32_MAX
+  Decode:  temp_c = q31 / INT32_MAX * 125 + (-40)
 
-HUMIDITY:       [0%RH .. 100%RH]  →   [0.0 .. +1.0)
-  Formula:  q31 = humidity / 100 * INT32_MAX
-  Inverse:  humidity = q31 / INT32_MAX * 100
+HUMIDITY:       [0%RH .. 100%RH]         →   [0.0 .. +1.0)
+  Encode:  q31 = humidity / 100 * INT32_MAX
+  Decode:  humidity = q31 / INT32_MAX * 100
 
-PRESSURE:   [300hPa .. 1100hPa]   →   [-1.0 .. +1.0)
-  Formula:  q31 = (press_hpa - 700) / 400 * INT32_MAX
-  Inverse:  press_hpa = q31 / INT32_MAX * 400 + 700
+PRESSURE:   [300hPa .. 1100hPa]          →   [-1.0 .. +1.0)
+  Encode:  q31 = (press_hpa - 700) / 400 * INT32_MAX
+  Decode:  press_hpa = q31 / INT32_MAX * 400 + 700
 ```
 
-The encode/decode helpers in `include/common/q31.h` use **integer arithmetic
-only** for the hot path (sensor driver → zbus publish):
+The encode helpers in `include/common/q31.h` use **integer arithmetic only**
+for the hot path (sensor driver → zbus publish). Decode uses float and is
+acceptable only in display/MQTT code:
 
 ```c
 /* Integer-only encode — safe in any context */
 static inline int32_t temperature_c_x1000_to_q31(int32_t temp_milli_c)
 {
-    /* range: -40000 .. +85000 milli-°C */
+    /* default range: -40000 .. +85000 milli-°C */
     int64_t shifted = (int64_t)(temp_milli_c + 40000);   /* 0 .. 125000 */
     return (int32_t)((shifted * INT32_MAX) / 125000);
 }
 
-/* Float decode — acceptable in display/MQTT code only */
-static inline double q31_to_temperature_c(int32_t q31) {
-    return ((double)q31 / (double)INT32_MAX) * 125.0 - 40.0;
+/* Float decode — use sensor_registry_get_scaling(uid) for non-default ranges */
+static inline double q31_to_physical(int32_t q31, double range_min, double range_max)
+{
+    return range_min + ((double)q31 / (double)INT32_MAX) * (range_max - range_min);
 }
 ```
+
+**Rule:** display and MQTT code must always retrieve scaling via
+`sensor_registry_get_scaling(uid)` and pass the result to `q31_to_physical()`.
+Never hardcode `125.0` or `-40.0` outside of default sensor registration.
 
 ### Granularity example
 
@@ -198,9 +264,13 @@ the new type simply ignore the event (pattern: `switch(evt.type) { ... default: 
 - Only scalar (single-number) measurements fit this model. Vector or
   composite measurements (e.g. accelerometer XYZ) need a different approach
   — define a new channel with a suitable struct rather than overloading this one.
-- `sensor_uid` values must be allocated carefully. A uid collision between two
-  physical sensors will corrupt display routing. Maintain a uid registry table
-  in the project documentation.
+- Local `sensor_uid` values must be allocated carefully. A uid collision
+  between two physical sensors will corrupt display routing. Maintain the
+  uid registry in `docs/sensor-uid-registry.md`; local range `0x0001–0x0FFF`.
+- Remote sensors depend on `CONFIG_SETTINGS` being enabled and a suitable
+  settings backend (NVS on flash, or a RAM stub for native_sim). If settings
+  are unavailable at registration time, the remote sensor cannot be given a
+  stable UID and must be deferred until storage is ready.
 
 ---
 
