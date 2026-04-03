@@ -211,60 +211,59 @@ in a library. Code may stay in `apps/*/src/` when it satisfies **both**:
 | Display layout logic | Library (`lib/display_manager`) | Another app might use the same display |
 | Q31 encode/decode helpers | Library (`lib/sensor_event`) | Needed by every sensor driver |
 | LoRa channel config specific to this deployment | App | Deployment-specific, not a reusable abstraction |
+| Sensor event console logging | Library (`lib/sensor_event_log`) | Both gateway and sensor-node needed identical logging — duplication proved reuse value |
 
 **Rule of thumb:** if you find yourself wanting to write a Kconfig symbol for
 it, it belongs in a library. If it would be nonsensical to reuse it in any
 other app, it can stay in `apps/*/src/`.
 
-Current `apps/gateway/src/main.c`:
+Current `apps/gateway/src/main.c` (31 lines — well within 50-line rule):
 
 ```c
-/*
- * Gateway application entry point.
- * All modules initialise themselves via SYS_INIT().
- * main() only starts the sampling timer and sleeps.
- */
+/* SPDX-License-Identifier: Apache-2.0 */
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <common/sensor_trigger.h>
 
-LOG_MODULE_REGISTER(main, CONFIG_LOG_DEFAULT_LEVEL);
+#if CONFIG_LVGL_DISPLAY
+#	include <lvgl_display/lvgl_display.h>
+#endif
 
-static void trigger_timer_fn(struct k_timer *t)
-{
-    ARG_UNUSED(t);
-    struct sensor_trigger_event evt = {
-        .source     = TRIGGER_SOURCE_TIMER,
-        .target_uid = 0,
-    };
-    int rc = zbus_chan_pub(&sensor_trigger_chan, &evt, K_NO_WAIT);
-    if (rc != 0) {
-        LOG_WRN("trigger publish failed: %d", rc);
-    }
-}
-K_TIMER_DEFINE(sensor_poll_timer, trigger_timer_fn, NULL);
+LOG_MODULE_REGISTER(gateway, LOG_LEVEL_INF);
 
 int main(void)
 {
-    LOG_INF("Weather Station Gateway v%s starting", STRINGIFY(APP_VERSION));
-
-    /* Initial trigger — read sensors immediately on boot */
-    struct sensor_trigger_event boot_evt = {
-        .source     = TRIGGER_SOURCE_STARTUP,
-        .target_uid = 0,
-    };
-    zbus_chan_pub(&sensor_trigger_chan, &boot_evt, K_MSEC(500));
-
-    /* Periodic trigger — every CONFIG_SENSOR_POLL_INTERVAL_S seconds */
-    k_timer_start(&sensor_poll_timer,
-                  K_SECONDS(CONFIG_SENSOR_POLL_INTERVAL_S),
-                  K_SECONDS(CONFIG_SENSOR_POLL_INTERVAL_S));
-
-    LOG_INF("Polling every %ds", CONFIG_SENSOR_POLL_INTERVAL_S);
-    k_sleep(K_FOREVER);
-    return 0;
+	LOG_INF("weather-station gateway v0.1.0");
+#if CONFIG_LVGL_DISPLAY
+	lvgl_display_run(); /* never returns; SDL must run on main thread */
+#else
+	k_sleep(K_FOREVER);
+#endif
+	return 0;
 }
-/* 44 lines — well within 50-line rule */
+```
+
+### ADR-008-REVIEW resolution (2026-04-03)
+
+Both `apps/gateway/src/main.c` (previously 77 lines) and
+`apps/sensor-node/src/main.c` (previously 66 lines) exceeded the 50-line
+limit because both contained an identical zbus listener that logged
+`env_sensor_data` events to the console.
+
+**Decision: extract to `lib/sensor_event_log/`** (enabled via
+`CONFIG_SENSOR_EVENT_LOG=y`). Rationale:
+
+- The pattern was *duplicated across two apps* — the strongest possible
+  signal of reuse value, which disqualifies it from "app-level C code"
+  under criterion 2 of this ADR.
+- A `CONFIG_SENSOR_EVENT_LOG` Kconfig symbol is natural: any future app
+  that wants console-visible sensor readings enables it in `prj.conf`.
+- The library self-registers via `SYS_INIT`; no call needed from `main.c`.
+
+Log format (human-readable, sample-time timestamp):
+
+```
+[00:01:23.456]  0x1234  TEMP    23.45 °C
+[00:01:23.456]  0x1234  HUM     65.2 %RH
 ```
 
 ---
