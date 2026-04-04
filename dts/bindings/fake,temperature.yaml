@@ -16,14 +16,6 @@ properties:
       across the entire system (both local and remote nodes). Used as
       the identity key in sensor_registry and in env_sensor_data events.
 
-  location:
-    type: string
-    required: true
-    description: |
-      Human-readable physical location label, e.g. "living_room",
-      "outdoor", "node_0". Used by the sensor registry and display
-      consumers.
-
   initial-value-mdegc:
     type: int
     required: true

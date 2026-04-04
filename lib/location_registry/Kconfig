@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig LOCATION_REGISTRY
+	bool "Location registry (named locations)"
+	help
+	  Runtime CRUD for named physical locations. Locations are independent
+	  entities that sensors can be assigned to via sensor_registry_meta.
+	  Consumers (HTTP dashboard, shell) enumerate locations through this
+	  registry rather than relying on compile-time DT properties.
+
+if LOCATION_REGISTRY
+
+config LOCATION_REGISTRY_MAX_LOCATIONS
+	int "Maximum number of locations"
+	default 16
+	range 1 64
+
+config LOCATION_REGISTRY_NAME_LEN
+	int "Maximum location name length (bytes, excluding NUL)"
+	default 32
+	range 4 64
+
+config LOCATION_REGISTRY_SETTINGS
+	bool "Persist locations via Zephyr settings subsystem"
+	depends on SETTINGS
+	help
+	  When enabled, location_registry_add() and location_registry_remove()
+	  persist the location list via settings_save_one(). A SYS_INIT at
+	  APPLICATION 96 reloads saved locations on boot.
+	  Settings key prefix: "loc/".
+
+config LOCATION_REGISTRY_SHELL
+	bool "Shell commands for location management"
+	depends on SHELL
+	help
+	  Adds the "location" shell command group:
+	    location add <name>
+	    location remove <name>
+	    location list
+
+endif # LOCATION_REGISTRY
