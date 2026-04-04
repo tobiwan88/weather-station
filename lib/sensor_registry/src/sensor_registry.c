@@ -10,7 +10,7 @@
 #include <zephyr/kernel.h>
 
 #ifdef CONFIG_SENSOR_REGISTRY_SETTINGS
-#include <zephyr/settings/settings.h>
+#	include <zephyr/settings/settings.h>
 #endif
 
 static const struct sensor_registry_entry *registry[SENSOR_REGISTRY_MAX_ENTRIES];
@@ -50,8 +50,7 @@ int sensor_registry_register(const struct sensor_registry_entry *entry)
 
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
 	/* Pre-seed display name from DT label; location starts empty. */
-	strncpy(meta[idx].display_name, entry->label,
-		CONFIG_SENSOR_REGISTRY_META_NAME_LEN);
+	strncpy(meta[idx].display_name, entry->label, CONFIG_SENSOR_REGISTRY_META_NAME_LEN);
 	meta[idx].display_name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN] = '\0';
 
 	meta[idx].location[0] = '\0';
@@ -118,7 +117,7 @@ int sensor_registry_set_meta(uint32_t uid, const struct sensor_registry_meta *m)
 		meta[i] = *m;
 		k_mutex_unlock(&registry_mutex);
 
-#ifdef CONFIG_SENSOR_REGISTRY_SETTINGS
+#	ifdef CONFIG_SENSOR_REGISTRY_SETTINGS
 		char key[32];
 
 		snprintf(key, sizeof(key), "sreg/%08" PRIx32 "/name", uid);
@@ -134,7 +133,7 @@ int sensor_registry_set_meta(uint32_t uid, const struct sensor_registry_meta *m)
 		uint8_t en = m->enabled ? 1u : 0u;
 
 		settings_save_one(key, &en, sizeof(en));
-#endif
+#	endif
 		return 0;
 	}
 	k_mutex_unlock(&registry_mutex);
@@ -164,9 +163,8 @@ const char *sensor_registry_get_display_name(uint32_t uid)
 	k_mutex_lock(&registry_mutex, K_FOREVER);
 	for (int i = 0; i < registry_count; i++) {
 		if (registry[i]->uid == uid) {
-			const char *name = (meta[i].display_name[0] != '\0')
-						   ? meta[i].display_name
-						   : registry[i]->label;
+			const char *name = (meta[i].display_name[0] != '\0') ? meta[i].display_name
+									     : registry[i]->label;
 
 			k_mutex_unlock(&registry_mutex);
 			return name;
@@ -191,10 +189,9 @@ const char *sensor_registry_get_location(uint32_t uid)
 	return NULL;
 }
 
-#ifdef CONFIG_SENSOR_REGISTRY_SETTINGS
+#	ifdef CONFIG_SENSOR_REGISTRY_SETTINGS
 
-static int sreg_settings_set(const char *key, size_t len, settings_read_cb read_cb,
-			     void *cb_arg)
+static int sreg_settings_set(const char *key, size_t len, settings_read_cb read_cb, void *cb_arg)
 {
 	ARG_UNUSED(len);
 
@@ -233,8 +230,7 @@ static int sreg_settings_set(const char *key, size_t len, settings_read_cb read_
 				buf[ret] = '\0';
 				strncpy(meta[i].display_name, buf,
 					CONFIG_SENSOR_REGISTRY_META_NAME_LEN);
-				meta[i].display_name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN] =
-					'\0';
+				meta[i].display_name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN] = '\0';
 			}
 		} else if (strcmp(field, "loc") == 0) {
 			char buf[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN + 1];
@@ -244,8 +240,7 @@ static int sreg_settings_set(const char *key, size_t len, settings_read_cb read_
 				buf[ret] = '\0';
 				strncpy(meta[i].location, buf,
 					CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN);
-				meta[i].location[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN] =
-					'\0';
+				meta[i].location[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN] = '\0';
 			}
 		} else if (strcmp(field, "desc") == 0) {
 			char buf[CONFIG_SENSOR_REGISTRY_META_DESC_LEN + 1];
@@ -255,8 +250,7 @@ static int sreg_settings_set(const char *key, size_t len, settings_read_cb read_
 				buf[ret] = '\0';
 				strncpy(meta[i].description, buf,
 					CONFIG_SENSOR_REGISTRY_META_DESC_LEN);
-				meta[i].description[CONFIG_SENSOR_REGISTRY_META_DESC_LEN] =
-					'\0';
+				meta[i].description[CONFIG_SENSOR_REGISTRY_META_DESC_LEN] = '\0';
 			}
 		} else if (strcmp(field, "en") == 0) {
 			uint8_t en = 1;
@@ -281,5 +275,5 @@ static int sensor_registry_settings_load(void)
 
 SYS_INIT(sensor_registry_settings_load, APPLICATION, 95);
 
-#endif /* CONFIG_SENSOR_REGISTRY_SETTINGS */
-#endif /* CONFIG_SENSOR_REGISTRY_USER_META */
+#	endif /* CONFIG_SENSOR_REGISTRY_SETTINGS */
+#endif         /* CONFIG_SENSOR_REGISTRY_USER_META */

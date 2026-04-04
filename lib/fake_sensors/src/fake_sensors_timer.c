@@ -48,8 +48,7 @@ void fake_sensors_set_auto_publish_ms(uint32_t ms)
 static int fake_sensors_timer_init(void)
 {
 #if CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS > 0
-	k_timer_start(&g_auto_timer,
-		      K_MSEC(CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS),
+	k_timer_start(&g_auto_timer, K_MSEC(CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS),
 		      K_MSEC(CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS));
 	LOG_INF("auto-publish started at %d ms", CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS);
 #endif

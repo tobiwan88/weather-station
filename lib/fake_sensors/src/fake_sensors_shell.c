@@ -31,8 +31,8 @@ static int cmd_list(const struct shell *sh, size_t argc, char **argv)
 			(entry->kind == FAKE_SENSOR_KIND_TEMPERATURE) ? "mdeg C" : "m%RH";
 		const char *loc = sensor_registry_get_location(entry->uid);
 
-		shell_print(sh, "0x%04x  %-12s  %-20s  %d %s", entry->uid, kind_str,
-			    loc ? loc : "", *entry->value_milli, unit_str);
+		shell_print(sh, "0x%04x  %-12s  %-20s  %d %s", entry->uid, kind_str, loc ? loc : "",
+			    *entry->value_milli, unit_str);
 	}
 	return 0;
 }

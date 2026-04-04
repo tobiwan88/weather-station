@@ -1,17 +1,25 @@
 # Event Bus Design
 
-## Why Two Channels
+## Channels
 
-The system uses exactly two zbus channels. A single "sensor data" channel would be sufficient for a simple pipeline, but separating trigger from event solves a real problem: **who decides when to sample?**
+The system uses five zbus channels, each with a single owner and a distinct role:
 
-With a single channel, either the sensors would poll on a timer (coupling timing to drivers), or some orchestrator would call into each driver (coupling the orchestrator to each driver type). Neither composes.
+| Channel | Owner | Direction |
+|---|---|---|
+| `sensor_trigger_chan` | `lib/sensor_trigger` | trigger sources → sensor drivers |
+| `sensor_event_chan` | `lib/sensor_event` | sensor drivers → consumers |
+| `config_cmd_chan` | `lib/config_cmd` | config producers (HTTP) → consumers (fake_sensors, sntp_sync) |
+| `remote_discovery_chan` | `lib/remote_sensor` | transport adapters → remote_sensor_manager |
+| `remote_scan_ctrl_chan` | `lib/remote_sensor` | manager / shell → transport adapters |
 
-The two-channel design gives each side its own concern:
+The core sensor pipeline uses two channels. Separating trigger from event solves the question of **who decides when to sample** without coupling any component:
 
 - `sensor_trigger_chan` — *when* to sample. Any code that wants sensors to fire publishes here. Sensor drivers don't know or care who triggered them.
 - `sensor_event_chan` — *what was measured*. Any code that wants sensor readings subscribes here. Trigger sources don't know or care what consumes the data.
 
-This means a new trigger source (HTTP request, button press, MQTT command) and a new consumer (MQTT uplink, flash logger) can each be added independently, with no change to sensor drivers or to each other.
+`config_cmd_chan` applies the same pattern to configuration: `http_dashboard` publishes a `config_cmd_event` when the user changes settings; `fake_sensors` and `sntp_sync` subscribe independently. Neither module references the other.
+
+`remote_discovery_chan` and `remote_scan_ctrl_chan` follow the same pattern for the remote sensor layer — transport adapters and the manager exchange events without direct calls.
 
 ---
 
@@ -22,18 +30,20 @@ trigger sources          sensor_trigger_chan       sensor drivers
 ──────────────           ───────────────────       ──────────────
 timer (periodic)  ──►                        ──►  fake_temperature
 startup (once)    ──►    { source, uid }      ──►  fake_humidity
-HTTP config POST  ──►                        ──►  (future: real hw)
-button ISR        ──►
+button ISR        ──►                        ──►  remote_sensor (pull)
+                                             ──►  (future: real hw)
 
 sensor drivers           sensor_event_chan          consumers
 ──────────────           ────────────────           ──────────────
-fake_temperature  ──►                        ──►  gateway (log)
+fake_temperature  ──►                        ──►  sensor_event_log
 fake_humidity     ──►    { uid, type,         ──►  http_dashboard
-(future: real hw) ──►      q31, timestamp }   ──►  (future: MQTT)
-                                              ──►  (future: flash)
+remote_sensor     ──►      q31, timestamp }   ──►  (future: MQTT)
+(future: real hw) ──►                        ──►  (future: flash)
 ```
 
 `target_uid = 0` in a trigger event is a broadcast — all sensors sample. A non-zero UID targets a single sensor, enabling on-demand sampling of one sensor without disturbing others.
+
+Remote sensors (BLE, LoRa, Thread) publish on `sensor_event_chan` via `remote_sensor_publish_data()` — identical to local sensors from the perspective of all consumers.
 
 ---
 

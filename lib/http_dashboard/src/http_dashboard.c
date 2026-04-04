@@ -114,13 +114,11 @@ ZBUS_LISTENER_DEFINE(http_dashboard_listener, sensor_event_cb);
 
 static const char dashboard_html[] = {
 #include "dashboard.html.inc"
-	'\0'
-};
+	'\0'};
 
 static const char config_html[] = {
 #include "config.html.inc"
-	'\0'
-};
+	'\0'};
 
 /* -------------------------------------------------------------------------- */
 /* Content-type headers                                                        */
@@ -166,10 +164,11 @@ static int root_handler(struct http_client_ctx *client, enum http_data_status st
 }
 
 static struct http_resource_detail_dynamic root_detail = {
-	.common = {
-		.type = HTTP_RESOURCE_TYPE_DYNAMIC,
-		.bitmask_of_supported_http_methods = BIT(HTTP_GET),
-	},
+	.common =
+		{
+			.type = HTTP_RESOURCE_TYPE_DYNAMIC,
+			.bitmask_of_supported_http_methods = BIT(HTTP_GET),
+		},
 	.cb = root_handler,
 };
 
@@ -178,8 +177,8 @@ static struct http_resource_detail_dynamic root_detail = {
 /* -------------------------------------------------------------------------- */
 
 static int config_page_handler(struct http_client_ctx *client, enum http_data_status status,
-				const struct http_request_ctx *request_ctx,
-				struct http_response_ctx *response_ctx, void *user_data)
+			       const struct http_request_ctx *request_ctx,
+			       struct http_response_ctx *response_ctx, void *user_data)
 {
 	ARG_UNUSED(client);
 	ARG_UNUSED(request_ctx);
@@ -200,10 +199,11 @@ static int config_page_handler(struct http_client_ctx *client, enum http_data_st
 }
 
 static struct http_resource_detail_dynamic config_page_detail = {
-	.common = {
-		.type = HTTP_RESOURCE_TYPE_DYNAMIC,
-		.bitmask_of_supported_http_methods = BIT(HTTP_GET),
-	},
+	.common =
+		{
+			.type = HTTP_RESOURCE_TYPE_DYNAMIC,
+			.bitmask_of_supported_http_methods = BIT(HTTP_GET),
+		},
 	.cb = config_page_handler,
 };
 
@@ -275,8 +275,7 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 
 #define JAPPEND(fmt, ...)                                                                          \
 	do {                                                                                       \
-		int _jn = snprintf((char *)json_buf + pos, (size_t)(rem + 1), fmt,                 \
-				   ##__VA_ARGS__);                                                 \
+		int _jn = snprintf((char *)json_buf + pos, (size_t)(rem + 1), fmt, ##__VA_ARGS__); \
 		if (_jn > 0) {                                                                     \
 			pos += MIN(_jn, rem);                                                      \
 			rem -= MIN(_jn, rem);                                                      \
@@ -310,8 +309,7 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 		}
 		const char *description = smeta.description;
 #else
-		const struct sensor_registry_entry *reg =
-			sensor_registry_lookup(snap[i].uid);
+		const struct sensor_registry_entry *reg = sensor_registry_lookup(snap[i].uid);
 		const char *label = reg ? reg->label : "unknown";
 		const char *location = "";
 #endif
@@ -324,8 +322,7 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
 		JAPPEND("{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\","
 			"\"description\":\"%s\",\"type\":\"%s\",\"readings\":[",
-			snap[i].uid, label, location, description,
-			sensor_type_str(snap[i].type));
+			snap[i].uid, label, location, description, sensor_type_str(snap[i].type));
 #else
 		JAPPEND("{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\","
 			"\"type\":\"%s\",\"readings\":[",
@@ -344,8 +341,8 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 			}
 			double v = q31_to_physical(snap[i].samples[idx].q31_value, snap[i].type);
 
-			JAPPEND("{\"t\":%" PRId64 ",\"v\":%.2f}",
-				snap[i].samples[idx].timestamp_ms, v);
+			JAPPEND("{\"t\":%" PRId64 ",\"v\":%.2f}", snap[i].samples[idx].timestamp_ms,
+				v);
 		}
 
 		JAPPEND("]}");
@@ -367,10 +364,11 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 }
 
 static struct http_resource_detail_dynamic api_data_detail = {
-	.common = {
-		.type = HTTP_RESOURCE_TYPE_DYNAMIC,
-		.bitmask_of_supported_http_methods = BIT(HTTP_GET),
-	},
+	.common =
+		{
+			.type = HTTP_RESOURCE_TYPE_DYNAMIC,
+			.bitmask_of_supported_http_methods = BIT(HTTP_GET),
+		},
 	.cb = api_data_handler,
 };
 
@@ -433,9 +431,8 @@ static int sensor_to_json_cb(const struct sensor_registry_entry *e, void *user_d
 			 ",\"dt_label\":\"%s\""
 			 ",\"display_name\":\"%s\",\"location\":\"%s\""
 			 ",\"description\":\"%s\",\"enabled\":%s}",
-			 e->uid, e->label,
-			 smeta.display_name, smeta.location,
-			 smeta.description, smeta.enabled ? "true" : "false");
+			 e->uid, e->label, smeta.display_name, smeta.location, smeta.description,
+			 smeta.enabled ? "true" : "false");
 #else
 	int n = snprintf((char *)cfg_json_buf + ctx->pos, (size_t)(ctx->rem + 1),
 			 "{\"uid\":%u,\"label\":\"%s\"}", e->uid, e->label);
@@ -553,8 +550,7 @@ static void process_post(const uint8_t *body, size_t len)
 				strncpy(sntp_server_buf, val, sizeof(sntp_server_buf) - 1);
 				sntp_server_buf[sizeof(sntp_server_buf) - 1] = '\0';
 				LOG_INF("sntp server set to %s", sntp_server_buf);
-			} else if (strcmp(key, "action") == 0 &&
-				   strcmp(val, "sntp_resync") == 0) {
+			} else if (strcmp(key, "action") == 0 && strcmp(val, "sntp_resync") == 0) {
 				struct config_cmd_event cmd = {
 					.cmd = CONFIG_CMD_SNTP_RESYNC,
 					.arg = 0,
@@ -585,7 +581,8 @@ static void process_post(const uint8_t *body, size_t len)
 							LOG_WRN("location remove '%s' failed: %d",
 								loc_name_pre, rc);
 						} else {
-							LOG_INF("Location removed: %s", loc_name_pre);
+							LOG_INF("Location removed: %s",
+								loc_name_pre);
 						}
 					}
 				}
@@ -601,8 +598,7 @@ static void process_post(const uint8_t *body, size_t len)
 
 				if (last_us && last_us != tmp) {
 					*last_us = '\0';
-					uint32_t uid =
-						(uint32_t)strtoul(tmp, NULL, 10);
+					uint32_t uid = (uint32_t)strtoul(tmp, NULL, 10);
 					const char *field = last_us + 1;
 					struct sensor_registry_meta m;
 
@@ -610,24 +606,26 @@ static void process_post(const uint8_t *body, size_t len)
 						if (strcmp(field, "name") == 0) {
 							strncpy(m.display_name, val,
 								CONFIG_SENSOR_REGISTRY_META_NAME_LEN);
-							m.display_name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN] =
+							m.display_name
+								[CONFIG_SENSOR_REGISTRY_META_NAME_LEN] =
 								'\0';
 						} else if (strcmp(field, "loc") == 0) {
 							strncpy(m.location, val,
 								CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN);
-							m.location[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN] =
+							m.location
+								[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN] =
 								'\0';
 						} else if (strcmp(field, "desc") == 0) {
 							strncpy(m.description, val,
 								CONFIG_SENSOR_REGISTRY_META_DESC_LEN);
-							m.description[CONFIG_SENSOR_REGISTRY_META_DESC_LEN] =
+							m.description
+								[CONFIG_SENSOR_REGISTRY_META_DESC_LEN] =
 								'\0';
 						} else if (strcmp(field, "en") == 0) {
 							m.enabled = (strcmp(val, "1") == 0);
 						}
 						sensor_registry_set_meta(uid, &m);
-						LOG_DBG("sensor %u %s=\"%s\"", uid,
-							field, val);
+						LOG_DBG("sensor %u %s=\"%s\"", uid, field, val);
 					}
 				}
 #endif
@@ -724,10 +722,11 @@ static int api_config_handler(struct http_client_ctx *client, enum http_data_sta
 }
 
 static struct http_resource_detail_dynamic api_config_detail = {
-	.common = {
-		.type = HTTP_RESOURCE_TYPE_DYNAMIC,
-		.bitmask_of_supported_http_methods = BIT(HTTP_GET) | BIT(HTTP_POST),
-	},
+	.common =
+		{
+			.type = HTTP_RESOURCE_TYPE_DYNAMIC,
+			.bitmask_of_supported_http_methods = BIT(HTTP_GET) | BIT(HTTP_POST),
+		},
 	.cb = api_config_handler,
 };
 
@@ -765,8 +764,8 @@ static int loc_list_append_cb(const char *name, void *user_data)
 }
 
 static int api_locations_handler(struct http_client_ctx *client, enum http_data_status status,
-				  const struct http_request_ctx *request_ctx,
-				  struct http_response_ctx *response_ctx, void *user_data)
+				 const struct http_request_ctx *request_ctx,
+				 struct http_response_ctx *response_ctx, void *user_data)
 {
 	ARG_UNUSED(client);
 	ARG_UNUSED(request_ctx);
@@ -813,10 +812,11 @@ static int api_locations_handler(struct http_client_ctx *client, enum http_data_
 }
 
 static struct http_resource_detail_dynamic api_locations_detail = {
-	.common = {
-		.type = HTTP_RESOURCE_TYPE_DYNAMIC,
-		.bitmask_of_supported_http_methods = BIT(HTTP_GET),
-	},
+	.common =
+		{
+			.type = HTTP_RESOURCE_TYPE_DYNAMIC,
+			.bitmask_of_supported_http_methods = BIT(HTTP_GET),
+		},
 	.cb = api_locations_handler,
 };
 
