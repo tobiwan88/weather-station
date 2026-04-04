@@ -50,7 +50,6 @@ struct fake_sensor_entry {
 	uint32_t uid;               /**< Matches DT sensor-uid property  */
 	enum fake_sensor_kind kind; /**< Temperature or humidity         */
 	const char *label;          /**< Human-readable name             */
-	const char *location;       /**< Physical location from DT       */
 	int32_t *value_milli;       /**< Pointer to live milli-value     */
 	/** Publish one sample immediately (called by shell set commands). */
 	void (*publish)(struct fake_sensor_entry *entry);
