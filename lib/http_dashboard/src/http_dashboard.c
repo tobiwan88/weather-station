@@ -513,6 +513,10 @@ static void process_post(const uint8_t *body, size_t len)
 	memcpy(buf, body, copy_len);
 	buf[copy_len] = '\0';
 
+	/* Pre-extract loc_name before the loop mutates buf (replaces '&' with '\0'). */
+	char loc_name_pre[CONFIG_LOCATION_REGISTRY_NAME_LEN + 1];
+	bool has_loc_name = form_extract(buf, "loc_name", loc_name_pre, sizeof(loc_name_pre));
+
 	char *token = buf;
 
 	while (token != NULL && *token != '\0') {
@@ -564,27 +568,24 @@ static void process_post(const uint8_t *body, size_t len)
 			} else if (strcmp(key, "action") == 0 &&
 				   (strcmp(val, "add_location") == 0 ||
 				    strcmp(val, "remove_location") == 0)) {
-				char loc_name[CONFIG_LOCATION_REGISTRY_NAME_LEN + 1];
-
-				if (form_extract(buf, "loc_name", loc_name, sizeof(loc_name)) &&
-				    loc_name[0] != '\0') {
+				if (has_loc_name && loc_name_pre[0] != '\0') {
 					if (strcmp(val, "add_location") == 0) {
-						int rc = location_registry_add(loc_name);
+						int rc = location_registry_add(loc_name_pre);
 
 						if (rc != 0 && rc != -EEXIST) {
 							LOG_WRN("location add '%s' failed: %d",
-								loc_name, rc);
+								loc_name_pre, rc);
 						} else {
-							LOG_INF("Location added: %s", loc_name);
+							LOG_INF("Location added: %s", loc_name_pre);
 						}
 					} else {
-						int rc = location_registry_remove(loc_name);
+						int rc = location_registry_remove(loc_name_pre);
 
 						if (rc != 0) {
 							LOG_WRN("location remove '%s' failed: %d",
-								loc_name, rc);
+								loc_name_pre, rc);
 						} else {
-							LOG_INF("Location removed: %s", loc_name);
+							LOG_INF("Location removed: %s", loc_name_pre);
 						}
 					}
 				}
