@@ -6,32 +6,37 @@ on:
   pull_request:
     branches: [main, master]
 
+env:
+  CI_IMAGE: ghcr.io/tobiwan88/zephyr_docker:arm
+
+# ── Shared step fragments (referenced via YAML anchors) ──────────────────────
+# GitHub Actions does not support anchors natively; steps are repeated in full.
+
 jobs:
-  # ── 1. Lint ──────────────────────────────────────────────────────────────
+  # ── 1. Lint ─────────────────────────────────────────────────────────────────
   lint:
     name: Lint (pre-commit)
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/tobiwan88/zephyr_docker:latest
+      image: ghcr.io/tobiwan88/zephyr_docker:arm
       options: --user zephyr
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Install pre-commit
+        run: source ~/.venv/bin/activate && pip install pre-commit --quiet
 
       - name: Run pre-commit hooks
-        run: |
-          source ~/.venv/bin/activate
-          pip install pre-commit --quiet
-          pre-commit run --all-files
+        run: source ~/.venv/bin/activate && pre-commit run --all-files
 
-  # ── 2. Build ─────────────────────────────────────────────────────────────
+  # ── 2. Build (parallel per app) ─────────────────────────────────────────────
   build:
     name: Build (${{ matrix.app }})
     runs-on: ubuntu-latest
     needs: lint
     container:
-      image: ghcr.io/tobiwan88/zephyr_docker:latest
+      image: ghcr.io/tobiwan88/zephyr_docker:arm
       options: --user zephyr
 
     strategy:
@@ -39,61 +44,101 @@ jobs:
       matrix:
         include:
           - app: gateway
-            board: native_sim
+            board: native_sim/native/64
           - app: sensor-node
-            board: native_sim
+            board: native_sim/native/64
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Cache west modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/../zephyr
+            ${{ github.workspace }}/../modules
+          key: west-${{ hashFiles('west.yml') }}
+          restore-keys: west-
 
       - name: West init + update
         run: |
           source ~/.venv/bin/activate
-          west init -l .
+          west init -l . 2>/dev/null || true
           west update --narrow
 
       - name: Build ${{ matrix.app }}
         run: |
           source ~/.venv/bin/activate
-          west build -p always -b ${{ matrix.board }} apps/${{ matrix.app }}
+          ZEPHYR_BASE=$(west topdir)/zephyr \
+            west build -p always -b ${{ matrix.board }} apps/${{ matrix.app }}
 
-      - name: Upload build artifact
+      - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.app }}-${{ matrix.board }}
-          path: build/zephyr/zephyr.exe
+          name: ${{ matrix.app }}-${{ matrix.board == 'native_sim/native/64' && 'native64' || matrix.board }}
+          path: build/${{ matrix.board }}/${{ matrix.app }}/zephyr/zephyr.exe
           retention-days: 7
 
-  # ── 3. Test ──────────────────────────────────────────────────────────────
-  test:
-    name: Twister tests
+  # ── 3. Test + Coverage ───────────────────────────────────────────────────────
+  test-and-coverage:
+    name: Test + Coverage
     runs-on: ubuntu-latest
     needs: build
     container:
-      image: ghcr.io/tobiwan88/zephyr_docker:latest
+      image: ghcr.io/tobiwan88/zephyr_docker:arm
       options: --user zephyr
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Cache west modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/../zephyr
+            ${{ github.workspace }}/../modules
+          key: west-${{ hashFiles('west.yml') }}
+          restore-keys: west-
 
       - name: West init + update
         run: |
           source ~/.venv/bin/activate
-          west init -l .
+          west init -l . 2>/dev/null || true
           west update --narrow
 
-      - name: Run Twister
+      - name: Install gcovr
+        run: source ~/.venv/bin/activate && pip install gcovr --quiet
+
+      - name: Run Twister with coverage
         run: |
           source ~/.venv/bin/activate
+          ZEPHYR_BASE=$(west topdir)/zephyr \
           west twister \
-            -p native_sim \
+            -p native_sim/native/64 \
             -T tests/ \
+            --coverage \
+            --coverage-tool gcovr \
             --inline-logs \
-            -v \
-            -N \
+            -v -N \
             --output-dir twister-out
+
+      - name: Generate coverage reports
+        if: always()
+        run: |
+          source ~/.venv/bin/activate
+          # HTML report
+          mkdir -p twister-out/coverage
+          gcovr \
+            --root . \
+            --filter "weather-station/.*" \
+            --exclude ".*/zephyr/.*" \
+            --exclude ".*/modules/.*" \
+            --exclude ".*/build/.*" \
+            --exclude ".*/tests/.*" \
+            --html-details twister-out/coverage/index.html \
+            --xml twister-out/coverage.xml \
+            --print-summary \
+            2>/dev/null || true
 
       - name: Upload Twister results
         if: always()
@@ -101,6 +146,16 @@ jobs:
         with:
           name: twister-results
           path: twister-out/
+          retention-days: 14
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            twister-out/coverage/
+            twister-out/coverage.xml
           retention-days: 14
 
       - name: Publish test report
@@ -111,3 +166,86 @@ jobs:
           path: twister-out/**/twister.xml
           reporter: java-junit
           fail-on-error: false
+
+  # ── 4. Docs (Mermaid diagrams) ───────────────────────────────────────────────
+  docs:
+    name: Docs (render diagrams)
+    runs-on: ubuntu-latest
+    needs: lint
+    container:
+      image: ghcr.io/tobiwan88/zephyr_docker:arm
+      options: --user root   # needs apt for nodejs
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node.js + mmdc
+        run: |
+          apt-get update -qq
+          apt-get install -y --no-install-recommends nodejs npm
+          npm install -g @mermaid-js/mermaid-cli --silent
+
+      - name: Render Mermaid diagrams
+        run: |
+          mkdir -p docs/architecture/diagrams/rendered
+          failed=0
+          for src in docs/architecture/diagrams/*.mmd; do
+            name=$(basename "${src%.mmd}")
+            echo "Rendering ${name}..."
+            mmdc -i "$src" \
+                 -o "docs/architecture/diagrams/rendered/${name}.svg" \
+                 --backgroundColor transparent || { echo "FAILED: $src"; failed=1; }
+          done
+          exit $failed
+
+      - name: Upload rendered diagrams
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-docs
+          path: docs/architecture/diagrams/rendered/
+          retention-days: 14
+
+  # ── 5. Snapshot (PR only) ────────────────────────────────────────────────────
+  snapshot:
+    name: Publish PR snapshot
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: [build, test-and-coverage, docs]
+
+    steps:
+      - name: Download gateway binary
+        uses: actions/download-artifact@v4
+        with:
+          name: gateway-native64
+          path: snapshot/binaries/gateway/
+
+      - name: Download sensor-node binary
+        uses: actions/download-artifact@v4
+        with:
+          name: sensor-node-native64
+          path: snapshot/binaries/sensor-node/
+
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: snapshot/coverage/
+
+      - name: Download rendered docs
+        uses: actions/download-artifact@v4
+        with:
+          name: rendered-docs
+          path: snapshot/docs/diagrams/
+
+      - name: Download Twister results
+        uses: actions/download-artifact@v4
+        with:
+          name: twister-results
+          path: snapshot/twister/
+
+      - name: Upload PR snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-snapshot-${{ github.event.pull_request.number }}
+          path: snapshot/
+          retention-days: 30

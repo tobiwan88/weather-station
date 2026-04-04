@@ -1,4 +1,4 @@
-FROM dev:latest
+FROM ghcr.io/tobiwan88/zephyr_docker:arm
 
 USER root
 
