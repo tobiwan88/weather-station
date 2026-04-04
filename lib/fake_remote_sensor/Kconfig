@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig FAKE_REMOTE_SENSOR
+	bool "Fake remote sensor (testing stub transport)"
+	select REMOTE_SENSOR
+	help
+	  Simulates a remote wireless sensor node for end-to-end testing on
+	  native_sim without real BLE/LoRa hardware.
+
+	  Implements the remote_transport vtable with proto=FAKE.
+	  Shell command "fake_remote trigger" announces a discovery event;
+	  the remote_sensor_manager then registers the sensor and begins
+	  receiving auto-published synthetic env_sensor_data events.
+
+if FAKE_REMOTE_SENSOR
+
+config FAKE_REMOTE_SENSOR_UID_PREFIX
+	hex "UID prefix for fake remote sensors (upper 16 bits)"
+	default 0x0F00
+	range 0x0100 0xFF00
+	help
+	  UIDs for fake remote sensors follow the CRC12 derivation:
+	    uid = (prefix << 16) | (crc12(addr) << 4) | type_slot
+	  Default 0x0F00 reserves the range 0x0F000000–0x0F00FFFF.
+	  Must not overlap with other transport prefixes.
+
+config FAKE_REMOTE_SENSOR_AUTO_PUBLISH_MS
+	int "Auto-publish interval in milliseconds (0 = disabled)"
+	default 5000
+	range 0 300000
+	help
+	  When non-zero, registered fake remote sensors emit synthetic
+	  env_sensor_data events at this interval using a k_timer.
+	  Set to 0 to publish only on demand via the shell trigger command.
+
+config FAKE_REMOTE_SENSOR_NODE_COUNT
+	int "Number of fake remote sensor nodes to simulate"
+	default 1
+	range 1 4
+	help
+	  Each simulated node produces both a TEMPERATURE and HUMIDITY
+	  discovery event (two UIDs per node).
+
+config FAKE_REMOTE_SENSOR_SHELL
+	bool "Shell commands for fake remote sensor control"
+	default y
+	depends on SHELL
+	help
+	  Adds the "fake_remote" shell command group:
+	    fake_remote announce  — publish discovery events for all fake nodes
+	    fake_remote publish   — publish one synthetic measurement round
+	    fake_remote status    — show fake node state
+
+endif # FAKE_REMOTE_SENSOR
