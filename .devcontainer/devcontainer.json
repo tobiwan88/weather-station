@@ -1,7 +1,9 @@
 {
   "name": "weather-station (Zephyr)",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "../Dockerfile",
+    "context": "..",
+    "target": "final"
   },
   "remoteUser": "zephyr",
 
