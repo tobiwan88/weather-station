@@ -77,14 +77,19 @@ jobs:
       - name: Build ${{ matrix.app }}
         run: |
           source /home/zephyr/.venv/bin/activate
-          ZEPHYR_BASE=$(west topdir)/zephyr \
-            west build -p always -b ${{ matrix.board }} apps/${{ matrix.app }}
+          # Must run from west topdir so Zephyr discovers the weather-station
+          # module Kconfig (same constraint as local builds — see CLAUDE.md).
+          WEST_ROOT=$(west topdir)
+          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
+            west build -p always -b ${{ matrix.board }} \
+              --build-dir "${WEST_ROOT}/build/${{ matrix.app }}" \
+              "${WEST_ROOT}/weather-station/apps/${{ matrix.app }}"
 
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.app }}-${{ matrix.board == 'native_sim/native/64' && 'native64' || matrix.board }}
-          path: build/${{ matrix.board }}/${{ matrix.app }}/zephyr/zephyr.exe
+          path: ${{ github.workspace }}/../build/${{ matrix.app }}/zephyr/zephyr.exe
           retention-days: 7
 
   # ── 3. Test + Coverage ───────────────────────────────────────────────────────
@@ -123,30 +128,32 @@ jobs:
       - name: Run Twister with coverage
         run: |
           source /home/zephyr/.venv/bin/activate
-          ZEPHYR_BASE=$(west topdir)/zephyr \
+          WEST_ROOT=$(west topdir)
+          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
           west twister \
             -p native_sim/native/64 \
-            -T tests/ \
+            -T "${WEST_ROOT}/weather-station/tests/" \
             --coverage \
             --coverage-tool gcovr \
             --inline-logs \
             -v -N \
-            --output-dir twister-out
+            --output-dir "${WEST_ROOT}/weather-station/twister-out"
 
       - name: Generate coverage reports
         if: always()
         run: |
           source /home/zephyr/.venv/bin/activate
-          mkdir -p twister-out/coverage
+          TWISTER_OUT="${GITHUB_WORKSPACE}/../weather-station/twister-out"
+          mkdir -p "${TWISTER_OUT}/coverage"
           gcovr \
-            --root . \
-            --filter "weather-station/.*" \
+            --root "${GITHUB_WORKSPACE}/.." \
+            --filter ".*/weather-station/.*" \
             --exclude ".*/zephyr/.*" \
             --exclude ".*/modules/.*" \
             --exclude ".*/build/.*" \
             --exclude ".*/tests/.*" \
-            --html-details twister-out/coverage/index.html \
-            --xml twister-out/coverage.xml \
+            --html-details "${TWISTER_OUT}/coverage/index.html" \
+            --xml "${TWISTER_OUT}/coverage.xml" \
             --print-summary \
             2>/dev/null || true
 
@@ -155,7 +162,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: twister-results
-          path: twister-out/
+          path: ${{ github.workspace }}/../weather-station/twister-out/
           retention-days: 14
 
       - name: Upload coverage report
@@ -164,8 +171,8 @@ jobs:
         with:
           name: coverage-report
           path: |
-            twister-out/coverage/
-            twister-out/coverage.xml
+            ${{ github.workspace }}/../weather-station/twister-out/coverage/
+            ${{ github.workspace }}/../weather-station/twister-out/coverage.xml
           retention-days: 14
 
       - name: Publish test report
@@ -173,7 +180,7 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: Ztest Results
-          path: twister-out/**/twister.xml
+          path: ${{ github.workspace }}/../weather-station/twister-out/**/twister.xml
           reporter: java-junit
           fail-on-error: false
 
@@ -192,6 +199,8 @@ jobs:
 
       - name: Render Mermaid diagrams
         run: |
+          # GitHub Actions runners block the Chrome sandbox — pass --no-sandbox.
+          echo '{"args":["--no-sandbox","--disable-setuid-sandbox"]}' > /tmp/puppeteer.json
           mkdir -p docs/architecture/diagrams/rendered
           failed=0
           for src in docs/architecture/diagrams/*.mmd; do
@@ -199,7 +208,9 @@ jobs:
             echo "Rendering ${name}..."
             mmdc -i "$src" \
                  -o "docs/architecture/diagrams/rendered/${name}.svg" \
-                 --backgroundColor transparent || { echo "FAILED: $src"; failed=1; }
+                 --backgroundColor transparent \
+                 --puppeteerConfigFile /tmp/puppeteer.json \
+                 || { echo "FAILED: $src"; failed=1; }
           done
           exit $failed
 
