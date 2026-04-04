@@ -137,6 +137,56 @@ Reference: ADR-009 §Future phases, ADR-007.
 
 ---
 
+## [TEST-COVERAGE] Close remaining unit test coverage gaps
+
+Current overall coverage is 84% lines / 53% branches across the five instrumented library files.
+Known gaps as of 2026-04-04:
+
+| File | Cover | Uncovered |
+|---|---|---|
+| `lib/sensor_registry/src/sensor_registry.c` | 94% | lines 43-44 — `-ENOMEM` (registry full) |
+| `lib/location_registry/src/location_registry.c` | 95% | lines 44-45 — `-ENOMEM`, line 120 — settings remove path |
+| `lib/fake_sensors/src/fake_sensors_timer.c` | 15% | timer callback, `fake_sensors_set_auto_publish_ms()` |
+| `lib/fake_sensors/src/fake_humidity.c` | 77% | shell and config_cmd callbacks |
+| `lib/fake_sensors/src/fake_temperature.c` | 80% | shell and config_cmd callbacks |
+
+**Goal:** raise line coverage to ≥ 90% across all lib files; branch coverage ≥ 70%.
+
+**Acceptance:**
+- `tests/sensor_registry/`: add `test_register_full_registry_returns_enomem` (register 16 sensors, assert next returns `-ENOMEM`).
+- `tests/location_registry/`: add `test_add_full_registry_returns_enomem` (fill to `CONFIG_LOCATION_REGISTRY_MAX_LOCATIONS`).
+- `tests/fake_sensors/`: add tests for timer interval change via `fake_sensors_set_auto_publish_ms()` and verify timer fires after interval.
+- Coverage verified by running the standard coverage command and checking `twister-out/coverage/index.html`.
+
+Reference: `gcovr.cfg`, `CLAUDE.md` §Testing and coverage.
+
+---
+
+## [SENSOR-REGISTRY-REMOVE] Add remove and clear API to sensor_registry
+
+`sensor_registry` is currently append-only. This makes unit test isolation impossible without
+process restart, and prevents runtime deregistration of sensors that go offline.
+
+**Goal:** add `sensor_registry_remove(uint32_t uid)` and `sensor_registry_clear(void)`.
+
+**API:**
+```c
+/** Remove a registered sensor by uid. Returns 0, -ENOENT if not found. */
+int sensor_registry_remove(uint32_t uid);
+
+/** Remove all registered sensors. Intended for testing and factory-reset flows. */
+void sensor_registry_clear(void);
+```
+
+**Acceptance:**
+- `sensor_registry_remove()` shifts remaining entries down (same compaction pattern as `location_registry_remove()`); preserves order of remaining entries.
+- `sensor_registry_clear()` resets `registry_count` to 0; also clears the `meta[]` array when `CONFIG_SENSOR_REGISTRY_USER_META=y`.
+- Thread-safe: both functions hold `registry_mutex` for the duration of the mutation.
+- `tests/sensor_registry/` updated to use `sensor_registry_clear()` in `after_each` so each test case starts with an empty registry — eliminating the current unique-UID-per-test workaround.
+- New test cases: `test_remove_existing`, `test_remove_missing_returns_enoent`, `test_clear_empties_registry`.
+
+---
+
 ## [SERIALIZATION] Choose and implement cross-device serialisation format
 
 `env_sensor_data` is an in-memory zbus message, not a wire format.  When
