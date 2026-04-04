@@ -108,13 +108,15 @@ tests/<lib>/
 No `target_link_libraries()` in test CMakeLists — Kconfig drives library inclusion.
 
 ### Coverage gaps (as of 2026-04-04)
+Overall: **94% lines / 56% branches** across five instrumented library files.
+
 | File | Cover | Uncovered lines |
 |---|---|---|
-| `lib/sensor_registry/src/sensor_registry.c` | 94% | 43-44 (`-ENOMEM` — registry full) |
-| `lib/location_registry/src/location_registry.c` | 95% | 44-45 (`-ENOMEM`), 120 (settings remove) |
-| `lib/fake_sensors/src/fake_sensors_timer.c` | 15% | timer callback, `set_auto_publish_ms` |
-| `lib/fake_sensors/src/fake_humidity.c` | 77% | shell/config_cmd callbacks |
-| `lib/fake_sensors/src/fake_temperature.c` | 80% | shell/config_cmd callbacks |
+| `lib/sensor_registry/src/sensor_registry.c` | **100%** | — |
+| `lib/location_registry/src/location_registry.c` | **98%** | 120 (settings remove path — needs `CONFIG_LOCATION_REGISTRY_SETTINGS`) |
+| `lib/fake_sensors/src/fake_sensors_timer.c` | **100%** | — |
+| `lib/fake_sensors/src/fake_humidity.c` | 78% | shell and config_cmd callbacks |
+| `lib/fake_sensors/src/fake_temperature.c` | 80% | shell and config_cmd callbacks |
 
 ## HTTP dashboard (`lib/http_dashboard`)
 

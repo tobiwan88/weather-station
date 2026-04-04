@@ -139,24 +139,23 @@ Reference: ADR-009 §Future phases, ADR-007.
 
 ## [TEST-COVERAGE] Close remaining unit test coverage gaps
 
-Current overall coverage is 84% lines / 53% branches across the five instrumented library files.
-Known gaps as of 2026-04-04:
+Current overall coverage is 94% lines / 56% branches (as of 2026-04-04, after closing
+registry-full and timer callback gaps).
+
+Remaining gaps:
 
 | File | Cover | Uncovered |
 |---|---|---|
-| `lib/sensor_registry/src/sensor_registry.c` | 94% | lines 43-44 — `-ENOMEM` (registry full) |
-| `lib/location_registry/src/location_registry.c` | 95% | lines 44-45 — `-ENOMEM`, line 120 — settings remove path |
-| `lib/fake_sensors/src/fake_sensors_timer.c` | 15% | timer callback, `fake_sensors_set_auto_publish_ms()` |
-| `lib/fake_sensors/src/fake_humidity.c` | 77% | shell and config_cmd callbacks |
+| `lib/fake_sensors/src/fake_humidity.c` | 78% | shell and config_cmd callbacks |
 | `lib/fake_sensors/src/fake_temperature.c` | 80% | shell and config_cmd callbacks |
 
-**Goal:** raise line coverage to ≥ 90% across all lib files; branch coverage ≥ 70%.
+**Goal:** raise line coverage to ≥ 90% on fake_humidity and fake_temperature.
 
 **Acceptance:**
-- `tests/sensor_registry/`: add `test_register_full_registry_returns_enomem` (register 16 sensors, assert next returns `-ENOMEM`).
-- `tests/location_registry/`: add `test_add_full_registry_returns_enomem` (fill to `CONFIG_LOCATION_REGISTRY_MAX_LOCATIONS`).
-- `tests/fake_sensors/`: add tests for timer interval change via `fake_sensors_set_auto_publish_ms()` and verify timer fires after interval.
-- Coverage verified by running the standard coverage command and checking `twister-out/coverage/index.html`.
+- `tests/fake_sensors/`: add tests that invoke shell/config_cmd callbacks.
+  These require shell infrastructure (e.g. `CONFIG_SHELL=y`, `ztest_run_test_suite`
+  or calling the callbacks directly).
+- Coverage verified by running the standard coverage command.
 
 Reference: `gcovr.cfg`, `CLAUDE.md` §Testing and coverage.
 
