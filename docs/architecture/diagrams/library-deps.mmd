@@ -12,12 +12,18 @@ graph TD
     HTTP["http_dashboard\nweb dashboard + API"]
     CLK["clock_display\nHH:MM ticker"]
     LVGL["lvgl_display\nSDL window"]
+    CC["config_cmd\ncmd channel"]
+    LOC["location_registry\nnamed locations"]
+    SEL["sensor_event_log\nconsole logger"]
+    RS["remote_sensor\ntransport abstraction"]
+    FRS["fake_remote_sensor\ntesting stub"]
 
     ZBUS(["ZBUS\n(Zephyr)"])
     NET(["NETWORKING\n(Zephyr)"])
     HTTPD(["HTTP_SERVER\n(Zephyr)"])
     LVGLLIB(["LVGL + DISPLAY\n(Zephyr)"])
     SNTPLIB(["SNTP\n(Zephyr)"])
+    SETTINGS(["SETTINGS\n(Zephyr)"])
 
     APP -->|Kconfig| SE
     APP -->|Kconfig| ST
@@ -27,23 +33,42 @@ graph TD
     APP -->|Kconfig| HTTP
     APP -->|Kconfig| CLK
     APP -->|Kconfig| LVGL
+    APP -->|Kconfig| CC
+    APP -->|Kconfig| LOC
+    APP -->|Kconfig| SEL
+    APP -->|Kconfig| RS
+    APP -->|Kconfig| FRS
 
     FS --> SE
     FS --> ST
     FS --> SR
+    FS --> CC
 
     HTTP --> SE
     HTTP --> SR
+    HTTP --> LOC
+    HTTP --> CC
     HTTP --> HTTPD
+
+    SNTP --> CC
+    SNTP --> NET
+    SNTP --> SNTPLIB
+
+    SEL --> SE
+
+    RS --> SE
+    RS --> SR
+    RS --> SETTINGS
+    FRS --> RS
+
+    LOC --> SETTINGS
 
     SE --> ZBUS
     ST --> ZBUS
     SR --> ZBUS
+    CC --> ZBUS
 
-    SNTP --> NET
-    SNTP --> SNTPLIB
     HTTP --> NET
-
     LVGL --> LVGLLIB
 
     style APP fill:#dbeafe,stroke:#3b82f6
@@ -52,3 +77,4 @@ graph TD
     style HTTPD fill:#fce7f3,stroke:#db2777
     style LVGLLIB fill:#fce7f3,stroke:#db2777
     style SNTPLIB fill:#fce7f3,stroke:#db2777
+    style SETTINGS fill:#fce7f3,stroke:#db2777

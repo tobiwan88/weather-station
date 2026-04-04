@@ -58,10 +58,10 @@ extern "C" {
  */
 enum remote_transport_proto {
 	REMOTE_TRANSPORT_PROTO_UNKNOWN = 0, /**< Wildcard / unspecified         */
-	REMOTE_TRANSPORT_PROTO_BLE     = 1, /**< Bluetooth Low Energy           */
-	REMOTE_TRANSPORT_PROTO_LORA    = 2, /**< LoRa / LoRaWAN                 */
-	REMOTE_TRANSPORT_PROTO_THREAD  = 3, /**< Thread (IEEE 802.15.4)         */
-	REMOTE_TRANSPORT_PROTO_FAKE    = 15,/**< Simulated stub (testing only)  */
+	REMOTE_TRANSPORT_PROTO_BLE = 1,     /**< Bluetooth Low Energy           */
+	REMOTE_TRANSPORT_PROTO_LORA = 2,    /**< LoRa / LoRaWAN                 */
+	REMOTE_TRANSPORT_PROTO_THREAD = 3,  /**< Thread (IEEE 802.15.4)         */
+	REMOTE_TRANSPORT_PROTO_FAKE = 15,   /**< Simulated stub (testing only)  */
 };
 
 /* --------------------------------------------------------------------------
@@ -69,7 +69,7 @@ enum remote_transport_proto {
  * -------------------------------------------------------------------------- */
 
 /** Transport can actively scan for / discover new peers. */
-#define REMOTE_TRANSPORT_CAP_SCAN    BIT(0)
+#define REMOTE_TRANSPORT_CAP_SCAN BIT(0)
 /** Transport can forward a sensor_trigger_event to a remote peer (pull). */
 #define REMOTE_TRANSPORT_CAP_TRIGGER BIT(1)
 
@@ -134,8 +134,7 @@ struct remote_transport {
 	 * @param uid       The UID assigned to this peer in sensor_registry.
 	 * @return 0 on success, negative errno on failure.
 	 */
-	int (*peer_add)(const struct remote_transport *t,
-			const uint8_t *peer_addr, size_t addr_len,
+	int (*peer_add)(const struct remote_transport *t, const uint8_t *peer_addr, size_t addr_len,
 			uint32_t uid);
 
 	/**
@@ -180,7 +179,7 @@ struct remote_transport {
  *   });
  * @endcode
  */
-#define REMOTE_TRANSPORT_DEFINE(inst, ...)                                     \
+#define REMOTE_TRANSPORT_DEFINE(inst, ...)                                                         \
 	STRUCT_SECTION_ITERABLE(remote_transport, inst) = __VA_ARGS__
 
 /* --------------------------------------------------------------------------
@@ -314,8 +313,7 @@ ZBUS_CHAN_DECLARE(remote_scan_ctrl_chan);
  * @param q31_value Already Q31-encoded measurement value.
  * @return 0 on success, negative errno from zbus_chan_pub on failure.
  */
-int remote_sensor_publish_data(uint32_t uid, enum sensor_type type,
-			       int32_t q31_value);
+int remote_sensor_publish_data(uint32_t uid, enum sensor_type type, int32_t q31_value);
 
 /**
  * @brief Derive a stable UID from a variable-length hardware address.
@@ -334,8 +332,7 @@ int remote_sensor_publish_data(uint32_t uid, enum sensor_type type,
  * @param type    Sensor type for the lower 4 bits of the UID.
  * @return Derived 32-bit UID.
  */
-uint32_t remote_sensor_uid_from_addr(uint16_t prefix,
-				     const uint8_t *addr, size_t len,
+uint32_t remote_sensor_uid_from_addr(uint16_t prefix, const uint8_t *addr, size_t len,
 				     enum sensor_type type);
 
 /**
@@ -354,9 +351,7 @@ uint32_t remote_sensor_uid_from_addr(uint16_t prefix,
  * @param type     Sensor type for the lower 4 bits of the UID.
  * @return Derived 32-bit UID.
  */
-uint32_t remote_sensor_uid_from_node_id(uint16_t prefix,
-					uint8_t node_id,
-					enum sensor_type type);
+uint32_t remote_sensor_uid_from_node_id(uint16_t prefix, uint8_t node_id, enum sensor_type type);
 
 #ifdef __cplusplus
 }

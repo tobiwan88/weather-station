@@ -51,8 +51,7 @@ ZBUS_LISTENER_DEFINE(test_event_listener, test_event_cb);
 
 static void *suite_setup(void)
 {
-	int rc = zbus_chan_add_obs(&sensor_event_chan, &test_event_listener,
-				  K_NO_WAIT);
+	int rc = zbus_chan_add_obs(&sensor_event_chan, &test_event_listener, K_NO_WAIT);
 
 	zassert_ok(rc, "Failed to add sensor_event observer: %d", rc);
 	return NULL;
@@ -64,8 +63,7 @@ static void before_each(void *f)
 	k_sem_reset(&event_sem);
 }
 
-ZTEST_SUITE(remote_sensor_manager_suite, NULL, suite_setup, before_each,
-	    NULL, NULL);
+ZTEST_SUITE(remote_sensor_manager_suite, NULL, suite_setup, before_each, NULL, NULL);
 
 /* --------------------------------------------------------------------------
  * t1: transport registered in iterable section
@@ -82,25 +80,21 @@ ZTEST(remote_sensor_manager_suite, test_fake_transport_registered)
 	int count = 0;
 	bool found_fake = false;
 
-	STRUCT_SECTION_FOREACH(remote_transport, t) {
+	STRUCT_SECTION_FOREACH(remote_transport, t)
+	{
 		count++;
 		if (t->proto == REMOTE_TRANSPORT_PROTO_FAKE) {
 			found_fake = true;
-			zassert_not_null(t->name,
-					 "transport name must not be NULL");
-			zassert_true(
-				t->caps & REMOTE_TRANSPORT_CAP_SCAN,
-				"fake transport must have SCAN capability");
-			zassert_true(
-				t->caps & REMOTE_TRANSPORT_CAP_TRIGGER,
-				"fake transport must have TRIGGER capability");
+			zassert_not_null(t->name, "transport name must not be NULL");
+			zassert_true(t->caps & REMOTE_TRANSPORT_CAP_SCAN,
+				     "fake transport must have SCAN capability");
+			zassert_true(t->caps & REMOTE_TRANSPORT_CAP_TRIGGER,
+				     "fake transport must have TRIGGER capability");
 		}
 	}
 
-	zassert_true(count > 0,
-		     "No transports found in iterable section");
-	zassert_true(found_fake,
-		     "fake transport (proto=FAKE) not found in iterable section");
+	zassert_true(count > 0, "No transports found in iterable section");
+	zassert_true(found_fake, "fake transport (proto=FAKE) not found in iterable section");
 }
 
 /* --------------------------------------------------------------------------
@@ -120,12 +114,12 @@ ZTEST(remote_sensor_manager_suite, test_discovery_registers_sensors)
 {
 	/* Derive the UIDs the fake transport will announce. */
 	static const uint8_t fake_mac[] = {0xFA, 0x4E, 0x00, 0x00, 0x00, 0x00};
-	uint32_t expected_uid_temp = remote_sensor_uid_from_addr(
-		CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX,
-		fake_mac, sizeof(fake_mac), SENSOR_TYPE_TEMPERATURE);
-	uint32_t expected_uid_hum = remote_sensor_uid_from_addr(
-		CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX,
-		fake_mac, sizeof(fake_mac), SENSOR_TYPE_HUMIDITY);
+	uint32_t expected_uid_temp =
+		remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX, fake_mac,
+					    sizeof(fake_mac), SENSOR_TYPE_TEMPERATURE);
+	uint32_t expected_uid_hum =
+		remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX, fake_mac,
+					    sizeof(fake_mac), SENSOR_TYPE_HUMIDITY);
 
 	int rc = fake_remote_sensor_announce();
 
@@ -134,22 +128,20 @@ ZTEST(remote_sensor_manager_suite, test_discovery_registers_sensors)
 	/* Give the manager subscriber thread time to process both events. */
 	k_sleep(K_MSEC(200));
 
-	const struct sensor_registry_entry *entry_temp =
-		sensor_registry_lookup(expected_uid_temp);
-	const struct sensor_registry_entry *entry_hum =
-		sensor_registry_lookup(expected_uid_hum);
+	const struct sensor_registry_entry *entry_temp = sensor_registry_lookup(expected_uid_temp);
+	const struct sensor_registry_entry *entry_hum = sensor_registry_lookup(expected_uid_hum);
 
 	zassert_not_null(entry_temp,
 			 "Temperature sensor uid=0x%08x not in registry after "
-			 "announce", expected_uid_temp);
+			 "announce",
+			 expected_uid_temp);
 	zassert_not_null(entry_hum,
 			 "Humidity sensor uid=0x%08x not in registry after "
-			 "announce", expected_uid_hum);
+			 "announce",
+			 expected_uid_hum);
 
-	zassert_true(entry_temp->is_remote,
-		     "Temperature entry must have is_remote=true");
-	zassert_true(entry_hum->is_remote,
-		     "Humidity entry must have is_remote=true");
+	zassert_true(entry_temp->is_remote, "Temperature entry must have is_remote=true");
+	zassert_true(entry_hum->is_remote, "Humidity entry must have is_remote=true");
 
 	/* Re-announcing the same sensors must be idempotent. */
 	int count_before = sensor_registry_count();
@@ -160,8 +152,8 @@ ZTEST(remote_sensor_manager_suite, test_discovery_registers_sensors)
 
 	zassert_equal(sensor_registry_count(), count_before,
 		      "Registry count changed after duplicate announce "
-		      "(was %d, now %d)", count_before,
-		      sensor_registry_count());
+		      "(was %d, now %d)",
+		      count_before, sensor_registry_count());
 }
 
 /* --------------------------------------------------------------------------
@@ -187,17 +179,13 @@ ZTEST(remote_sensor_manager_suite, test_publish_produces_event)
 	/* Expect at least one event within 1 s. */
 	int rc = k_sem_take(&event_sem, K_SECONDS(1));
 
-	zassert_ok(rc,
-		   "No sensor_event received within 1 s after publish_all");
+	zassert_ok(rc, "No sensor_event received within 1 s after publish_all");
 
-	zassert_true(last_event.sensor_uid != 0,
-		     "Event has sensor_uid == 0");
+	zassert_true(last_event.sensor_uid != 0, "Event has sensor_uid == 0");
 	zassert_true(last_event.type == SENSOR_TYPE_TEMPERATURE ||
 			     last_event.type == SENSOR_TYPE_HUMIDITY,
-		     "Event type %d is not TEMPERATURE or HUMIDITY",
-		     last_event.type);
-	zassert_true(last_event.timestamp_ms > 0,
-		     "Event timestamp_ms must be positive");
+		     "Event type %d is not TEMPERATURE or HUMIDITY", last_event.type);
+	zassert_true(last_event.timestamp_ms > 0, "Event timestamp_ms must be positive");
 }
 
 /* --------------------------------------------------------------------------
@@ -231,11 +219,9 @@ ZTEST(remote_sensor_manager_suite, test_trigger_routing)
 
 	/* The listener is synchronous — give it a short moment to fire. */
 	rc = k_sem_take(&event_sem, K_SECONDS(1));
-	zassert_ok(rc,
-		   "No sensor_event received within 1 s after trigger");
+	zassert_ok(rc, "No sensor_event received within 1 s after trigger");
 
-	zassert_true(last_event.sensor_uid != 0,
-		     "Triggered event has sensor_uid == 0");
+	zassert_true(last_event.sensor_uid != 0, "Triggered event has sensor_uid == 0");
 }
 
 /* --------------------------------------------------------------------------
@@ -266,13 +252,10 @@ ZTEST(remote_sensor_manager_suite, test_event_uid_in_registry)
 		const struct sensor_registry_entry *entry =
 			sensor_registry_lookup(last_event.sensor_uid);
 
-		zassert_not_null(
-			entry,
-			"Event uid=0x%08x not found in sensor_registry",
-			last_event.sensor_uid);
+		zassert_not_null(entry, "Event uid=0x%08x not found in sensor_registry",
+				 last_event.sensor_uid);
 
-		zassert_true(entry->is_remote,
-			     "Event uid=0x%08x has is_remote=false",
+		zassert_true(entry->is_remote, "Event uid=0x%08x has is_remote=false",
 			     last_event.sensor_uid);
 	}
 }

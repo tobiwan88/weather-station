@@ -78,9 +78,7 @@ static int list_cb(const struct sensor_registry_entry *entry, void *user_data)
 
 	const char *name = sensor_registry_get_display_name(entry->uid);
 
-	shell_print(ctx->sh, "  uid=0x%08x  %-30s  %s",
-		    entry->uid,
-		    name ? name : "(unknown)",
+	shell_print(ctx->sh, "  uid=0x%08x  %-30s  %s", entry->uid, name ? name : "(unknown)",
 		    entry->label);
 	ctx->count++;
 	return 0;
@@ -112,8 +110,10 @@ static int cmd_scan_start(const struct shell *sh, size_t argc, char **argv)
 	if (argc > 1) {
 		proto = proto_from_str(argv[1]);
 		if (proto == REMOTE_TRANSPORT_PROTO_UNKNOWN && argv[1][0] != '\0') {
-			shell_error(sh, "Unknown protocol '%s'. "
-				    "Valid: ble, lora, thread, fake", argv[1]);
+			shell_error(sh,
+				    "Unknown protocol '%s'. "
+				    "Valid: ble, lora, thread, fake",
+				    argv[1]);
 			return -EINVAL;
 		}
 	}
@@ -144,8 +144,10 @@ static int cmd_scan_stop(const struct shell *sh, size_t argc, char **argv)
 	if (argc > 1) {
 		proto = proto_from_str(argv[1]);
 		if (proto == REMOTE_TRANSPORT_PROTO_UNKNOWN && argv[1][0] != '\0') {
-			shell_error(sh, "Unknown protocol '%s'. "
-				    "Valid: ble, lora, thread, fake", argv[1]);
+			shell_error(sh,
+				    "Unknown protocol '%s'. "
+				    "Valid: ble, lora, thread, fake",
+				    argv[1]);
 			return -EINVAL;
 		}
 	}
@@ -181,13 +183,11 @@ static int cmd_transports(const struct shell *sh, size_t argc, char **argv)
 	int count = 0;
 
 	shell_print(sh, "Registered transports:");
-	STRUCT_SECTION_FOREACH(remote_transport, t) {
-		shell_print(sh, "  %-8s proto=%d caps=0x%02x%s%s",
-			    t->name, (int)t->proto, t->caps,
-			    (t->caps & REMOTE_TRANSPORT_CAP_SCAN)
-				? " SCAN" : "",
-			    (t->caps & REMOTE_TRANSPORT_CAP_TRIGGER)
-				? " TRIGGER" : "");
+	STRUCT_SECTION_FOREACH(remote_transport, t)
+	{
+		shell_print(sh, "  %-8s proto=%d caps=0x%02x%s%s", t->name, (int)t->proto, t->caps,
+			    (t->caps & REMOTE_TRANSPORT_CAP_SCAN) ? " SCAN" : "",
+			    (t->caps & REMOTE_TRANSPORT_CAP_TRIGGER) ? " TRIGGER" : "");
 		count++;
 	}
 	if (count == 0) {
@@ -201,27 +201,19 @@ static int cmd_transports(const struct shell *sh, size_t argc, char **argv)
  * -------------------------------------------------------------------------- */
 
 SHELL_STATIC_SUBCMD_SET_CREATE(scan_cmds,
-	SHELL_CMD_ARG(start, NULL,
-		"Start scanning [ble|lora|thread|fake] (empty = all)",
-		cmd_scan_start, 1, 1),
-	SHELL_CMD_ARG(stop, NULL,
-		"Stop scanning [ble|lora|thread|fake] (empty = all)",
-		cmd_scan_stop, 1, 1),
-	SHELL_SUBCMD_SET_END
-);
+			       SHELL_CMD_ARG(start, NULL,
+					     "Start scanning [ble|lora|thread|fake] (empty = all)",
+					     cmd_scan_start, 1, 1),
+			       SHELL_CMD_ARG(stop, NULL,
+					     "Stop scanning [ble|lora|thread|fake] (empty = all)",
+					     cmd_scan_stop, 1, 1),
+			       SHELL_SUBCMD_SET_END);
 
 SHELL_STATIC_SUBCMD_SET_CREATE(remote_sensor_cmds,
-	SHELL_CMD(list, NULL,
-		"List registered remote sensors",
-		cmd_list),
-	SHELL_CMD(scan, &scan_cmds,
-		"Scan control sub-commands",
-		NULL),
-	SHELL_CMD(transports, NULL,
-		"List linked-in transport adapters",
-		cmd_transports),
-	SHELL_SUBCMD_SET_END
-);
+			       SHELL_CMD(list, NULL, "List registered remote sensors", cmd_list),
+			       SHELL_CMD(scan, &scan_cmds, "Scan control sub-commands", NULL),
+			       SHELL_CMD(transports, NULL, "List linked-in transport adapters",
+					 cmd_transports),
+			       SHELL_SUBCMD_SET_END);
 
-SHELL_CMD_REGISTER(remote_sensor, &remote_sensor_cmds,
-		   "Remote sensor management", NULL);
+SHELL_CMD_REGISTER(remote_sensor, &remote_sensor_cmds, "Remote sensor management", NULL);
