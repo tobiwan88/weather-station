@@ -3,6 +3,7 @@
 rsource "sensor_event/Kconfig"
 rsource "sensor_trigger/Kconfig"
 rsource "sensor_registry/Kconfig"
+rsource "location_registry/Kconfig"
 rsource "config_cmd/Kconfig"
 rsource "fake_sensors/Kconfig"
 rsource "sntp_sync/Kconfig"

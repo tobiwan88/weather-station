@@ -60,7 +60,6 @@ DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_HUM_DATA_DECL)
 		.uid = DT_PROP(node_id, sensor_uid),                                               \
 		.kind = FAKE_SENSOR_KIND_HUMIDITY,                                                 \
 		.label = DT_NODE_FULL_NAME(node_id),                                               \
-		.location = DT_PROP(node_id, location),                                            \
 		.value_milli = &fake_hum_mpct_##node_id,                                           \
 		.publish = fake_hum_publish_##node_id,                                             \
 	};
@@ -107,7 +106,6 @@ ZBUS_LISTENER_DEFINE(fake_hum_listener, fake_hum_trigger_cb);
 	static const struct sensor_registry_entry fake_hum_reg_##node_id = {                       \
 		.uid = DT_PROP(node_id, sensor_uid),                                               \
 		.label = DT_NODE_FULL_NAME(node_id),                                               \
-		.location = DT_PROP(node_id, location),                                            \
 		.is_remote = false,                                                                \
 	};
 

@@ -19,6 +19,19 @@
     <div id="flashMsg" class="flash hidden"></div>
 
     <section class="card">
+      <h2>Locations</h2>
+      <p class="hint">Define named locations. Sensors can then be assigned to a location below.</p>
+      <div id="locList" class="loc-list"></div>
+      <form method="post" action="/api/config" id="addLocForm">
+        <input type="hidden" name="action" value="add_location">
+        <div class="field field-inline">
+          <input type="text" name="loc_name" id="locNameInput" placeholder="New location name" maxlength="32" size="24">
+          <button type="submit" class="btn-primary">Add Location</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
       <h2>Sensor Trigger</h2>
       <form method="post" action="/api/config" id="triggerForm">
         <div class="field">
@@ -48,12 +61,12 @@
 
     <section class="card">
       <h2>Registered Sensors</h2>
-      <p class="hint"><em>DT label / DT location</em> are read-only (from firmware). Edit the remaining columns to customise the dashboard.</p>
+      <p class="hint">Edit the columns to customise the dashboard. Location dropdown is populated from defined locations above.</p>
       <form method="post" action="/api/config" id="sensorsForm">
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th>UID</th><th>DT label</th><th>DT location</th><th>Display name</th><th>Location</th><th>Description</th><th>Enabled</th></tr>
+              <tr><th>UID</th><th>DT label</th><th>Display name</th><th>Location</th><th>Description</th><th>Enabled</th></tr>
             </thead>
             <tbody id="sb"></tbody>
           </table>

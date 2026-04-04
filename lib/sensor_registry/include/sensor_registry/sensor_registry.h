@@ -25,10 +25,9 @@ extern "C" {
 
 /** Compile-time metadata record for one sensor (populated from DT, immutable). */
 struct sensor_registry_entry {
-	uint32_t uid;         /**< Unique sensor identifier (from DT)    */
-	const char *label;    /**< DT node name, e.g. "fake-temp-indoor" */
-	const char *location; /**< DT location property, e.g. "living_room" */
-	bool is_remote;       /**< true if sensor lives on a remote node */
+	uint32_t uid;      /**< Unique sensor identifier (from DT)    */
+	const char *label; /**< DT node name, e.g. "fake-temp-indoor" */
+	bool is_remote;    /**< true if sensor lives on a remote node */
 };
 
 /**
@@ -79,7 +78,7 @@ int sensor_registry_count(void);
 struct sensor_registry_meta {
 	/** User-friendly display name (defaults to DT label). */
 	char display_name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN + 1];
-	/** Location override (defaults to DT location property). */
+	/** Location assignment (set at runtime via dashboard or shell). */
 	char location[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN + 1];
 	/** Free-text description / notes. */
 	char description[CONFIG_SENSOR_REGISTRY_META_DESC_LEN + 1];
@@ -117,13 +116,14 @@ int sensor_registry_get_meta(uint32_t uid, struct sensor_registry_meta *out);
 const char *sensor_registry_get_display_name(uint32_t uid);
 
 /**
- * @brief Return the effective location string for a sensor.
+ * @brief Return the location string for a sensor.
  *
- * Returns meta.location if non-empty, otherwise falls back to the DT
- * location from sensor_registry_entry.
+ * Returns meta.location (set at runtime via dashboard or shell), or an
+ * empty string if no location has been assigned yet.
  *
  * @param uid Sensor uid.
- * @return Location string, or NULL if uid is not registered.
+ * @return Location string (never NULL for a registered sensor), or NULL
+ *         if uid is not registered.
  */
 const char *sensor_registry_get_location(uint32_t uid);
 

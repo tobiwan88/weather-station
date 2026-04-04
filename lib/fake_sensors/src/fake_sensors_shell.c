@@ -7,6 +7,7 @@
 #include <zephyr/zbus/zbus.h>
 
 #include <fake_sensors/fake_sensors.h>
+#include <sensor_registry/sensor_registry.h>
 #include <sensor_trigger/sensor_trigger.h>
 
 LOG_MODULE_REGISTER(fake_sensors_shell, LOG_LEVEL_INF);
@@ -28,8 +29,10 @@ static int cmd_list(const struct shell *sh, size_t argc, char **argv)
 			(entry->kind == FAKE_SENSOR_KIND_TEMPERATURE) ? "temperature" : "humidity";
 		const char *unit_str =
 			(entry->kind == FAKE_SENSOR_KIND_TEMPERATURE) ? "mdeg C" : "m%RH";
+		const char *loc = sensor_registry_get_location(entry->uid);
+
 		shell_print(sh, "0x%04x  %-12s  %-20s  %d %s", entry->uid, kind_str,
-			    entry->location, *entry->value_milli, unit_str);
+			    loc ? loc : "", *entry->value_milli, unit_str);
 	}
 	return 0;
 }
