@@ -8,9 +8,7 @@ on:
 
 env:
   CI_IMAGE: ghcr.io/tobiwan88/zephyr_docker:arm
-
-# ── Shared step fragments (referenced via YAML anchors) ──────────────────────
-# GitHub Actions does not support anchors natively; steps are repeated in full.
+  VENV: /home/zephyr/.venv/bin/activate
 
 jobs:
   # ── 1. Lint ─────────────────────────────────────────────────────────────────
@@ -19,16 +17,15 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/tobiwan88/zephyr_docker:arm
-      options: --user zephyr
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Install pre-commit
-        run: source ~/.venv/bin/activate && pip install pre-commit --quiet
+        run: source /home/zephyr/.venv/bin/activate && pip install pre-commit --quiet
 
       - name: Run pre-commit hooks
-        run: source ~/.venv/bin/activate && pre-commit run --all-files
+        run: source /home/zephyr/.venv/bin/activate && pre-commit run --all-files
 
   # ── 2. Build (parallel per app) ─────────────────────────────────────────────
   build:
@@ -37,7 +34,6 @@ jobs:
     needs: lint
     container:
       image: ghcr.io/tobiwan88/zephyr_docker:arm
-      options: --user zephyr
 
     strategy:
       fail-fast: false
@@ -62,13 +58,13 @@ jobs:
 
       - name: West init + update
         run: |
-          source ~/.venv/bin/activate
+          source /home/zephyr/.venv/bin/activate
           west init -l . 2>/dev/null || true
           west update --narrow
 
       - name: Build ${{ matrix.app }}
         run: |
-          source ~/.venv/bin/activate
+          source /home/zephyr/.venv/bin/activate
           ZEPHYR_BASE=$(west topdir)/zephyr \
             west build -p always -b ${{ matrix.board }} apps/${{ matrix.app }}
 
@@ -86,7 +82,6 @@ jobs:
     needs: build
     container:
       image: ghcr.io/tobiwan88/zephyr_docker:arm
-      options: --user zephyr
 
     steps:
       - uses: actions/checkout@v4
@@ -102,16 +97,16 @@ jobs:
 
       - name: West init + update
         run: |
-          source ~/.venv/bin/activate
+          source /home/zephyr/.venv/bin/activate
           west init -l . 2>/dev/null || true
           west update --narrow
 
       - name: Install gcovr
-        run: source ~/.venv/bin/activate && pip install gcovr --quiet
+        run: source /home/zephyr/.venv/bin/activate && pip install gcovr --quiet
 
       - name: Run Twister with coverage
         run: |
-          source ~/.venv/bin/activate
+          source /home/zephyr/.venv/bin/activate
           ZEPHYR_BASE=$(west topdir)/zephyr \
           west twister \
             -p native_sim/native/64 \
@@ -125,8 +120,7 @@ jobs:
       - name: Generate coverage reports
         if: always()
         run: |
-          source ~/.venv/bin/activate
-          # HTML report
+          source /home/zephyr/.venv/bin/activate
           mkdir -p twister-out/coverage
           gcovr \
             --root . \
@@ -172,17 +166,12 @@ jobs:
     name: Docs (render diagrams)
     runs-on: ubuntu-latest
     needs: lint
-    container:
-      image: ghcr.io/tobiwan88/zephyr_docker:arm
-      options: --user root   # needs apt for nodejs
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Node.js + mmdc
         run: |
-          apt-get update -qq
-          apt-get install -y --no-install-recommends nodejs npm
           npm install -g @mermaid-js/mermaid-cli --silent
 
       - name: Render Mermaid diagrams
