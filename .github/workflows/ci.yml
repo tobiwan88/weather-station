@@ -10,6 +10,10 @@ env:
   CI_IMAGE: ghcr.io/tobiwan88/zephyr_docker:arm
   VENV: /home/zephyr/.venv/bin/activate
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   # ── 1. Lint ─────────────────────────────────────────────────────────────────
   lint:
