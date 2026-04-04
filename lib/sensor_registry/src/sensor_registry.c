@@ -25,7 +25,7 @@ static struct sensor_registry_meta meta[SENSOR_REGISTRY_MAX_ENTRIES];
 
 int sensor_registry_register(const struct sensor_registry_entry *entry)
 {
-	if (entry == NULL || entry->label == NULL || entry->location == NULL) {
+	if (entry == NULL || entry->label == NULL) {
 		return -EINVAL;
 	}
 
@@ -49,15 +49,12 @@ int sensor_registry_register(const struct sensor_registry_entry *entry)
 	registry[idx] = entry;
 
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
-	/* Pre-seed user meta from DT defaults so the UI always has values. */
+	/* Pre-seed display name from DT label; location starts empty. */
 	strncpy(meta[idx].display_name, entry->label,
 		CONFIG_SENSOR_REGISTRY_META_NAME_LEN);
 	meta[idx].display_name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN] = '\0';
 
-	strncpy(meta[idx].location, entry->location,
-		CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN);
-	meta[idx].location[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN] = '\0';
-
+	meta[idx].location[0] = '\0';
 	meta[idx].description[0] = '\0';
 	meta[idx].enabled = true;
 #endif
@@ -184,9 +181,7 @@ const char *sensor_registry_get_location(uint32_t uid)
 	k_mutex_lock(&registry_mutex, K_FOREVER);
 	for (int i = 0; i < registry_count; i++) {
 		if (registry[i]->uid == uid) {
-			const char *loc = (meta[i].location[0] != '\0')
-						  ? meta[i].location
-						  : registry[i]->location;
+			const char *loc = meta[i].location;
 
 			k_mutex_unlock(&registry_mutex);
 			return loc;

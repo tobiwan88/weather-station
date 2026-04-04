@@ -66,7 +66,6 @@ DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_TEMP_DATA_DECL)
 		.uid = DT_PROP(node_id, sensor_uid),                                               \
 		.kind = FAKE_SENSOR_KIND_TEMPERATURE,                                              \
 		.label = DT_NODE_FULL_NAME(node_id),                                               \
-		.location = DT_PROP(node_id, location),                                            \
 		.value_milli = &fake_temp_mdegc_##node_id,                                         \
 		.publish = fake_temp_publish_##node_id,                                            \
 	};
@@ -114,7 +113,6 @@ ZBUS_LISTENER_DEFINE(fake_temp_listener, fake_temp_trigger_cb);
 	static const struct sensor_registry_entry fake_temp_reg_##node_id = {                      \
 		.uid = DT_PROP(node_id, sensor_uid),                                               \
 		.label = DT_NODE_FULL_NAME(node_id),                                               \
-		.location = DT_PROP(node_id, location),                                            \
 		.is_remote = false,                                                                \
 	};
 

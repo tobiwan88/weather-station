@@ -7,7 +7,7 @@
  *   - ZBUS_LISTENER_DEFINE subscribes to sensor_event_chan (priority 97).
  *   - Per-sensor ring buffers store the last HISTORY_SIZE samples.
  *   - k_spinlock protects ring buffers (callback may run from ISR/timer context).
- *   - HTTP_SERVICE_DEFINE + four HTTP_RESOURCE_DEFINE handle the four URLs.
+ *   - HTTP_SERVICE_DEFINE + five HTTP_RESOURCE_DEFINE handle the five URLs.
  *   - SYS_INIT at APPLICATION 97 registers the zbus observer and starts the
  *     HTTP server.
  */
@@ -25,6 +25,7 @@
 #include <zephyr/zbus/zbus.h>
 
 #include <config_cmd/config_cmd.h>
+#include <location_registry/location_registry.h>
 #include <sensor_event/sensor_event.h>
 #include <sensor_registry/sensor_registry.h>
 
@@ -312,7 +313,7 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 		const struct sensor_registry_entry *reg =
 			sensor_registry_lookup(snap[i].uid);
 		const char *label = reg ? reg->label : "unknown";
-		const char *location = reg ? reg->location : "unknown";
+		const char *location = "";
 #endif
 
 		if (!first_sensor) {
@@ -386,6 +387,29 @@ struct sensor_json_ctx {
 	bool first;
 };
 
+static int location_to_json_cb(const char *name, void *user_data)
+{
+	struct sensor_json_ctx *ctx = user_data;
+
+	if (!ctx->first) {
+		int n = snprintf((char *)cfg_json_buf + ctx->pos, (size_t)(ctx->rem + 1), ",");
+
+		if (n > 0) {
+			ctx->pos += MIN(n, ctx->rem);
+			ctx->rem -= MIN(n, ctx->rem);
+		}
+	}
+	ctx->first = false;
+
+	int n = snprintf((char *)cfg_json_buf + ctx->pos, (size_t)(ctx->rem + 1), "\"%s\"", name);
+
+	if (n > 0) {
+		ctx->pos += MIN(n, ctx->rem);
+		ctx->rem -= MIN(n, ctx->rem);
+	}
+	return 0;
+}
+
 static int sensor_to_json_cb(const struct sensor_registry_entry *e, void *user_data)
 {
 	struct sensor_json_ctx *ctx = user_data;
@@ -406,16 +430,15 @@ static int sensor_to_json_cb(const struct sensor_registry_entry *e, void *user_d
 	sensor_registry_get_meta(e->uid, &smeta);
 	int n = snprintf((char *)cfg_json_buf + ctx->pos, (size_t)(ctx->rem + 1),
 			 "{\"uid\":%u"
-			 ",\"dt_label\":\"%s\",\"dt_location\":\"%s\""
+			 ",\"dt_label\":\"%s\""
 			 ",\"display_name\":\"%s\",\"location\":\"%s\""
 			 ",\"description\":\"%s\",\"enabled\":%s}",
-			 e->uid, e->label, e->location,
+			 e->uid, e->label,
 			 smeta.display_name, smeta.location,
 			 smeta.description, smeta.enabled ? "true" : "false");
 #else
 	int n = snprintf((char *)cfg_json_buf + ctx->pos, (size_t)(ctx->rem + 1),
-			 "{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\"}",
-			 e->uid, e->label, e->location);
+			 "{\"uid\":%u,\"label\":\"%s\"}", e->uid, e->label);
 #endif
 
 	if (n > 0) {
@@ -424,6 +447,9 @@ static int sensor_to_json_cb(const struct sensor_registry_entry *e, void *user_d
 	}
 	return 0;
 }
+
+/* Static JSON buffer for /api/locations. */
+static uint8_t loc_json_buf[512];
 
 /* Accumulation buffer for POST body chunks. */
 static uint8_t post_buf[1024];
@@ -447,6 +473,35 @@ static void url_decode(char *s)
 		}
 	}
 	*wr = '\0';
+}
+
+/* Extract the value for a given key from a raw form-encoded body string.
+ * out must be at least out_len bytes. Returns true if key was found. */
+static bool form_extract(const char *body, const char *key, char *out, size_t out_len)
+{
+	size_t klen = strlen(key);
+	const char *p = body;
+
+	while (p && *p) {
+		if (strncmp(p, key, klen) == 0 && p[klen] == '=') {
+			const char *v = p + klen + 1;
+			const char *end = strchr(v, '&');
+			size_t vlen = end ? (size_t)(end - v) : strlen(v);
+
+			if (vlen >= out_len) {
+				vlen = out_len - 1;
+			}
+			memcpy(out, v, vlen);
+			out[vlen] = '\0';
+			url_decode(out);
+			return true;
+		}
+		p = strchr(p, '&');
+		if (p) {
+			p++;
+		}
+	}
+	return false;
 }
 
 static void process_post(const uint8_t *body, size_t len)
@@ -506,6 +561,33 @@ static void process_post(const uint8_t *body, size_t len)
 					LOG_WRN("config_cmd_chan pub failed: %d", rc);
 				}
 				LOG_INF("SNTP resync triggered");
+			} else if (strcmp(key, "action") == 0 &&
+				   (strcmp(val, "add_location") == 0 ||
+				    strcmp(val, "remove_location") == 0)) {
+				char loc_name[CONFIG_LOCATION_REGISTRY_NAME_LEN + 1];
+
+				if (form_extract(buf, "loc_name", loc_name, sizeof(loc_name)) &&
+				    loc_name[0] != '\0') {
+					if (strcmp(val, "add_location") == 0) {
+						int rc = location_registry_add(loc_name);
+
+						if (rc != 0 && rc != -EEXIST) {
+							LOG_WRN("location add '%s' failed: %d",
+								loc_name, rc);
+						} else {
+							LOG_INF("Location added: %s", loc_name);
+						}
+					} else {
+						int rc = location_registry_remove(loc_name);
+
+						if (rc != 0) {
+							LOG_WRN("location remove '%s' failed: %d",
+								loc_name, rc);
+						} else {
+							LOG_INF("Location removed: %s", loc_name);
+						}
+					}
+				}
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
 			} else if (strncmp(key, "sensor_", 7) == 0) {
 				/* sensor_<uid>_<field>: name, loc, desc, en */
@@ -607,8 +689,17 @@ static int api_config_handler(struct http_client_ctx *client, enum http_data_sta
 		}                                                                                  \
 	} while (0)
 
-	CAPPEND("{\"port\":%d,\"trigger_interval_ms\":%u,\"sntp_server\":\"%s\",\"sensors\":[",
+	CAPPEND("{\"port\":%d,\"trigger_interval_ms\":%u,\"sntp_server\":\"%s\",\"locations\":[",
 		CONFIG_HTTP_DASHBOARD_PORT, trigger_interval_ms, sntp_server_buf);
+
+	/* Emit location list using the same ctx pattern. */
+	struct sensor_json_ctx lctx = {.pos = pos, .rem = rem, .first = true};
+
+	location_registry_foreach(location_to_json_cb, &lctx);
+	pos = lctx.pos;
+	rem = lctx.rem;
+
+	CAPPEND("],\"sensors\":[");
 
 	struct sensor_json_ctx sctx = {.pos = pos, .rem = rem, .first = true};
 
@@ -640,6 +731,95 @@ static struct http_resource_detail_dynamic api_config_detail = {
 };
 
 /* -------------------------------------------------------------------------- */
+/* GET /api/locations — JSON list of all named locations                       */
+/* -------------------------------------------------------------------------- */
+
+struct loc_list_ctx {
+	int pos;
+	int rem;
+	bool first;
+};
+
+static int loc_list_append_cb(const char *name, void *user_data)
+{
+	struct loc_list_ctx *ctx = user_data;
+
+	if (!ctx->first) {
+		int n = snprintf((char *)loc_json_buf + ctx->pos, (size_t)(ctx->rem + 1), ",");
+
+		if (n > 0) {
+			ctx->pos += MIN(n, ctx->rem);
+			ctx->rem -= MIN(n, ctx->rem);
+		}
+	}
+	ctx->first = false;
+
+	int n = snprintf((char *)loc_json_buf + ctx->pos, (size_t)(ctx->rem + 1), "\"%s\"", name);
+
+	if (n > 0) {
+		ctx->pos += MIN(n, ctx->rem);
+		ctx->rem -= MIN(n, ctx->rem);
+	}
+	return 0;
+}
+
+static int api_locations_handler(struct http_client_ctx *client, enum http_data_status status,
+				  const struct http_request_ctx *request_ctx,
+				  struct http_response_ctx *response_ctx, void *user_data)
+{
+	ARG_UNUSED(client);
+	ARG_UNUSED(request_ctx);
+	ARG_UNUSED(user_data);
+
+	if (status == HTTP_SERVER_DATA_ABORTED) {
+		return 0;
+	}
+	if (status != HTTP_SERVER_DATA_FINAL) {
+		return 0;
+	}
+
+	int pos = 0;
+	int rem = (int)sizeof(loc_json_buf) - 1;
+	int n;
+
+	n = snprintf((char *)loc_json_buf + pos, (size_t)(rem + 1), "{\"locations\":[");
+	if (n > 0) {
+		pos += MIN(n, rem);
+		rem -= MIN(n, rem);
+	}
+
+	struct loc_list_ctx ctx = {.pos = pos, .rem = rem, .first = true};
+
+	location_registry_foreach(loc_list_append_cb, &ctx);
+	pos = ctx.pos;
+	rem = ctx.rem;
+
+	n = snprintf((char *)loc_json_buf + pos, (size_t)(rem + 1), "]}");
+	if (n > 0) {
+		pos += MIN(n, rem);
+		rem -= MIN(n, rem);
+	}
+
+	loc_json_buf[pos] = '\0';
+
+	response_ctx->status = HTTP_200_OK;
+	response_ctx->headers = json_ct_hdr;
+	response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
+	response_ctx->body = loc_json_buf;
+	response_ctx->body_len = (size_t)pos;
+	response_ctx->final_chunk = true;
+	return 0;
+}
+
+static struct http_resource_detail_dynamic api_locations_detail = {
+	.common = {
+		.type = HTTP_RESOURCE_TYPE_DYNAMIC,
+		.bitmask_of_supported_http_methods = BIT(HTTP_GET),
+	},
+	.cb = api_locations_handler,
+};
+
+/* -------------------------------------------------------------------------- */
 /* HTTP service + resource registration                                        */
 /* -------------------------------------------------------------------------- */
 
@@ -651,6 +831,8 @@ HTTP_RESOURCE_DEFINE(root_resource, dashboard_svc, "/", &root_detail);
 HTTP_RESOURCE_DEFINE(config_resource, dashboard_svc, "/config", &config_page_detail);
 HTTP_RESOURCE_DEFINE(api_data_resource, dashboard_svc, "/api/data", &api_data_detail);
 HTTP_RESOURCE_DEFINE(api_config_resource, dashboard_svc, "/api/config", &api_config_detail);
+HTTP_RESOURCE_DEFINE(api_locations_resource, dashboard_svc, "/api/locations",
+		     &api_locations_detail);
 
 /* -------------------------------------------------------------------------- */
 /* SYS_INIT                                                                    */
