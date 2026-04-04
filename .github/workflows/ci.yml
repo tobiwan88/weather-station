@@ -77,9 +77,10 @@ jobs:
       - name: Build ${{ matrix.app }}
         run: |
           source /home/zephyr/.venv/bin/activate
-          # Must run from west topdir so Zephyr discovers the weather-station
-          # module Kconfig (same constraint as local builds — see CLAUDE.md).
           WEST_ROOT=$(west topdir)
+          # ZEPHYR_EXTRA_MODULES is required: Zephyr CMake does not scan the
+          # west manifest's self: project automatically for zephyr/module.yml.
+          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
             west build -p always -b ${{ matrix.board }} \
               --build-dir "${WEST_ROOT}/build/${{ matrix.app }}" \
@@ -129,6 +130,7 @@ jobs:
         run: |
           source /home/zephyr/.venv/bin/activate
           WEST_ROOT=$(west topdir)
+          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
           west twister \
             -p native_sim/native/64 \
