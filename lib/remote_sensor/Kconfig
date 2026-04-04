@@ -1,0 +1,83 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig REMOTE_SENSOR
+	bool "Remote sensor transport abstraction"
+	depends on ZBUS
+	depends on SENSOR_EVENT
+	depends on SENSOR_TRIGGER
+	depends on SENSOR_REGISTRY
+	select SENSOR_REGISTRY_USER_META
+	help
+	  Transport-agnostic abstraction layer for sensors connected via wireless
+	  protocols (BLE, LoRa, Thread, etc.).
+
+	  Defines a transport vtable (struct remote_transport) that protocol
+	  adapters implement, two zbus channels for discovery and scan control,
+	  and a subscriber thread that handles registration, persistence, and
+	  trigger routing. All existing consumers (dashboard, display, logger)
+	  receive remote sensor data on the unchanged sensor_event_chan.
+
+	  Protocol adapters (CONFIG_BLE_SENSOR, CONFIG_LORA_SENSOR, etc.) each
+	  select this option automatically.
+
+if REMOTE_SENSOR
+
+config REMOTE_SENSOR_MAX_PEERS
+	int "Maximum number of remote sensor peers"
+	default 8
+	range 1 32
+	help
+	  Pre-allocates this many sensor_registry_entry slots for remote sensors.
+	  Remote sensors discovered at runtime consume entries from this pool.
+
+config REMOTE_SENSOR_AUTO_REGISTER
+	bool "Auto-register discovered sensors without user confirmation"
+	default y
+	help
+	  When y, any sensor announced on remote_discovery_chan is immediately
+	  registered in sensor_registry and persisted.
+	  When n, discovered sensors are logged but require a shell
+	  "remote_sensor pair" command to confirm registration.
+
+config REMOTE_SENSOR_AUTO_SCAN
+	bool "Start scanning all capable transports at boot"
+	default y
+	depends on REMOTE_SENSOR_AUTO_REGISTER
+	help
+	  Automatically publishes REMOTE_SCAN_START on remote_scan_ctrl_chan
+	  during SYS_INIT. Individual transports start scanning immediately.
+	  When n, scanning is controlled exclusively via shell or external command.
+
+config REMOTE_SENSOR_PERSIST
+	bool "Persist known remote peers across reboots"
+	default y
+	depends on SETTINGS
+	help
+	  Saves peer address, transport protocol, and assigned UID to settings
+	  on each new registration. On reboot, re-registers known peers in
+	  sensor_registry and calls peer_add() on the matching transport before
+	  scanning begins. Settings key prefix: "rsen/".
+
+config REMOTE_SENSOR_THREAD_STACK_SIZE
+	int "Manager thread stack size (bytes)"
+	default 1024
+	range 512 8192
+
+config REMOTE_SENSOR_THREAD_PRIORITY
+	int "Manager thread cooperative priority"
+	default 5
+	range 0 NUM_PREEMPT_PRIORITIES
+
+config REMOTE_SENSOR_SHELL
+	bool "Shell commands for remote sensor management"
+	default y
+	depends on SHELL
+	help
+	  Adds the "remote_sensor" shell command group:
+	    remote_sensor list               — list all registered remote sensors
+	    remote_sensor scan start [proto] — start scanning (proto=ble/lora/etc.)
+	    remote_sensor scan stop  [proto] — stop scanning
+	    remote_sensor pair <uid_hex>     — confirm pending sensor (AUTO_REGISTER=n)
+	    remote_sensor unpair <uid_hex>   — remove and forget a peer
+
+endif # REMOTE_SENSOR
