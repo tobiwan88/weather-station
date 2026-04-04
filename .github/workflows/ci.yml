@@ -75,7 +75,7 @@ jobs:
           west update --narrow
 
       - name: Install build dependencies
-        run: apt-get update -qq && apt-get install -y --no-install-recommends pkgconf
+        run: apt-get update -qq && apt-get install -y --no-install-recommends pkgconf libsdl2-dev
 
       - name: Build ${{ matrix.app }}
         run: |
