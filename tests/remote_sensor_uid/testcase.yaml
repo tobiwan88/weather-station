@@ -1,0 +1,8 @@
+tests:
+  weather_station.remote_sensor_uid:
+    platform_allow:
+      - native_sim/native/64
+    harness: ztest
+    tags:
+      - remote_sensor
+      - weather_station
