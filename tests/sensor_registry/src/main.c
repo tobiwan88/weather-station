@@ -13,6 +13,9 @@
  *   0xBEEF0003 — used for duplicate-register test
  *   0xBEEF0004 — used for count-increases test
  *   0xBEEF0099 — never registered (lookup-miss test)
+ *   0xBEEF00A1/A2 — foreach-local entries
+ *   0xBEEF0100–0xBEEF0109 — filler entries for registry-full test
+ *   0xBEEF010A — overflow probe (never successfully registered)
  */
 
 #include <sensor_registry/sensor_registry.h>
@@ -195,4 +198,49 @@ ZTEST(sensor_registry_suite, test_foreach_early_exit)
 
 	zassert_equal(count, 1, "foreach with early-exit cb should be called exactly once, got %d",
 		      count);
+}
+
+/*
+ * test_z_register_full_registry_returns_enomem
+ *
+ * The 'z_' prefix ensures this test runs last alphabetically, after all other
+ * tests have already registered their UIDs (6 entries: 0xBEEF0001–0xBEEF0004,
+ * 0xBEEF00A1, 0xBEEF00A2).  We fill the remaining 10 slots with filler
+ * entries to reach SENSOR_REGISTRY_MAX_ENTRIES (16), then verify that the
+ * next register() call returns -ENOMEM.
+ */
+static const struct sensor_registry_entry fill_entries[10] = {
+	{.uid = 0xBEEF0100, .label = "fill-0", .is_remote = false},
+	{.uid = 0xBEEF0101, .label = "fill-1", .is_remote = false},
+	{.uid = 0xBEEF0102, .label = "fill-2", .is_remote = false},
+	{.uid = 0xBEEF0103, .label = "fill-3", .is_remote = false},
+	{.uid = 0xBEEF0104, .label = "fill-4", .is_remote = false},
+	{.uid = 0xBEEF0105, .label = "fill-5", .is_remote = false},
+	{.uid = 0xBEEF0106, .label = "fill-6", .is_remote = false},
+	{.uid = 0xBEEF0107, .label = "fill-7", .is_remote = false},
+	{.uid = 0xBEEF0108, .label = "fill-8", .is_remote = false},
+	{.uid = 0xBEEF0109, .label = "fill-9", .is_remote = false},
+};
+
+static const struct sensor_registry_entry overflow_entry = {
+	.uid = 0xBEEF010A,
+	.label = "overflow",
+	.is_remote = false,
+};
+
+ZTEST(sensor_registry_suite, test_z_register_full_registry_returns_enomem)
+{
+	/* Register filler entries until the registry is full. */
+	for (int i = 0; i < 10; i++) {
+		int rc = sensor_registry_register(&fill_entries[i]);
+
+		zassert_equal(rc, 0, "filler entry %d returned %d, expected 0", i, rc);
+	}
+
+	zassert_equal(sensor_registry_count(), SENSOR_REGISTRY_MAX_ENTRIES,
+		      "registry should be full (%d entries)", SENSOR_REGISTRY_MAX_ENTRIES);
+
+	int rc = sensor_registry_register(&overflow_entry);
+
+	zassert_equal(rc, -ENOMEM, "register on full registry returned %d, expected -ENOMEM", rc);
 }

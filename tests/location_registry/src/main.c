@@ -13,8 +13,9 @@
 #include <string.h>
 #include <zephyr/ztest.h>
 
-/* Maximum locations in the registry (matches CONFIG_LOCATION_REGISTRY_MAX_LOCATIONS default). */
-#define MAX_LOCS 8
+/* Maximum locations in the registry — must match CONFIG_LOCATION_REGISTRY_MAX_LOCATIONS
+ * so after_each can drain a fully-filled registry via the snapshot array. */
+#define MAX_LOCS CONFIG_LOCATION_REGISTRY_MAX_LOCATIONS
 
 struct snapshot {
 	char names[MAX_LOCS][CONFIG_LOCATION_REGISTRY_NAME_LEN + 1];
@@ -233,4 +234,24 @@ ZTEST(location_registry_suite, test_exists_empty_registry)
 	zassert_equal(location_registry_count(), 0, "registry not empty at start");
 	zassert_false(location_registry_exists("anything"),
 		      "exists() should return false on empty registry");
+}
+
+ZTEST(location_registry_suite, test_add_full_registry_returns_enomem)
+{
+	/* Fill the registry to its maximum capacity. */
+	char name[CONFIG_LOCATION_REGISTRY_NAME_LEN + 1];
+
+	for (int i = 0; i < CONFIG_LOCATION_REGISTRY_MAX_LOCATIONS; i++) {
+		snprintf(name, sizeof(name), "loc%d", i);
+		int rc = location_registry_add(name);
+
+		zassert_equal(rc, 0, "add slot %d returned %d, expected 0", i, rc);
+	}
+
+	zassert_equal(location_registry_count(), CONFIG_LOCATION_REGISTRY_MAX_LOCATIONS,
+		      "registry should be full");
+
+	int rc = location_registry_add("overflow");
+
+	zassert_equal(rc, -ENOMEM, "add on full registry returned %d, expected -ENOMEM", rc);
 }

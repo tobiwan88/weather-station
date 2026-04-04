@@ -46,6 +46,50 @@ ZTEST_SUITE(fake_sensors_suite, NULL, suite_setup, NULL, NULL, NULL);
 /* ── Test cases ──────────────────────────────────────────────────────────── */
 
 /**
+ * @brief Setting a non-zero auto-publish interval causes the timer to fire
+ *        and produce a sensor event.
+ */
+ZTEST(fake_sensors_suite, test_auto_publish_fires_event)
+{
+	/* Ensure any previous timer is stopped and semaphore is drained. */
+	fake_sensors_set_auto_publish_ms(0);
+	k_sem_reset(&event_received_sem);
+
+	/* Start at 100 ms. */
+	fake_sensors_set_auto_publish_ms(100);
+
+	int rc = k_sem_take(&event_received_sem, K_SECONDS(1));
+
+	/* Stop before asserting to avoid leaking timer into subsequent tests. */
+	fake_sensors_set_auto_publish_ms(0);
+
+	zassert_ok(rc, "No event received within 1 s after starting auto-publish (rc=%d)", rc);
+	zassert_true(last_event.sensor_uid != 0, "auto-publish event has sensor_uid == 0");
+}
+
+/**
+ * @brief Setting interval to 0 stops the timer; no further events arrive.
+ */
+ZTEST(fake_sensors_suite, test_auto_publish_stop_suppresses_events)
+{
+	/* Start timer and wait for the first event to confirm it is running. */
+	fake_sensors_set_auto_publish_ms(100);
+	int rc = k_sem_take(&event_received_sem, K_SECONDS(1));
+
+	zassert_ok(rc, "timer did not fire within 1 s (rc=%d)", rc);
+
+	/* Stop the timer; let any in-flight zbus message complete. */
+	fake_sensors_set_auto_publish_ms(0);
+	k_msleep(50);
+	k_sem_reset(&event_received_sem);
+
+	/* No new events should arrive for the next 400 ms. */
+	rc = k_sem_take(&event_received_sem, K_MSEC(400));
+	zassert_equal(rc, -EAGAIN,
+		      "event arrived after auto-publish stopped (rc=%d)", rc);
+}
+
+/**
  * @brief At least one fake_sensor_entry must exist in the iterable section.
  *
  * The DT overlay defines two nodes (temperature + humidity), so the count
