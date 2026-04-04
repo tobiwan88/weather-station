@@ -74,23 +74,27 @@ jobs:
           west init -l . 2>/dev/null || true
           west update --narrow
 
+      - name: Install build dependencies
+        run: apt-get install -y --no-install-recommends pkg-config
+
       - name: Build ${{ matrix.app }}
         run: |
           source /home/zephyr/.venv/bin/activate
           WEST_ROOT=$(west topdir)
           # ZEPHYR_EXTRA_MODULES is required: Zephyr CMake does not scan the
           # west manifest's self: project automatically for zephyr/module.yml.
+          # Build dir is inside GITHUB_WORKSPACE to keep artifact paths simple.
           ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
             west build -p always -b ${{ matrix.board }} \
-              --build-dir "${WEST_ROOT}/build/${{ matrix.app }}" \
+              --build-dir "${GITHUB_WORKSPACE}/build/${{ matrix.app }}" \
               "${WEST_ROOT}/weather-station/apps/${{ matrix.app }}"
 
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.app }}-${{ matrix.board == 'native_sim/native/64' && 'native64' || matrix.board }}
-          path: ${{ github.workspace }}/../build/${{ matrix.app }}/zephyr/zephyr.exe
+          path: build/${{ matrix.app }}/zephyr/zephyr.exe
           retention-days: 7
 
   # ── 3. Test + Coverage ───────────────────────────────────────────────────────
