@@ -55,6 +55,67 @@ All logic lives in libraries. See [ADR-008](docs/adr/ADR-008-kconfig-app-composi
 2. **Smallest change → build gate** — use `/build-and-test` after every change; fix failures before anything else.
 3. **Commit** — use `/git-add` to stage files and commit each logical unit.
 
+## Testing and coverage
+
+### Running tests
+Always run twister from `/home/zephyr/workspace` (the west topdir). Running from any other directory causes "No testsuites found":
+
+```bash
+cd /home/zephyr/workspace
+ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister \
+  -p native_sim/native/64 -T weather-station/tests/ --inline-logs -v -N
+```
+
+### Running coverage (gcovr + diff-cover)
+```bash
+# From /home/zephyr/workspace:
+ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister \
+  -p native_sim/native/64 -T weather-station/tests/ --inline-logs -v -N \
+  --coverage --coverage-tool gcovr \
+  --coverage-basedir /home/zephyr/workspace/weather-station \
+  --coverage-formats html,xml
+
+# Outputs:  twister-out/coverage/index.html  (HTML)
+#           twister-out/coverage/coverage.xml (Cobertura, for diff-cover)
+
+# Diff coverage (lines changed vs master):
+cd /home/zephyr/workspace/weather-station
+diff-cover /home/zephyr/workspace/twister-out/coverage/coverage.xml \
+  --compare-branch=master --src-roots .
+```
+
+If gcovr produces an empty report (`lines-valid="0"`), check `twister-out/coverage.log`. The filter in `gcovr.cfg` is matched against **paths relative to `--coverage-basedir`**, not absolute paths. The correct filter is `lib/.*\.c$`, not `.*weather-station/lib/.*\.c$`.
+
+### `gcovr.cfg` rules
+- Only put `filter =` and `exclude =` in `gcovr.cfg` — **never output format defaults** (`html-details`, `cobertura`, etc.).
+- Twister calls gcovr internally with its own `-o` flags; adding output defaults conflicts and causes a "No such file or directory" crash on the first gcovr pass.
+
+### ztest design rules
+- **ztest runs test cases alphabetically**, not in definition order. Never write a test that relies on a previous test having run first.
+- Every test case must be fully self-contained: register/create what it needs, clean up what it can.
+- For registries with no reset API (e.g. `sensor_registry`): assign globally unique UIDs per test case so re-registering in a later alphabetical test never hits `-EEXIST`.
+- For registries that support remove (e.g. `location_registry`): use `after_each` fixture to drain all entries. Use the snapshot pattern — collect names inside `foreach`, then call `remove` outside (removing inside `foreach` mutates the array being iterated).
+
+### Test suite structure (pattern)
+Every test suite follows:
+```
+tests/<lib>/
+├── testcase.yaml          # platform_allow: native_sim/native/64, harness: ztest
+├── prj.conf               # CONFIG_ZTEST=y + CONFIG_<LIB>=y (+ CONFIG_ZBUS=y if required)
+├── CMakeLists.txt         # find_package(Zephyr) + target_sources(app PRIVATE src/main.c)
+└── src/main.c
+```
+No `target_link_libraries()` in test CMakeLists — Kconfig drives library inclusion.
+
+### Coverage gaps (as of 2026-04-04)
+| File | Cover | Uncovered lines |
+|---|---|---|
+| `lib/sensor_registry/src/sensor_registry.c` | 94% | 43-44 (`-ENOMEM` — registry full) |
+| `lib/location_registry/src/location_registry.c` | 95% | 44-45 (`-ENOMEM`), 120 (settings remove) |
+| `lib/fake_sensors/src/fake_sensors_timer.c` | 15% | timer callback, `set_auto_publish_ms` |
+| `lib/fake_sensors/src/fake_humidity.c` | 77% | shell/config_cmd callbacks |
+| `lib/fake_sensors/src/fake_temperature.c` | 80% | shell/config_cmd callbacks |
+
 ## HTTP dashboard (`lib/http_dashboard`)
 
 `CONFIG_HTTP_DASHBOARD=y` in `apps/gateway/prj.conf`. Self-initialises via `SYS_INIT` at APPLICATION 97 — no call from `main.c`.
