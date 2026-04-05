@@ -134,8 +134,8 @@ jobs:
         run: |
           source /home/zephyr/.venv/bin/activate
           WEST_ROOT=$(west topdir)
-          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
-          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
+          export ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station"
+          export ZEPHYR_BASE="${WEST_ROOT}/zephyr"
           west twister \
             -p native_sim/native/64 \
             -T "${WEST_ROOT}/weather-station/tests/" \
@@ -143,23 +143,21 @@ jobs:
             --coverage-tool gcovr \
             --inline-logs \
             -v -N \
-            --output-dir "${WEST_ROOT}/weather-station/twister-out"
+            --outdir "${GITHUB_WORKSPACE}/twister-out"
 
       - name: Generate coverage reports
         if: always()
         run: |
           source /home/zephyr/.venv/bin/activate
-          TWISTER_OUT="${GITHUB_WORKSPACE}/../weather-station/twister-out"
-          mkdir -p "${TWISTER_OUT}/coverage"
+          mkdir -p "${GITHUB_WORKSPACE}/twister-out/coverage"
           gcovr \
             --root "${GITHUB_WORKSPACE}/.." \
             --filter ".*/weather-station/.*" \
             --exclude ".*/zephyr/.*" \
             --exclude ".*/modules/.*" \
-            --exclude ".*/build/.*" \
             --exclude ".*/tests/.*" \
-            --html-details "${TWISTER_OUT}/coverage/index.html" \
-            --xml "${TWISTER_OUT}/coverage.xml" \
+            --html-details "${GITHUB_WORKSPACE}/twister-out/coverage/index.html" \
+            --xml "${GITHUB_WORKSPACE}/twister-out/coverage.xml" \
             --print-summary \
             2>/dev/null || true
 
@@ -168,7 +166,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: twister-results
-          path: ${{ github.workspace }}/../weather-station/twister-out/
+          path: twister-out/
           retention-days: 14
 
       - name: Upload coverage report
@@ -177,8 +175,8 @@ jobs:
         with:
           name: coverage-report
           path: |
-            ${{ github.workspace }}/../weather-station/twister-out/coverage/
-            ${{ github.workspace }}/../weather-station/twister-out/coverage.xml
+            twister-out/coverage/
+            twister-out/coverage.xml
           retention-days: 14
 
       - name: Publish test report
@@ -186,7 +184,7 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: Ztest Results
-          path: ${{ github.workspace }}/../weather-station/twister-out/**/twister.xml
+          path: twister-out/**/twister.xml
           reporter: java-junit
           fail-on-error: false
 
