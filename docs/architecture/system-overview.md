@@ -22,7 +22,7 @@ These two goals drive every structural choice in the codebase.
 ├──────────────────────────────────────────────────┤
 │  Libraries    lib/                               │
 │  ─────────────────────────────────────────────── │
-│  Eight independently optional libraries,         │
+│  Independently optional libraries,               │
 │  each compiled only when its CONFIG_ is set.     │
 │  Libraries communicate only through zbus         │
 │  channels, never by calling each other.          │
@@ -40,14 +40,19 @@ These two goals drive every structural choice in the codebase.
 |---|---|
 | `sensor_event` | Owns the event data model (`env_sensor_data`) and the channel all sensors publish to |
 | `sensor_trigger` | Owns the trigger event type and the channel all trigger sources publish to |
-| `sensor_registry` | Runtime mapping of sensor UID → metadata; sensors self-register at boot |
-| `fake_sensors` | Emulated sensor drivers; subscribes to trigger channel, publishes to event channel |
+| `sensor_registry` | Runtime mapping of sensor UID → rich user-editable metadata; sensors self-register at boot |
+| `fake_sensors` | Emulated local sensor drivers; subscribes to trigger channel, publishes to event channel |
 | `sntp_sync` | Maintains wall-clock time via SNTP; provides a single authoritative `get_epoch_ms()` |
 | `clock_display` | Reads wall-clock time every 60 s and logs it; depends on nothing else |
-| `http_dashboard` | Web dashboard and config API; subscribes to event channel, never touches sensor drivers |
+| `http_dashboard` | Web dashboard and config API; subscribes to event channel, publishes on config_cmd_chan |
 | `lvgl_display` | LVGL render loop; runs on the main thread because SDL requires it |
+| `config_cmd` | Owns the `config_cmd_chan` zbus channel; decouples config producers (HTTP) from consumers (fake_sensors, sntp_sync) |
+| `location_registry` | Runtime CRUD for named physical locations; replaces compile-time DT location properties |
+| `sensor_event_log` | Self-registering zbus listener that logs every sensor event to console; no public API |
+| `remote_sensor` | Transport-agnostic abstraction for wireless remote sensors; vtable pattern, manager thread, UID derivation |
+| `fake_remote_sensor` | Simulated remote sensor transport adapter for testing; implements the `remote_transport` vtable |
 
-The critical point: `http_dashboard` and `fake_sensors` do not reference each other. They share only the zbus channel defined by `sensor_event`.
+The critical point: `http_dashboard` and `fake_sensors` do not reference each other. `http_dashboard` publishes a `config_cmd_event` on `config_cmd_chan`; `fake_sensors` subscribes independently. Neither knows the other exists.
 
 ---
 

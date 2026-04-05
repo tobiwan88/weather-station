@@ -23,8 +23,7 @@ static int cmd_add(const struct shell *sh, size_t argc, char **argv)
 		shell_error(sh, "Location registry full");
 		return rc;
 	} else if (rc == -ENAMETOOLONG) {
-		shell_error(sh, "Name too long (max %d chars)",
-			    CONFIG_LOCATION_REGISTRY_NAME_LEN);
+		shell_error(sh, "Name too long (max %d chars)", CONFIG_LOCATION_REGISTRY_NAME_LEN);
 		return rc;
 	} else if (rc != 0) {
 		shell_error(sh, "Failed: %d", rc);
@@ -87,11 +86,9 @@ static int cmd_list(const struct shell *sh, size_t argc, char **argv)
 	return 0;
 }
 
-SHELL_STATIC_SUBCMD_SET_CREATE(sub_location,
-	SHELL_CMD_ARG(add, NULL, "Add a location: add <name>", cmd_add, 2, 0),
+SHELL_STATIC_SUBCMD_SET_CREATE(
+	sub_location, SHELL_CMD_ARG(add, NULL, "Add a location: add <name>", cmd_add, 2, 0),
 	SHELL_CMD_ARG(remove, NULL, "Remove a location: remove <name>", cmd_remove, 2, 0),
-	SHELL_CMD(list, NULL, "List all locations", cmd_list),
-	SHELL_SUBCMD_SET_END
-);
+	SHELL_CMD(list, NULL, "List all locations", cmd_list), SHELL_SUBCMD_SET_END);
 
 SHELL_CMD_REGISTER(location, &sub_location, "Location registry commands", NULL);

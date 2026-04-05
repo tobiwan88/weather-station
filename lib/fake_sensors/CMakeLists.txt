@@ -7,8 +7,7 @@ if(CONFIG_FAKE_SENSORS)
                          src/fake_sensors_timer.c)
   zephyr_library_sources_ifdef(CONFIG_FAKE_SENSORS_SHELL
                                src/fake_sensors_shell.c)
-  zephyr_library_sources_ifdef(CONFIG_CONFIG_CMD
-                               src/fake_sensors_config_cmd.c)
+  zephyr_library_sources_ifdef(CONFIG_CONFIG_CMD src/fake_sensors_config_cmd.c)
   zephyr_library_include_directories(include)
   zephyr_include_directories(include)
 

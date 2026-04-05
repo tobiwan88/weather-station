@@ -77,8 +77,7 @@ static struct peer_load_ctx *get_or_alloc_ctx(uint32_t uid)
  * settings handler — called for each "rsen/<uid>/<field>" key
  * -------------------------------------------------------------------------- */
 
-static int rsen_set(const char *key, size_t len, settings_read_cb read_cb,
-		    void *cb_arg)
+static int rsen_set(const char *key, size_t len, settings_read_cb read_cb, void *cb_arg)
 {
 	ARG_UNUSED(len);
 
@@ -115,8 +114,7 @@ static int rsen_set(const char *key, size_t len, settings_read_cb read_cb,
 			ctx->flags |= RSEN_FLAG_PROTO;
 		}
 	} else if (strcmp(field, "addr") == 0) {
-		ssize_t n = read_cb(cb_arg, ctx->peer_addr,
-				    sizeof(ctx->peer_addr));
+		ssize_t n = read_cb(cb_arg, ctx->peer_addr, sizeof(ctx->peer_addr));
 		if (n > 0) {
 			ctx->flags |= RSEN_FLAG_ADDR;
 		}
@@ -128,8 +126,7 @@ static int rsen_set(const char *key, size_t len, settings_read_cb read_cb,
 			ctx->flags |= RSEN_FLAG_ADDR_LEN;
 		}
 	} else if (strcmp(field, "label") == 0) {
-		ssize_t n = read_cb(cb_arg, ctx->label,
-				    sizeof(ctx->label) - 1);
+		ssize_t n = read_cb(cb_arg, ctx->label, sizeof(ctx->label) - 1);
 		if (n >= 0) {
 			ctx->label[n] = '\0';
 			ctx->flags |= RSEN_FLAG_LABEL;
@@ -163,14 +160,12 @@ static void rsen_commit(void)
 			continue;
 		}
 
-		int rc = remote_sensor_manager_restore(
-			ctx->uid, ctx->proto,
-			ctx->peer_addr, ctx->peer_addr_len,
-			ctx->label, ctx->sensor_type);
+		int rc = remote_sensor_manager_restore(ctx->uid, ctx->proto, ctx->peer_addr,
+						       ctx->peer_addr_len, ctx->label,
+						       ctx->sensor_type);
 
 		if (rc != 0) {
-			LOG_ERR("rsen: restore uid 0x%08x failed: %d",
-				ctx->uid, rc);
+			LOG_ERR("rsen: restore uid 0x%08x failed: %d", ctx->uid, rc);
 		}
 	}
 }
@@ -179,8 +174,7 @@ static void rsen_commit(void)
  * Save helper — called by remote_sensor_manager after a new registration
  * -------------------------------------------------------------------------- */
 
-void remote_sensor_settings_save(const struct remote_peer *peer,
-				 const char *label,
+void remote_sensor_settings_save(const struct remote_peer *peer, const char *label,
 				 enum sensor_type type)
 {
 	char key[40];
@@ -194,8 +188,7 @@ void remote_sensor_settings_save(const struct remote_peer *peer,
 	settings_save_one(key, peer->peer_addr, peer->peer_addr_len);
 
 	snprintf(key, sizeof(key), "rsen/%08x/addr_len", peer->uid);
-	settings_save_one(key, &peer->peer_addr_len,
-			  sizeof(peer->peer_addr_len));
+	settings_save_one(key, &peer->peer_addr_len, sizeof(peer->peer_addr_len));
 
 	snprintf(key, sizeof(key), "rsen/%08x/label", peer->uid);
 	settings_save_one(key, label, strlen(label));

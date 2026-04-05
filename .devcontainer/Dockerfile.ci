@@ -1,0 +1,31 @@
+# CI image for weather-station GitHub Actions.
+# Extends the Zephyr SDK base with coverage and diagram-rendering tooling.
+#
+# This file documents the full CI environment.  It is not built automatically
+# during CI — the workflow installs the lightweight extras inline so no
+# separate image publish step is required.  To build and push manually:
+#
+#   docker build -t ghcr.io/tobiwan88/weather-station-ci:latest \
+#     -f .devcontainer/Dockerfile.ci .devcontainer/
+#   docker push ghcr.io/tobiwan88/weather-station-ci:latest
+
+FROM ghcr.io/tobiwan88/zephyr_docker:arm
+
+USER root
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
+    nodejs npm \
+    && rm -rf /var/lib/apt/lists/*
+
+USER zephyr
+
+# Coverage + lint tooling inside the existing venv
+RUN /home/zephyr/.venv/bin/pip install --no-cache-dir \
+    pre-commit \
+    gcovr
+
+# Mermaid CLI for diagram rendering
+RUN npm install -g @mermaid-js/mermaid-cli
+
+ENV PATH="/home/zephyr/.venv/bin:/home/zephyr/.local/bin:${PATH}"

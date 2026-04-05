@@ -31,15 +31,11 @@ static int cmd_publish(const struct shell *sh, size_t argc, char **argv)
 	return 0;
 }
 
-SHELL_STATIC_SUBCMD_SET_CREATE(fake_remote_cmds,
-	SHELL_CMD(announce, NULL,
-		"Publish discovery events for all fake nodes",
-		cmd_announce),
-	SHELL_CMD(publish, NULL,
-		"Publish one synthetic measurement from all registered nodes",
-		cmd_publish),
-	SHELL_SUBCMD_SET_END
-);
+SHELL_STATIC_SUBCMD_SET_CREATE(
+	fake_remote_cmds,
+	SHELL_CMD(announce, NULL, "Publish discovery events for all fake nodes", cmd_announce),
+	SHELL_CMD(publish, NULL, "Publish one synthetic measurement from all registered nodes",
+		  cmd_publish),
+	SHELL_SUBCMD_SET_END);
 
-SHELL_CMD_REGISTER(fake_remote, &fake_remote_cmds,
-		   "Fake remote sensor control", NULL);
+SHELL_CMD_REGISTER(fake_remote, &fake_remote_cmds, "Fake remote sensor control", NULL);

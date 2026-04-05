@@ -35,8 +35,7 @@ struct remote_peer {
  * Implemented in remote_sensor_settings.c; compiled only when
  * CONFIG_REMOTE_SENSOR_PERSIST=y.
  */
-void remote_sensor_settings_save(const struct remote_peer *peer,
-				 const char *label,
+void remote_sensor_settings_save(const struct remote_peer *peer, const char *label,
 				 enum sensor_type type);
 
 /**
@@ -45,11 +44,8 @@ void remote_sensor_settings_save(const struct remote_peer *peer,
  * Called by remote_sensor_settings.c during commit.
  * Implemented in remote_sensor_manager.c.
  */
-int remote_sensor_manager_restore(uint32_t uid,
-				  enum remote_transport_proto proto,
-				  const uint8_t *peer_addr,
-				  uint8_t peer_addr_len,
-				  const char *label,
-				  enum sensor_type type);
+int remote_sensor_manager_restore(uint32_t uid, enum remote_transport_proto proto,
+				  const uint8_t *peer_addr, uint8_t peer_addr_len,
+				  const char *label, enum sensor_type type);
 
 #endif /* REMOTE_SENSOR_PRIV_H_ */
