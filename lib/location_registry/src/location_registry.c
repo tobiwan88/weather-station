@@ -10,7 +10,7 @@
 #include <zephyr/logging/log.h>
 
 #ifdef CONFIG_LOCATION_REGISTRY_SETTINGS
-#include <zephyr/settings/settings.h>
+#	include <zephyr/settings/settings.h>
 #endif
 
 LOG_MODULE_REGISTER(location_registry, LOG_LEVEL_INF);

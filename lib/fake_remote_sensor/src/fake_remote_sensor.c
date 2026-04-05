@@ -55,8 +55,7 @@ static void publish_node(struct fake_node *n)
 {
 	/* Temperature: 20.0 + node_id °C */
 	double temp_c = 20.0 + (double)n->node_id;
-	int rc = remote_sensor_publish_data(n->uid_temp,
-					    SENSOR_TYPE_TEMPERATURE,
+	int rc = remote_sensor_publish_data(n->uid_temp, SENSOR_TYPE_TEMPERATURE,
 					    temperature_c_to_q31(temp_c));
 	if (rc != 0) {
 		LOG_WRN("node %u: temp pub failed (%d)", n->node_id, rc);
@@ -64,15 +63,14 @@ static void publish_node(struct fake_node *n)
 
 	/* Humidity: 50.0 + node_id * 5 %RH */
 	double hum_pct = 50.0 + (double)n->node_id * 5.0;
-	rc = remote_sensor_publish_data(n->uid_hum,
-					SENSOR_TYPE_HUMIDITY,
+	rc = remote_sensor_publish_data(n->uid_hum, SENSOR_TYPE_HUMIDITY,
 					humidity_pct_to_q31(hum_pct));
 	if (rc != 0) {
 		LOG_WRN("node %u: hum pub failed (%d)", n->node_id, rc);
 	}
 
-	LOG_DBG("node %u: published temp=%.1f hum=%.1f",
-		n->node_id, (double)temp_c, (double)hum_pct);
+	LOG_DBG("node %u: published temp=%.1f hum=%.1f", n->node_id, (double)temp_c,
+		(double)hum_pct);
 }
 
 static void auto_timer_cb(struct k_timer *timer)
@@ -98,34 +96,32 @@ static int announce_node(struct fake_node *n)
 	memcpy(evt.peer_addr, n->mac, sizeof(n->mac));
 
 	/* Temperature discovery */
-	snprintf(evt.suggested_label, sizeof(evt.suggested_label),
-		 "fake-remote-%u-temp", n->node_id);
+	snprintf(evt.suggested_label, sizeof(evt.suggested_label), "fake-remote-%u-temp",
+		 n->node_id);
 	evt.sensor_type = SENSOR_TYPE_TEMPERATURE;
 	evt.suggested_uid = n->uid_temp;
 
 	int rc = remote_sensor_announce_disc(&evt);
 
 	if (rc != 0) {
-		LOG_ERR("node %u: discovery enqueue (temp) failed: %d",
-			n->node_id, rc);
+		LOG_ERR("node %u: discovery enqueue (temp) failed: %d", n->node_id, rc);
 		return rc;
 	}
 
 	/* Humidity discovery — different uid, same address, different type */
-	snprintf(evt.suggested_label, sizeof(evt.suggested_label),
-		 "fake-remote-%u-hum", n->node_id);
+	snprintf(evt.suggested_label, sizeof(evt.suggested_label), "fake-remote-%u-hum",
+		 n->node_id);
 	evt.sensor_type = SENSOR_TYPE_HUMIDITY;
 	evt.suggested_uid = n->uid_hum;
 
 	rc = remote_sensor_announce_disc(&evt);
 	if (rc != 0) {
-		LOG_ERR("node %u: discovery enqueue (hum) failed: %d",
-			n->node_id, rc);
+		LOG_ERR("node %u: discovery enqueue (hum) failed: %d", n->node_id, rc);
 		return rc;
 	}
 
-	LOG_INF("announced fake node %u (uid_temp=0x%08x uid_hum=0x%08x)",
-		n->node_id, n->uid_temp, n->uid_hum);
+	LOG_INF("announced fake node %u (uid_temp=0x%08x uid_hum=0x%08x)", n->node_id, n->uid_temp,
+		n->uid_hum);
 	return 0;
 }
 
@@ -136,8 +132,7 @@ static int announce_node(struct fake_node *n)
 static int fake_scan_start(const struct remote_transport *t)
 {
 	ARG_UNUSED(t);
-	LOG_INF("fake scan start: announcing %d node(s)",
-		CONFIG_FAKE_REMOTE_SENSOR_NODE_COUNT);
+	LOG_INF("fake scan start: announcing %d node(s)", CONFIG_FAKE_REMOTE_SENSOR_NODE_COUNT);
 	for (int i = 0; i < CONFIG_FAKE_REMOTE_SENSOR_NODE_COUNT; i++) {
 		announce_node(&nodes[i]);
 	}
@@ -151,9 +146,8 @@ static int fake_scan_stop(const struct remote_transport *t)
 	return 0;
 }
 
-static int fake_peer_add(const struct remote_transport *t,
-			 const uint8_t *peer_addr, size_t addr_len,
-			 uint32_t uid)
+static int fake_peer_add(const struct remote_transport *t, const uint8_t *peer_addr,
+			 size_t addr_len, uint32_t uid)
 {
 	ARG_UNUSED(t);
 	ARG_UNUSED(peer_addr);
@@ -166,12 +160,12 @@ static int fake_peer_add(const struct remote_transport *t,
 		if (n->uid_temp == uid || n->uid_hum == uid) {
 			if (!n->registered) {
 				n->registered = true;
-				LOG_INF("peer_add: node %u registered (uid=0x%08x)",
-					n->node_id, uid);
+				LOG_INF("peer_add: node %u registered (uid=0x%08x)", n->node_id,
+					uid);
 #if CONFIG_FAKE_REMOTE_SENSOR_AUTO_PUBLISH_MS > 0
 				k_timer_start(&n->auto_timer,
-					K_MSEC(CONFIG_FAKE_REMOTE_SENSOR_AUTO_PUBLISH_MS),
-					K_MSEC(CONFIG_FAKE_REMOTE_SENSOR_AUTO_PUBLISH_MS));
+					      K_MSEC(CONFIG_FAKE_REMOTE_SENSOR_AUTO_PUBLISH_MS),
+					      K_MSEC(CONFIG_FAKE_REMOTE_SENSOR_AUTO_PUBLISH_MS));
 #endif
 			}
 			return 0;
@@ -191,8 +185,7 @@ static int fake_peer_remove(const struct remote_transport *t, uint32_t uid)
 		if (n->uid_temp == uid || n->uid_hum == uid) {
 			n->registered = false;
 			k_timer_stop(&n->auto_timer);
-			LOG_INF("peer_remove: node %u removed (uid=0x%08x)",
-				n->node_id, uid);
+			LOG_INF("peer_remove: node %u removed (uid=0x%08x)", n->node_id, uid);
 			return 0;
 		}
 	}
@@ -214,16 +207,17 @@ static int fake_send_trigger(const struct remote_transport *t, uint32_t uid)
 	return -ENOENT;
 }
 
-REMOTE_TRANSPORT_DEFINE(fake_remote_transport, {
-	.name = "fake",
-	.proto = REMOTE_TRANSPORT_PROTO_FAKE,
-	.caps = REMOTE_TRANSPORT_CAP_SCAN | REMOTE_TRANSPORT_CAP_TRIGGER,
-	.scan_start = fake_scan_start,
-	.scan_stop = fake_scan_stop,
-	.peer_add = fake_peer_add,
-	.peer_remove = fake_peer_remove,
-	.send_trigger = fake_send_trigger,
-});
+REMOTE_TRANSPORT_DEFINE(fake_remote_transport,
+			{
+				.name = "fake",
+				.proto = REMOTE_TRANSPORT_PROTO_FAKE,
+				.caps = REMOTE_TRANSPORT_CAP_SCAN | REMOTE_TRANSPORT_CAP_TRIGGER,
+				.scan_start = fake_scan_start,
+				.scan_stop = fake_scan_stop,
+				.peer_add = fake_peer_add,
+				.peer_remove = fake_peer_remove,
+				.send_trigger = fake_send_trigger,
+			});
 
 /* --------------------------------------------------------------------------
  * Public API
@@ -271,22 +265,19 @@ static int fake_remote_sensor_init(void)
 		n->mac[4] = 0x00;
 		n->mac[5] = (uint8_t)i;
 
-		n->uid_temp = remote_sensor_uid_from_addr(
-			CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX,
-			n->mac, sizeof(n->mac),
-			SENSOR_TYPE_TEMPERATURE);
+		n->uid_temp =
+			remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX, n->mac,
+						    sizeof(n->mac), SENSOR_TYPE_TEMPERATURE);
 
-		n->uid_hum = remote_sensor_uid_from_addr(
-			CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX,
-			n->mac, sizeof(n->mac),
-			SENSOR_TYPE_HUMIDITY);
+		n->uid_hum =
+			remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX, n->mac,
+						    sizeof(n->mac), SENSOR_TYPE_HUMIDITY);
 
 		n->registered = false;
 		k_timer_init(&n->auto_timer, auto_timer_cb, NULL);
 	}
 
-	LOG_INF("fake_remote_sensor: init done (%d node(s))",
-		CONFIG_FAKE_REMOTE_SENSOR_NODE_COUNT);
+	LOG_INF("fake_remote_sensor: init done (%d node(s))", CONFIG_FAKE_REMOTE_SENSOR_NODE_COUNT);
 	return 0;
 }
 

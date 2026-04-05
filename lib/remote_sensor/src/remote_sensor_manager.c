@@ -36,8 +36,7 @@ LOG_MODULE_REGISTER(remote_sensor, LOG_LEVEL_INF);
 static struct remote_peer peer_table[CONFIG_REMOTE_SENSOR_MAX_PEERS];
 
 /* Stable label strings and registry entries pointed to by sensor_registry. */
-static char peer_labels[CONFIG_REMOTE_SENSOR_MAX_PEERS]
-			[CONFIG_SENSOR_REGISTRY_META_NAME_LEN + 1];
+static char peer_labels[CONFIG_REMOTE_SENSOR_MAX_PEERS][CONFIG_SENSOR_REGISTRY_META_NAME_LEN + 1];
 static struct sensor_registry_entry peer_reg_entries[CONFIG_REMOTE_SENSOR_MAX_PEERS];
 
 K_MUTEX_DEFINE(peer_table_mutex);
@@ -77,10 +76,10 @@ static int peer_slot_index(const struct remote_peer *peer)
  * Transport lookup
  * -------------------------------------------------------------------------- */
 
-static const struct remote_transport *
-find_transport(enum remote_transport_proto proto)
+static const struct remote_transport *find_transport(enum remote_transport_proto proto)
 {
-	STRUCT_SECTION_FOREACH(remote_transport, t) {
+	STRUCT_SECTION_FOREACH(remote_transport, t)
+	{
 		if (t->proto == proto) {
 			return t;
 		}
@@ -115,30 +114,23 @@ static uint16_t crc12(const uint8_t *data, size_t len)
 	return crc;
 }
 
-uint32_t remote_sensor_uid_from_addr(uint16_t prefix,
-				     const uint8_t *addr, size_t len,
+uint32_t remote_sensor_uid_from_addr(uint16_t prefix, const uint8_t *addr, size_t len,
 				     enum sensor_type type)
 {
-	return ((uint32_t)prefix << 16) |
-	       ((uint32_t)crc12(addr, len) << 4) |
+	return ((uint32_t)prefix << 16) | ((uint32_t)crc12(addr, len) << 4) |
 	       ((uint32_t)type & 0x0F);
 }
 
-uint32_t remote_sensor_uid_from_node_id(uint16_t prefix,
-					uint8_t node_id,
-					enum sensor_type type)
+uint32_t remote_sensor_uid_from_node_id(uint16_t prefix, uint8_t node_id, enum sensor_type type)
 {
-	return ((uint32_t)prefix << 16) |
-	       ((uint32_t)node_id << 4) |
-	       ((uint32_t)type & 0x0F);
+	return ((uint32_t)prefix << 16) | ((uint32_t)node_id << 4) | ((uint32_t)type & 0x0F);
 }
 
 /* --------------------------------------------------------------------------
  * remote_sensor_publish_data — public API for transport adapters
  * -------------------------------------------------------------------------- */
 
-int remote_sensor_publish_data(uint32_t uid, enum sensor_type type,
-			       int32_t q31_value)
+int remote_sensor_publish_data(uint32_t uid, enum sensor_type type, int32_t q31_value)
 {
 	struct env_sensor_data evt = {
 		.sensor_uid = uid,
@@ -158,9 +150,8 @@ int remote_sensor_publish_data(uint32_t uid, enum sensor_type type,
  * Core registration logic — shared by discovery path and settings restore
  * -------------------------------------------------------------------------- */
 
-static int register_peer(uint32_t uid, enum remote_transport_proto proto,
-			 const uint8_t *peer_addr, uint8_t peer_addr_len,
-			 const char *label, enum sensor_type type)
+static int register_peer(uint32_t uid, enum remote_transport_proto proto, const uint8_t *peer_addr,
+			 uint8_t peer_addr_len, const char *label, enum sensor_type type)
 {
 	if (sensor_registry_lookup(uid) != NULL) {
 		LOG_DBG("uid 0x%08x already registered, skipping", uid);
@@ -173,8 +164,7 @@ static int register_peer(uint32_t uid, enum remote_transport_proto proto,
 
 	if (!peer) {
 		k_mutex_unlock(&peer_table_mutex);
-		LOG_ERR("peer table full (max %d)",
-			CONFIG_REMOTE_SENSOR_MAX_PEERS);
+		LOG_ERR("peer table full (max %d)", CONFIG_REMOTE_SENSOR_MAX_PEERS);
 		return -ENOMEM;
 	}
 
@@ -182,8 +172,7 @@ static int register_peer(uint32_t uid, enum remote_transport_proto proto,
 
 	peer->uid = uid;
 	peer->proto = proto;
-	peer->peer_addr_len = (uint8_t)MIN(peer_addr_len,
-					   REMOTE_SENSOR_ADDR_MAX_LEN);
+	peer->peer_addr_len = (uint8_t)MIN(peer_addr_len, REMOTE_SENSOR_ADDR_MAX_LEN);
 	memcpy(peer->peer_addr, peer_addr, peer->peer_addr_len);
 	peer->used = true;
 
@@ -214,8 +203,8 @@ static int register_peer(uint32_t uid, enum remote_transport_proto proto,
 	meta.enabled = true;
 	sensor_registry_set_meta(uid, &meta);
 
-	LOG_INF("registered remote sensor uid=0x%08x label='%s' proto=%d type=%d",
-		uid, peer_labels[idx], (int)proto, (int)type);
+	LOG_INF("registered remote sensor uid=0x%08x label='%s' proto=%d type=%d", uid,
+		peer_labels[idx], (int)proto, (int)type);
 
 	const struct remote_transport *t = find_transport(proto);
 
@@ -233,15 +222,11 @@ static int register_peer(uint32_t uid, enum remote_transport_proto proto,
  * remote_sensor_manager_restore — called by settings on boot
  * -------------------------------------------------------------------------- */
 
-int remote_sensor_manager_restore(uint32_t uid,
-				  enum remote_transport_proto proto,
-				  const uint8_t *peer_addr,
-				  uint8_t peer_addr_len,
-				  const char *label,
-				  enum sensor_type type)
+int remote_sensor_manager_restore(uint32_t uid, enum remote_transport_proto proto,
+				  const uint8_t *peer_addr, uint8_t peer_addr_len,
+				  const char *label, enum sensor_type type)
 {
-	int rc = register_peer(uid, proto, peer_addr, peer_addr_len,
-			       label, type);
+	int rc = register_peer(uid, proto, peer_addr, peer_addr_len, label, type);
 
 	if (rc == 0) {
 		LOG_INF("rsen: restored uid=0x%08x '%s'", uid, label);
@@ -257,31 +242,26 @@ static void handle_discovery(const struct remote_discovery_event *evt)
 {
 	if (evt->action == REMOTE_DISCOVERY_FOUND) {
 #if defined(CONFIG_REMOTE_SENSOR_AUTO_REGISTER)
-		int rc = register_peer(evt->suggested_uid, evt->proto,
-				       evt->peer_addr, evt->peer_addr_len,
-				       evt->suggested_label,
-				       evt->sensor_type);
+		int rc = register_peer(evt->suggested_uid, evt->proto, evt->peer_addr,
+				       evt->peer_addr_len, evt->suggested_label, evt->sensor_type);
 
 		if (rc != 0) {
 			return;
 		}
 
-#if defined(CONFIG_REMOTE_SENSOR_PERSIST)
+#	if defined(CONFIG_REMOTE_SENSOR_PERSIST)
 		k_mutex_lock(&peer_table_mutex, K_FOREVER);
-		struct remote_peer *peer =
-			peer_find_by_uid(evt->suggested_uid);
+		struct remote_peer *peer = peer_find_by_uid(evt->suggested_uid);
 		k_mutex_unlock(&peer_table_mutex);
 
 		if (peer) {
-			remote_sensor_settings_save(peer, evt->suggested_label,
-						    evt->sensor_type);
+			remote_sensor_settings_save(peer, evt->suggested_label, evt->sensor_type);
 		}
-#endif /* CONFIG_REMOTE_SENSOR_PERSIST */
+#	endif /* CONFIG_REMOTE_SENSOR_PERSIST */
 #else
 		LOG_INF("discovered uid=0x%08x '%s' (proto=%d) — "
 			"awaiting 'remote_sensor pair'",
-			evt->suggested_uid, evt->suggested_label,
-			(int)evt->proto);
+			evt->suggested_uid, evt->suggested_label, (int)evt->proto);
 #endif /* CONFIG_REMOTE_SENSOR_AUTO_REGISTER */
 	} else {
 		/* LOST: keep in registry, mark disabled. */
@@ -302,16 +282,14 @@ static void handle_discovery(const struct remote_discovery_event *evt)
  * -------------------------------------------------------------------------- */
 
 #define DISC_MSGQ_DEPTH 16
-K_MSGQ_DEFINE(disc_msgq, sizeof(struct remote_discovery_event),
-	      DISC_MSGQ_DEPTH, 4);
+K_MSGQ_DEFINE(disc_msgq, sizeof(struct remote_discovery_event), DISC_MSGQ_DEPTH, 4);
 
 int remote_sensor_announce_disc(const struct remote_discovery_event *evt)
 {
 	int rc = k_msgq_put(&disc_msgq, evt, K_MSEC(100));
 
 	if (rc != 0) {
-		LOG_WRN("disc_msgq full, dropping event uid=0x%08x",
-			evt->suggested_uid);
+		LOG_WRN("disc_msgq full, dropping event uid=0x%08x", evt->suggested_uid);
 	}
 	return rc;
 }
@@ -353,17 +331,15 @@ static void remote_sensor_thread(void *a, void *b, void *c)
 		if (chan == &remote_scan_ctrl_chan) {
 			struct remote_scan_ctrl_event evt;
 
-			if (zbus_chan_read(&remote_scan_ctrl_chan, &evt,
-					  K_NO_WAIT) != 0) {
+			if (zbus_chan_read(&remote_scan_ctrl_chan, &evt, K_NO_WAIT) != 0) {
 				continue;
 			}
 
-			STRUCT_SECTION_FOREACH(remote_transport, t) {
-				bool match =
-					evt.proto == REMOTE_TRANSPORT_PROTO_UNKNOWN ||
-					t->proto == evt.proto;
-				bool can_scan = t->caps &
-						REMOTE_TRANSPORT_CAP_SCAN;
+			STRUCT_SECTION_FOREACH(remote_transport, t)
+			{
+				bool match = evt.proto == REMOTE_TRANSPORT_PROTO_UNKNOWN ||
+					     t->proto == evt.proto;
+				bool can_scan = t->caps & REMOTE_TRANSPORT_CAP_SCAN;
 
 				if (!match || !can_scan) {
 					continue;
@@ -384,12 +360,8 @@ static void remote_sensor_thread(void *a, void *b, void *c)
 	}
 }
 
-K_THREAD_DEFINE(remote_sensor_tid,
-		CONFIG_REMOTE_SENSOR_THREAD_STACK_SIZE,
-		remote_sensor_thread,
-		NULL, NULL, NULL,
-		CONFIG_REMOTE_SENSOR_THREAD_PRIORITY,
-		0, 0);
+K_THREAD_DEFINE(remote_sensor_tid, CONFIG_REMOTE_SENSOR_THREAD_STACK_SIZE, remote_sensor_thread,
+		NULL, NULL, NULL, CONFIG_REMOTE_SENSOR_THREAD_PRIORITY, 0, 0);
 
 /* --------------------------------------------------------------------------
  * zbus LISTENER — trigger routing (fast, non-blocking)
@@ -405,16 +377,13 @@ static void remote_trigger_cb(const struct zbus_channel *chan)
 		if (!peer_table[i].used) {
 			continue;
 		}
-		if (trig->target_uid != 0 &&
-		    trig->target_uid != peer_table[i].uid) {
+		if (trig->target_uid != 0 && trig->target_uid != peer_table[i].uid) {
 			continue;
 		}
 
-		const struct remote_transport *t =
-			find_transport(peer_table[i].proto);
+		const struct remote_transport *t = find_transport(peer_table[i].proto);
 
-		if (!t || !(t->caps & REMOTE_TRANSPORT_CAP_TRIGGER) ||
-		    !t->send_trigger) {
+		if (!t || !(t->caps & REMOTE_TRANSPORT_CAP_TRIGGER) || !t->send_trigger) {
 			continue;
 		}
 
@@ -438,15 +407,13 @@ static int remote_sensor_manager_init(void)
 {
 	int rc;
 
-	rc = zbus_chan_add_obs(&remote_scan_ctrl_chan, &remote_sensor_sub,
-			       K_NO_WAIT);
+	rc = zbus_chan_add_obs(&remote_scan_ctrl_chan, &remote_sensor_sub, K_NO_WAIT);
 	if (rc != 0) {
 		LOG_ERR("add obs remote_scan_ctrl_chan: %d", rc);
 		return rc;
 	}
 
-	rc = zbus_chan_add_obs(&sensor_trigger_chan, &remote_trigger_listener,
-			       K_NO_WAIT);
+	rc = zbus_chan_add_obs(&sensor_trigger_chan, &remote_trigger_listener, K_NO_WAIT);
 	if (rc != 0) {
 		LOG_ERR("add obs sensor_trigger_chan: %d", rc);
 		return rc;

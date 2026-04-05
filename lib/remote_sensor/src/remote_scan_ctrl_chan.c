@@ -8,9 +8,6 @@
  * zbus channel ownership rule: ZBUS_CHAN_DEFINE in exactly one .c file.
  * Declared (ZBUS_CHAN_DECLARE) in remote_sensor.h for external access.
  */
-ZBUS_CHAN_DEFINE(remote_scan_ctrl_chan,
-		 struct remote_scan_ctrl_event,
-		 NULL,  /* validator */
-		 NULL,  /* user_data */
-		 ZBUS_OBSERVERS_EMPTY,
-		 ZBUS_MSG_INIT(0));
+ZBUS_CHAN_DEFINE(remote_scan_ctrl_chan, struct remote_scan_ctrl_event, NULL, /* validator */
+		 NULL,                                                       /* user_data */
+		 ZBUS_OBSERVERS_EMPTY, ZBUS_MSG_INIT(0));
