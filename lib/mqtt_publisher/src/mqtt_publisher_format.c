@@ -76,7 +76,7 @@ void mqtt_publisher_build_topic(const char *gateway, const char *location, const
 	if (location == NULL || location[0] == '\0') {
 		location = "unknown";
 	}
-	if (display_name == NULL) {
+	if (display_name == NULL || display_name[0] == '\0') {
 		display_name = "unknown";
 	}
 

@@ -153,6 +153,16 @@ ZTEST(format_suite, test_topic_null_name_fallback)
 			  "NULL name should produce 'unknown', got: '%s'", buf);
 }
 
+ZTEST(format_suite, test_topic_empty_name_fallback)
+{
+	char buf[128];
+
+	mqtt_publisher_build_topic("gw", "kitchen", "", SENSOR_TYPE_TEMPERATURE, buf, sizeof(buf));
+
+	zassert_str_equal(buf, "gw/kitchen/unknown/temperature",
+			  "empty name should produce 'unknown', got: '%s'", buf);
+}
+
 ZTEST(format_suite, test_topic_no_double_slash)
 {
 	char buf[128];

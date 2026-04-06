@@ -80,7 +80,12 @@ static int mqtt_settings_set(const char *key, size_t len, settings_read_cb read_
 			s_broker_host[ret] = '\0';
 		}
 	} else if (strcmp(key, "port") == 0) {
-		read_cb(cb_arg, &s_broker_port, sizeof(s_broker_port));
+		uint16_t broker_port;
+
+		ret = read_cb(cb_arg, &broker_port, sizeof(broker_port));
+		if (ret == sizeof(s_broker_port)) {
+			s_broker_port = broker_port;
+		}
 	} else if (strcmp(key, "user") == 0) {
 		ret = read_cb(cb_arg, s_username, sizeof(s_username) - 1);
 		if (ret > 0) {
@@ -151,7 +156,8 @@ static void publish_event(const struct env_sensor_data *evt)
 	int payload_len = mqtt_publisher_build_payload(epoch_s, evt->type, evt->q31_value,
 						       payload_buf, sizeof(payload_buf));
 
-	if (payload_len <= 0) {
+	if (payload_len <= 0 || payload_len >= (int)sizeof(payload_buf)) {
+		LOG_WRN("payload build failed or truncated (%d)", payload_len);
 		return;
 	}
 
@@ -333,14 +339,26 @@ static int mqtt_publisher_init(void)
 {
 	/* Seed Kconfig defaults; settings_load_subtree() will overwrite if saved */
 	strncpy(s_broker_host, CONFIG_MQTT_PUBLISHER_BROKER_HOST, sizeof(s_broker_host) - 1);
+	s_broker_host[sizeof(s_broker_host) - 1] = '\0';
 	s_broker_port = CONFIG_MQTT_PUBLISHER_BROKER_PORT;
 	strncpy(s_username, CONFIG_MQTT_PUBLISHER_BROKER_USER, sizeof(s_username) - 1);
+	s_username[sizeof(s_username) - 1] = '\0';
 	strncpy(s_password, CONFIG_MQTT_PUBLISHER_BROKER_PASS, sizeof(s_password) - 1);
+	s_password[sizeof(s_password) - 1] = '\0';
 	strncpy(s_gateway_name, CONFIG_MQTT_PUBLISHER_GATEWAY_NAME, sizeof(s_gateway_name) - 1);
+	s_gateway_name[sizeof(s_gateway_name) - 1] = '\0';
 
-	settings_load_subtree("mqttp");
+	int rc = settings_load_subtree("mqttp");
 
-	zbus_chan_add_obs(&sensor_event_chan, &mqtt_publisher_listener, K_NO_WAIT);
+	if (rc != 0) {
+		LOG_WRN("settings_load_subtree(mqttp) failed: %d", rc);
+	}
+
+	rc = zbus_chan_add_obs(&sensor_event_chan, &mqtt_publisher_listener, K_NO_WAIT);
+	if (rc != 0) {
+		LOG_ERR("failed to subscribe to sensor_event_chan: %d", rc);
+		return rc;
+	}
 
 	k_thread_create(&s_mqtt_thread, s_mqtt_stack, K_THREAD_STACK_SIZEOF(s_mqtt_stack),
 			mqtt_thread_fn, NULL, NULL, NULL, CONFIG_MQTT_PUBLISHER_THREAD_PRIORITY, 0,
