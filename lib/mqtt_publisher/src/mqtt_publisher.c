@@ -41,8 +41,7 @@ LOG_MODULE_REGISTER(mqtt_publisher, LOG_LEVEL_INF);
 /* --------------------------------------------------------------------------
  * Message queue: zbus callback → MQTT thread
  * -------------------------------------------------------------------------- */
-K_MSGQ_DEFINE(s_mqtt_queue, sizeof(struct env_sensor_data),
-	      CONFIG_MQTT_PUBLISHER_QUEUE_DEPTH, 4);
+K_MSGQ_DEFINE(s_mqtt_queue, sizeof(struct env_sensor_data), CONFIG_MQTT_PUBLISHER_QUEUE_DEPTH, 4);
 
 /* --------------------------------------------------------------------------
  * MQTT client state
@@ -70,8 +69,7 @@ static struct mqtt_utf8 s_pass_utf8;
 /* --------------------------------------------------------------------------
  * Settings handler
  * -------------------------------------------------------------------------- */
-static int mqtt_settings_set(const char *key, size_t len,
-			     settings_read_cb read_cb, void *cb_arg)
+static int mqtt_settings_set(const char *key, size_t len, settings_read_cb read_cb, void *cb_arg)
 {
 	ARG_UNUSED(len);
 	ssize_t ret;
@@ -108,8 +106,7 @@ SETTINGS_STATIC_HANDLER_DEFINE(mqttp, "mqttp", NULL, mqtt_settings_set, NULL, NU
 /* --------------------------------------------------------------------------
  * MQTT event handler
  * -------------------------------------------------------------------------- */
-static void mqtt_evt_handler(struct mqtt_client *const client,
-			     const struct mqtt_evt *evt)
+static void mqtt_evt_handler(struct mqtt_client *const client, const struct mqtt_evt *evt)
 {
 	switch (evt->type) {
 	case MQTT_EVT_CONNACK:
@@ -148,8 +145,8 @@ static void publish_event(const struct env_sensor_data *evt)
 	const char *name = sensor_registry_get_display_name(evt->sensor_uid);
 	int64_t epoch_s = sntp_sync_get_epoch_ms() / 1000;
 
-	mqtt_publisher_build_topic(s_gateway_name, location, name, evt->type,
-				   topic_buf, sizeof(topic_buf));
+	mqtt_publisher_build_topic(s_gateway_name, location, name, evt->type, topic_buf,
+				   sizeof(topic_buf));
 
 	int payload_len = mqtt_publisher_build_payload(epoch_s, evt->type, evt->q31_value,
 						       payload_buf, sizeof(payload_buf));
@@ -303,8 +300,7 @@ static void mqtt_thread_fn(void *p1, void *p2, void *p3)
 			/* Drain event queue */
 			struct env_sensor_data evt;
 
-			while (s_connected &&
-			       k_msgq_get(&s_mqtt_queue, &evt, K_NO_WAIT) == 0) {
+			while (s_connected && k_msgq_get(&s_mqtt_queue, &evt, K_NO_WAIT) == 0) {
 				publish_event(&evt);
 			}
 		}
@@ -336,24 +332,19 @@ ZBUS_LISTENER_DEFINE(mqtt_publisher_listener, mqtt_sensor_event_cb);
 static int mqtt_publisher_init(void)
 {
 	/* Seed Kconfig defaults; settings_load_subtree() will overwrite if saved */
-	strncpy(s_broker_host, CONFIG_MQTT_PUBLISHER_BROKER_HOST,
-		sizeof(s_broker_host) - 1);
+	strncpy(s_broker_host, CONFIG_MQTT_PUBLISHER_BROKER_HOST, sizeof(s_broker_host) - 1);
 	s_broker_port = CONFIG_MQTT_PUBLISHER_BROKER_PORT;
-	strncpy(s_username, CONFIG_MQTT_PUBLISHER_BROKER_USER,
-		sizeof(s_username) - 1);
-	strncpy(s_password, CONFIG_MQTT_PUBLISHER_BROKER_PASS,
-		sizeof(s_password) - 1);
-	strncpy(s_gateway_name, CONFIG_MQTT_PUBLISHER_GATEWAY_NAME,
-		sizeof(s_gateway_name) - 1);
+	strncpy(s_username, CONFIG_MQTT_PUBLISHER_BROKER_USER, sizeof(s_username) - 1);
+	strncpy(s_password, CONFIG_MQTT_PUBLISHER_BROKER_PASS, sizeof(s_password) - 1);
+	strncpy(s_gateway_name, CONFIG_MQTT_PUBLISHER_GATEWAY_NAME, sizeof(s_gateway_name) - 1);
 
 	settings_load_subtree("mqttp");
 
 	zbus_chan_add_obs(&sensor_event_chan, &mqtt_publisher_listener, K_NO_WAIT);
 
-	k_thread_create(&s_mqtt_thread, s_mqtt_stack,
-			K_THREAD_STACK_SIZEOF(s_mqtt_stack),
-			mqtt_thread_fn, NULL, NULL, NULL,
-			CONFIG_MQTT_PUBLISHER_THREAD_PRIORITY, 0, K_NO_WAIT);
+	k_thread_create(&s_mqtt_thread, s_mqtt_stack, K_THREAD_STACK_SIZEOF(s_mqtt_stack),
+			mqtt_thread_fn, NULL, NULL, NULL, CONFIG_MQTT_PUBLISHER_THREAD_PRIORITY, 0,
+			K_NO_WAIT);
 	k_thread_name_set(&s_mqtt_thread, "mqtt_pub");
 
 	return 0;
@@ -366,7 +357,7 @@ SYS_INIT(mqtt_publisher_init, APPLICATION, 98);
  * -------------------------------------------------------------------------- */
 #if defined(CONFIG_MQTT_PUBLISHER_SHELL)
 
-#include <zephyr/shell/shell.h>
+#	include <zephyr/shell/shell.h>
 
 static int cmd_status(const struct shell *sh, size_t argc, char **argv)
 {
@@ -375,8 +366,7 @@ static int cmd_status(const struct shell *sh, size_t argc, char **argv)
 
 	shell_print(sh, "gateway : %s", s_gateway_name);
 	shell_print(sh, "broker  : %s:%u", s_broker_host, s_broker_port);
-	shell_print(sh, "user    : %s",
-		    s_username[0] ? s_username : "(none)");
+	shell_print(sh, "user    : %s", s_username[0] ? s_username : "(none)");
 	shell_print(sh, "state   : %s", s_connected ? "connected" : "disconnected");
 	return 0;
 }
@@ -399,13 +389,11 @@ static int cmd_set_server(const struct shell *sh, size_t argc, char **argv)
 	}
 	s_broker_port = (uint16_t)port;
 
-	settings_save_one("mqttp/server", s_broker_host,
-			  strlen(s_broker_host) + 1);
-	settings_save_one("mqttp/port", &s_broker_port,
-			  sizeof(s_broker_port));
+	settings_save_one("mqttp/server", s_broker_host, strlen(s_broker_host) + 1);
+	settings_save_one("mqttp/port", &s_broker_port, sizeof(s_broker_port));
 
-	shell_print(sh, "broker set to %s:%u — reconnect will pick up the change",
-		    s_broker_host, s_broker_port);
+	shell_print(sh, "broker set to %s:%u — reconnect will pick up the change", s_broker_host,
+		    s_broker_port);
 	return 0;
 }
 
@@ -438,32 +426,28 @@ static int cmd_set_gateway(const struct shell *sh, size_t argc, char **argv)
 	strncpy(s_gateway_name, argv[1], sizeof(s_gateway_name) - 1);
 	s_gateway_name[sizeof(s_gateway_name) - 1] = '\0';
 
-	settings_save_one("mqttp/gw", s_gateway_name,
-			  strlen(s_gateway_name) + 1);
+	settings_save_one("mqttp/gw", s_gateway_name, strlen(s_gateway_name) + 1);
 
 	shell_print(sh, "gateway name set to '%s'", s_gateway_name);
 	return 0;
 }
 
-SHELL_STATIC_SUBCMD_SET_CREATE(sub_set,
-	SHELL_CMD_ARG(server,  NULL, "Set broker <host> <port>",  cmd_set_server,  3, 0),
-	SHELL_CMD_ARG(auth,    NULL, "Set <user> <pass>",         cmd_set_auth,    3, 0),
-	SHELL_CMD_ARG(gateway, NULL, "Set gateway <name>",        cmd_set_gateway, 2, 0),
-	SHELL_SUBCMD_SET_END
-);
+SHELL_STATIC_SUBCMD_SET_CREATE(
+	sub_set, SHELL_CMD_ARG(server, NULL, "Set broker <host> <port>", cmd_set_server, 3, 0),
+	SHELL_CMD_ARG(auth, NULL, "Set <user> <pass>", cmd_set_auth, 3, 0),
+	SHELL_CMD_ARG(gateway, NULL, "Set gateway <name>", cmd_set_gateway, 2, 0),
+	SHELL_SUBCMD_SET_END);
 
-SHELL_STATIC_SUBCMD_SET_CREATE(sub_mqtt_pub,
-	SHELL_CMD(status, NULL, "Show current MQTT publisher status", cmd_status),
-	SHELL_CMD(set,    &sub_set, "Change a setting", NULL),
-	SHELL_SUBCMD_SET_END
-);
+SHELL_STATIC_SUBCMD_SET_CREATE(
+	sub_mqtt_pub, SHELL_CMD(status, NULL, "Show current MQTT publisher status", cmd_status),
+	SHELL_CMD(set, &sub_set, "Change a setting", NULL), SHELL_SUBCMD_SET_END);
 
 SHELL_CMD_REGISTER(mqtt_pub, &sub_mqtt_pub, "MQTT publisher commands", NULL);
 
 #endif /* CONFIG_MQTT_PUBLISHER_SHELL */
 
 #if defined(CONFIG_ZTEST)
-#include <mqtt_publisher/mqtt_publisher.h>
+#	include <mqtt_publisher/mqtt_publisher.h>
 
 int mqtt_publisher_queue_used(void)
 {

@@ -41,32 +41,32 @@ ZTEST_SUITE(format_suite, NULL, NULL, NULL, NULL, NULL);
 
 ZTEST(format_suite, test_topic_str_temperature)
 {
-	zassert_str_equal(mqtt_publisher_type_to_topic_str(SENSOR_TYPE_TEMPERATURE),
-			  "temperature", "TEMPERATURE topic str mismatch");
+	zassert_str_equal(mqtt_publisher_type_to_topic_str(SENSOR_TYPE_TEMPERATURE), "temperature",
+			  "TEMPERATURE topic str mismatch");
 }
 
 ZTEST(format_suite, test_topic_str_humidity)
 {
-	zassert_str_equal(mqtt_publisher_type_to_topic_str(SENSOR_TYPE_HUMIDITY),
-			  "humidity", "HUMIDITY topic str mismatch");
+	zassert_str_equal(mqtt_publisher_type_to_topic_str(SENSOR_TYPE_HUMIDITY), "humidity",
+			  "HUMIDITY topic str mismatch");
 }
 
 ZTEST(format_suite, test_topic_str_pressure)
 {
-	zassert_str_equal(mqtt_publisher_type_to_topic_str(SENSOR_TYPE_PRESSURE),
-			  "pressure", "PRESSURE topic str mismatch");
+	zassert_str_equal(mqtt_publisher_type_to_topic_str(SENSOR_TYPE_PRESSURE), "pressure",
+			  "PRESSURE topic str mismatch");
 }
 
 ZTEST(format_suite, test_topic_str_co2)
 {
-	zassert_str_equal(mqtt_publisher_type_to_topic_str(SENSOR_TYPE_CO2),
-			  "co2", "CO2 topic str mismatch");
+	zassert_str_equal(mqtt_publisher_type_to_topic_str(SENSOR_TYPE_CO2), "co2",
+			  "CO2 topic str mismatch");
 }
 
 ZTEST(format_suite, test_topic_str_battery_mv)
 {
-	zassert_str_equal(mqtt_publisher_type_to_topic_str(SENSOR_TYPE_BATTERY_MV),
-			  "battery_mv", "BATTERY_MV topic str mismatch");
+	zassert_str_equal(mqtt_publisher_type_to_topic_str(SENSOR_TYPE_BATTERY_MV), "battery_mv",
+			  "BATTERY_MV topic str mismatch");
 }
 
 /* --------------------------------------------------------------------------
@@ -82,32 +82,30 @@ ZTEST(format_suite, test_unit_temperature)
 	zassert_true(strlen(u) > 0, "temperature unit must not be empty");
 	/* Verify the degree symbol is present (UTF-8 0xC2 0xB0) */
 	zassert_equal((unsigned char)u[0], 0xC2u,
-		      "temperature unit first byte expected 0xC2, got 0x%02X",
-		      (unsigned char)u[0]);
+		      "temperature unit first byte expected 0xC2, got 0x%02X", (unsigned char)u[0]);
 }
 
 ZTEST(format_suite, test_unit_humidity)
 {
-	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_HUMIDITY),
-			  "%", "HUMIDITY unit mismatch");
+	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_HUMIDITY), "%",
+			  "HUMIDITY unit mismatch");
 }
 
 ZTEST(format_suite, test_unit_pressure)
 {
-	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_PRESSURE),
-			  "hPa", "PRESSURE unit mismatch");
+	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_PRESSURE), "hPa",
+			  "PRESSURE unit mismatch");
 }
 
 ZTEST(format_suite, test_unit_co2)
 {
-	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_CO2),
-			  "ppm", "CO2 unit mismatch");
+	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_CO2), "ppm", "CO2 unit mismatch");
 }
 
 ZTEST(format_suite, test_unit_battery_mv)
 {
-	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_BATTERY_MV),
-			  "mV", "BATTERY_MV unit mismatch");
+	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_BATTERY_MV), "mV",
+			  "BATTERY_MV unit mismatch");
 }
 
 /* --------------------------------------------------------------------------
@@ -118,19 +116,17 @@ ZTEST(format_suite, test_topic_normal)
 {
 	char buf[128];
 
-	mqtt_publisher_build_topic("gw", "living-room", "dht22",
-				   SENSOR_TYPE_TEMPERATURE, buf, sizeof(buf));
+	mqtt_publisher_build_topic("gw", "living-room", "dht22", SENSOR_TYPE_TEMPERATURE, buf,
+				   sizeof(buf));
 
-	zassert_str_equal(buf, "gw/living-room/dht22/temperature",
-			  "unexpected topic: '%s'", buf);
+	zassert_str_equal(buf, "gw/living-room/dht22/temperature", "unexpected topic: '%s'", buf);
 }
 
 ZTEST(format_suite, test_topic_null_location_fallback)
 {
 	char buf[128];
 
-	mqtt_publisher_build_topic("gw", NULL, "sensor1",
-				   SENSOR_TYPE_HUMIDITY, buf, sizeof(buf));
+	mqtt_publisher_build_topic("gw", NULL, "sensor1", SENSOR_TYPE_HUMIDITY, buf, sizeof(buf));
 
 	zassert_str_equal(buf, "gw/unknown/sensor1/humidity",
 			  "NULL location should produce 'unknown', got: '%s'", buf);
@@ -140,8 +136,7 @@ ZTEST(format_suite, test_topic_empty_location_fallback)
 {
 	char buf[128];
 
-	mqtt_publisher_build_topic("gw", "", "sensor1",
-				   SENSOR_TYPE_HUMIDITY, buf, sizeof(buf));
+	mqtt_publisher_build_topic("gw", "", "sensor1", SENSOR_TYPE_HUMIDITY, buf, sizeof(buf));
 
 	zassert_str_equal(buf, "gw/unknown/sensor1/humidity",
 			  "empty location should produce 'unknown', got: '%s'", buf);
@@ -151,8 +146,8 @@ ZTEST(format_suite, test_topic_null_name_fallback)
 {
 	char buf[128];
 
-	mqtt_publisher_build_topic("gw", "kitchen", NULL,
-				   SENSOR_TYPE_TEMPERATURE, buf, sizeof(buf));
+	mqtt_publisher_build_topic("gw", "kitchen", NULL, SENSOR_TYPE_TEMPERATURE, buf,
+				   sizeof(buf));
 
 	zassert_str_equal(buf, "gw/kitchen/unknown/temperature",
 			  "NULL name should produce 'unknown', got: '%s'", buf);
@@ -162,11 +157,10 @@ ZTEST(format_suite, test_topic_no_double_slash)
 {
 	char buf[128];
 
-	mqtt_publisher_build_topic("weather", "office", "bme280",
-				   SENSOR_TYPE_PRESSURE, buf, sizeof(buf));
+	mqtt_publisher_build_topic("weather", "office", "bme280", SENSOR_TYPE_PRESSURE, buf,
+				   sizeof(buf));
 
-	zassert_is_null(strstr(buf, "//"),
-			"topic must not contain '//': '%s'", buf);
+	zassert_is_null(strstr(buf, "//"), "topic must not contain '//': '%s'", buf);
 }
 
 /* --------------------------------------------------------------------------
@@ -178,13 +172,13 @@ ZTEST(format_suite, test_payload_keys_present)
 	char buf[256];
 	int32_t q31 = temperature_c_to_q31(22.0);
 
-	int len = mqtt_publisher_build_payload(1000000LL, SENSOR_TYPE_TEMPERATURE,
-					       q31, buf, sizeof(buf));
+	int len = mqtt_publisher_build_payload(1000000LL, SENSOR_TYPE_TEMPERATURE, q31, buf,
+					       sizeof(buf));
 
 	zassert_true(len > 0, "build_payload returned %d", len);
-	zassert_not_null(strstr(buf, "\"time\""),   "payload missing 'time' key");
-	zassert_not_null(strstr(buf, "\"value\""),  "payload missing 'value' key");
-	zassert_not_null(strstr(buf, "\"unit\""),   "payload missing 'unit' key");
+	zassert_not_null(strstr(buf, "\"time\""), "payload missing 'time' key");
+	zassert_not_null(strstr(buf, "\"value\""), "payload missing 'value' key");
+	zassert_not_null(strstr(buf, "\"unit\""), "payload missing 'unit' key");
 }
 
 ZTEST(format_suite, test_payload_epoch_seconds)
@@ -192,12 +186,10 @@ ZTEST(format_suite, test_payload_epoch_seconds)
 	char buf[256];
 	int32_t q31 = temperature_c_to_q31(0.0);
 
-	mqtt_publisher_build_payload(1743948000LL, SENSOR_TYPE_TEMPERATURE,
-				     q31, buf, sizeof(buf));
+	mqtt_publisher_build_payload(1743948000LL, SENSOR_TYPE_TEMPERATURE, q31, buf, sizeof(buf));
 
 	/* The epoch value must appear literally in the payload. */
-	zassert_not_null(strstr(buf, "1743948000"),
-			 "epoch_s not found in payload: '%s'", buf);
+	zassert_not_null(strstr(buf, "1743948000"), "epoch_s not found in payload: '%s'", buf);
 }
 
 ZTEST(format_suite, test_payload_temperature_value)
@@ -206,12 +198,10 @@ ZTEST(format_suite, test_payload_temperature_value)
 	const double input_c = 23.45;
 	int32_t q31 = temperature_c_to_q31(input_c);
 
-	mqtt_publisher_build_payload(0LL, SENSOR_TYPE_TEMPERATURE, q31,
-				     buf, sizeof(buf));
+	mqtt_publisher_build_payload(0LL, SENSOR_TYPE_TEMPERATURE, q31, buf, sizeof(buf));
 
 	/* Value should be 23.45 — accept ±0.1 °C rounding in snprintf("%.2f") */
-	zassert_not_null(strstr(buf, "23.4"),
-			 "temperature value not found in payload: '%s'", buf);
+	zassert_not_null(strstr(buf, "23.4"), "temperature value not found in payload: '%s'", buf);
 }
 
 ZTEST(format_suite, test_payload_humidity_value)
@@ -220,19 +210,17 @@ ZTEST(format_suite, test_payload_humidity_value)
 	const double input_pct = 65.2;
 	int32_t q31 = humidity_pct_to_q31(input_pct);
 
-	mqtt_publisher_build_payload(0LL, SENSOR_TYPE_HUMIDITY, q31,
-				     buf, sizeof(buf));
+	mqtt_publisher_build_payload(0LL, SENSOR_TYPE_HUMIDITY, q31, buf, sizeof(buf));
 
-	zassert_not_null(strstr(buf, "65."),
-			 "humidity value not found in payload: '%s'", buf);
+	zassert_not_null(strstr(buf, "65."), "humidity value not found in payload: '%s'", buf);
 }
 
 ZTEST(format_suite, test_payload_is_valid_json_start_end)
 {
 	char buf[256];
 
-	mqtt_publisher_build_payload(0LL, SENSOR_TYPE_HUMIDITY,
-				     humidity_pct_to_q31(50.0), buf, sizeof(buf));
+	mqtt_publisher_build_payload(0LL, SENSOR_TYPE_HUMIDITY, humidity_pct_to_q31(50.0), buf,
+				     sizeof(buf));
 
 	zassert_equal(buf[0], '{', "payload must start with '{'");
 	zassert_equal(buf[strlen(buf) - 1], '}', "payload must end with '}'");
