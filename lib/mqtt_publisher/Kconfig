@@ -1,0 +1,76 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig MQTT_PUBLISHER
+	bool "MQTT sensor data publisher"
+	depends on MQTT_LIB
+	depends on NET_SOCKETS
+	depends on SENSOR_EVENT
+	depends on SENSOR_REGISTRY
+	depends on SENSOR_REGISTRY_USER_META
+	depends on SNTP_SYNC
+	select SETTINGS
+	help
+	  Subscribes to sensor_event_chan and publishes every measurement to an
+	  MQTT broker as:
+	    topic:   {gw}/{location}/{display_name}/{type}
+	    payload: {"time":<epoch_s>,"value":<float>,"unit":"<str>"}
+
+	  Broker host, port, username, and password are stored in the settings
+	  subsystem under the "mqttp/" subtree and can be changed at runtime.
+
+	  No public API — enable with CONFIG_MQTT_PUBLISHER=y and the library
+	  self-registers via SYS_INIT.
+
+if MQTT_PUBLISHER
+
+config MQTT_PUBLISHER_GATEWAY_NAME
+	string "Default gateway name (first MQTT topic segment)"
+	default "gateway"
+
+config MQTT_PUBLISHER_BROKER_HOST
+	string "Default broker hostname or IP"
+	default "mqtt.local"
+
+config MQTT_PUBLISHER_BROKER_PORT
+	int "Default broker TCP port"
+	default 1883
+
+config MQTT_PUBLISHER_BROKER_USER
+	string "Default broker username (empty = no auth)"
+	default ""
+
+config MQTT_PUBLISHER_BROKER_PASS
+	string "Default broker password"
+	default ""
+
+config MQTT_PUBLISHER_KEEPALIVE
+	int "MQTT keepalive interval (seconds)"
+	default 60
+
+config MQTT_PUBLISHER_RECONNECT_MS
+	int "Reconnect retry delay (milliseconds)"
+	default 5000
+
+config MQTT_PUBLISHER_QUEUE_DEPTH
+	int "Event queue depth (events dropped when full)"
+	default 16
+
+config MQTT_PUBLISHER_STACK_SIZE
+	int "Publisher thread stack size (bytes)"
+	default 3072
+
+config MQTT_PUBLISHER_THREAD_PRIORITY
+	int "Publisher thread priority"
+	default 7
+
+config MQTT_PUBLISHER_SHELL
+	bool "Shell commands for MQTT publisher configuration"
+	depends on SHELL
+	help
+	  Adds 'mqtt_pub' shell commands:
+	    mqtt_pub status
+	    mqtt_pub set server <host> <port>
+	    mqtt_pub set auth <user> <pass>
+	    mqtt_pub set gateway <name>
+
+endif # MQTT_PUBLISHER

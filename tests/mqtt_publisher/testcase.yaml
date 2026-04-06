@@ -1,0 +1,8 @@
+tests:
+  weather_station.mqtt_publisher:
+    platform_allow:
+      - native_sim/native/64
+    harness: ztest
+    tags:
+      - mqtt_publisher
+      - weather_station
