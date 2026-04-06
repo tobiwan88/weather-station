@@ -52,9 +52,8 @@ double mqtt_publisher_q31_to_value(enum sensor_type t, int32_t q31);
  * @param buf          Output buffer.
  * @param len          Output buffer length.
  */
-void mqtt_publisher_build_topic(const char *gateway, const char *location,
-				const char *display_name, enum sensor_type type,
-				char *buf, size_t len);
+void mqtt_publisher_build_topic(const char *gateway, const char *location, const char *display_name,
+				enum sensor_type type, char *buf, size_t len);
 
 /**
  * @brief Build the JSON payload string into @p buf.
@@ -68,7 +67,7 @@ void mqtt_publisher_build_topic(const char *gateway, const char *location,
  * @param len       Output buffer length.
  * @return          Number of bytes written (snprintf semantics), or <= 0 on error.
  */
-int mqtt_publisher_build_payload(int64_t epoch_s, enum sensor_type type,
-				 int32_t q31_value, char *buf, size_t len);
+int mqtt_publisher_build_payload(int64_t epoch_s, enum sensor_type type, int32_t q31_value,
+				 char *buf, size_t len);
 
 #endif /* MQTT_PUBLISHER_FORMAT_H_ */

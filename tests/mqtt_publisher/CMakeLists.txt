@@ -8,6 +8,5 @@ project(test_mqtt_publisher)
 target_sources(app PRIVATE src/main.c)
 
 # Expose the internal format header so tests can call helpers directly.
-target_include_directories(app PRIVATE
-  ${CMAKE_SOURCE_DIR}/../../lib/mqtt_publisher/src
-)
+target_include_directories(
+  app PRIVATE ${CMAKE_SOURCE_DIR}/../../lib/mqtt_publisher/src)
