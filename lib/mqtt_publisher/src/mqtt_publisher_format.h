@@ -32,8 +32,8 @@ const char *mqtt_publisher_type_to_unit(enum sensor_type t);
 /**
  * @brief Convert a Q31 value to a physical double for a given sensor type.
  *
- * Uses the correct per-type Q31 range.  Falls back to normalised 0..1 for
- * unknown types.
+ * Uses the correct per-type Q31 range.  Falls back to a normalised signed
+ * Q31 conversion (approximately -1.0 .. +1.0) for unknown types.
  */
 double mqtt_publisher_q31_to_value(enum sensor_type t, int32_t q31);
 
