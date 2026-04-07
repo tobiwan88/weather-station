@@ -70,13 +70,13 @@ ZTEST(format_suite, test_topic_str_battery_mv)
 }
 
 /* --------------------------------------------------------------------------
- * type_to_unit
+ * sensor_type_to_unit (from sensor_event lib)
  * -------------------------------------------------------------------------- */
 
 ZTEST(format_suite, test_unit_temperature)
 {
 	/* °C is encoded as UTF-8 \xc2\xb0\x43 */
-	const char *u = mqtt_publisher_type_to_unit(SENSOR_TYPE_TEMPERATURE);
+	const char *u = sensor_type_to_unit(SENSOR_TYPE_TEMPERATURE);
 
 	zassert_not_null(u, "unit must not be NULL");
 	zassert_true(strlen(u) > 0, "temperature unit must not be empty");
@@ -87,24 +87,24 @@ ZTEST(format_suite, test_unit_temperature)
 
 ZTEST(format_suite, test_unit_humidity)
 {
-	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_HUMIDITY), "%",
+	zassert_str_equal(sensor_type_to_unit(SENSOR_TYPE_HUMIDITY), "%",
 			  "HUMIDITY unit mismatch");
 }
 
 ZTEST(format_suite, test_unit_pressure)
 {
-	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_PRESSURE), "hPa",
+	zassert_str_equal(sensor_type_to_unit(SENSOR_TYPE_PRESSURE), "hPa",
 			  "PRESSURE unit mismatch");
 }
 
 ZTEST(format_suite, test_unit_co2)
 {
-	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_CO2), "ppm", "CO2 unit mismatch");
+	zassert_str_equal(sensor_type_to_unit(SENSOR_TYPE_CO2), "ppm", "CO2 unit mismatch");
 }
 
 ZTEST(format_suite, test_unit_battery_mv)
 {
-	zassert_str_equal(mqtt_publisher_type_to_unit(SENSOR_TYPE_BATTERY_MV), "mV",
+	zassert_str_equal(sensor_type_to_unit(SENSOR_TYPE_BATTERY_MV), "mV",
 			  "BATTERY_MV unit mismatch");
 }
 

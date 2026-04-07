@@ -36,39 +36,6 @@ const char *mqtt_publisher_type_to_topic_str(enum sensor_type t)
 	}
 }
 
-const char *mqtt_publisher_type_to_unit(enum sensor_type t)
-{
-	switch (t) {
-	case SENSOR_TYPE_TEMPERATURE:
-		return "\xc2\xb0\x43"; /* °C (UTF-8) */
-	case SENSOR_TYPE_HUMIDITY:
-		return "%";
-	case SENSOR_TYPE_PRESSURE:
-		return "hPa";
-	case SENSOR_TYPE_CO2:
-		return "ppm";
-	case SENSOR_TYPE_LIGHT:
-		return "lux";
-	case SENSOR_TYPE_UV_INDEX:
-		return "";
-	case SENSOR_TYPE_BATTERY_MV:
-		return "mV";
-	default:
-		return "";
-	}
-}
-
-double mqtt_publisher_q31_to_value(enum sensor_type t, int32_t q31)
-{
-	switch (t) {
-	case SENSOR_TYPE_TEMPERATURE:
-		return q31_to_temperature_c(q31);
-	case SENSOR_TYPE_HUMIDITY:
-		return q31_to_humidity_pct(q31);
-	default:
-		return (double)q31 / (double)INT32_MAX;
-	}
-}
 
 void mqtt_publisher_build_topic(const char *gateway, const char *location, const char *display_name,
 				enum sensor_type type, char *buf, size_t len)
@@ -87,9 +54,8 @@ void mqtt_publisher_build_topic(const char *gateway, const char *location, const
 int mqtt_publisher_build_payload(int64_t epoch_s, enum sensor_type type, int32_t q31_value,
 				 char *buf, size_t len)
 {
-	double value = mqtt_publisher_q31_to_value(type, q31_value);
-	const char *unit = mqtt_publisher_type_to_unit(type);
+	const struct sensor_type_desc *desc = sensor_type_get_desc(type);
 
 	return snprintf(buf, len, "{\"time\":%lld,\"value\":%.2f,\"unit\":\"%s\"}",
-			(long long)epoch_s, value, unit);
+			(long long)epoch_s, desc->decode_q31(q31_value), desc->unit);
 }

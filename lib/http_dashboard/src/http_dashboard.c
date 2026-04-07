@@ -233,17 +233,6 @@ static const char *sensor_type_str(enum sensor_type t)
 	}
 }
 
-static double q31_to_physical(int32_t q31, enum sensor_type type)
-{
-	switch (type) {
-	case SENSOR_TYPE_TEMPERATURE:
-		return q31_to_temperature_c(q31);
-	case SENSOR_TYPE_HUMIDITY:
-		return q31_to_humidity_pct(q31);
-	default:
-		return (double)q31 / (double)INT32_MAX;
-	}
-}
 
 /* Static JSON buffer — protected by resource holder (one request at a time). */
 static uint8_t json_buf[8192];
@@ -339,7 +328,8 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 			if (j > 0) {
 				JAPPEND(",");
 			}
-			double v = q31_to_physical(snap[i].samples[idx].q31_value, snap[i].type);
+			double v = sensor_type_get_desc(snap[i].type)->decode_q31(
+				snap[i].samples[idx].q31_value);
 
 			JAPPEND("{\"t\":%" PRId64 ",\"v\":%.2f}", snap[i].samples[idx].timestamp_ms,
 				v);
