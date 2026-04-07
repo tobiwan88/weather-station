@@ -233,7 +233,6 @@ static const char *sensor_type_str(enum sensor_type t)
 	}
 }
 
-
 /* Static JSON buffer — protected by resource holder (one request at a time). */
 static uint8_t json_buf[8192];
 
@@ -328,8 +327,8 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 			if (j > 0) {
 				JAPPEND(",");
 			}
-			double v = sensor_type_get_desc(snap[i].type)->decode_q31(
-				snap[i].samples[idx].q31_value);
+			double v = sensor_type_get_desc(snap[i].type)
+					   ->decode_q31(snap[i].samples[idx].q31_value);
 
 			JAPPEND("{\"t\":%" PRId64 ",\"v\":%.2f}", snap[i].samples[idx].timestamp_ms,
 				v);
