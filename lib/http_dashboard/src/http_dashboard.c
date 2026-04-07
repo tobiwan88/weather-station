@@ -293,7 +293,7 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
 		/* Skip sensors the user has disabled. */
-		struct sensor_registry_meta smeta;
+		struct sensor_registry_meta smeta = {0};
 
 		if (sensor_registry_get_meta(snap[i].uid, &smeta) == 0 && !smeta.enabled) {
 			continue;

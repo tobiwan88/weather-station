@@ -49,13 +49,18 @@ int location_registry_add(const char *name)
 	locations[location_count][CONFIG_LOCATION_REGISTRY_NAME_LEN] = '\0';
 	location_count++;
 
+#ifdef CONFIG_LOCATION_REGISTRY_SETTINGS
+	/* Snapshot the count while the lock is still held. */
+	int snap_count = location_count;
+#endif
+
 	k_mutex_unlock(&loc_mutex);
 
 #ifdef CONFIG_LOCATION_REGISTRY_SETTINGS
-	/* Persist the full location list. */
+	/* Persist the full location list using the snapshotted count. */
 	char key[32];
 
-	for (int i = 0; i < location_count; i++) {
+	for (int i = 0; i < snap_count; i++) {
 		snprintf(key, sizeof(key), "loc/%d", i);
 		settings_save_one(key, locations[i], strlen(locations[i]) + 1);
 	}
@@ -95,18 +100,23 @@ int location_registry_remove(const char *name)
 	locations[location_count - 1][0] = '\0';
 	location_count--;
 
+#ifdef CONFIG_LOCATION_REGISTRY_SETTINGS
+	/* Snapshot the count while the lock is still held. */
+	int snap_count = location_count;
+#endif
+
 	k_mutex_unlock(&loc_mutex);
 
 #ifdef CONFIG_LOCATION_REGISTRY_SETTINGS
 	/* Rewrite all slots; clear the now-vacated tail slot. */
 	char key[32];
 
-	for (int i = 0; i < location_count; i++) {
+	for (int i = 0; i < snap_count; i++) {
 		snprintf(key, sizeof(key), "loc/%d", i);
 		settings_save_one(key, locations[i], strlen(locations[i]) + 1);
 	}
 	/* Clear the slot that was freed. */
-	snprintf(key, sizeof(key), "loc/%d", location_count);
+	snprintf(key, sizeof(key), "loc/%d", snap_count);
 	settings_save_one(key, "", 1);
 #endif
 

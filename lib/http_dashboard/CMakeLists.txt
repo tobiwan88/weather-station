@@ -1,4 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
+
+if(CONFIG_HTTP_DASHBOARD)
+
 zephyr_library()
 zephyr_library_sources(src/http_dashboard.c)
 zephyr_library_include_directories(include)
@@ -42,3 +45,5 @@ generate_inc_file_for_target(app ${config_bundled} ${gen_dir}/config.html.inc)
 
 # Linker section for per-service HTTP resource descriptor iterable.
 zephyr_linker_sources(SECTIONS http_dashboard_sections.ld)
+
+endif() # CONFIG_HTTP_DASHBOARD
