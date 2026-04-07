@@ -10,4 +10,6 @@
  */
 ZBUS_CHAN_DEFINE(remote_scan_ctrl_chan, struct remote_scan_ctrl_event, NULL, /* validator */
 		 NULL,                                                       /* user_data */
-		 ZBUS_OBSERVERS_EMPTY, ZBUS_MSG_INIT(0));
+		 ZBUS_OBSERVERS_EMPTY,
+		 ZBUS_MSG_INIT(.action = REMOTE_SCAN_START,
+			       .proto = REMOTE_TRANSPORT_PROTO_UNKNOWN));
