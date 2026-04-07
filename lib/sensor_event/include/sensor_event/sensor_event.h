@@ -53,6 +53,40 @@ struct env_sensor_data {
 /** zbus channel carrying env_sensor_data events (defined in sensor_event.c). */
 ZBUS_CHAN_DECLARE(sensor_event_chan);
 
+/**
+ * @brief Per-type descriptor: SI unit and Q31 decode function.
+ *
+ * Consumers that need to convert a raw q31_value to a physical double, or
+ * look up the display unit, should use sensor_type_get_desc() rather than
+ * maintaining their own switch statements.
+ */
+struct sensor_type_desc {
+	/** SI unit string (UTF-8). Empty string for dimensionless quantities. */
+	const char *unit;
+	/**
+	 * Decode a Q31-encoded measurement to a physical double.
+	 * The encoding range is type-specific (see Q31 conversion helpers below).
+	 */
+	double (*decode_q31)(int32_t q31);
+};
+
+/**
+ * @brief Look up the descriptor for a sensor type.
+ *
+ * @param t Sensor type.
+ * @return Pointer to a static descriptor. Never NULL.
+ */
+const struct sensor_type_desc *sensor_type_get_desc(enum sensor_type t);
+
+/**
+ * @brief Map a sensor_type to its SI unit string (UTF-8).
+ *
+ * Convenience wrapper around sensor_type_get_desc(t)->unit.
+ *
+ * @return String literal, never NULL (empty string for dimensionless types).
+ */
+const char *sensor_type_to_unit(enum sensor_type t);
+
 /* --------------------------------------------------------------------------
  * Q31 conversion helpers
  * --------------------------------------------------------------------------
