@@ -87,8 +87,7 @@ ZTEST(format_suite, test_unit_temperature)
 
 ZTEST(format_suite, test_unit_humidity)
 {
-	zassert_str_equal(sensor_type_to_unit(SENSOR_TYPE_HUMIDITY), "%",
-			  "HUMIDITY unit mismatch");
+	zassert_str_equal(sensor_type_to_unit(SENSOR_TYPE_HUMIDITY), "%", "HUMIDITY unit mismatch");
 }
 
 ZTEST(format_suite, test_unit_pressure)

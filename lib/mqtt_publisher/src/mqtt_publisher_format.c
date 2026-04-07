@@ -36,7 +36,6 @@ const char *mqtt_publisher_type_to_topic_str(enum sensor_type t)
 	}
 }
 
-
 void mqtt_publisher_build_topic(const char *gateway, const char *location, const char *display_name,
 				enum sensor_type type, char *buf, size_t len)
 {
