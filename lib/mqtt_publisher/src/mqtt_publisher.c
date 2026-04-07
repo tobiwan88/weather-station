@@ -56,11 +56,11 @@ static bool s_connected;
 /* --------------------------------------------------------------------------
  * Runtime configuration (seeded from Kconfig, overwritten by settings load)
  * -------------------------------------------------------------------------- */
-static char s_broker_host[64];
-static uint16_t s_broker_port;
-static char s_username[32];
-static char s_password[64];
-static char s_gateway_name[32];
+static char s_broker_host[64] = CONFIG_MQTT_PUBLISHER_BROKER_HOST;
+static uint16_t s_broker_port = CONFIG_MQTT_PUBLISHER_BROKER_PORT;
+static char s_username[32] = CONFIG_MQTT_PUBLISHER_BROKER_USER;
+static char s_password[64] = CONFIG_MQTT_PUBLISHER_BROKER_PASS;
+static char s_gateway_name[32] = CONFIG_MQTT_PUBLISHER_GATEWAY_NAME;
 
 /* mqtt_utf8 structs for user_name / password fields (must outlive connect) */
 static struct mqtt_utf8 s_user_utf8;
@@ -337,17 +337,6 @@ ZBUS_LISTENER_DEFINE(mqtt_publisher_listener, mqtt_sensor_event_cb);
  * -------------------------------------------------------------------------- */
 static int mqtt_publisher_init(void)
 {
-	/* Seed Kconfig defaults; settings_load_subtree() will overwrite if saved */
-	strncpy(s_broker_host, CONFIG_MQTT_PUBLISHER_BROKER_HOST, sizeof(s_broker_host) - 1);
-	s_broker_host[sizeof(s_broker_host) - 1] = '\0';
-	s_broker_port = CONFIG_MQTT_PUBLISHER_BROKER_PORT;
-	strncpy(s_username, CONFIG_MQTT_PUBLISHER_BROKER_USER, sizeof(s_username) - 1);
-	s_username[sizeof(s_username) - 1] = '\0';
-	strncpy(s_password, CONFIG_MQTT_PUBLISHER_BROKER_PASS, sizeof(s_password) - 1);
-	s_password[sizeof(s_password) - 1] = '\0';
-	strncpy(s_gateway_name, CONFIG_MQTT_PUBLISHER_GATEWAY_NAME, sizeof(s_gateway_name) - 1);
-	s_gateway_name[sizeof(s_gateway_name) - 1] = '\0';
-
 	int rc = settings_load_subtree("mqttp");
 
 	if (rc != 0) {
