@@ -51,7 +51,7 @@ struct peer_load_ctx {
 #define RSEN_FLAG_ADDR_LEN BIT(2)
 #define RSEN_FLAG_LABEL    BIT(3)
 #define RSEN_FLAG_TYPE     BIT(4)
-#define RSEN_FLAG_COMPLETE                                                                          \
+#define RSEN_FLAG_COMPLETE                                                                         \
 	(RSEN_FLAG_PROTO | RSEN_FLAG_ADDR | RSEN_FLAG_ADDR_LEN | RSEN_FLAG_LABEL | RSEN_FLAG_TYPE)
 
 static struct peer_load_ctx load_ctx[CONFIG_REMOTE_SENSOR_MAX_PEERS];
