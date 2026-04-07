@@ -15,6 +15,9 @@
  * calls mqtt_input() / mqtt_live() in a poll loop.  On disconnect the thread
  * waits CONFIG_MQTT_PUBLISHER_RECONNECT_MS before retrying.
  *
+ * Connection state is tracked with an explicit enum; zsock_poll() is only
+ * called while s_nfds > 0 (cleared by clear_fds() in the DISCONNECT handler).
+ *
  * Broker settings (host, port, username, password, gateway name) are
  * persisted in the settings subsystem under the "mqttp/" subtree.
  */
@@ -44,14 +47,41 @@ LOG_MODULE_REGISTER(mqtt_publisher, LOG_LEVEL_INF);
 K_MSGQ_DEFINE(s_mqtt_queue, sizeof(struct env_sensor_data), CONFIG_MQTT_PUBLISHER_QUEUE_DEPTH, 4);
 
 /* --------------------------------------------------------------------------
+ * Connection state
+ * -------------------------------------------------------------------------- */
+enum mqtt_pub_state {
+	MQTT_PUB_DISCONNECTED,
+	MQTT_PUB_CONNECTING,
+	MQTT_PUB_CONNECTED,
+};
+
+static enum mqtt_pub_state s_state = MQTT_PUB_DISCONNECTED;
+
+/* Signalled by the event handler when CONNACK arrives (success or failure). */
+static K_SEM_DEFINE(s_connack_sem, 0, 1);
+
+/* --------------------------------------------------------------------------
  * MQTT client state
  * -------------------------------------------------------------------------- */
 static uint8_t s_rx_buf[512];
 static uint8_t s_tx_buf[512];
 static struct mqtt_client s_client;
 static struct sockaddr_storage s_broker_addr;
+
 static struct zsock_pollfd s_fds[1];
-static bool s_connected;
+static int s_nfds; /* 0 = no valid fd (never call zsock_poll when 0) */
+
+static void prepare_fds(void)
+{
+	s_fds[0].fd = s_client.transport.tcp.sock;
+	s_fds[0].events = ZSOCK_POLLIN;
+	s_nfds = 1;
+}
+
+static void clear_fds(void)
+{
+	s_nfds = 0;
+}
 
 /* --------------------------------------------------------------------------
  * Runtime configuration (seeded from Kconfig, overwritten by settings load)
@@ -116,21 +146,30 @@ static void mqtt_evt_handler(struct mqtt_client *const client, const struct mqtt
 	switch (evt->type) {
 	case MQTT_EVT_CONNACK:
 		if (evt->result == 0) {
-			s_connected = true;
+			s_state = MQTT_PUB_CONNECTED;
 			LOG_INF("connected to %s:%u", s_broker_host, s_broker_port);
 		} else {
-			LOG_ERR("CONNACK error %d", evt->result);
+			s_state = MQTT_PUB_DISCONNECTED;
+			LOG_ERR("CONNACK refused: %d", evt->result);
 		}
+		k_sem_give(&s_connack_sem);
 		break;
 
 	case MQTT_EVT_DISCONNECT:
 		LOG_INF("disconnected (reason %d)", evt->result);
-		s_connected = false;
+		s_state = MQTT_PUB_DISCONNECTED;
+		clear_fds();
 		break;
 
 	case MQTT_EVT_PUBACK:
+		LOG_DBG("PUBACK id=%u", evt->param.puback.message_id);
+		break;
+
+	case MQTT_EVT_PINGRESP:
+		LOG_DBG("PINGRESP");
+		break;
+
 	case MQTT_EVT_PUBCOMP:
-		/* QoS 1/2 acknowledgements — not used (QoS 0 publish only) */
 		break;
 
 	default:
@@ -174,12 +213,49 @@ static void publish_event(const struct env_sensor_data *evt)
 
 	if (rc != 0) {
 		LOG_WRN("mqtt_publish failed: %d — marking disconnected", rc);
-		s_connected = false;
+		s_state = MQTT_PUB_DISCONNECTED;
 	}
 }
 
 /* --------------------------------------------------------------------------
- * Broker connect
+ * Process MQTT I/O for up to timeout_ms
+ *
+ * Handles the mqtt_live() == 0 case (ping sent) by immediately reading the
+ * PINGRESP so the keepalive round-trip completes within the same call.
+ * Returns 0 on success, non-zero I/O error to signal the caller to reconnect.
+ * -------------------------------------------------------------------------- */
+static int process_and_sleep(int timeout_ms)
+{
+	int64_t end_ms = k_uptime_get() + timeout_ms;
+
+	while (k_uptime_get() < end_ms && s_state == MQTT_PUB_CONNECTED) {
+		int64_t remaining = end_ms - k_uptime_get();
+		int rc;
+
+		if (s_nfds > 0 && zsock_poll(s_fds, s_nfds, (int)remaining) > 0) {
+			rc = mqtt_input(&s_client);
+			if (rc != 0) {
+				return rc;
+			}
+		}
+
+		rc = mqtt_live(&s_client);
+		if (rc == 0) {
+			/* Ping was sent — read PINGRESP immediately */
+			if (s_nfds > 0) {
+				zsock_poll(s_fds, s_nfds, 1000);
+				mqtt_input(&s_client);
+			}
+		} else if (rc != -EAGAIN) {
+			return rc;
+		}
+	}
+
+	return 0;
+}
+
+/* --------------------------------------------------------------------------
+ * Broker resolve + connect
  * -------------------------------------------------------------------------- */
 static int broker_resolve(void)
 {
@@ -204,7 +280,7 @@ static int broker_resolve(void)
 	return 0;
 }
 
-static int broker_connect(void)
+static int try_connect(void)
 {
 	if (broker_resolve() != 0) {
 		return -ENOENT;
@@ -234,26 +310,29 @@ static int broker_connect(void)
 		s_client.password = &s_pass_utf8;
 	}
 
-	s_connected = false;
+	s_state = MQTT_PUB_CONNECTING;
+	k_sem_reset(&s_connack_sem);
 
 	int rc = mqtt_connect(&s_client);
 
 	if (rc != 0) {
 		LOG_ERR("mqtt_connect failed: %d", rc);
+		s_state = MQTT_PUB_DISCONNECTED;
 		return rc;
 	}
 
-	/* Wait up to 5 s for CONNACK */
-	s_fds[0].fd = s_client.transport.tcp.sock;
-	s_fds[0].events = ZSOCK_POLLIN;
+	prepare_fds();
 
-	if (zsock_poll(s_fds, 1, 5000) > 0) {
+	/* Drive I/O until CONNACK arrives (event handler gives s_connack_sem). */
+	if (zsock_poll(s_fds, s_nfds, 5000) > 0) {
 		mqtt_input(&s_client);
 	}
 
-	if (!s_connected) {
+	if (k_sem_take(&s_connack_sem, K_MSEC(1000)) != 0 || s_state != MQTT_PUB_CONNECTED) {
 		LOG_ERR("no CONNACK from %s:%u", s_broker_host, s_broker_port);
 		mqtt_abort(&s_client);
+		s_state = MQTT_PUB_DISCONNECTED;
+		clear_fds();
 		return -ETIMEDOUT;
 	}
 
@@ -272,46 +351,39 @@ static void mqtt_thread_fn(void *p1, void *p2, void *p3)
 	while (true) {
 		LOG_INF("connecting to %s:%u ...", s_broker_host, s_broker_port);
 
-		if (broker_connect() != 0) {
+		if (try_connect() != 0) {
 			k_sleep(K_MSEC(CONFIG_MQTT_PUBLISHER_RECONNECT_MS));
 			continue;
 		}
 
-		while (s_connected) {
-			/* Poll for incoming data (100 ms timeout for keepalive) */
-			s_fds[0].fd = s_client.transport.tcp.sock;
-			s_fds[0].events = ZSOCK_POLLIN;
+		while (s_state == MQTT_PUB_CONNECTED) {
+			int rc = process_and_sleep(100);
 
-			int ret = zsock_poll(s_fds, 1, 100);
-
-			if (ret > 0 && (s_fds[0].revents & ZSOCK_POLLIN)) {
-				int rc = mqtt_input(&s_client);
-
-				if (rc != 0) {
-					LOG_WRN("mqtt_input: %d", rc);
-					s_connected = false;
-					break;
-				}
-			}
-
-			/* Send keepalive ping if needed */
-			int rc = mqtt_live(&s_client);
-
-			if (rc != 0 && rc != -EAGAIN) {
-				LOG_WRN("mqtt_live: %d", rc);
-				s_connected = false;
+			if (rc != 0) {
+				LOG_WRN("MQTT I/O error %d — reconnecting", rc);
 				break;
 			}
 
-			/* Drain event queue */
+			/* Drain sensor event queue */
 			struct env_sensor_data evt;
 
-			while (s_connected && k_msgq_get(&s_mqtt_queue, &evt, K_NO_WAIT) == 0) {
+			while (s_state == MQTT_PUB_CONNECTED &&
+			       k_msgq_get(&s_mqtt_queue, &evt, K_NO_WAIT) == 0) {
 				publish_event(&evt);
 			}
 		}
 
-		mqtt_disconnect(&s_client, NULL);
+		/*
+		 * If the state is not already DISCONNECTED (e.g. I/O error path,
+		 * not a clean MQTT_EVT_DISCONNECT), abort the socket rather than
+		 * calling mqtt_disconnect() on a broken connection.
+		 */
+		if (s_state != MQTT_PUB_DISCONNECTED) {
+			mqtt_abort(&s_client);
+			s_state = MQTT_PUB_DISCONNECTED;
+			clear_fds();
+		}
+
 		k_sleep(K_MSEC(CONFIG_MQTT_PUBLISHER_RECONNECT_MS));
 	}
 }
@@ -371,10 +443,24 @@ static int cmd_status(const struct shell *sh, size_t argc, char **argv)
 	ARG_UNUSED(argc);
 	ARG_UNUSED(argv);
 
+	const char *state_str;
+
+	switch (s_state) {
+	case MQTT_PUB_CONNECTED:
+		state_str = "connected";
+		break;
+	case MQTT_PUB_CONNECTING:
+		state_str = "connecting";
+		break;
+	default:
+		state_str = "disconnected";
+		break;
+	}
+
 	shell_print(sh, "gateway : %s", s_gateway_name);
 	shell_print(sh, "broker  : %s:%u", s_broker_host, s_broker_port);
 	shell_print(sh, "user    : %s", s_username[0] ? s_username : "(none)");
-	shell_print(sh, "state   : %s", s_connected ? "connected" : "disconnected");
+	shell_print(sh, "state   : %s", state_str);
 	return 0;
 }
 
