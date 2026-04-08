@@ -25,10 +25,31 @@ static int cmd_list(const struct shell *sh, size_t argc, char **argv)
 
 	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry)
 	{
-		const char *kind_str =
-			(entry->kind == FAKE_SENSOR_KIND_TEMPERATURE) ? "temperature" : "humidity";
-		const char *unit_str =
-			(entry->kind == FAKE_SENSOR_KIND_TEMPERATURE) ? "mdeg C" : "m%RH";
+		const char *kind_str;
+		const char *unit_str;
+
+		switch (entry->kind) {
+		case FAKE_SENSOR_KIND_TEMPERATURE:
+			kind_str = "temperature";
+			unit_str = "mdeg C";
+			break;
+		case FAKE_SENSOR_KIND_HUMIDITY:
+			kind_str = "humidity";
+			unit_str = "m%RH";
+			break;
+		case FAKE_SENSOR_KIND_CO2:
+			kind_str = "co2";
+			unit_str = "mppm";
+			break;
+		case FAKE_SENSOR_KIND_VOC:
+			kind_str = "voc";
+			unit_str = "mIAQ";
+			break;
+		default:
+			kind_str = "unknown";
+			unit_str = "milli";
+			break;
+		}
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
 		const char *loc = sensor_registry_get_location(entry->uid);
 #else
@@ -98,6 +119,62 @@ static int cmd_humidity_set(const struct shell *sh, size_t argc, char **argv)
 }
 
 /* --------------------------------------------------------------------------
+ * fake_sensors co2_set <uid_hex> <mppm>
+ * -------------------------------------------------------------------------- */
+static int cmd_co2_set(const struct shell *sh, size_t argc, char **argv)
+{
+	if (argc != 3) {
+		shell_error(sh, "Usage: fake_sensors co2_set <uid_hex> <mppm>");
+		return -EINVAL;
+	}
+
+	uint32_t uid = (uint32_t)strtoul(argv[1], NULL, 16);
+	int32_t mppm = (int32_t)strtol(argv[2], NULL, 10);
+
+	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry)
+	{
+		if (entry->uid != uid || entry->kind != FAKE_SENSOR_KIND_CO2) {
+			continue;
+		}
+		*entry->value_milli = mppm;
+		entry->publish(entry);
+		shell_print(sh, "uid 0x%04x: CO2 set to %d mppm", uid, mppm);
+		return 0;
+	}
+
+	shell_error(sh, "No CO2 sensor with uid 0x%04x", uid);
+	return -ENODEV;
+}
+
+/* --------------------------------------------------------------------------
+ * fake_sensors voc_set <uid_hex> <mIAQ>
+ * -------------------------------------------------------------------------- */
+static int cmd_voc_set(const struct shell *sh, size_t argc, char **argv)
+{
+	if (argc != 3) {
+		shell_error(sh, "Usage: fake_sensors voc_set <uid_hex> <mIAQ>");
+		return -EINVAL;
+	}
+
+	uint32_t uid = (uint32_t)strtoul(argv[1], NULL, 16);
+	int32_t miaq = (int32_t)strtol(argv[2], NULL, 10);
+
+	STRUCT_SECTION_FOREACH(fake_sensor_entry, entry)
+	{
+		if (entry->uid != uid || entry->kind != FAKE_SENSOR_KIND_VOC) {
+			continue;
+		}
+		*entry->value_milli = miaq;
+		entry->publish(entry);
+		shell_print(sh, "uid 0x%04x: VOC set to %d mIAQ", uid, miaq);
+		return 0;
+	}
+
+	shell_error(sh, "No VOC sensor with uid 0x%04x", uid);
+	return -ENODEV;
+}
+
+/* --------------------------------------------------------------------------
  * fake_sensors trigger [uid_hex]
  * Broadcasts or targets a manual TRIGGER_SOURCE_BUTTON event.
  * -------------------------------------------------------------------------- */
@@ -137,6 +214,9 @@ SHELL_STATIC_SUBCMD_SET_CREATE(
 	SHELL_CMD_ARG(temperature_set, NULL, "Set temperature: <uid_hex> <mdegC>",
 		      cmd_temperature_set, 3, 0),
 	SHELL_CMD_ARG(humidity_set, NULL, "Set humidity: <uid_hex> <m_pct_rh>", cmd_humidity_set, 3,
+		      0),
+	SHELL_CMD_ARG(co2_set, NULL, "Set CO2: <uid_hex> <mppm>", cmd_co2_set, 3, 0),
+	SHELL_CMD_ARG(voc_set, NULL, "Set VOC air quality index: <uid_hex> <mIAQ>", cmd_voc_set, 3,
 		      0),
 	SHELL_CMD_ARG(trigger, NULL, "Fire a manual trigger [uid_hex] (omit for broadcast)",
 		      cmd_trigger, 1, 1),

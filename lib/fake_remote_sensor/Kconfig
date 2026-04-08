@@ -38,8 +38,8 @@ config FAKE_REMOTE_SENSOR_NODE_COUNT
 	default 1
 	range 1 4
 	help
-	  Each simulated node produces both a TEMPERATURE and HUMIDITY
-	  discovery event (two UIDs per node).
+	  Each simulated node produces TEMPERATURE, HUMIDITY, CO₂, and VOC
+	  discovery events (four UIDs per node).
 
 config FAKE_REMOTE_SENSOR_SHELL
 	bool "Shell commands for fake remote sensor control"
