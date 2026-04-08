@@ -23,7 +23,7 @@ config HTTP_DASHBOARD_PORT
 
 config HTTP_DASHBOARD_HISTORY_SIZE
 	int "Samples retained per sensor per type (ring buffer)"
-	default 60
+	default 20
 	depends on HTTP_DASHBOARD
 
 config HTTP_DASHBOARD_MAX_SENSORS
