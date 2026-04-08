@@ -1,0 +1,33 @@
+description: |
+  Fake VOC (volatile organic compound) air quality sensor for native_sim and testing.
+
+  Reports a Bosch-style IAQ (Index for Air Quality) in the range 0–500:
+    0–50   Excellent
+    51–100  Good
+    101–150 Moderate
+    151–200 Unhealthy for sensitive groups
+    201–300 Unhealthy
+    301–500 Very Unhealthy / Hazardous
+
+  Each DT node with this compatible is instantiated as an independent
+  software sensor driver. The driver subscribes to sensor_trigger_chan
+  and publishes env_sensor_data events on sensor_event_chan.
+
+compatible: "fake,voc"
+
+properties:
+  sensor-uid:
+    type: int
+    required: true
+    description: |
+      Unique sensor identifier assigned at design time. Must be unique
+      across the entire system (both local and remote nodes). Used as
+      the identity key in sensor_registry and in env_sensor_data events.
+
+  initial-value-miaq:
+    type: int
+    required: true
+    description: |
+      Initial VOC air quality index in milli-IAQ (IAQ × 1000).
+      For example, 25000 represents IAQ 25 (Excellent).
+      Range: 0 .. 500000

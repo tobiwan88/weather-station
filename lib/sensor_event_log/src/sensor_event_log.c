@@ -41,6 +41,14 @@ static void sensor_event_log_cb(const struct zbus_channel *chan)
 		LOG_INF("[%02d:%02d:%02d.%03d]  0x%04x  HUM   %6.1f %%RH", hh, mm, ss, ms,
 			evt->sensor_uid, q31_to_humidity_pct(evt->q31_value));
 		break;
+	case SENSOR_TYPE_CO2:
+		LOG_INF("[%02d:%02d:%02d.%03d]  0x%04x  CO2   %6.0f ppm", hh, mm, ss, ms,
+			evt->sensor_uid, q31_to_co2_ppm(evt->q31_value));
+		break;
+	case SENSOR_TYPE_VOC:
+		LOG_INF("[%02d:%02d:%02d.%03d]  0x%04x  VOC   %6.1f IAQ", hh, mm, ss, ms,
+			evt->sensor_uid, q31_to_voc_iaq(evt->q31_value));
+		break;
 	default:
 		LOG_INF("[%02d:%02d:%02d.%03d]  0x%04x  type=%-3d  q31=0x%08x", hh, mm, ss, ms,
 			evt->sensor_uid, evt->type, (uint32_t)evt->q31_value);

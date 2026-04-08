@@ -183,8 +183,10 @@ ZTEST(remote_sensor_manager_suite, test_publish_produces_event)
 
 	zassert_true(last_event.sensor_uid != 0, "Event has sensor_uid == 0");
 	zassert_true(last_event.type == SENSOR_TYPE_TEMPERATURE ||
-			     last_event.type == SENSOR_TYPE_HUMIDITY,
-		     "Event type %d is not TEMPERATURE or HUMIDITY", last_event.type);
+			     last_event.type == SENSOR_TYPE_HUMIDITY ||
+			     last_event.type == SENSOR_TYPE_CO2 ||
+			     last_event.type == SENSOR_TYPE_VOC,
+		     "Event type %d is not TEMPERATURE, HUMIDITY, CO2, or VOC", last_event.type);
 	zassert_true(last_event.timestamp_ms > 0, "Event timestamp_ms must be positive");
 }
 
