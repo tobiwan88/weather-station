@@ -222,6 +222,8 @@ static const char *sensor_type_str(enum sensor_type t)
 		return "pressure";
 	case SENSOR_TYPE_CO2:
 		return "co2";
+	case SENSOR_TYPE_VOC:
+		return "voc";
 	case SENSOR_TYPE_LIGHT:
 		return "light";
 	case SENSOR_TYPE_UV_INDEX:

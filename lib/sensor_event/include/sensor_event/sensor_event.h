@@ -28,6 +28,7 @@ enum sensor_type {
 	SENSOR_TYPE_HUMIDITY,    /**< Relative humidity, %RH          */
 	SENSOR_TYPE_PRESSURE,    /**< Atmospheric pressure, hPa       */
 	SENSOR_TYPE_CO2,         /**< CO₂ concentration, ppm          */
+	SENSOR_TYPE_VOC,         /**< VOC air quality index (0–500)   */
 	SENSOR_TYPE_LIGHT,       /**< Illuminance, lux                */
 	SENSOR_TYPE_UV_INDEX,    /**< UV index (dimensionless)        */
 	SENSOR_TYPE_BATTERY_MV,  /**< Battery voltage, millivolts     */
@@ -140,6 +141,73 @@ static inline int32_t humidity_pct_to_q31(double h_pct)
 static inline double q31_to_humidity_pct(int32_t q31)
 {
 	return (double)q31 / (double)INT32_MAX * 100.0;
+}
+
+/*
+ * CO₂: phys ∈ [0, 5000] ppm, span = 5000 ppm
+ *   encode: q31 = co2_ppm / 5000.0 * INT32_MAX
+ *   decode: co2_ppm = (double)q31 / INT32_MAX * 5000.0
+ */
+
+/**
+ * @brief Encode a CO₂ concentration in ppm to Q31.
+ * @param co2_ppm CO₂ in ppm (range 0 .. 5000).
+ * @return Q31 encoded value.
+ */
+static inline int32_t co2_ppm_to_q31(double co2_ppm)
+{
+	if (!(co2_ppm >= 0.0)) {
+		return 0;
+	}
+	if (co2_ppm >= 5000.0) {
+		return INT32_MAX;
+	}
+	return (int32_t)(co2_ppm / 5000.0 * (double)INT32_MAX);
+}
+
+/**
+ * @brief Decode a Q31 value to CO₂ concentration in ppm.
+ * @param q31 Q31 encoded CO₂.
+ * @return CO₂ in ppm.
+ */
+static inline double q31_to_co2_ppm(int32_t q31)
+{
+	return (double)q31 / (double)INT32_MAX * 5000.0;
+}
+
+/*
+ * VOC air quality index: phys ∈ [0, 500] (Bosch IAQ scale), span = 500
+ *   0–50   Excellent   50–100  Good   100–150  Moderate
+ *   150–200 Unhealthy for sensitive groups   200–300 Unhealthy
+ *   300–500 Very Unhealthy / Hazardous
+ *   encode: q31 = iaq / 500.0 * INT32_MAX
+ *   decode: iaq = (double)q31 / INT32_MAX * 500.0
+ */
+
+/**
+ * @brief Encode a VOC air quality index to Q31.
+ * @param iaq VOC index (range 0 .. 500).
+ * @return Q31 encoded value.
+ */
+static inline int32_t voc_iaq_to_q31(double iaq)
+{
+	if (!(iaq >= 0.0)) {
+		return 0;
+	}
+	if (iaq >= 500.0) {
+		return INT32_MAX;
+	}
+	return (int32_t)(iaq / 500.0 * (double)INT32_MAX);
+}
+
+/**
+ * @brief Decode a Q31 value to VOC air quality index.
+ * @param q31 Q31 encoded VOC index.
+ * @return VOC index (0 .. 500).
+ */
+static inline double q31_to_voc_iaq(int32_t q31)
+{
+	return (double)q31 / (double)INT32_MAX * 500.0;
 }
 
 #ifdef __cplusplus

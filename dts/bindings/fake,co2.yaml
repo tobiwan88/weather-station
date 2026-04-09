@@ -1,0 +1,25 @@
+description: |
+  Fake CO₂ sensor for native_sim and testing.
+
+  Each DT node with this compatible is instantiated as an independent
+  software sensor driver. The driver subscribes to sensor_trigger_chan
+  and publishes env_sensor_data events on sensor_event_chan.
+
+compatible: "fake,co2"
+
+properties:
+  sensor-uid:
+    type: int
+    required: true
+    description: |
+      Unique sensor identifier assigned at design time. Must be unique
+      across the entire system (both local and remote nodes). Used as
+      the identity key in sensor_registry and in env_sensor_data events.
+
+  initial-value-mppm:
+    type: int
+    required: true
+    description: |
+      Initial CO₂ concentration in milli-ppm (ppm × 1000).
+      For example, 800000 represents 800 ppm (typical indoor ambient).
+      Range: 0 .. 5000000
