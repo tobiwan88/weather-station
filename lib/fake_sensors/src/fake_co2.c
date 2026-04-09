@@ -55,7 +55,7 @@ DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_CO2_DATA_DECL)
 
 /* Per-instance fake_sensor_entry in iterable section. */
 #define FAKE_CO2_ENTRY_DECL(node_id)                                                               \
-	STRUCT_SECTION_ITERABLE(fake_sensor_entry, fake_co2_entry_##node_id) = {                  \
+	STRUCT_SECTION_ITERABLE(fake_sensor_entry, fake_co2_entry_##node_id) = {                   \
 		.uid = DT_PROP(node_id, sensor_uid),                                               \
 		.kind = FAKE_SENSOR_KIND_CO2,                                                      \
 		.label = DT_NODE_FULL_NAME(node_id),                                               \
@@ -67,7 +67,7 @@ DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_CO2_ENTRY_DECL)
 
 /* Per-instance publish function implementation. */
 #define FAKE_CO2_PUBLISH_FN_IMPL(node_id)                                                          \
-	static void fake_co2_publish_##node_id(struct fake_sensor_entry *entry)                   \
+	static void fake_co2_publish_##node_id(struct fake_sensor_entry *entry)                    \
 	{                                                                                          \
 		FAKE_CO2_PUBLISH(entry);                                                           \
 		LOG_DBG("uid 0x%08x: %.0f ppm", entry->uid,                                        \
@@ -102,7 +102,7 @@ ZBUS_LISTENER_DEFINE(fake_co2_listener, fake_co2_trigger_cb);
  * -------------------------------------------------------------------------- */
 
 #define FAKE_CO2_REGISTRY_ENTRY_DECL(node_id)                                                      \
-	static const struct sensor_registry_entry fake_co2_reg_##node_id = {                      \
+	static const struct sensor_registry_entry fake_co2_reg_##node_id = {                       \
 		.uid = DT_PROP(node_id, sensor_uid),                                               \
 		.label = DT_NODE_FULL_NAME(node_id),                                               \
 		.is_remote = false,                                                                \
@@ -112,9 +112,9 @@ DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_CO2_REGISTRY_ENTRY_DECL)
 
 #define FAKE_CO2_REGISTRY_REGISTER(node_id)                                                        \
 	{                                                                                          \
-		int _rc = sensor_registry_register(&fake_co2_reg_##node_id);                      \
+		int _rc = sensor_registry_register(&fake_co2_reg_##node_id);                       \
 		if (_rc != 0 && _rc != -EEXIST) {                                                  \
-			LOG_ERR("registry register uid 0x%08x failed: %d",                        \
+			LOG_ERR("registry register uid 0x%08x failed: %d",                         \
 				DT_PROP(node_id, sensor_uid), _rc);                                \
 		}                                                                                  \
 	}
