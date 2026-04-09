@@ -162,7 +162,8 @@ static int announce_node(struct fake_node *n)
 		return rc;
 	}
 
-	LOG_INF("announced fake node %u (uid_temp=0x%08x uid_hum=0x%08x uid_co2=0x%08x uid_voc=0x%08x)",
+	LOG_INF("announced fake node %u (uid_temp=0x%08x uid_hum=0x%08x uid_co2=0x%08x "
+		"uid_voc=0x%08x)",
 		n->node_id, n->uid_temp, n->uid_hum, n->uid_co2, n->uid_voc);
 	return 0;
 }
@@ -199,8 +200,8 @@ static int fake_peer_add(const struct remote_transport *t, const uint8_t *peer_a
 	for (int i = 0; i < CONFIG_FAKE_REMOTE_SENSOR_NODE_COUNT; i++) {
 		struct fake_node *n = &nodes[i];
 
-		if (n->uid_temp == uid || n->uid_hum == uid ||
-		    n->uid_co2 == uid || n->uid_voc == uid) {
+		if (n->uid_temp == uid || n->uid_hum == uid || n->uid_co2 == uid ||
+		    n->uid_voc == uid) {
 			if (!n->registered) {
 				n->registered = true;
 				LOG_INF("peer_add: node %u registered (uid=0x%08x)", n->node_id,
@@ -225,8 +226,8 @@ static int fake_peer_remove(const struct remote_transport *t, uint32_t uid)
 	for (int i = 0; i < CONFIG_FAKE_REMOTE_SENSOR_NODE_COUNT; i++) {
 		struct fake_node *n = &nodes[i];
 
-		if (n->uid_temp == uid || n->uid_hum == uid ||
-		    n->uid_co2 == uid || n->uid_voc == uid) {
+		if (n->uid_temp == uid || n->uid_hum == uid || n->uid_co2 == uid ||
+		    n->uid_voc == uid) {
 			n->registered = false;
 			k_timer_stop(&n->auto_timer);
 			LOG_INF("peer_remove: node %u removed (uid=0x%08x)", n->node_id, uid);
@@ -243,8 +244,8 @@ static int fake_send_trigger(const struct remote_transport *t, uint32_t uid)
 	for (int i = 0; i < CONFIG_FAKE_REMOTE_SENSOR_NODE_COUNT; i++) {
 		struct fake_node *n = &nodes[i];
 
-		if (n->uid_temp == uid || n->uid_hum == uid ||
-		    n->uid_co2 == uid || n->uid_voc == uid) {
+		if (n->uid_temp == uid || n->uid_hum == uid || n->uid_co2 == uid ||
+		    n->uid_voc == uid) {
 			publish_node(n);
 			return 0;
 		}
@@ -318,13 +319,11 @@ static int fake_remote_sensor_init(void)
 			remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX, n->mac,
 						    sizeof(n->mac), SENSOR_TYPE_HUMIDITY);
 
-		n->uid_co2 =
-			remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX, n->mac,
-						    sizeof(n->mac), SENSOR_TYPE_CO2);
+		n->uid_co2 = remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX,
+							 n->mac, sizeof(n->mac), SENSOR_TYPE_CO2);
 
-		n->uid_voc =
-			remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX, n->mac,
-						    sizeof(n->mac), SENSOR_TYPE_VOC);
+		n->uid_voc = remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX,
+							 n->mac, sizeof(n->mac), SENSOR_TYPE_VOC);
 
 		n->registered = false;
 		k_timer_init(&n->auto_timer, auto_timer_cb, NULL);
