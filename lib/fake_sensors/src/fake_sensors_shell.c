@@ -138,11 +138,11 @@ static int cmd_co2_set(const struct shell *sh, size_t argc, char **argv)
 		}
 		*entry->value_milli = mppm;
 		entry->publish(entry);
-		shell_print(sh, "uid 0x%04x: CO2 set to %d mppm", uid, mppm);
+		shell_print(sh, "uid 0x%08x: CO2 set to %d mppm", uid, mppm);
 		return 0;
 	}
 
-	shell_error(sh, "No CO2 sensor with uid 0x%04x", uid);
+	shell_error(sh, "No CO2 sensor with uid 0x%08x", uid);
 	return -ENODEV;
 }
 
@@ -166,11 +166,11 @@ static int cmd_voc_set(const struct shell *sh, size_t argc, char **argv)
 		}
 		*entry->value_milli = miaq;
 		entry->publish(entry);
-		shell_print(sh, "uid 0x%04x: VOC set to %d mIAQ", uid, miaq);
+		shell_print(sh, "uid 0x%08x: VOC set to %d mIAQ", uid, miaq);
 		return 0;
 	}
 
-	shell_error(sh, "No VOC sensor with uid 0x%04x", uid);
+	shell_error(sh, "No VOC sensor with uid 0x%08x", uid);
 	return -ENODEV;
 }
 
