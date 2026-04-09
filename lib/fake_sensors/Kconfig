@@ -7,9 +7,10 @@ menuconfig FAKE_SENSORS
 	depends on SENSOR_TRIGGER
 	depends on SENSOR_REGISTRY
 	help
-	  Enables software-emulated temperature and humidity sensor drivers
-	  instantiated from DT nodes with compatible "fake,temperature" or
-	  "fake,humidity". Each driver subscribes to sensor_trigger_chan and
+	  Enables software-emulated sensor drivers for temperature, humidity,
+	  CO₂, and VOC (air quality index), instantiated from DT nodes with
+	  compatible "fake,temperature", "fake,humidity", "fake,co2", or
+	  "fake,voc". Each driver subscribes to sensor_trigger_chan and
 	  publishes env_sensor_data events on sensor_event_chan.
 
 	  Useful for native_sim targets and unit testing without real hardware.

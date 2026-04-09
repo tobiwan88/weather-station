@@ -4,7 +4,7 @@
  * @brief Public API for the fake remote sensor testing stub.
  *
  * The stub simulates CONFIG_FAKE_REMOTE_SENSOR_NODE_COUNT remote sensor nodes,
- * each advertising both temperature and humidity (two UIDs per node).
+ * each advertising temperature, humidity, CO₂, and VOC (four UIDs per node).
  *
  * Controlled via the "fake_remote" shell command group or by calling the
  * functions below directly from test code.
@@ -35,8 +35,8 @@ int fake_remote_sensor_announce(void);
 /**
  * @brief Publish one synthetic measurement from all registered fake nodes.
  *
- * For each registered node, emits env_sensor_data events for temperature
- * and humidity on sensor_event_chan.  Useful for manual triggering from
+ * For each registered node, emits env_sensor_data events for temperature,
+ * humidity, CO₂, and VOC on sensor_event_chan.  Useful for manual triggering from
  * test code or the shell.
  *
  * @return 0 on success, first non-zero errno encountered on failure.

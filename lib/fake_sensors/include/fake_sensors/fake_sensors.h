@@ -37,6 +37,8 @@ void fake_sensors_set_auto_publish_ms(uint32_t ms);
 enum fake_sensor_kind {
 	FAKE_SENSOR_KIND_TEMPERATURE, /**< Value stored as milli-°C    */
 	FAKE_SENSOR_KIND_HUMIDITY,    /**< Value stored as milli-%RH   */
+	FAKE_SENSOR_KIND_CO2,         /**< Value stored as milli-ppm   */
+	FAKE_SENSOR_KIND_VOC,         /**< Value stored as milli-IAQ   */
 };
 
 /**
