@@ -30,7 +30,7 @@
     "-p", "127.0.0.1:5900:5900"
   ],
 
-  "postStartCommand": "bash /home/zephyr/workspace/weather-station/.devcontainer/start-display.sh; bash /home/zephyr/workspace/weather-station/.devcontainer/setup-claude.sh; sudo chronyd -q 'pool pool.ntp.org iburst' 2>/dev/null || true; if [ ! -d /home/zephyr/workspace/.west ]; then cd /home/zephyr/workspace/weather-station && west init -l . && west update --narrow; fi; west config build.dir-fmt 'build/{board}/{app}' && west packages pip --install ",
+  "postStartCommand": "bash /home/zephyr/workspace/weather-station/.devcontainer/start-display.sh; bash /home/zephyr/workspace/weather-station/.devcontainer/setup-claude.sh; sudo chronyd -q 'pool pool.ntp.org iburst' 2>/dev/null || true; if [ ! -d /home/zephyr/workspace/.west ]; then cd /home/zephyr/workspace/weather-station && west init -l . && west update --narrow; fi; west config build.dir-fmt 'build/{board}/{app}' && west packages pip --install && cd /home/zephyr/workspace/weather-station && pre-commit install",
 
   "customizations": {
     "vscode": {

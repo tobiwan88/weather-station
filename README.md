@@ -47,7 +47,7 @@ For all build commands, architecture rules, and Kconfig options: see [`CLAUDE.md
 Both `gateway` and `sensor-node` expose a Zephyr shell on UART0.
 When you start the binary it prints the pseudoterminal it is listening on:
 
-```
+```text
 uart connected to pseudotty: /dev/pts/2
 ```
 
@@ -61,7 +61,7 @@ minicom -D /dev/pts/2
 
 At the `uart:~$` prompt:
 
-```
+```text
 help                                   # list all commands
 fake_sensors list                      # show all sensors from the DT overlay
 fake_sensors set <uid> temp 25000      # set value in milli-°C
@@ -84,19 +84,17 @@ printf "help\nfake_sensors list\n" | timeout 8 \
 
 When CONFIG_LVGL_DISPLAY=y is enabled, the app opens a 320×240 SDL window. Because Docker on macOS cannot easily access the host GPU, we use a virtual framebuffer (Xvfb) viewed via VNC.
 
-macOS Setup (VNC Method)
+### macOS Setup (VNC Method)
 
-    Rebuild Container: Ensure devcontainer.json has -p 127.0.0.1:5900:5900 in runArgs.
+1. Ensure `devcontainer.json` has `-p 127.0.0.1:5900:5900` in `runArgs` and rebuild the container.
+2. Open the macOS Screen Sharing app and connect to `127.0.0.1:5900`.
+3. Authenticate with password `zephyr`.
 
-    Connect: Open the macOS Screen Sharing app and connect to 127.0.0.1:5900.
+### Troubleshooting: Connection Hangs / "Failed to create screen"
 
-    Authenticate: Use password zephyr.
+If Screen Sharing hangs on "Connecting..." or logs show GLX errors, reset the display services:
 
-Troubleshooting: Connection Hangs / "Failed to create screen"
-
-If the Screen Sharing app hangs on "Connecting..." or the simulation logs show GLX errors, the background display services likely need a hard reset. Run this inside the VS Code terminal (zsh):
-Bash
-
+```bash
 # 1. Kill stuck display processes
 sudo pkill -9 Xvfb; sudo pkill -9 x11vnc
 
@@ -108,16 +106,21 @@ export DISPLAY=:1
 
 # 4. Run the simulation
 ./build/native_sim/native/64/gateway/zephyr/zephyr.exe
+```
 
-Interactive shell
+### Shell access via VNC session
 
 The simulation exposes a Zephyr shell on a pseudoterminal. Look for this line in the logs:
+
+```text
 uart connected to pseudotty: /dev/pts/X
+```
 
 Connect from a second terminal:
-Bash
 
+```bash
 screen /dev/pts/X  # Replace X with the number from logs
+```
 
 ## Web dashboard
 
