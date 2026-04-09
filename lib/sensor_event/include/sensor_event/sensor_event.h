@@ -156,6 +156,12 @@ static inline double q31_to_humidity_pct(int32_t q31)
  */
 static inline int32_t co2_ppm_to_q31(double co2_ppm)
 {
+	if (!(co2_ppm >= 0.0)) {
+		return 0;
+	}
+	if (co2_ppm >= 5000.0) {
+		return INT32_MAX;
+	}
 	return (int32_t)(co2_ppm / 5000.0 * (double)INT32_MAX);
 }
 
@@ -185,6 +191,12 @@ static inline double q31_to_co2_ppm(int32_t q31)
  */
 static inline int32_t voc_iaq_to_q31(double iaq)
 {
+	if (!(iaq >= 0.0)) {
+		return 0;
+	}
+	if (iaq >= 500.0) {
+		return INT32_MAX;
+	}
 	return (int32_t)(iaq / 500.0 * (double)INT32_MAX);
 }
 

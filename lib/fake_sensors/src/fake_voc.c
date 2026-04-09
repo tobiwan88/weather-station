@@ -42,7 +42,7 @@ LOG_MODULE_REGISTER(fake_voc, LOG_LEVEL_INF);
 		};                                                                                 \
 		int rc = zbus_chan_pub(&sensor_event_chan, &evt, K_NO_WAIT);                       \
 		if (rc != 0) {                                                                     \
-			LOG_WRN("uid 0x%04x: pub failed (%d)", (entry_ptr)->uid, rc);              \
+			LOG_WRN("uid 0x%08x: pub failed (%d)", (entry_ptr)->uid, rc);              \
 		}                                                                                  \
 	} while (0)
 
@@ -75,7 +75,7 @@ DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_VOC_ENTRY_DECL)
 	static void fake_voc_publish_##node_id(struct fake_sensor_entry *entry)                   \
 	{                                                                                          \
 		FAKE_VOC_PUBLISH(entry);                                                           \
-		LOG_DBG("uid 0x%04x: %.1f IAQ", entry->uid,                                        \
+		LOG_DBG("uid 0x%08x: %.1f IAQ", entry->uid,                                        \
 			(double)(*entry->value_milli) / 1000.0);                                   \
 	}
 
@@ -119,7 +119,7 @@ DT_FOREACH_STATUS_OKAY(DT_COMPAT, FAKE_VOC_REGISTRY_ENTRY_DECL)
 	{                                                                                          \
 		int _rc = sensor_registry_register(&fake_voc_reg_##node_id);                      \
 		if (_rc != 0 && _rc != -EEXIST) {                                                  \
-			LOG_ERR("registry register uid 0x%04x failed: %d",                        \
+			LOG_ERR("registry register uid 0x%08x failed: %d",                        \
 				DT_PROP(node_id, sensor_uid), _rc);                                \
 		}                                                                                  \
 	}

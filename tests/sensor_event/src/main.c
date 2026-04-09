@@ -49,6 +49,64 @@ ZTEST(sensor_event_suite, test_q31_humidity_roundtrip)
 }
 
 /**
+ * @brief Round-trip encode/decode of a typical CO₂ value.
+ *
+ * 800 ppm → co2_ppm_to_q31() → q31_to_co2_ppm()
+ * Error must be less than 1 ppm.
+ */
+ZTEST(sensor_event_suite, test_q31_co2_roundtrip)
+{
+	const double input_ppm = 800.0;
+	int32_t encoded = co2_ppm_to_q31(input_ppm);
+	double decoded_ppm = q31_to_co2_ppm(encoded);
+	double error = fabs(decoded_ppm - input_ppm);
+
+	zassert_true(error < 1.0,
+		     "CO2 round-trip error %.6f ppm exceeds 1 ppm "
+		     "(in=%.1f encoded=0x%08x decoded=%.6f)",
+		     error, input_ppm, encoded, decoded_ppm);
+}
+
+/**
+ * @brief co2_ppm_to_q31() clamps out-of-range and non-finite inputs.
+ */
+ZTEST(sensor_event_suite, test_q31_co2_clamp)
+{
+	zassert_equal(co2_ppm_to_q31(-1.0), 0, "Negative ppm must clamp to 0");
+	zassert_equal(co2_ppm_to_q31(6000.0), INT32_MAX, "Over-range ppm must clamp to INT32_MAX");
+	zassert_equal(co2_ppm_to_q31(0.0 / 0.0), 0, "NaN must clamp to 0");
+}
+
+/**
+ * @brief Round-trip encode/decode of a typical VOC IAQ value.
+ *
+ * 25 IAQ (Excellent) → voc_iaq_to_q31() → q31_to_voc_iaq()
+ * Error must be less than 0.1 IAQ.
+ */
+ZTEST(sensor_event_suite, test_q31_voc_roundtrip)
+{
+	const double input_iaq = 25.0;
+	int32_t encoded = voc_iaq_to_q31(input_iaq);
+	double decoded_iaq = q31_to_voc_iaq(encoded);
+	double error = fabs(decoded_iaq - input_iaq);
+
+	zassert_true(error < 0.1,
+		     "VOC round-trip error %.6f IAQ exceeds 0.1 IAQ "
+		     "(in=%.1f encoded=0x%08x decoded=%.6f)",
+		     error, input_iaq, encoded, decoded_iaq);
+}
+
+/**
+ * @brief voc_iaq_to_q31() clamps out-of-range and non-finite inputs.
+ */
+ZTEST(sensor_event_suite, test_q31_voc_clamp)
+{
+	zassert_equal(voc_iaq_to_q31(-1.0), 0, "Negative IAQ must clamp to 0");
+	zassert_equal(voc_iaq_to_q31(600.0), INT32_MAX, "Over-range IAQ must clamp to INT32_MAX");
+	zassert_equal(voc_iaq_to_q31(0.0 / 0.0), 0, "NaN must clamp to 0");
+}
+
+/**
  * @brief Guard against accidental growth of env_sensor_data.
  *
  * This is an in-memory zbus message, not a wire format.  Cross-device
