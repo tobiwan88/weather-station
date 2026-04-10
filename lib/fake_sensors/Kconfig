@@ -35,4 +35,19 @@ config FAKE_SENSORS_SHELL
 	    temperature_set — <uid_hex> <mdegC>  set temperature
 	    humidity_set    — <uid_hex> <m%RH>   set humidity
 
+config FAKE_SENSORS_JITTER
+	bool "Add random jitter to published readings"
+	default y
+	depends on ENTROPY_GENERATOR || TEST_RANDOM_GENERATOR
+	help
+	  When enabled, each published reading has a small random offset applied,
+	  making values vary slightly around the configured value. The stored
+	  value is unaffected; only the published event carries the jitter.
+
+	  Ranges applied (±):
+	    Temperature  0.5 °C   (500 milli-°C)
+	    Humidity     2 %RH    (2000 milli-%RH)
+	    CO2          25 ppm   (25000 milli-ppm)
+	    VOC          5 IAQ    (5000 milli-IAQ)
+
 endif # FAKE_SENSORS
