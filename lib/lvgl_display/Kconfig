@@ -4,8 +4,80 @@ menuconfig LVGL_DISPLAY
 	bool "LVGL graphical weather-station display"
 	depends on LVGL && DISPLAY && ZBUS && SENSOR_EVENT && ZBUS_RUNTIME_OBSERVERS
 	help
-	  SDL-backed 320x240 window showing the weather-station title, a large
-	  HH:MM clock (updated from SYS_CLOCK_REALTIME), and the last reading per
-	  sensor UID/type pair. Subscribes to sensor_event_chan via a zbus
-	  listener; uses lv_async_call() for thread-safe LVGL widget updates.
+	  SDL-backed 320x240 window.  Shows an analog clock on the left panel and
+	  data-driven sensor cards on the right panel.  A card is created
+	  automatically the first time an event for a (uid, type) pair is received.
+	  Subscribes to sensor_event_chan via a zbus listener; uses lv_async_call()
+	  for thread-safe LVGL widget updates.
 	  SYS_INIT at APPLICATION priority 91 (after LVGL workqueue at 90).
+
+if LVGL_DISPLAY
+
+config LVGL_DISPLAY_MAX_CARDS
+	int "Maximum sensor card slots (uid + type pairs)"
+	default 16
+	range 4 30
+	help
+	  Upper bound on how many (uid, type) pairs can be tracked.  Each slot
+	  uses sizeof(sensor_card) + sizeof(sensor_card_widgets) bytes of static
+	  RAM plus LVGL heap for widget objects.
+
+config LVGL_DISPLAY_SENSORS_PER_PAGE
+	int "Sensor cards visible per page"
+	default 4
+	range 1 8
+	help
+	  The sensor panel shows this many cards at once.  The nav-bar arrow
+	  buttons page through additional cards when more are active.
+	  Smaller values give each card more vertical space.
+
+choice LVGL_DISPLAY_CARD_STYLE
+	prompt "Sensor card visual style"
+	default LVGL_DISPLAY_CARD_STYLE_NUMERIC
+	help
+	  Choose the widget style used for all sensor cards.
+
+config LVGL_DISPLAY_CARD_STYLE_NUMERIC
+	bool "Numeric labels only"
+	help
+	  Icon, sensor name, formatted value and unit displayed as labels.
+	  Lowest LVGL heap cost.
+
+config LVGL_DISPLAY_CARD_STYLE_GAUGE
+	bool "Arc gauge (lv_arc)"
+	help
+	  Icon and name on the left; a small arc gauge on the right with the
+	  numeric value overlaid.  The arc sweep represents the sensor value
+	  relative to a type-specific physical range.
+
+config LVGL_DISPLAY_CARD_STYLE_BAR
+	bool "Progress bar (lv_bar)"
+	help
+	  Numeric labels on the top row and a thin horizontal bar at the
+	  bottom of the card indicating the value within its physical range.
+
+endchoice
+
+config LVGL_DISPLAY_SHOW_CLOCK
+	bool "Show analog clock in left panel"
+	default y
+	help
+	  When disabled the left panel is hidden and the sensor card container
+	  expands to the full 320 px screen width.
+
+config LVGL_DISPLAY_SHOW_BUTTON_ROW
+	bool "Show bottom physical-button indicator row (B1..B4)"
+	default n
+	help
+	  Shows the 18 px row of button boxes below the nav bar.  Useful when
+	  the target hardware has physical buttons wired to GPIO.
+
+config LVGL_DISPLAY_USE_SENSOR_REGISTRY
+	bool "Show sensor display_name from sensor_registry"
+	default y
+	depends on SENSOR_REGISTRY && SENSOR_REGISTRY_USER_META
+	help
+	  When enabled, sensor card name labels use the user-settable
+	  display_name from sensor_registry rather than a generic type string.
+
+endif # LVGL_DISPLAY
