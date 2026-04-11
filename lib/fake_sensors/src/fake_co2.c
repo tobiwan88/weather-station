@@ -13,6 +13,20 @@
 #include <sensor_registry/sensor_registry.h>
 #include <sensor_trigger/sensor_trigger.h>
 
+#ifdef CONFIG_FAKE_SENSORS_JITTER
+#	include <zephyr/random/random.h>
+#	include <zephyr/sys/util.h>
+#	define FAKE_SENSOR_JITTER(val, max_milli)                                                 \
+		((val) + (int32_t)(sys_rand32_get() % (uint32_t)((max_milli) * 2 + 1)) -           \
+		 (max_milli))
+#else
+#	include <zephyr/sys/util.h>
+#	define FAKE_SENSOR_JITTER(val, max_milli) (val)
+#endif
+
+/* Jitter range for CO2: ±25 ppm */
+#define FAKE_CO2_JITTER_MILLI 25000
+
 LOG_MODULE_REGISTER(fake_co2, LOG_LEVEL_INF);
 
 /* Compatible string that DT nodes must carry. */
@@ -29,10 +43,14 @@ LOG_MODULE_REGISTER(fake_co2, LOG_LEVEL_INF);
 
 #define FAKE_CO2_PUBLISH(entry_ptr)                                                                \
 	do {                                                                                       \
+		int32_t _mval =                                                                    \
+			FAKE_SENSOR_JITTER(*(entry_ptr)->value_milli, FAKE_CO2_JITTER_MILLI);      \
+		/* Clamp to valid CO2 range [0, 5000 ppm in milli-ppm] */                          \
+		_mval = CLAMP(_mval, 0, 5000000);                                                  \
 		struct env_sensor_data evt = {                                                     \
 			.sensor_uid = (entry_ptr)->uid,                                            \
 			.type = SENSOR_TYPE_CO2,                                                   \
-			.q31_value = co2_ppm_to_q31(*(entry_ptr)->value_milli / 1000.0),           \
+			.q31_value = co2_ppm_to_q31(_mval / 1000.0),                               \
 			.timestamp_ms = k_uptime_get(),                                            \
 		};                                                                                 \
 		int rc = zbus_chan_pub(&sensor_event_chan, &evt, K_NO_WAIT);                       \
