@@ -15,11 +15,13 @@
 
 #ifdef CONFIG_FAKE_SENSORS_JITTER
 #	include <zephyr/random/random.h>
+#	include <zephyr/sys/util.h>
 /* Apply ±max_milli random offset; stored value is unchanged. */
 #	define FAKE_SENSOR_JITTER(val, max_milli)                                                 \
 		((val) + (int32_t)(sys_rand32_get() % (uint32_t)((max_milli) * 2 + 1)) -           \
 		 (max_milli))
 #else
+#	include <zephyr/sys/util.h>
 #	define FAKE_SENSOR_JITTER(val, max_milli) (val)
 #endif
 
@@ -51,6 +53,8 @@ LOG_MODULE_REGISTER(fake_temperature, LOG_LEVEL_INF);
 	do {                                                                                       \
 		int32_t _mval =                                                                    \
 			FAKE_SENSOR_JITTER(*(entry_ptr)->value_milli, FAKE_TEMP_JITTER_MILLI);     \
+		/* Clamp to valid temperature range [-40, +85°C in milli-°C] */                  \
+		_mval = CLAMP(_mval, -40000, 85000);                                               \
 		struct env_sensor_data evt = {                                                     \
 			.sensor_uid = (entry_ptr)->uid,                                            \
 			.type = SENSOR_TYPE_TEMPERATURE,                                           \

@@ -106,6 +106,11 @@ struct sensor_card {
 	bool has_value;        /**< False until first event arrives         */
 };
 
+/* Fallback max sensor name length when CONFIG_SENSOR_REGISTRY_META_NAME_LEN is not defined */
+#ifndef CONFIG_SENSOR_REGISTRY_META_NAME_LEN
+#	define CONFIG_SENSOR_REGISTRY_META_NAME_LEN 16
+#endif
+
 static struct sensor_card sensor_cards[CONFIG_LVGL_DISPLAY_MAX_CARDS];
 static struct sensor_card cards_snapshot[CONFIG_LVGL_DISPLAY_MAX_CARDS];
 static struct k_spinlock cards_lock;
@@ -305,10 +310,10 @@ static void nav_next_cb(lv_event_t *e)
  * Card creation (runs in LVGL workqueue thread)
  * -------------------------------------------------------------------------- */
 
-static void create_sensor_card(int slot)
+static void create_sensor_card(int slot, const struct sensor_card *cards_local)
 {
-	enum sensor_type t = cards_snapshot[slot].type;
-	uint32_t uid = cards_snapshot[slot].uid;
+	enum sensor_type t = cards_local[slot].type;
+	uint32_t uid = cards_local[slot].uid;
 	lv_color_t accent = theme_sensor_color(t);
 
 	/* Card container — flex-row child of sensor_container */
@@ -509,7 +514,7 @@ static void create_sensor_card(int slot)
  * Card update (runs in LVGL workqueue thread)
  * -------------------------------------------------------------------------- */
 
-static void update_sensor_card(int slot)
+static void update_sensor_card(int slot, const struct sensor_card *cards_local)
 {
 	struct sensor_card_widgets *w = &card_widgets[slot];
 
@@ -517,8 +522,8 @@ static void update_sensor_card(int slot)
 		return;
 	}
 
-	enum sensor_type t = cards_snapshot[slot].type;
-	uint32_t uid = cards_snapshot[slot].uid;
+	enum sensor_type t = cards_local[slot].type;
+	uint32_t uid = cards_local[slot].uid;
 
 	/* Refresh sensor name (may have been updated via dashboard) */
 	if (w->name_label) {
@@ -528,7 +533,7 @@ static void update_sensor_card(int slot)
 		lv_label_set_text(w->name_label, name_buf);
 	}
 
-	if (!cards_snapshot[slot].has_value) {
+	if (!cards_local[slot].has_value) {
 		if (w->value_label) {
 			lv_label_set_text(w->value_label, "--");
 		}
@@ -536,7 +541,7 @@ static void update_sensor_card(int slot)
 	}
 
 	const struct sensor_type_desc *desc = sensor_type_get_desc(t);
-	double phys = desc->decode_q31(cards_snapshot[slot].q31_value);
+	double phys = desc->decode_q31(cards_local[slot].q31_value);
 
 	/* Format value string */
 	char val_buf[16];
@@ -570,17 +575,23 @@ static void sensor_async_update(void *unused)
 		return;
 	}
 
+	/* Snapshot cards_snapshot under spinlock to avoid data race with zbus listener */
+	struct sensor_card cards_local[CONFIG_LVGL_DISPLAY_MAX_CARDS];
+	k_spinlock_key_t key = k_spin_lock(&cards_lock);
+	memcpy(cards_local, cards_snapshot, sizeof(cards_snapshot));
+	k_spin_unlock(&cards_lock, key);
+
 	/* Phase 1: create widgets for newly seen (uid, type) pairs */
 	for (int i = 0; i < CONFIG_LVGL_DISPLAY_MAX_CARDS; i++) {
-		if (cards_snapshot[i].valid && !card_widgets[i].card_obj) {
-			create_sensor_card(i);
+		if (cards_local[i].valid && !card_widgets[i].card_obj) {
+			create_sensor_card(i, cards_local);
 		}
 	}
 
 	/* Phase 2: update all live cards */
 	for (int i = 0; i < CONFIG_LVGL_DISPLAY_MAX_CARDS; i++) {
-		if (cards_snapshot[i].valid && card_widgets[i].card_obj) {
-			update_sensor_card(i);
+		if (cards_local[i].valid && card_widgets[i].card_obj) {
+			update_sensor_card(i, cards_local);
 		}
 	}
 

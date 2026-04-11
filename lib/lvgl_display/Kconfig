@@ -13,6 +13,12 @@ menuconfig LVGL_DISPLAY
 
 if LVGL_DISPLAY
 
+config LVGL_DISPLAY_FONTS
+	bool
+	default y
+	select LV_FONT_MONTSERRAT_10
+	select LV_FONT_MONTSERRAT_14
+
 config LVGL_DISPLAY_MAX_CARDS
 	int "Maximum sensor card slots (uid + type pairs)"
 	default 16
