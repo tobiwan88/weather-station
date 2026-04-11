@@ -12,6 +12,7 @@
 
 #include <lvgl.h>
 #include <sensor_event/sensor_event.h>
+#include <zephyr/sys/util.h>
 
 /* -------------------------------------------------------------------------
  * Per-type accent colors (indexed by enum sensor_type)
