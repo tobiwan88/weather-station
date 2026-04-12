@@ -22,6 +22,8 @@ Binary: `/home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr
 
 Build and test: `/build-and-test`. Display problems: `/display-reset`.
 
+Integration tests: `/run-integration-tests [marker]`. New test: `/new-integration-test`. New harness: `/new-harness`.
+
 ## Architecture rules (non-negotiable)
 
 **1. One event = one physical measurement.** Temp and humidity are separate `env_sensor_data` events.
@@ -46,7 +48,9 @@ Build and test: `/build-and-test`. Display problems: `/display-reset`.
 
 1. **Branch first** — `git checkout master && git pull && git checkout -b <kebab-name>`. Never commit to `master`.
 2. **Smallest change → build gate** — `/build-and-test` after every change; fix failures before anything else.
-3. **Commit** — `/git-add` to stage, commit each logical unit.
+3. **Commit** — `/git-add` to stage, commit each logical unit. Use Conventional message style. Fix issues found by pre-commit.
+4. **Review** — `/review` to spawn parallel sub-agents (architecture, security, C quality, embedded, tests) reviewing the patch from different angles.
+5. **PR** — `/open-pr` to push, create PR, watch CI, and fix failures until green.
 
 ## HTTP dashboard (`lib/http_dashboard`)
 
@@ -72,3 +76,21 @@ Build and test: `/build-and-test`. Display problems: `/display-reset`.
 | `sensor_event_log` | No public API. Self-registers via `SYS_INIT`. Enable: `CONFIG_SENSOR_EVENT_LOG=y`. |
 | `remote_sensor` | Transport vtable (`REMOTE_TRANSPORT_DEFINE()`). Needs `remote_sensor_iterables.ld`. UID helpers: `remote_sensor_uid_from_addr()`, `remote_sensor_uid_from_node_id()`. Publish: `remote_sensor_publish_data(uid, type, q31)`. |
 | `fake_remote_sensor` | Testing stub implementing `remote_transport` vtable (`REMOTE_TRANSPORT_PROTO_FAKE`). |
+
+## Integration tests (`tests/integration`)
+
+Pytest-based tests via Twister's `harness: pytest`. Boots the full gateway
+stack on `native_sim/native/64` (no LVGL) and interacts through three surfaces:
+
+| Surface | Harness class | Fixture |
+|---|---|---|
+| UART shell | `ShellHarness` | `shell_harness` |
+| HTTP API (port 8080) | `HttpHarness` | `http_harness` |
+| MQTT (port 1883) | `MqttHarness` | `mqtt_harness` (auto-skips if no broker) |
+
+- **Page Object Model:** tests call harness methods (`shell_harness.list_sensors()`), never raw strings.
+- **Markers:** `smoke`, `shell`, `http`, `mqtt`, `e2e` — filter with `--pytest-args="-m smoke"`.
+- **DUT scope = session:** one boot per suite; tests must restore state after mutations.
+- **ZEPHYR_BASE override required:** `ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister ...` (shell env var is stale).
+
+See [ADR-012](docs/adr/ADR-012-integration-test-architecture.md).
