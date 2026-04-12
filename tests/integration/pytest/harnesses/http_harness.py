@@ -106,6 +106,12 @@ class HttpHarness:
         r = self._post("/api/config", {"trigger_interval_ms": str(ms)})
         return r.status_code
 
+    def post_config(self, data: dict) -> dict:
+        """POST form data to ``/api/config``. Returns parsed JSON response body."""
+        r = self._post("/api/config", data)
+        r.raise_for_status()
+        return r.json()
+
     def request_sntp_resync(self) -> int:
         """POST sntp_resync action to ``/api/config``. Returns HTTP status code."""
         r = self._post("/api/config", {"action": "sntp_resync"})

@@ -95,10 +95,13 @@ static void sntp_thread_fn(void *p1, void *p2, void *p3)
 
 	while (true) {
 #if CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S > 0
-		/* Wait for either a manual trigger or the periodic interval */
+		/* Wait for either a manual trigger or the periodic interval;
+		 * return value is intentionally ignored — timeout and trigger
+		 * both mean "proceed to sync now". */
 		(void)k_sem_take(&sntp_trigger_sem, K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
 #else
-		/* No periodic resync — wait indefinitely for manual triggers */
+		/* No periodic resync — wait indefinitely for manual triggers;
+		 * return value is intentionally ignored. */
 		(void)k_sem_take(&sntp_trigger_sem, K_FOREVER);
 #endif
 		/* Brief settling delay: on native_sim the HTTP server thread may still

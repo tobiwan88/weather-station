@@ -104,3 +104,4 @@ def test_mqtt_payload_has_required_fields(shell_harness, mqtt_harness):
     for msg in msgs:
         assert "value" in msg.payload, f"Missing 'value' in payload: {msg.payload}"
         assert "unit" in msg.payload, f"Missing 'unit' in payload: {msg.payload}"
+        assert "time" in msg.payload, f"Missing 'time' in payload: {msg.payload}"

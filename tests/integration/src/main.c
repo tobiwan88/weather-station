@@ -19,5 +19,5 @@ int main(void)
 {
 	LOG_INF("weather-station integration test app");
 	k_sleep(K_FOREVER);
-	return 0;
+	return 0; /* unreachable — Zephyr main convention */
 }

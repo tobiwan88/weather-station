@@ -11,6 +11,8 @@ Markers:
   http   — tests that interact via HTTP
 """
 
+import time
+
 import pytest
 
 
@@ -74,9 +76,11 @@ def test_api_data_has_all_sensor_uids(shell_harness, http_harness):
 
 @pytest.mark.http
 def test_api_config_endpoint_returns_json(http_harness):
-    """``GET /api/config`` must return a valid JSON object."""
+    """``GET /api/config`` must return a valid JSON object with required fields."""
     config = http_harness.get_config()
     assert isinstance(config, dict), f"Expected dict, got: {type(config)}"
+    for field in ("trigger_interval_ms", "sntp_server"):
+        assert field in config, f"Missing field '{field}' in /api/config response: {config}"
 
 
 @pytest.mark.http
@@ -91,5 +95,16 @@ def test_post_trigger_interval_accepted(http_harness):
     """``POST /api/config`` with trigger_interval_ms must return 2xx."""
     status = http_harness.set_trigger_interval(10000)
     assert 200 <= status < 300, f"Unexpected status code: {status}"
-    # Restore default
+    # Restore — pause lets the embedded server close the previous connection
+    # and return to its idle poll loop before we open another one.
+    time.sleep(0.3)
     http_harness.set_trigger_interval(5000)
+    # Settle after restore before the next test.
+    time.sleep(0.3)
+
+
+@pytest.mark.http
+def test_post_config_returns_ok_json(http_harness):
+    """``POST /api/config`` must return JSON body ``{"ok": true}``."""
+    body = http_harness.post_config({"trigger_interval_ms": "5000"})
+    assert body == {"ok": True}, f"Unexpected POST /api/config response body: {body}"
