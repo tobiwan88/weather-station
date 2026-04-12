@@ -2,8 +2,11 @@
 #include <string.h>
 
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #include "sensor_history.h"
+
+LOG_MODULE_DECLARE(http_dashboard, LOG_LEVEL_INF);
 
 static struct sensor_history histories[CONFIG_HTTP_DASHBOARD_MAX_SENSORS];
 static struct sensor_history snap[CONFIG_HTTP_DASHBOARD_MAX_SENSORS];
@@ -54,7 +57,9 @@ void history_record_event(const struct env_sensor_data *evt)
 {
 	k_spinlock_key_t key = k_spin_lock(&history_lock);
 
-	history_push(histories, CONFIG_HTTP_DASHBOARD_MAX_SENSORS, evt);
+	if (history_push(histories, CONFIG_HTTP_DASHBOARD_MAX_SENSORS, evt) < 0) {
+		LOG_WRN("sensor history full, event dropped");
+	}
 	k_spin_unlock(&history_lock, key);
 }
 

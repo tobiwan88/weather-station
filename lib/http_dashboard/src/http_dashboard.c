@@ -242,9 +242,12 @@ static int api_config_handler(struct http_client_ctx *client, enum http_data_sta
 		return 0;
 	}
 
-	size_t len =
-		config_to_json(CONFIG_HTTP_DASHBOARD_PORT, config_state_get_trigger_ms(),
-			       config_state_get_sntp_server(), cfg_json_buf, sizeof(cfg_json_buf));
+	char sntp_snap[64];
+
+	config_state_copy_sntp_server(sntp_snap, sizeof(sntp_snap));
+
+	size_t len = config_to_json(CONFIG_HTTP_DASHBOARD_PORT, config_state_get_trigger_ms(),
+				    sntp_snap, cfg_json_buf, sizeof(cfg_json_buf));
 
 	response_ctx->status = HTTP_200_OK;
 	response_ctx->headers = json_ct_hdr;
