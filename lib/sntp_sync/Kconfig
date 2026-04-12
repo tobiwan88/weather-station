@@ -30,4 +30,19 @@ config SNTP_SYNC_RESYNC_INTERVAL_S
 	  How often to re-query the NTP server after the initial sync.
 	  Set to 0 to disable periodic resync.
 
+config SNTP_SYNC_THREAD_STACK_SIZE
+	int "SNTP sync thread stack size in bytes"
+	default 2048
+	help
+	  Stack size for the dedicated SNTP synchronisation thread. SNTP
+	  queries run on this thread rather than the system work queue so that
+	  a slow or unreachable server never stalls other work items.
+
+config SNTP_SYNC_THREAD_PRIORITY
+	int "SNTP sync thread priority"
+	default 10
+	help
+	  Cooperative or preemptive priority of the SNTP sync thread.
+	  Keep this lower than time-critical threads (e.g. sensor triggers).
+
 endif # SNTP_SYNC

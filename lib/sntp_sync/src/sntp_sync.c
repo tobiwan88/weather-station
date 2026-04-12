@@ -6,6 +6,10 @@
  * Runs at SYS_INIT APPLICATION priority 80 (before the gateway listener at 95)
  * so that SYS_CLOCK_REALTIME is set before sensor events are first logged.
  *
+ * SNTP queries run on a dedicated thread (not the system work queue) so that
+ * a slow or unreachable server never stalls other work items (MQTT keepalive,
+ * sensor timers, etc.).
+ *
  * On failure, logs a WRN and continues — the clock stays at boot epoch but
  * the rest of the application is unaffected.
  */
@@ -72,35 +76,45 @@ static int do_sntp_sync(void)
 }
 
 /* -------------------------------------------------------------------------- */
-/* Periodic resync via delayable work                                          */
+/* Dedicated SNTP thread                                                       */
+/*                                                                             */
+/* All SNTP queries run here so the system work queue is never blocked for    */
+/* CONFIG_SNTP_SYNC_TIMEOUT_MS while waiting for a network response.          */
 /* -------------------------------------------------------------------------- */
 
-#if CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S > 0
+static struct k_sem sntp_trigger_sem;
 
-static struct k_work_delayable resync_work;
-
-static void resync_handler(struct k_work *work)
+static void sntp_thread_fn(void *p1, void *p2, void *p3)
 {
+	ARG_UNUSED(p1);
+	ARG_UNUSED(p2);
+	ARG_UNUSED(p3);
+
+	/* Initial sync at boot */
 	do_sntp_sync();
-	k_work_reschedule(&resync_work, K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
+
+	while (true) {
+#if CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S > 0
+		/* Wait for either a manual trigger or the periodic interval */
+		(void)k_sem_take(&sntp_trigger_sem, K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
+#else
+		/* No periodic resync — wait indefinitely for manual triggers */
+		(void)k_sem_take(&sntp_trigger_sem, K_FOREVER);
+#endif
+		do_sntp_sync();
+	}
 }
 
-#endif /* CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S > 0 */
+K_THREAD_DEFINE(sntp_sync_thread, CONFIG_SNTP_SYNC_THREAD_STACK_SIZE, sntp_thread_fn, NULL, NULL,
+		NULL, CONFIG_SNTP_SYNC_THREAD_PRIORITY, 0, 0);
 
 /* -------------------------------------------------------------------------- */
 /* Immediate resync (API)                                                      */
 /* -------------------------------------------------------------------------- */
 
-static struct k_work_delayable immediate_work;
-
-static void immediate_resync_handler(struct k_work *work)
-{
-	do_sntp_sync();
-}
-
 void sntp_sync_trigger_resync(void)
 {
-	k_work_reschedule(&immediate_work, K_NO_WAIT);
+	k_sem_give(&sntp_trigger_sem);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -109,15 +123,7 @@ void sntp_sync_trigger_resync(void)
 
 static int sntp_sync_init(void)
 {
-	do_sntp_sync();
-
-#if CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S > 0
-	k_work_init_delayable(&resync_work, resync_handler);
-	k_work_reschedule(&resync_work, K_SECONDS(CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S));
-#endif
-
-	k_work_init_delayable(&immediate_work, immediate_resync_handler);
-
+	k_sem_init(&sntp_trigger_sem, 0, 1);
 	return 0;
 }
 
