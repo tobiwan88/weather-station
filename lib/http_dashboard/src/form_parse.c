@@ -1,4 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
+#include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -14,7 +15,8 @@ void url_decode(char *s)
 		if (*rd == '+') {
 			*wr++ = ' ';
 			rd++;
-		} else if (*rd == '%' && rd[1] && rd[2]) {
+		} else if (*rd == '%' && rd[1] && rd[2] && isxdigit((unsigned char)rd[1]) &&
+			   isxdigit((unsigned char)rd[2])) {
 			char hex[3] = {rd[1], rd[2], '\0'};
 
 			*wr++ = (char)strtol(hex, NULL, 16);

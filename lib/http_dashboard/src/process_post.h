@@ -31,10 +31,14 @@ void process_post(const uint8_t *body, size_t len);
 uint32_t config_state_get_trigger_ms(void);
 
 /**
- * @brief Return the most recently set SNTP server hostname.
+ * @brief Copy the most recently set SNTP server hostname into @p out.
  *
- * Returns an empty string if no SNTP server has been set via POST.
+ * Thread-safe: the copy is performed under a spinlock. @p out receives an
+ * empty string if no SNTP server has been set via POST.
+ *
+ * @param out  Destination buffer.
+ * @param len  Size of @p out in bytes (must be > 0).
  */
-const char *config_state_get_sntp_server(void);
+void config_state_copy_sntp_server(char *out, size_t len);
 
 #endif /* HTTP_DASHBOARD_PROCESS_POST_H_ */

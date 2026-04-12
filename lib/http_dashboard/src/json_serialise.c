@@ -23,6 +23,43 @@
 		}                                                                                  \
 	} while (0)
 
+/* Append a JSON-escaped string (no surrounding quotes). Escapes ", \, and
+ * control characters (<0x20) as \uXXXX. Requires local buf/pos/rem. */
+static void json_append_str(uint8_t *buf, int *pos, int *rem, const char *s)
+{
+	for (; *s != '\0' && *rem > 0; s++) {
+		unsigned char c = (unsigned char)*s;
+
+		if (c == '"' || c == '\\') {
+			if (*rem >= 2) {
+				buf[(*pos)++] = '\\';
+				buf[(*pos)++] = c;
+				*rem -= 2;
+			} else {
+				*rem = 0;
+			}
+		} else if (c < 0x20) {
+			if (*rem >= 6) {
+				int n = snprintf((char *)buf + *pos, (size_t)(*rem + 1), "\\u%04x",
+						 c);
+				if (n > 0) {
+					int wrote = MIN(n, *rem);
+
+					*pos += wrote;
+					*rem -= wrote;
+				}
+			} else {
+				*rem = 0;
+			}
+		} else {
+			buf[(*pos)++] = c;
+			(*rem)--;
+		}
+	}
+}
+
+#define JAPPEND_STR(s) json_append_str(buf, &pos, &rem, (s))
+
 /* -------------------------------------------------------------------------- */
 /* sensor_type_str                                                             */
 /* -------------------------------------------------------------------------- */
@@ -98,13 +135,19 @@ size_t history_to_json(const struct sensor_history *snap, int n_sensors, uint8_t
 		first_sensor = false;
 
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
-		JAPPEND("{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\","
-			"\"description\":\"%s\",\"type\":\"%s\",\"readings\":[",
-			snap[i].uid, label, location, description, sensor_type_str(snap[i].type));
+		JAPPEND("{\"uid\":%u,\"label\":\"", snap[i].uid);
+		JAPPEND_STR(label);
+		JAPPEND("\",\"location\":\"");
+		JAPPEND_STR(location);
+		JAPPEND("\",\"description\":\"");
+		JAPPEND_STR(description);
+		JAPPEND("\",\"type\":\"%s\",\"readings\":[", sensor_type_str(snap[i].type));
 #else
-		JAPPEND("{\"uid\":%u,\"label\":\"%s\",\"location\":\"%s\","
-			"\"type\":\"%s\",\"readings\":[",
-			snap[i].uid, label, location, sensor_type_str(snap[i].type));
+		JAPPEND("{\"uid\":%u,\"label\":\"", snap[i].uid);
+		JAPPEND_STR(label);
+		JAPPEND("\",\"location\":\"");
+		JAPPEND_STR(location);
+		JAPPEND("\",\"type\":\"%s\",\"readings\":[", sensor_type_str(snap[i].type));
 #endif
 
 		uint16_t start = (snap[i].head +
@@ -155,7 +198,9 @@ static int location_name_to_json_cb(const char *name, void *user_data)
 		JAPPEND(",");
 	}
 	ctx->first = false;
-	JAPPEND("\"%s\"", name);
+	JAPPEND("\"");
+	JAPPEND_STR(name);
+	JAPPEND("\"");
 
 	ctx->pos = pos;
 	ctx->rem = rem;
@@ -177,15 +222,24 @@ static int sensor_entry_to_json_cb(const struct sensor_registry_entry *e, void *
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
 	struct sensor_registry_meta smeta;
 
-	sensor_registry_get_meta(e->uid, &smeta);
-	JAPPEND("{\"uid\":%u"
-		",\"dt_label\":\"%s\""
-		",\"display_name\":\"%s\",\"location\":\"%s\""
-		",\"description\":\"%s\",\"enabled\":%s}",
-		e->uid, e->label, smeta.display_name, smeta.location, smeta.description,
-		smeta.enabled ? "true" : "false");
+	if (sensor_registry_get_meta(e->uid, &smeta) != 0) {
+		ctx->pos = pos;
+		ctx->rem = rem;
+		return 0;
+	}
+	JAPPEND("{\"uid\":%u,\"dt_label\":\"", e->uid);
+	JAPPEND_STR(e->label);
+	JAPPEND("\",\"display_name\":\"");
+	JAPPEND_STR(smeta.display_name);
+	JAPPEND("\",\"location\":\"");
+	JAPPEND_STR(smeta.location);
+	JAPPEND("\",\"description\":\"");
+	JAPPEND_STR(smeta.description);
+	JAPPEND("\",\"enabled\":%s}", smeta.enabled ? "true" : "false");
 #else
-	JAPPEND("{\"uid\":%u,\"label\":\"%s\"}", e->uid, e->label);
+	JAPPEND("{\"uid\":%u,\"label\":\"", e->uid);
+	JAPPEND_STR(e->label);
+	JAPPEND("\"}");
 #endif
 
 	ctx->pos = pos;
@@ -199,8 +253,9 @@ size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_serve
 	int pos = 0;
 	int rem = (int)buf_size - 1;
 
-	JAPPEND("{\"port\":%d,\"trigger_interval_ms\":%u,\"sntp_server\":\"%s\",\"locations\":[",
-		port, trigger_ms, sntp_server);
+	JAPPEND("{\"port\":%d,\"trigger_interval_ms\":%u,\"sntp_server\":\"", port, trigger_ms);
+	JAPPEND_STR(sntp_server);
+	JAPPEND("\",\"locations\":[");
 
 	struct json_write_ctx lctx = {.buf = buf, .pos = pos, .rem = rem, .first = true};
 

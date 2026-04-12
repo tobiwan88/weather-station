@@ -1,4 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
+#include <errno.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -19,15 +20,20 @@ LOG_MODULE_DECLARE(http_dashboard, LOG_LEVEL_INF);
 /* Runtime-configurable values (last values POSTed via /api/config). */
 static char sntp_server_buf[64];
 static uint32_t trigger_interval_ms;
+static struct k_spinlock sntp_lock;
 
 uint32_t config_state_get_trigger_ms(void)
 {
 	return trigger_interval_ms;
 }
 
-const char *config_state_get_sntp_server(void)
+void config_state_copy_sntp_server(char *out, size_t len)
 {
-	return sntp_server_buf;
+	k_spinlock_key_t key = k_spin_lock(&sntp_lock);
+
+	strncpy(out, sntp_server_buf, len - 1);
+	out[len - 1] = '\0';
+	k_spin_unlock(&sntp_lock, key);
 }
 
 void process_post(const uint8_t *body, size_t len)
@@ -62,7 +68,15 @@ void process_post(const uint8_t *body, size_t len)
 			url_decode(val);
 
 			if (strcmp(key, "trigger_interval_ms") == 0) {
-				uint32_t ms = (uint32_t)strtoul(val, NULL, 10);
+				errno = 0;
+				unsigned long ms_ul = strtoul(val, NULL, 10);
+
+				if (errno == ERANGE || ms_ul > UINT32_MAX) {
+					LOG_WRN("trigger_interval_ms out of range, ignoring");
+					token = amp ? (amp + 1) : NULL;
+					continue;
+				}
+				uint32_t ms = (uint32_t)ms_ul;
 				struct config_cmd_event cmd = {
 					.cmd = CONFIG_CMD_SET_TRIGGER_INTERVAL,
 					.arg = ms,
@@ -76,9 +90,12 @@ void process_post(const uint8_t *body, size_t len)
 				}
 				LOG_INF("trigger interval set to %u ms", ms);
 			} else if (strcmp(key, "sntp_server") == 0) {
+				k_spinlock_key_t skey = k_spin_lock(&sntp_lock);
+
 				strncpy(sntp_server_buf, val, sizeof(sntp_server_buf) - 1);
 				sntp_server_buf[sizeof(sntp_server_buf) - 1] = '\0';
-				LOG_INF("sntp server set to %s", sntp_server_buf);
+				k_spin_unlock(&sntp_lock, skey);
+				LOG_INF("sntp server set to %s", val);
 			} else if (strcmp(key, "action") == 0 && strcmp(val, "sntp_resync") == 0) {
 				struct config_cmd_event cmd = {
 					.cmd = CONFIG_CMD_SNTP_RESYNC,
@@ -127,7 +144,14 @@ void process_post(const uint8_t *body, size_t len)
 
 				if (last_us && last_us != tmp) {
 					*last_us = '\0';
-					uint32_t uid = (uint32_t)strtoul(tmp, NULL, 10);
+					errno = 0;
+					unsigned long uid_ul = strtoul(tmp, NULL, 10);
+
+					if (errno == ERANGE || uid_ul > UINT32_MAX) {
+						token = amp ? (amp + 1) : NULL;
+						continue;
+					}
+					uint32_t uid = (uint32_t)uid_ul;
 					const char *field = last_us + 1;
 					struct sensor_registry_meta m;
 
