@@ -150,9 +150,18 @@ push / PR to master or feature branches
 │  job: test-native-sim                                      │
 │  ZEPHYR_BASE=.../zephyr west twister                       │
 │    -p native_sim/native/64 -T weather-station/tests/      │
-│  ├── tests/q31/           (Q31 round-trip accuracy)        │
-│  ├── tests/sensor_event/  (zbus pub/sub)                   │
-│  └── tests/fake_sensors/  (trigger→publish, shell set)     │
+│  Unit tests (ztest, harness: ztest):                       │
+│  ├── tests/fake_sensors/        (trigger→publish, shell)   │
+│  ├── tests/sensor_event/        (zbus pub/sub)             │
+│  ├── tests/mqtt_publisher/      (MQTT formatting)          │
+│  ├── tests/remote_sensor_uid/   (UID generation)           │
+│  └── tests/remote_sensor_manager/ (discovery flow)         │
+│  Integration tests (pytest, harness: pytest):              │
+│  └── tests/integration/         (ADR-012)                  │
+│       ├── shell interaction     (smoke, sensors, config)   │
+│       ├── HTTP API validation   (endpoints, JSON schema)   │
+│       ├── MQTT flow             (skipped if no broker)     │
+│       └── E2E data flow         (trigger→HTTP, trigger→MQTT│
 │  Artifact: twister.xml (JUnit format → GitHub PR checks)   │
 └──────────────────┬─────────────────────────────────────────┘
                    │

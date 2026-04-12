@@ -2,7 +2,6 @@
 name: new-sensor-type
 description: Add a new fake sensor driver and DT binding for a new physical quantity (e.g. CO₂, pressure, UV index). Accepts four arguments.
 argument-hint: <type_name> "<description>" <initial_value_milli> <sensor_uid>
-disable-model-invocation: true
 ---
 
 # Add a New Fake Sensor Type
@@ -202,7 +201,8 @@ printf "help\nfake_sensors list\nkernel uptime\n" | \
 
 # Verify the new sensor appears in fake_sensors list output
 
-west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
+ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
+  west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
 pre-commit run --all-files
 ```
 

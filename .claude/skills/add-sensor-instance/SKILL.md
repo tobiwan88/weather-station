@@ -2,7 +2,6 @@
 name: add-sensor-instance
 description: Add a new DT node for an existing fake sensor driver at a new location. Does not create a new driver. Accepts five arguments.
 argument-hint: <type_name> <location> <sensor_uid> <initial_value_milli> <app>
-disable-model-invocation: true
 ---
 
 # Add a Sensor Instance (Existing Driver)
@@ -110,7 +109,8 @@ Expected output: the new sensor appears with UID `<sensor_uid>` and location
 Run the full gate after smoke-test passes:
 
 ```bash
-west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
+ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
+  west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
 pre-commit run --all-files
 ```
 

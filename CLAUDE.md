@@ -22,6 +22,8 @@ Binary: `/home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr
 
 Build and test: `/build-and-test`. Display problems: `/display-reset`.
 
+Integration tests: `/run-integration-tests [marker]`. New test: `/new-integration-test`. New harness: `/new-harness`.
+
 ## Architecture rules (non-negotiable)
 
 **1. One event = one physical measurement.** Temp and humidity are separate `env_sensor_data` events.
@@ -46,7 +48,9 @@ Build and test: `/build-and-test`. Display problems: `/display-reset`.
 
 1. **Branch first** — `git checkout master && git pull && git checkout -b <kebab-name>`. Never commit to `master`.
 2. **Smallest change → build gate** — `/build-and-test` after every change; fix failures before anything else.
-3. **Commit** — `/git-add` to stage, commit each logical unit.
+3. **Commit** — `/git-add` to stage, commit each logical unit. Use Conventional message style. Fix issues found by pre-commit.
+4. **Review** — `/review` to spawn parallel sub-agents (architecture, security, C quality, embedded, tests) reviewing the patch from different angles.
+5. **PR** — `/open-pr` to push, create PR, watch CI, and fix failures until green.
 
 ## HTTP dashboard (`lib/http_dashboard`)
 
@@ -72,3 +76,44 @@ Build and test: `/build-and-test`. Display problems: `/display-reset`.
 | `sensor_event_log` | No public API. Self-registers via `SYS_INIT`. Enable: `CONFIG_SENSOR_EVENT_LOG=y`. |
 | `remote_sensor` | Transport vtable (`REMOTE_TRANSPORT_DEFINE()`). Needs `remote_sensor_iterables.ld`. UID helpers: `remote_sensor_uid_from_addr()`, `remote_sensor_uid_from_node_id()`. Publish: `remote_sensor_publish_data(uid, type, q31)`. |
 | `fake_remote_sensor` | Testing stub implementing `remote_transport` vtable (`REMOTE_TRANSPORT_PROTO_FAKE`). |
+
+## Integration tests (`tests/integration`)
+
+Pytest-based tests via Twister's `harness: pytest`. Boots the full gateway
+stack on `native_sim/native/64` (no LVGL) and interacts through three surfaces:
+
+| Surface | Harness class | Fixture |
+|---|---|---|
+| UART shell | `ShellHarness` | `shell_harness` |
+| HTTP API (port 8080) | `HttpHarness` | `http_harness` |
+| MQTT (port 1883) | `MqttHarness` | `mqtt_harness` (auto-skips if no broker) |
+
+- **Page Object Model:** tests call harness methods (`shell_harness.list_sensors()`), never raw strings.
+- **Markers:** `smoke`, `shell`, `http`, `mqtt`, `e2e` — filter with `--pytest-args="-m smoke"`.
+- **DUT scope = session:** one boot per suite; tests must restore state after mutations.
+- **ZEPHYR_BASE override required:** `ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister ...` (shell env var is stale).
+- **Mosquitto is only required for MQTT test coverage** on `localhost:1883`. If no broker is running, `mqtt_harness`/MQTT-marked tests are skipped; the DUT does not exit at boot. The MQTT publisher thread keeps retrying the broker connection in the background. To run MQTT tests locally, start a broker with `mosquitto -p 1883 -d`.
+
+### native_sim/native/64 socket constraints
+
+`native_sim/native/64` runs every Zephyr thread as a real POSIX thread sharing
+**one NSOS epoll fd** (no mutex). This creates hard constraints:
+
+| Config | Required value | Why |
+|---|---|---|
+| `CONFIG_ZVFS_POLL_MAX` | ≥ 8 | HTTP server needs 5 poll slots (1 eventfd + 1 listen + 3 clients); default 3 causes partial-prepare leaving stale epoll entries |
+| `CONFIG_NET_MAX_CONTEXTS` | ≥ 16 | One context per open socket; default 6 is exhausted by HTTP + MQTT + SNTP |
+| `CONFIG_SNTP_SYNC_PRESYNC_DELAY_MS` | 200 (test build) | SNTP thread and HTTP server thread run on separate CPUs; without a settling delay SNTP's `epoll_ctl ADD` races the HTTP server's in-flight response send and gets `EEXIST` → fatal exit |
+
+**EEXIST crash pattern** — if `handler.log` ends with `error in EPOLL_CTL_ADD: errno=17`
+right after an HTTP POST that triggers background socket work (SNTP resync, remote scan,
+etc.), the cause is a concurrent `epoll_ctl ADD` collision. Fix: add
+`k_sleep(K_MSEC(CONFIG_..._PRESYNC_DELAY_MS))` in the background thread after waking,
+before opening any socket. The delay goes in the triggered path only (not the boot sync).
+
+**Test pacing** — rapid HTTP POST sequences exhaust the server's small connection pool.
+Pace every request pair with at least `time.sleep(0.3)`. After triggering a background
+operation that opens a socket (SNTP resync, scan), sleep long enough to cover the
+operation's worst-case duration: `presync_delay + timeout + buffer` (1.5 s for SNTP).
+
+See [ADR-012](docs/adr/ADR-012-integration-test-architecture.md).

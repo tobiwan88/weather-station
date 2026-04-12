@@ -27,6 +27,7 @@ Use these documents when:
 | [ADR-009](ADR-009-native-sim-first.md) | native_sim First — No Hardware Dependency in v1 | Accepted |
 | [ADR-010](ADR-010-ci-and-dev-environment.md) | CI/CD and Developer Environment | Accepted |
 | [ADR-011](ADR-011-http-dashboard.md) | HTTP Dashboard Web Interface | Accepted |
+| [ADR-012](ADR-012-integration-test-architecture.md) | Pytest Integration Test Architecture | Accepted |
 
 ---
 

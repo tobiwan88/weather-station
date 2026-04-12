@@ -2,7 +2,6 @@
 name: build-and-test
 description: Run the mandatory build and test gate for the weather-station project. Invoke after any code, Kconfig, DTS, or config change.
 disable-model-invocation: true
-allowed-tools: Bash
 ---
 
 # Build and Test Gate
@@ -42,8 +41,22 @@ Fix any runtime failure **before** running Twister.
 
 ## Full test suite
 
+**CRITICAL:** `ZEPHYR_BASE` in the shell is stale. Always prefix `west twister`:
+
 ```bash
-west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
+ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
+  west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
+```
+
+This runs both the C-based ztest suites **and** the pytest integration tests.
+
+**Mosquitto is only required to run MQTT-marked integration tests.** Without a
+broker, those tests are skipped and the DUT continues normally — the MQTT
+publisher thread retries the connection in the background. Start it if you want
+full MQTT coverage:
+
+```bash
+mosquitto -p 1883 -d 2>/dev/null || true
 ```
 
 All tests must be green. Never commit with a red suite.
