@@ -70,7 +70,7 @@ class ShellHarness:
             r"(0x[0-9a-fA-F]+)\s+"
             r"(\S+)\s+"
             r"(.{0,20}?)\s{2,}"
-            r"(-?\d+)\s+(\S+)"
+            r"(-?\d+)\s+(.+)"
         )
         for line in lines:
             m = row_re.match(line.strip())
@@ -81,7 +81,7 @@ class ShellHarness:
                         kind=m.group(2),
                         location=m.group(3).strip(),
                         value_milli=int(m.group(4)),
-                        unit=m.group(5),
+                        unit=m.group(5).strip(),
                     )
                 )
         return sensors

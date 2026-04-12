@@ -3,9 +3,6 @@
  * @file sntp_sync.c
  * @brief SNTP-based wall-clock synchronisation via SYS_CLOCK_REALTIME.
  *
- * Runs at SYS_INIT APPLICATION priority 80 (before the gateway listener at 95)
- * so that SYS_CLOCK_REALTIME is set before sensor events are first logged.
- *
  * SNTP queries run on a dedicated thread (not the system work queue) so that
  * a slow or unreachable server never stalls other work items (MQTT keepalive,
  * sensor timers, etc.).
@@ -24,6 +21,11 @@
 LOG_MODULE_REGISTER(sntp_sync, LOG_LEVEL_INF);
 
 static atomic_t synced;
+
+/* Semaphore for manual/periodic resync triggers.  Defined statically so it is
+ * valid before any SYS_INIT level runs — the SNTP thread (K_THREAD_DEFINE) is
+ * made ready at kernel start, before APPLICATION-level SYS_INIT callbacks. */
+K_SEM_DEFINE(sntp_trigger_sem, 0, 1);
 
 /* -------------------------------------------------------------------------- */
 /* Public API                                                                  */
@@ -82,8 +84,6 @@ static int do_sntp_sync(void)
 /* CONFIG_SNTP_SYNC_TIMEOUT_MS while waiting for a network response.          */
 /* -------------------------------------------------------------------------- */
 
-static struct k_sem sntp_trigger_sem;
-
 static void sntp_thread_fn(void *p1, void *p2, void *p3)
 {
 	ARG_UNUSED(p1);
@@ -124,15 +124,3 @@ void sntp_sync_trigger_resync(void)
 {
 	k_sem_give(&sntp_trigger_sem);
 }
-
-/* -------------------------------------------------------------------------- */
-/* SYS_INIT                                                                    */
-/* -------------------------------------------------------------------------- */
-
-static int sntp_sync_init(void)
-{
-	k_sem_init(&sntp_trigger_sem, 0, 1);
-	return 0;
-}
-
-SYS_INIT(sntp_sync_init, APPLICATION, 80);

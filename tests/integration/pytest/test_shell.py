@@ -14,6 +14,13 @@ Markers:
 import pytest
 
 
+@pytest.fixture()
+def restore_temp_indoor(shell_harness):
+    """Restore indoor temperature sensor to its DT-overlay default after the test."""
+    yield
+    shell_harness.set_temperature(0x0001, 21000)
+
+
 @pytest.mark.smoke
 @pytest.mark.shell
 def test_help_lists_fake_sensors(shell_harness):
@@ -91,7 +98,7 @@ def test_manual_trigger_fires(shell_harness):
 
 
 @pytest.mark.shell
-def test_set_temperature_via_shell(shell_harness):
+def test_set_temperature_via_shell(shell_harness, restore_temp_indoor):
     """Setting temperature via shell must be reflected in the sensor list."""
     shell_harness.set_temperature(0x0001, 25000)  # 25 °C
     sensors = shell_harness.list_sensors()
@@ -99,5 +106,3 @@ def test_set_temperature_via_shell(shell_harness):
     assert by_uid[0x0001].value_milli == 25000, (
         f"Expected 25000, got {by_uid[0x0001].value_milli}"
     )
-    # Restore original value so subsequent tests are not affected.
-    shell_harness.set_temperature(0x0001, 21000)

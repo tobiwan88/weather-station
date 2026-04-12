@@ -19,7 +19,9 @@ and MQTT (`localhost:1883`).
 Before running, verify:
 
 ```bash
-# 1. MQTT broker must be running — DUT exits at boot if it can't connect
+# 1. Start Mosquitto if you want MQTT-marked tests to run.
+#    Otherwise those tests are skipped; the DUT does not exit at boot —
+#    the MQTT publisher thread keeps retrying the broker in the background.
 mosquitto -p 1883 -d 2>/dev/null || true
 # verify:
 netstat -tlnp 2>/dev/null | grep 1883 || ss -tlnp 2>/dev/null | grep 1883

@@ -43,7 +43,9 @@ config SNTP_SYNC_THREAD_PRIORITY
 	default 10
 	help
 	  Cooperative or preemptive priority of the SNTP sync thread.
-	  Keep this lower than time-critical threads (e.g. sensor triggers).
+	  In Zephyr, numerically lower values run at higher scheduling priority.
+	  Use a numerically higher value than time-critical threads (e.g. sensor
+	  triggers) so this thread runs at a lower scheduling priority.
 
 config SNTP_SYNC_PRESYNC_DELAY_MS
 	int "Pre-sync settling delay in milliseconds"
