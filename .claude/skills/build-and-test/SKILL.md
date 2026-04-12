@@ -50,8 +50,10 @@ ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
 
 This runs both the C-based ztest suites **and** the pytest integration tests.
 
-**CRITICAL:** Mosquitto must be running before Twister starts. The integration
-DUT exits at boot if the MQTT broker is unreachable. Start it first:
+**Mosquitto is only required to run MQTT-marked integration tests.** Without a
+broker, those tests are skipped and the DUT continues normally — the MQTT
+publisher thread retries the connection in the background. Start it if you want
+full MQTT coverage:
 
 ```bash
 mosquitto -p 1883 -d 2>/dev/null || true

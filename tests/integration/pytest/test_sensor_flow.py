@@ -18,6 +18,13 @@ Markers:
 import pytest
 
 
+@pytest.fixture()
+def restore_co2(shell_harness):
+    """Restore CO2 sensor to its DT-overlay default after the test."""
+    yield
+    shell_harness.set_co2(0x0003, 800000)
+
+
 @pytest.mark.e2e
 @pytest.mark.shell
 @pytest.mark.http
@@ -49,7 +56,7 @@ def test_indoor_temp_value_in_http(shell_harness, http_harness):
 @pytest.mark.e2e
 @pytest.mark.shell
 @pytest.mark.http
-def test_set_value_reflected_in_http(shell_harness, http_harness):
+def test_set_value_reflected_in_http(shell_harness, http_harness, restore_co2):
     """Setting a sensor value via shell must appear in /api/data after a trigger."""
     # Set CO2 to a distinctive value
     shell_harness.set_co2(0x0003, 1500000)  # 1500 ppm
@@ -62,8 +69,6 @@ def test_set_value_reflected_in_http(shell_harness, http_harness):
     latest_v = readings[-1]["v"]
     # HTTP API decodes Q31 to float; 1500 ppm ≈ 1500.0 (allow ±50 for jitter)
     assert 1450.0 <= latest_v <= 1550.0, f"CO2 value not reflected correctly: {latest_v}"
-    # Restore
-    shell_harness.set_co2(0x0003, 800000)
 
 
 @pytest.mark.e2e

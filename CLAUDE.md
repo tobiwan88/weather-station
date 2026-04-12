@@ -92,7 +92,7 @@ stack on `native_sim/native/64` (no LVGL) and interacts through three surfaces:
 - **Markers:** `smoke`, `shell`, `http`, `mqtt`, `e2e` — filter with `--pytest-args="-m smoke"`.
 - **DUT scope = session:** one boot per suite; tests must restore state after mutations.
 - **ZEPHYR_BASE override required:** `ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister ...` (shell env var is stale).
-- **Mosquitto must be running** before `west twister` — the DUT exits at boot if it cannot connect to the MQTT broker on `localhost:1883`. Start with `mosquitto -p 1883 -d`.
+- **Mosquitto is only required for MQTT test coverage** on `localhost:1883`. If no broker is running, `mqtt_harness`/MQTT-marked tests are skipped; the DUT does not exit at boot. The MQTT publisher thread keeps retrying the broker connection in the background. To run MQTT tests locally, start a broker with `mosquitto -p 1883 -d`.
 
 ### native_sim/native/64 socket constraints
 
