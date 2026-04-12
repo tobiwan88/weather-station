@@ -159,6 +159,36 @@ Kconfig options (in `apps/gateway/prj.conf`):
 
 ---
 
+## Testing
+
+Unit tests use Zephyr's **ztest** framework; integration tests use **pytest**
+via the `pytest-twister-harness` plugin. Both run on `native_sim` — no
+hardware required.
+
+```bash
+# Run everything (unit + integration)
+west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
+
+# Unit tests only
+west twister -p native_sim/native/64 -T tests/ --exclude-tag integration --inline-logs -v -N
+
+# Integration tests only
+west twister -p native_sim/native/64 -T tests/integration --inline-logs -v -N
+
+# Integration tests filtered by marker (smoke, shell, http, mqtt, e2e)
+west twister -p native_sim/native/64 -T tests/integration --inline-logs -v -N \
+  --pytest-args="-m smoke"
+```
+
+Integration tests boot the full gateway stack and interact through the UART
+shell, the HTTP dashboard (port 8080), and optionally the MQTT broker
+(port 1883). MQTT tests are skipped automatically when no broker is running.
+
+See `tests/integration/pytest/harnesses/` for the Page Object harness classes
+and `tests/integration/pytest/test_*.py` for the test files.
+
+---
+
 ## Project status / roadmap
 
 | Phase | Status |
