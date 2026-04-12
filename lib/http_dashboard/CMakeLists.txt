@@ -3,8 +3,10 @@
 if(CONFIG_HTTP_DASHBOARD)
 
   zephyr_library()
-  zephyr_library_sources(src/http_dashboard.c)
-  zephyr_library_include_directories(include)
+  zephyr_library_sources(
+    src/http_dashboard.c src/form_parse.c src/sensor_history.c
+    src/json_serialise.c src/process_post.c)
+  zephyr_library_include_directories(include src)
   zephyr_include_directories(include)
 
   set(gen_dir ${ZEPHYR_BINARY_DIR}/include/generated/)
