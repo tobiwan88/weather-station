@@ -45,4 +45,15 @@ config SNTP_SYNC_THREAD_PRIORITY
 	  Cooperative or preemptive priority of the SNTP sync thread.
 	  Keep this lower than time-critical threads (e.g. sensor triggers).
 
+config SNTP_SYNC_PRESYNC_DELAY_MS
+	int "Pre-sync settling delay in milliseconds"
+	default 0
+	help
+	  Milliseconds to sleep after waking from the trigger semaphore before
+	  opening the SNTP UDP socket.  On platforms with offloaded sockets (e.g.
+	  native_sim NSOS) a brief delay lets any in-flight socket operations on
+	  other threads drain their epoll state before this thread adds a new fd.
+	  Set to 0 to disable (suitable for real hardware where the issue does not
+	  apply).
+
 endif # SNTP_SYNC
