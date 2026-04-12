@@ -132,11 +132,6 @@ static const struct http_header json_ct_hdr[] = {
 	{.name = "Content-Type", .value = "application/json"},
 };
 
-static const struct http_header redir_hdrs[] = {
-	{.name = "Location", .value = "/config"},
-	{.name = "Content-Length", .value = "0"},
-};
-
 /* -------------------------------------------------------------------------- */
 /* GET / — dashboard page                                                      */
 /* -------------------------------------------------------------------------- */
@@ -651,11 +646,13 @@ static int api_config_handler(struct http_client_ctx *client, enum http_data_sta
 			process_post(post_buf, post_cursor);
 			post_cursor = 0;
 
-			response_ctx->status = HTTP_303_SEE_OTHER;
-			response_ctx->headers = redir_hdrs;
-			response_ctx->header_count = ARRAY_SIZE(redir_hdrs);
-			response_ctx->body = NULL;
-			response_ctx->body_len = 0;
+			static const char post_ok[] = "{\"ok\":true}";
+
+			response_ctx->status = HTTP_200_OK;
+			response_ctx->headers = json_ct_hdr;
+			response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
+			response_ctx->body = (const uint8_t *)post_ok;
+			response_ctx->body_len = sizeof(post_ok) - 1;
 			response_ctx->final_chunk = true;
 		}
 		return 0;

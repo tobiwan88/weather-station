@@ -1,0 +1,95 @@
+# SPDX-License-Identifier: Apache-2.0
+"""
+HTTP dashboard API tests.
+
+Verifies that the HTTP dashboard (lib/http_dashboard, port 8080) responds
+correctly to all its endpoints and that sensor data written via the shell is
+reflected in the API JSON within a reasonable timeout.
+
+Markers:
+  smoke  — reachability check, run first
+  http   — tests that interact via HTTP
+"""
+
+import pytest
+
+
+@pytest.mark.smoke
+@pytest.mark.http
+def test_dashboard_page_reachable(http_harness):
+    """``GET /`` must return an HTML page (Chart.js dashboard)."""
+    html = http_harness.get_dashboard_page()
+    assert len(html) > 0, "Dashboard page returned empty response"
+
+
+@pytest.mark.smoke
+@pytest.mark.http
+def test_api_data_endpoint_returns_json(http_harness):
+    """``GET /api/data`` must return JSON with a ``sensors`` key."""
+    data = http_harness.get_sensor_data()
+    assert "sensors" in data, f"Missing 'sensors' key in response: {data}"
+
+
+@pytest.mark.http
+def test_api_data_has_sensor_entries(shell_harness, http_harness):
+    """After a manual trigger, ``/api/data`` must contain sensor entries."""
+    shell_harness.trigger_all()
+    data = http_harness.wait_for_readings(min_sensors=1)
+    assert len(data["sensors"]) >= 1, "No sensor entries in /api/data after trigger"
+
+
+@pytest.mark.http
+def test_api_data_sensor_schema(shell_harness, http_harness):
+    """Each sensor entry must have the required fields: uid, label, type, readings."""
+    shell_harness.trigger_all()
+    data = http_harness.wait_for_readings(min_sensors=4)
+    for sensor in data["sensors"]:
+        assert "uid" in sensor, f"Missing 'uid' in sensor: {sensor}"
+        assert "type" in sensor, f"Missing 'type' in sensor: {sensor}"
+        assert "readings" in sensor, f"Missing 'readings' in sensor: {sensor}"
+
+
+@pytest.mark.http
+def test_api_data_reading_schema(shell_harness, http_harness):
+    """Each reading must have ``t`` (timestamp) and ``v`` (value) fields."""
+    shell_harness.trigger_all()
+    data = http_harness.wait_for_readings(min_sensors=1)
+    for sensor in data["sensors"]:
+        for reading in sensor.get("readings", []):
+            assert "t" in reading, f"Missing 't' in reading: {reading}"
+            assert "v" in reading, f"Missing 'v' in reading: {reading}"
+
+
+@pytest.mark.http
+def test_api_data_has_all_sensor_uids(shell_harness, http_harness):
+    """``/api/data`` must list all six sensors from the overlay."""
+    shell_harness.trigger_all()
+    data = http_harness.wait_for_readings(min_sensors=6)
+    uids = {s["uid"] for s in data["sensors"]}
+    expected = {0x0001, 0x0002, 0x0003, 0x0004, 0x0011, 0x0012}
+    assert expected.issubset(uids), (
+        f"Missing UIDs: {expected - uids}. Found: {[hex(u) for u in uids]}"
+    )
+
+
+@pytest.mark.http
+def test_api_config_endpoint_returns_json(http_harness):
+    """``GET /api/config`` must return a valid JSON object."""
+    config = http_harness.get_config()
+    assert isinstance(config, dict), f"Expected dict, got: {type(config)}"
+
+
+@pytest.mark.http
+def test_api_locations_endpoint_returns_json(http_harness):
+    """``GET /api/locations`` must return a valid JSON response."""
+    locations = http_harness.get_locations()
+    assert locations is not None, "GET /api/locations returned None"
+
+
+@pytest.mark.http
+def test_post_trigger_interval_accepted(http_harness):
+    """``POST /api/config`` with trigger_interval_ms must return 2xx."""
+    status = http_harness.set_trigger_interval(10000)
+    assert 200 <= status < 300, f"Unexpected status code: {status}"
+    # Restore default
+    http_harness.set_trigger_interval(5000)
