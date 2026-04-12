@@ -94,7 +94,38 @@
       "Bash(addr2line:*)",
       "Bash(objdump:*)",
       "Bash(ZEPHYR_BASE=/home/zephyr/workspace/zephyr west build:*)",
-      "Bash(ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister:*)"
+      "Bash(ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh api:*)",
+      "Bash(/build-and-test)",
+      "Read(//home/zephyr/**)",
+      "Bash(mosquitto -p 1883 -v)",
+      "Bash(mosquitto_pub -h localhost -p 1883 -t test -m hello)",
+      "Bash(nc -zv localhost 1883)",
+      "Bash(netstat -tlnp)",
+      "Bash(fuser 8080/tcp)",
+      "Bash(mosquitto -p 1883 -d)",
+      "Bash(kill -0 1036484)",
+      "Bash(awk '{print $2, $3, $4}')",
+      "Bash(kill 1036484)",
+      "Bash(xargs cat:*)",
+      "Bash(awk '{print $2}')",
+      "Bash(xxd)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('tool_input',{}).get('file_path',''))\" 2>/dev/null); [ -z \"$FILE\" ] && exit 0; case \"$FILE\" in *.c|*.h) source /home/zephyr/.venv/bin/activate && clang-format -i \"$FILE\" 2>/dev/null || true ;; CMakeLists.txt|*.cmake) source /home/zephyr/.venv/bin/activate && cmake-format -i \"$FILE\" 2>/dev/null || true ;; esac",
+            "timeout": 15,
+            "statusMessage": "Auto-formatting..."
+          }
+        ]
+      }
     ]
   }
 }

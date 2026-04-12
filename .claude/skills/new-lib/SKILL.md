@@ -2,7 +2,6 @@
 name: new-lib
 description: Scaffold a new Zephyr library under lib/ with Kconfig, CMakeLists.txt, public header, and source file. Accepts four arguments.
 argument-hint: <lib_name> "<description>" <kconfig_symbol> <sys_init_priority>
-disable-model-invocation: true
 ---
 
 # Add a New Consumer or Utility Library
@@ -244,7 +243,8 @@ printf "help\nkernel uptime\n" | \
   timeout 10 /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe \
   -uart_stdinout 2>&1
 
-west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
+ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
+  west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
 pre-commit run --all-files
 ```
 
