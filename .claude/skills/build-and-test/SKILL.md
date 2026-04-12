@@ -50,6 +50,13 @@ ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
 
 This runs both the C-based ztest suites **and** the pytest integration tests.
 
+**CRITICAL:** Mosquitto must be running before Twister starts. The integration
+DUT exits at boot if the MQTT broker is unreachable. Start it first:
+
+```bash
+mosquitto -p 1883 -d 2>/dev/null || true
+```
+
 All tests must be green. Never commit with a red suite.
 
 ## Pre-commit check

@@ -92,5 +92,28 @@ stack on `native_sim/native/64` (no LVGL) and interacts through three surfaces:
 - **Markers:** `smoke`, `shell`, `http`, `mqtt`, `e2e` — filter with `--pytest-args="-m smoke"`.
 - **DUT scope = session:** one boot per suite; tests must restore state after mutations.
 - **ZEPHYR_BASE override required:** `ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister ...` (shell env var is stale).
+- **Mosquitto must be running** before `west twister` — the DUT exits at boot if it cannot connect to the MQTT broker on `localhost:1883`. Start with `mosquitto -p 1883 -d`.
+
+### native_sim/native/64 socket constraints
+
+`native_sim/native/64` runs every Zephyr thread as a real POSIX thread sharing
+**one NSOS epoll fd** (no mutex). This creates hard constraints:
+
+| Config | Required value | Why |
+|---|---|---|
+| `CONFIG_ZVFS_POLL_MAX` | ≥ 8 | HTTP server needs 5 poll slots (1 eventfd + 1 listen + 3 clients); default 3 causes partial-prepare leaving stale epoll entries |
+| `CONFIG_NET_MAX_CONTEXTS` | ≥ 16 | One context per open socket; default 6 is exhausted by HTTP + MQTT + SNTP |
+| `CONFIG_SNTP_SYNC_PRESYNC_DELAY_MS` | 200 (test build) | SNTP thread and HTTP server thread run on separate CPUs; without a settling delay SNTP's `epoll_ctl ADD` races the HTTP server's in-flight response send and gets `EEXIST` → fatal exit |
+
+**EEXIST crash pattern** — if `handler.log` ends with `error in EPOLL_CTL_ADD: errno=17`
+right after an HTTP POST that triggers background socket work (SNTP resync, remote scan,
+etc.), the cause is a concurrent `epoll_ctl ADD` collision. Fix: add
+`k_sleep(K_MSEC(CONFIG_..._PRESYNC_DELAY_MS))` in the background thread after waking,
+before opening any socket. The delay goes in the triggered path only (not the boot sync).
+
+**Test pacing** — rapid HTTP POST sequences exhaust the server's small connection pool.
+Pace every request pair with at least `time.sleep(0.3)`. After triggering a background
+operation that opens a socket (SNTP resync, scan), sleep long enough to cover the
+operation's worst-case duration: `presync_delay + timeout + buffer` (1.5 s for SNTP).
 
 See [ADR-012](docs/adr/ADR-012-integration-test-architecture.md).

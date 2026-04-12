@@ -87,10 +87,26 @@ def test_set_and_restore(shell_harness):
 Use the `mqtt_harness` fixture — it auto-skips when no broker is available.
 Always add `@pytest.mark.mqtt` so users can opt out with `-m "not mqtt"`.
 
-### Avoid raw time.sleep()
-Use polling helpers instead:
+### Use polling helpers for readiness checks
+Avoid `time.sleep()` when waiting for data to appear:
 - `http_harness.wait_for_readings(min_sensors=N, timeout=T)`
 - `mqtt_harness.wait_for_messages(count=N, timeout=T)`
+
+### Pace HTTP POST sequences with time.sleep()
+`time.sleep()` IS required between consecutive HTTP POST requests that mutate
+DUT state, and after any POST that triggers background socket work. The embedded
+HTTP server has a small connection pool; rapid-fire requests exhaust it.
+
+**Rule of thumb:**
+- After each mutating POST: `time.sleep(0.3)` (includes state-restore calls)
+- After triggering a background operation that opens a new socket (SNTP resync,
+  remote scan, etc.): `time.sleep(presync_delay + worst_case_timeout + buffer)`.
+  For SNTP resync: `time.sleep(1.5)` (200 ms presync + 1000 ms query timeout + buffer).
+
+Rationale: on `native_sim/native/64` every Zephyr thread is a real POSIX thread.
+A background thread woken by a POST can open a socket on a different CPU
+*before* the HTTP server finishes sending its own response. The two concurrent
+`epoll_ctl ADD` calls share one fd and collide → fatal `EEXIST` exit → DUT dead.
 
 ### Assertion messages
 Always include a diagnostic message showing the actual value received:
