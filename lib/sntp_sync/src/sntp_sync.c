@@ -101,6 +101,11 @@ static void sntp_thread_fn(void *p1, void *p2, void *p3)
 		/* No periodic resync — wait indefinitely for manual triggers */
 		(void)k_sem_take(&sntp_trigger_sem, K_FOREVER);
 #endif
+		/* Brief settling delay: on native_sim the HTTP server thread may still
+		 * be completing its response (sendto + epoll cleanup) when this thread
+		 * wakes.  Sleeping here lets any in-flight socket operations drain before
+		 * we open a new UDP socket and add it to the shared NSOS epoll fd. */
+		k_sleep(K_MSEC(CONFIG_SNTP_SYNC_PRESYNC_DELAY_MS));
 		do_sntp_sync();
 	}
 }
