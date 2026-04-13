@@ -29,6 +29,7 @@ uint32_t config_state_get_trigger_ms(void)
 
 void config_state_copy_sntp_server(char *out, size_t len)
 {
+	__ASSERT(len > 0, "out buffer length must be > 0");
 	k_spinlock_key_t key = k_spin_lock(&sntp_lock);
 
 	strncpy(out, sntp_server_buf, len - 1);
