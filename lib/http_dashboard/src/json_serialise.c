@@ -13,20 +13,33 @@
 #include "sensor_history.h"
 
 /* Append to a (buf, pos, rem) triple. Requires local variables named exactly
- * buf (uint8_t *), pos (int), rem (int). */
+ * buf (uint8_t *), pos (int), rem (int).
+ * Sets rem = -1 on overflow; all subsequent calls are no-ops. */
 #define JAPPEND(fmt, ...)                                                                          \
 	do {                                                                                       \
-		int _n = snprintf((char *)buf + pos, (size_t)(rem + 1), fmt, ##__VA_ARGS__);       \
-		if (_n > 0) {                                                                      \
-			pos += MIN(_n, rem);                                                       \
-			rem -= MIN(_n, rem);                                                       \
+		if (rem > 0) {                                                                     \
+			int _n = snprintf((char *)buf + pos, (size_t)(rem + 1), fmt,               \
+					  ##__VA_ARGS__);                                          \
+			if (_n > rem) {                                                            \
+				rem = -1;                                                          \
+			} else if (_n > 0) {                                                       \
+				pos += _n;                                                         \
+				rem -= _n;                                                         \
+			}                                                                          \
 		}                                                                                  \
 	} while (0)
 
 /* Append a JSON-escaped string (no surrounding quotes). Escapes ", \, and
- * control characters (<0x20) as \uXXXX. Requires local buf/pos/rem. */
+ * control characters (<0x20) as \uXXXX. Requires local buf/pos/rem.
+ * @p s must not be NULL. Sets *rem = -1 on overflow; caller detects overflow
+ * by checking rem < 0. */
 static void json_append_str(uint8_t *buf, int *pos, int *rem, const char *s)
 {
+	__ASSERT_NO_MSG(s != NULL);
+	if (*rem <= 0) {
+		*rem = -1;
+		return;
+	}
 	for (; *s != '\0' && *rem > 0; s++) {
 		unsigned char c = (unsigned char)*s;
 
@@ -36,20 +49,22 @@ static void json_append_str(uint8_t *buf, int *pos, int *rem, const char *s)
 				buf[(*pos)++] = c;
 				*rem -= 2;
 			} else {
-				*rem = 0;
+				*rem = -1;
 			}
 		} else if (c < 0x20) {
 			if (*rem >= 6) {
 				int n = snprintf((char *)buf + *pos, (size_t)(*rem + 1), "\\u%04x",
 						 c);
 				if (n > 0) {
-					int wrote = MIN(n, *rem);
-
-					*pos += wrote;
-					*rem -= wrote;
+					if (n > *rem) {
+						*rem = -1;
+					} else {
+						*pos += n;
+						*rem -= n;
+					}
 				}
 			} else {
-				*rem = 0;
+				*rem = -1;
 			}
 		} else {
 			buf[(*pos)++] = c;
@@ -173,7 +188,7 @@ size_t history_to_json(const struct sensor_history *snap, int n_sensors, uint8_t
 	JAPPEND("]}");
 
 	buf[pos] = '\0';
-	return (size_t)pos;
+	return (rem < 0) ? 0 : (size_t)pos;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -214,19 +229,18 @@ static int sensor_entry_to_json_cb(const struct sensor_registry_entry *e, void *
 	int pos = ctx->pos;
 	int rem = ctx->rem;
 
+#ifdef CONFIG_SENSOR_REGISTRY_USER_META
+	struct sensor_registry_meta smeta;
+
+	/* Validate before writing the comma so a missing metadata entry
+	 * does not leave a stray separator in the JSON output. */
+	if (sensor_registry_get_meta(e->uid, &smeta) != 0) {
+		return 0;
+	}
 	if (!ctx->first) {
 		JAPPEND(",");
 	}
 	ctx->first = false;
-
-#ifdef CONFIG_SENSOR_REGISTRY_USER_META
-	struct sensor_registry_meta smeta;
-
-	if (sensor_registry_get_meta(e->uid, &smeta) != 0) {
-		ctx->pos = pos;
-		ctx->rem = rem;
-		return 0;
-	}
 	JAPPEND("{\"uid\":%u,\"dt_label\":\"", e->uid);
 	JAPPEND_STR(e->label);
 	JAPPEND("\",\"display_name\":\"");
@@ -237,6 +251,10 @@ static int sensor_entry_to_json_cb(const struct sensor_registry_entry *e, void *
 	JAPPEND_STR(smeta.description);
 	JAPPEND("\",\"enabled\":%s}", smeta.enabled ? "true" : "false");
 #else
+	if (!ctx->first) {
+		JAPPEND(",");
+	}
+	ctx->first = false;
 	JAPPEND("{\"uid\":%u,\"label\":\"", e->uid);
 	JAPPEND_STR(e->label);
 	JAPPEND("\"}");
@@ -274,7 +292,7 @@ size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_serve
 	JAPPEND("]}");
 
 	buf[pos] = '\0';
-	return (size_t)pos;
+	return (rem < 0) ? 0 : (size_t)pos;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -297,5 +315,5 @@ size_t locations_to_json(uint8_t *buf, size_t buf_size)
 	JAPPEND("]}");
 
 	buf[pos] = '\0';
-	return (size_t)pos;
+	return (rem < 0) ? 0 : (size_t)pos;
 }

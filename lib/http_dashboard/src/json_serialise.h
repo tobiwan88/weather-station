@@ -40,10 +40,10 @@ size_t history_to_json(const struct sensor_history *snap, int n_sensors, uint8_t
  *
  * @param port         HTTP server port.
  * @param trigger_ms   Current trigger interval in milliseconds.
- * @param sntp_server  Current SNTP server string.
- * @param buf          Output buffer.
+ * @param sntp_server  Current SNTP server string. Must not be NULL.
+ * @param buf          Output buffer. Must not be NULL.
  * @param buf_size     Size of @p buf in bytes.
- * @return Number of bytes written (without NUL terminator), or 0 on failure.
+ * @return Number of bytes written (without NUL terminator), or 0 on failure/overflow.
  */
 size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_server, uint8_t *buf,
 		      size_t buf_size);

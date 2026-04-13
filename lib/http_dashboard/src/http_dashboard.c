@@ -181,6 +181,12 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 	size_t len = history_to_json(history_get_snap(), CONFIG_HTTP_DASHBOARD_MAX_SENSORS,
 				     json_buf, sizeof(json_buf));
 
+	if (len == 0) {
+		LOG_ERR("history_to_json: buffer overflow");
+		response_ctx->status = HTTP_500_INTERNAL_SERVER_ERROR;
+		response_ctx->final_chunk = true;
+		return 0;
+	}
 	response_ctx->status = HTTP_200_OK;
 	response_ctx->headers = json_ct_hdr;
 	response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
@@ -249,6 +255,12 @@ static int api_config_handler(struct http_client_ctx *client, enum http_data_sta
 	size_t len = config_to_json(CONFIG_HTTP_DASHBOARD_PORT, config_state_get_trigger_ms(),
 				    sntp_snap, cfg_json_buf, sizeof(cfg_json_buf));
 
+	if (len == 0) {
+		LOG_ERR("config_to_json: buffer overflow");
+		response_ctx->status = HTTP_500_INTERNAL_SERVER_ERROR;
+		response_ctx->final_chunk = true;
+		return 0;
+	}
 	response_ctx->status = HTTP_200_OK;
 	response_ctx->headers = json_ct_hdr;
 	response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
@@ -288,6 +300,12 @@ static int api_locations_handler(struct http_client_ctx *client, enum http_data_
 
 	size_t len = locations_to_json(loc_json_buf, sizeof(loc_json_buf));
 
+	if (len == 0) {
+		LOG_ERR("locations_to_json: buffer overflow");
+		response_ctx->status = HTTP_500_INTERNAL_SERVER_ERROR;
+		response_ctx->final_chunk = true;
+		return 0;
+	}
 	response_ctx->status = HTTP_200_OK;
 	response_ctx->headers = json_ct_hdr;
 	response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
