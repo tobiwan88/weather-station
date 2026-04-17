@@ -4,7 +4,7 @@ tests:
       - native_sim/native/64
     harness: pytest
     harness_config:
-      pytest_dut_scope: session
+      pytest_dut_scope: function
       pytest_root:
         - "pytest/"
     tags:

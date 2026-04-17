@@ -15,7 +15,7 @@ import pytest
 
 
 @pytest.fixture()
-def restore_trigger_interval(http_harness):
+def restore_trigger_interval(authed_harness):
     """Restore trigger_interval_ms to the suite default (5000 ms) after the test.
 
     The leading sleep gives the embedded HTTP server time to close the previous
@@ -25,22 +25,22 @@ def restore_trigger_interval(http_harness):
     """
     yield
     time.sleep(0.3)
-    http_harness.set_trigger_interval(5000)
+    authed_harness.set_trigger_interval(5000)
     time.sleep(0.3)
 
 
 @pytest.mark.http
-def test_set_trigger_interval_via_http(http_harness, restore_trigger_interval):
+def test_set_trigger_interval_via_http(authed_harness, restore_trigger_interval):
     """POST trigger_interval_ms=10000 must be accepted (2xx) by /api/config."""
-    status = http_harness.set_trigger_interval(10000)
+    status = authed_harness.set_trigger_interval(10000)
     assert 200 <= status < 300, f"Unexpected HTTP status: {status}"
 
 
 @pytest.mark.http
-def test_trigger_interval_bounds_accepted(http_harness, restore_trigger_interval):
+def test_trigger_interval_bounds_accepted(authed_harness, restore_trigger_interval):
     """Boundary values for trigger_interval_ms must be accepted."""
     for ms in (1000, 60000):
-        status = http_harness.set_trigger_interval(ms)
+        status = authed_harness.set_trigger_interval(ms)
         assert 200 <= status < 300, f"Status {status} for interval={ms}"
         # Pace requests: give the embedded server time to close each connection
         # before the next arrives.
@@ -48,7 +48,7 @@ def test_trigger_interval_bounds_accepted(http_harness, restore_trigger_interval
 
 
 @pytest.mark.http
-def test_sntp_resync_accepted(http_harness):
+def test_sntp_resync_accepted(authed_harness):
     """POST action=sntp_resync must be accepted (2xx).
 
     The SNTP resync runs on a dedicated background thread; the HTTP response
@@ -56,7 +56,7 @@ def test_sntp_resync_accepted(http_harness):
     settling delay before opening the UDP socket, so subsequent tests must not
     start until that delay plus the query timeout have elapsed.
     """
-    status = http_harness.request_sntp_resync()
+    status = authed_harness.request_sntp_resync()
     assert 200 <= status < 300, f"Unexpected HTTP status: {status}"
     # Wait for the SNTP thread's presync delay (200 ms) + worst-case query
     # timeout (1000 ms) + margin, so the UDP socket is closed before the next
