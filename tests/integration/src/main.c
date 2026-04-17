@@ -18,6 +18,17 @@ LOG_MODULE_REGISTER(integration, LOG_LEVEL_INF);
 int main(void)
 {
 	LOG_INF("weather-station integration test app");
+	/*
+	 * All SYS_INIT callbacks (HTTP server, MQTT publisher, fake sensors, …)
+	 * have completed by the time main() runs.  Emit a well-known sentinel
+	 * that the pytest conftest waits for before starting any test:
+	 *
+	 *   [00:00:00.xxx] <inf> integration: device: ready
+	 *
+	 * grep pattern used by the device_ready fixture:
+	 *   r"integration:.*device:.*ready"
+	 */
+	LOG_INF("device: ready");
 	k_sleep(K_FOREVER);
 	return 0; /* unreachable — Zephyr main convention */
 }

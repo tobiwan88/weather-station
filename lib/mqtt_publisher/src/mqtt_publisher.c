@@ -348,6 +348,18 @@ static void mqtt_thread_fn(void *p1, void *p2, void *p3)
 	ARG_UNUSED(p2);
 	ARG_UNUSED(p3);
 
+	/*
+	 * On native_sim all Zephyr threads share one NSOS epoll fd (no mutex).
+	 * The HTTP server registers its listen socket right at boot; connecting
+	 * the MQTT TCP socket at the same instant triggers a concurrent
+	 * epoll_ctl ADD on the same fd number, which returns EEXIST and exits
+	 * the DUT.  A short startup delay lets the HTTP server finish its epoll
+	 * setup before we open any socket.  Default 0 ms for production builds.
+	 */
+	if (CONFIG_MQTT_PUBLISHER_STARTUP_DELAY_MS > 0) {
+		k_sleep(K_MSEC(CONFIG_MQTT_PUBLISHER_STARTUP_DELAY_MS));
+	}
+
 	while (true) {
 		LOG_INF("connecting to %s:%u ...", s_broker_host, s_broker_port);
 

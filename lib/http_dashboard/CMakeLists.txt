@@ -6,6 +6,10 @@ if(CONFIG_HTTP_DASHBOARD)
   zephyr_library_sources(
     src/http_dashboard.c src/form_parse.c src/sensor_history.c
     src/json_serialise.c src/process_post.c)
+
+  if(CONFIG_HTTP_DASHBOARD_AUTH)
+    zephyr_library_sources(src/auth.c)
+  endif()
   zephyr_library_include_directories(include src)
   zephyr_include_directories(include)
 

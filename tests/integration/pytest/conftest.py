@@ -5,15 +5,43 @@ Root conftest for weather-station integration tests.
 Registers pytest markers and wires up harness fixtures that abstract the
 three integration surfaces: UART shell, HTTP dashboard, and MQTT broker.
 
-All fixtures use session scope because the DUT is booted once
-(pytest_dut_scope: session in testcase.yaml) and shared across tests.
+All fixtures use function scope because the DUT is booted once per test
+(pytest_dut_scope: function in testcase.yaml).  Each test gets a fresh
+zephyr.exe instance; the previous one is killed automatically by Twister
+in the DUT fixture teardown.
+
+Log format
+----------
+Every log record — whether it originates from the device UART or a test
+harness — is emitted in the same structure::
+
+    HH:MM:SS LEVEL [source    ] message
+
+  * ``source`` is the Python logger name: ``device``, ``http``, ``shell``,
+    ``mqtt``.
+  * Device lines are further prefixed with ``module:`` so the Zephyr module
+    name is visible at a glance.
+
+Use ``--log-cli-level=DEBUG`` to see all harness traffic; INFO is the default.
 """
+
+import logging
 
 import pytest
 
+_log = logging.getLogger("conftest")
+
+from harnesses.device_logger import DeviceLogger
 from harnesses.http_harness import HttpHarness
 from harnesses.mqtt_harness import MqttHarness
 from harnesses.shell_harness import ShellHarness
+
+# ---------------------------------------------------------------------------
+# Unified log format
+# ---------------------------------------------------------------------------
+
+_LOG_FORMAT = "%(asctime)s %(levelname)-5s [%(name)-10s] %(message)s"
+_DATE_FORMAT = "%H:%M:%S"
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -23,26 +51,133 @@ def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line("markers", "mqtt: tests using MQTT broker (requires mosquitto)")
     config.addinivalue_line("markers", "e2e: full end-to-end data-flow tests")
 
+    # Set root level so all loggers (urllib3, twister_harness, …) are captured.
+    # Do NOT call logging.basicConfig() here — that would install a second root
+    # StreamHandler alongside pytest's own log-cli handler and produce every line
+    # twice.  Instead, override pytest's format options so the rich format is used
+    # regardless of what --log-cli-format twister passes on the command line.
+    logging.root.setLevel(logging.DEBUG)
+    if hasattr(config, "option"):
+        config.option.log_cli_format = _LOG_FORMAT
+        config.option.log_cli_date_format = _DATE_FORMAT
+        config.option.log_format = _LOG_FORMAT
+        config.option.log_date_format = _DATE_FORMAT
 
-@pytest.fixture(scope="session")
-def shell_harness(shell):
+
+def pytest_terminal_summary(terminalreporter, exitstatus, config) -> None:
+    """Emit a compact pass/fail/skip tally so the log ends with a clear summary.
+
+    The tally is written via the Python logging system so it appears in
+    twister_harness.log at the same position and format as all other records.
+    """
+    stats = terminalreporter.stats
+    passed  = len(stats.get("passed",  []))
+    failed  = len(stats.get("failed",  []))
+    skipped = len(stats.get("skipped", []))
+    _log.info("─" * 60)
+    _log.info("RESULTS  passed=%d  failed=%d  skipped=%d", passed, failed, skipped)
+    for r in stats.get("failed", []):
+        _log.error("FAILED  %s", r.nodeid)
+    _log.info("─" * 60)
+
+
+# ---------------------------------------------------------------------------
+# Device log drain
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture()
+def device_logger(dut) -> DeviceLogger:
+    """Structured consumer for raw UART output from the DUT.
+
+    Function-scoped: a new instance is created for each test's fresh DUT.
+    Call ``device_logger.drain()`` explicitly, or rely on the autouse
+    ``_drain_device_logs`` fixture which drains after every test.
+    """
+    return DeviceLogger(dut)
+
+
+@pytest.fixture(autouse=True)
+def _drain_device_logs(device_logger: DeviceLogger) -> None:
+    """Drain device UART output after every test.
+
+    Runs in teardown (after ``yield``) so the log lines are attributed to the
+    test that was executing when they were produced.  Harness-level log records
+    (``http``, ``shell``) appear inline during the test; device records appear
+    in the teardown section of pytest's live-log output.
+    """
+    yield
+    device_logger.drain()
+
+
+# ---------------------------------------------------------------------------
+# Boot sentinel
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture()
+def device_ready(shell):
+    """Signal that the DUT is fully initialised and ready for testing.
+
+    Depends on the twister-harness ``shell`` fixture which blocks until the
+    UART shell prompt is visible.  Since ``main()`` runs before the Zephyr
+    shell thread prints its prompt, the prompt appearing guarantees:
+
+    * All ``SYS_INIT`` callbacks have completed (HTTP server, MQTT publisher,
+      fake sensors, …).
+    * ``main.c`` has emitted ``LOG_INF("device: ready")``, which is the
+      well-known boot sentinel visible in ``handler.log`` for debugging.
+
+    All harness fixtures that interact with the device should depend on this
+    fixture instead of ``dut`` directly so tests never race against boot.
+    """
+
+
+# ---------------------------------------------------------------------------
+# Harness fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture()
+def shell_harness(shell, device_ready):
     """Weather-station shell abstraction wrapping the twister_harness Shell."""
     return ShellHarness(shell)
 
 
-@pytest.fixture(scope="session")
-def http_harness(dut):
+@pytest.fixture()
+def http_harness(device_ready):
     """HTTP client for the dashboard API.
 
-    ``dut`` is requested so pytest waits for the device to be booted before
-    the fixture is created — the HTTP server is only ready after boot.
+    Depends on ``device_ready`` (which waits for the shell prompt) instead of
+    ``dut`` directly, so the HTTP server has had time to bind port 8080 before
+    we attempt the first connection.
     """
     harness = HttpHarness(base_url="http://localhost:8080")
     harness.wait_until_ready()
     return harness
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
+def authed_harness(http_harness, shell_harness):
+    """Return http_harness with the bearer token loaded from the shell.
+
+    Reads the active token via ``http_dashboard token show`` and stores it so
+    that all authenticated POST requests include the Authorization header.  If
+    the build does not have ``CONFIG_HTTP_DASHBOARD_AUTH=y`` (shell command is
+    absent), the harness is returned without a token and POST requests proceed
+    unauthenticated.
+    """
+    try:
+        token = http_harness.get_token_from_shell(shell_harness)
+        _log.debug("authed_harness: retrieved token %r (len=%d)", token, len(token))
+        http_harness.set_token(token)
+        _log.debug("authed_harness: token stored on harness (_token=%r)", http_harness._token)
+    except AssertionError as exc:
+        _log.warning("authed_harness: token retrieval failed (%s), proceeding unauthenticated", exc)
+    return http_harness
+
+
+@pytest.fixture()
 def mqtt_harness():
     """MQTT subscriber collecting messages published by the gateway.
 
