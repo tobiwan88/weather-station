@@ -44,6 +44,20 @@ Integration tests: `/run-integration-tests [marker]`. New test: `/new-integratio
 
 **Never create:** a `sensor_manager`, polling loops, real hw drivers (`CONFIG_BME280` etc.), or files under `.west/` or `build/`.
 
+## Embedded C coding rules (non-negotiable)
+
+**No heap.** Never use `malloc`, `free`, `k_malloc`, `k_free`, or any dynamic allocator. All buffers and objects are statically allocated (stack, BSS, or `static`).
+
+**Assertions by origin:**
+
+| Check type | Macro | When to use |
+|---|---|---|
+| Static invariant | `BUILD_ASSERT(cond, msg)` | Compile-time constants, struct sizes, Kconfig ranges |
+| Internal runtime invariant | `__ASSERT(cond, fmt, ...)` | Preconditions on values that come from within the system (own APIs, zbus messages, DT-derived data) |
+| External input | Normal `if`/error return | Data from the web API, shell commands, MQTT payloads, or any untrusted source — never assert, always validate and return an error |
+
+`__ASSERT` is fatal in debug builds; it must never fire on well-formed external input.
+
 ## Agent workflow (non-negotiable)
 
 1. **Branch first** — `git checkout master && git pull && git checkout -b <kebab-name>`. Never commit to `master`.
@@ -54,14 +68,9 @@ Integration tests: `/run-integration-tests [marker]`. New test: `/new-integratio
 
 ## HTTP dashboard (`lib/http_dashboard`)
 
-`CONFIG_HTTP_DASHBOARD=y`. Self-initialises via `SYS_INIT` at APPLICATION 97.
+`CONFIG_HTTP_DASHBOARD=y`. Self-initialises via `SYS_INIT` at APPLICATION 97. Endpoints and Kconfig symbols: see [`README.md`](README.md#web-dashboard).
 
-| Endpoint | Description |
-|---|---|
-| `GET /` | Live Chart.js timeseries |
-| `GET /config` | Configuration form |
-| `GET /api/data` | JSON sensor ring-buffer |
-| `POST /api/config` | Form-encoded: `trigger_interval_ms`, `sntp_server`, `action=sntp_resync` |
+`POST /api/config` form fields: `trigger_interval_ms`, `sntp_server`, `action=sntp_resync`.
 
 - **Config decoupling:** POST publishes `config_cmd_event` on `config_cmd_chan` — does NOT call `fake_sensors`/`sntp_sync` directly.
 - **Concurrency:** `k_spinlock` + snapshot pattern (lock → memcpy → unlock → serialize).
@@ -79,8 +88,7 @@ Integration tests: `/run-integration-tests [marker]`. New test: `/new-integratio
 
 ## Integration tests (`tests/integration`)
 
-Pytest-based tests via Twister's `harness: pytest`. Boots the full gateway
-stack on `native_sim/native/64` (no LVGL) and interacts through three surfaces:
+Pytest via Twister `harness: pytest`. Full gateway on `native_sim/native/64`. Build/run commands: see [`README.md`](README.md#testing).
 
 | Surface | Harness class | Fixture |
 |---|---|---|
@@ -88,11 +96,11 @@ stack on `native_sim/native/64` (no LVGL) and interacts through three surfaces:
 | HTTP API (port 8080) | `HttpHarness` | `http_harness` |
 | MQTT (port 1883) | `MqttHarness` | `mqtt_harness` (auto-skips if no broker) |
 
-- **Page Object Model:** tests call harness methods (`shell_harness.list_sensors()`), never raw strings.
-- **Markers:** `smoke`, `shell`, `http`, `mqtt`, `e2e` — filter with `--pytest-args="-m smoke"`.
-- **DUT scope = session:** one boot per suite; tests must restore state after mutations.
-- **ZEPHYR_BASE override required:** `ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister ...` (shell env var is stale).
-- **Mosquitto is only required for MQTT test coverage** on `localhost:1883`. If no broker is running, `mqtt_harness`/MQTT-marked tests are skipped; the DUT does not exit at boot. The MQTT publisher thread keeps retrying the broker connection in the background. To run MQTT tests locally, start a broker with `mosquitto -p 1883 -d`.
+- **Page Object Model:** tests call harness methods, never raw strings.
+- **Markers:** `smoke`, `shell`, `http`, `mqtt`, `e2e`.
+- **DUT scope = session:** one boot per suite; restore state after mutations.
+- **ZEPHYR_BASE override required:** `ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister ...`
+- **MQTT broker:** `mosquitto -p 1883 -d`; tests auto-skip if none running.
 
 ### native_sim/native/64 socket constraints
 
