@@ -123,7 +123,8 @@
       "Bash(pkill -f zephyr.exe)",
       "Bash(pkill -9 -f zephyr.exe)",
       "Bash(nc -z localhost 1883)",
-      "Bash(kill -0 1473934)"
+      "Bash(kill -0 1473934)",
+      "Bash(ZEPHYR_BASE=/home/zephyr/workspace/zephyr west patch *)"
     ]
   },
   "hooks": {

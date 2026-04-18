@@ -28,7 +28,7 @@
 /* Jitter range for temperature: ±0.5 °C */
 #define FAKE_TEMP_JITTER_MILLI 500
 
-LOG_MODULE_REGISTER(fake_temperature, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(fake_temperature, CONFIG_FAKE_SENSORS_LOG_LEVEL);
 
 /* Compatible string that DT nodes must carry. */
 #define DT_COMPAT fake_temperature

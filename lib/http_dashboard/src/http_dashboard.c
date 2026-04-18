@@ -37,7 +37,7 @@
 #include "process_post.h"
 #include "sensor_history.h"
 
-LOG_MODULE_REGISTER(http_dashboard, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(http_dashboard, CONFIG_HTTP_DASHBOARD_LOG_LEVEL);
 
 #if defined(CONFIG_HTTP_DASHBOARD_AUTH)
 /* Capture the Authorization header so handlers can validate bearer tokens. */
@@ -80,6 +80,7 @@ static const struct http_header auth_hdrs[] = {
 
 static void respond_401(struct http_response_ctx *rsp)
 {
+	LOG_DBG("respond_401: sending 401 Unauthorized");
 	rsp->status = HTTP_401_UNAUTHORIZED;
 	rsp->headers = auth_hdrs;
 	rsp->header_count = ARRAY_SIZE(auth_hdrs);
@@ -202,6 +203,8 @@ static int api_data_handler(struct http_client_ctx *client, enum http_transactio
 		return 0;
 	}
 
+	LOG_DBG("GET /api/data: serving");
+
 #if defined(CONFIG_HTTP_DASHBOARD_AUTH) && defined(CONFIG_HTTP_DASHBOARD_AUTH_PROTECT_READ)
 	if (!auth_check(request_ctx)) {
 		respond_401(response_ctx);
@@ -248,7 +251,7 @@ static int api_config_handler(struct http_client_ctx *client, enum http_transact
 {
 	ARG_UNUSED(user_data);
 
-	if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
+if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
 		post_cursor = 0;
 		return 0;
 	}
@@ -260,6 +263,7 @@ static int api_config_handler(struct http_client_ctx *client, enum http_transact
 
 			memcpy(post_buf + post_cursor, request_ctx->data, copy);
 			post_cursor += copy;
+			LOG_DBG("POST /api/config: chunk %zuB, cursor=%zu", copy, post_cursor);
 		}
 
 if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
@@ -267,6 +271,7 @@ if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
 			if (!auth_check(request_ctx)) {
 				post_cursor = 0;
 				respond_401(response_ctx);
+				LOG_DBG("POST /api/config: auth denied, responded 401");
 				return 0;
 			}
 #endif
@@ -279,6 +284,7 @@ if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
 			response_ctx->body = (const uint8_t *)post_ok;
 			response_ctx->body_len = sizeof(post_ok) - 1;
 			response_ctx->final_chunk = true;
+			LOG_DBG("POST /api/config: responded 200 OK");
 		}
 		return 0;
 	}
@@ -345,6 +351,8 @@ static int api_locations_handler(struct http_client_ctx *client,
 	if (status != HTTP_SERVER_REQUEST_DATA_FINAL) {
 		return 0;
 	}
+
+	LOG_DBG("GET /api/locations: serving");
 
 #if defined(CONFIG_HTTP_DASHBOARD_AUTH) && defined(CONFIG_HTTP_DASHBOARD_AUTH_PROTECT_READ)
 	if (!auth_check(request_ctx)) {

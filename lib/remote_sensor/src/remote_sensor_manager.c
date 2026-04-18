@@ -27,7 +27,7 @@
 #include <sensor_registry/sensor_registry.h>
 #include <sensor_trigger/sensor_trigger.h>
 
-LOG_MODULE_REGISTER(remote_sensor, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(remote_sensor, CONFIG_REMOTE_SENSOR_LOG_LEVEL);
 
 /* --------------------------------------------------------------------------
  * Peer table — owned by this module

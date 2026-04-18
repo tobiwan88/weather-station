@@ -14,7 +14,7 @@
 #include <config_cmd/config_cmd.h>
 #include <fake_sensors/fake_sensors.h>
 
-LOG_MODULE_REGISTER(fake_sensors_config_cmd, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(fake_sensors_config_cmd, CONFIG_FAKE_SENSORS_LOG_LEVEL);
 
 static void config_cmd_cb(const struct zbus_channel *chan)
 {

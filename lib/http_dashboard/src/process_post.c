@@ -15,7 +15,7 @@
 #include "form_parse.h"
 #include "process_post.h"
 
-LOG_MODULE_DECLARE(http_dashboard, LOG_LEVEL_INF);
+LOG_MODULE_DECLARE(http_dashboard, CONFIG_HTTP_DASHBOARD_LOG_LEVEL);
 
 /* Runtime-configurable values (last values POSTed via /api/config). */
 static char sntp_server_buf[64];
@@ -39,6 +39,7 @@ void config_state_copy_sntp_server(char *out, size_t len)
 
 void process_post(const uint8_t *body, size_t len)
 {
+	LOG_DBG("process_post: body %zu B", len);
 	/* Buffer must hold the full accumulated POST body (1024 B max). */
 	static char buf[1025];
 	size_t copy_len = MIN(len, sizeof(buf) - 1);

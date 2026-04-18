@@ -13,7 +13,7 @@
 #	include <zephyr/settings/settings.h>
 #endif
 
-LOG_MODULE_REGISTER(location_registry, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(location_registry, CONFIG_LOCATION_REGISTRY_LOG_LEVEL);
 
 static char locations[CONFIG_LOCATION_REGISTRY_MAX_LOCATIONS]
 		     [CONFIG_LOCATION_REGISTRY_NAME_LEN + 1];

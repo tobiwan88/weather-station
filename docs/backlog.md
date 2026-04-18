@@ -165,3 +165,9 @@ Reference: ADR-003 §Serialisation, ADR-006.
 ## [Remote sensor manager] Thread maybe more busy as eneded
 
 - we use zbus + timeout and drain afterwards. Normal operation we should not have to many events at once. Maybe enough just to put events on simple message que or other format?
+
+
+# crash and errors
+- ensure to wait for main.c print ready for testing (1) in tests
+- remove the double issues
+- error at teardown test_trigger_interval_bounds_accepted

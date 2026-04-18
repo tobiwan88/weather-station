@@ -71,4 +71,8 @@ config HTTP_DASHBOARD_AUTH_SHELL
 
 endif # HTTP_DASHBOARD_AUTH
 
+module = HTTP_DASHBOARD
+module-str = HTTP_DASHBOARD
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # HTTP_DASHBOARD

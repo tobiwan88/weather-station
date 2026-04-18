@@ -10,7 +10,7 @@
 #include <sensor_registry/sensor_registry.h>
 #include <sensor_trigger/sensor_trigger.h>
 
-LOG_MODULE_REGISTER(fake_sensors_shell, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(fake_sensors_shell, CONFIG_FAKE_SENSORS_LOG_LEVEL);
 
 /* --------------------------------------------------------------------------
  * fake_sensors list

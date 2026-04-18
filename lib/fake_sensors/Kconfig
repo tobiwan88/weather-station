@@ -50,4 +50,8 @@ config FAKE_SENSORS_JITTER
 	    CO2          25 ppm   (25000 milli-ppm)
 	    VOC          5 IAQ    (5000 milli-IAQ)
 
+module = FAKE_SENSORS
+module-str = FAKE_SENSORS
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # FAKE_SENSORS

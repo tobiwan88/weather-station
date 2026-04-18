@@ -71,12 +71,20 @@ class HttpHarness:
         ``HTTP_SERVER_CAPTURE_HEADERS`` (auto-selected by auth).
         """
         headers = self._auth_headers() if authenticated else {}
-        r = self._session.get(
-            urljoin(self.base_url, path),
-            headers=headers,
-            timeout=self.timeout,
-        )
-        _log.debug("GET %s → %s", path, r.status_code)
+        t0 = time.monotonic()
+        try:
+            r = self._session.get(
+                urljoin(self.base_url, path),
+                headers=headers,
+                timeout=self.timeout,
+            )
+        except Exception as exc:
+            _log.error("GET %s connection error after %.3fs: %s",
+                       urljoin(self.base_url, path), time.monotonic() - t0, exc)
+            raise
+        _log.debug("GET %s → %s (%.3fs)", path, r.status_code, time.monotonic() - t0)
+        if r.status_code >= 400:
+            _log.debug("GET %s error body: %r", path, r.text[:200])
         return r
 
     def _post(self, path: str, data: dict, authenticated: bool = True,
@@ -112,14 +120,23 @@ class HttpHarness:
                    "Authorization" in headers,
                    token if token is not None else self._token)
         post_session = requests.Session()
-        r = post_session.post(
-            urljoin(self.base_url, path),
-            data=data,
-            headers=headers,
-            timeout=self.timeout,
-            allow_redirects=False,
-        )
-        _log.debug("POST %s %s → %s", path, list(data.keys()), r.status_code)
+        t0 = time.monotonic()
+        try:
+            r = post_session.post(
+                urljoin(self.base_url, path),
+                data=data,
+                headers=headers,
+                timeout=self.timeout,
+                allow_redirects=False,
+            )
+        except Exception as exc:
+            _log.error("POST %s connection error after %.3fs: %s",
+                       urljoin(self.base_url, path), time.monotonic() - t0, exc)
+            raise
+        elapsed = time.monotonic() - t0
+        _log.debug("POST %s %s → %s (%.3fs)", path, list(data.keys()), r.status_code, elapsed)
+        if r.status_code >= 400:
+            _log.debug("POST %s error body: %r", path, r.text[:200])
         # Sleep first, then close: gives the embedded server time to complete
         # any in-flight epoll operations before the TCP FIN arrives.
         time.sleep(0.15)

@@ -34,6 +34,10 @@ class ShellHarness:
     def __init__(self, shell: Shell) -> None:
         self._shell = shell
 
+    def wait_for_prompt(self, timeout: float | None = None) -> None:
+        """Block until the shell prompt is ready."""
+        self._shell.wait_for_prompt(timeout)
+
     def _exec(self, cmd: str) -> list[str]:
         """Execute a shell command and return lines, with structured logging."""
         _log.debug("exec: %s", cmd)

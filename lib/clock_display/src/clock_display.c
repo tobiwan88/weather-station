@@ -13,7 +13,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/clock.h>
 
-LOG_MODULE_REGISTER(clock_display, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(clock_display, CONFIG_CLOCK_DISPLAY_LOG_LEVEL);
 
 static struct k_work_delayable clock_work;
 

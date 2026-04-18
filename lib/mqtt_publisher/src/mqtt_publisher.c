@@ -39,7 +39,7 @@
 
 #include "mqtt_publisher_format.h"
 
-LOG_MODULE_REGISTER(mqtt_publisher, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(mqtt_publisher, CONFIG_MQTT_PUBLISHER_LOG_LEVEL);
 
 /* --------------------------------------------------------------------------
  * Message queue: zbus callback → MQTT thread
@@ -209,6 +209,7 @@ static void publish_event(const struct env_sensor_data *evt)
 	param.message.payload.len = (uint32_t)payload_len;
 	param.message_id = sys_rand16_get();
 
+	LOG_DBG("publish uid=0x%08x type=%d topic=%s", evt->sensor_uid, evt->type, topic_buf);
 	int rc = mqtt_publish(&s_client, &param);
 
 	if (rc != 0) {
@@ -267,6 +268,7 @@ static int broker_resolve(void)
 	char port_str[8];
 
 	snprintf(port_str, sizeof(port_str), "%u", s_broker_port);
+	LOG_DBG("resolving %s:%s", s_broker_host, port_str);
 
 	int rc = zsock_getaddrinfo(s_broker_host, port_str, &hints, &res);
 
@@ -277,6 +279,7 @@ static int broker_resolve(void)
 
 	memcpy(&s_broker_addr, res->ai_addr, res->ai_addrlen);
 	zsock_freeaddrinfo(res);
+	LOG_DBG("broker resolved");
 	return 0;
 }
 
@@ -312,6 +315,7 @@ static int try_connect(void)
 
 	s_state = MQTT_PUB_CONNECTING;
 	k_sem_reset(&s_connack_sem);
+	LOG_DBG("mqtt_connect: opening TCP socket");
 
 	int rc = mqtt_connect(&s_client);
 
@@ -357,6 +361,7 @@ static void mqtt_thread_fn(void *p1, void *p2, void *p3)
 	 * setup before we open any socket.  Default 0 ms for production builds.
 	 */
 	if (CONFIG_MQTT_PUBLISHER_STARTUP_DELAY_MS > 0) {
+		LOG_DBG("startup delay %d ms", CONFIG_MQTT_PUBLISHER_STARTUP_DELAY_MS);
 		k_sleep(K_MSEC(CONFIG_MQTT_PUBLISHER_STARTUP_DELAY_MS));
 	}
 
@@ -364,6 +369,8 @@ static void mqtt_thread_fn(void *p1, void *p2, void *p3)
 		LOG_INF("connecting to %s:%u ...", s_broker_host, s_broker_port);
 
 		if (try_connect() != 0) {
+			LOG_DBG("connect failed, waiting %d ms before retry",
+				CONFIG_MQTT_PUBLISHER_RECONNECT_MS);
 			k_sleep(K_MSEC(CONFIG_MQTT_PUBLISHER_RECONNECT_MS));
 			continue;
 		}
@@ -409,9 +416,14 @@ static struct k_thread s_mqtt_thread;
 static void mqtt_sensor_event_cb(const struct zbus_channel *chan)
 {
 	const struct env_sensor_data *evt = zbus_chan_const_msg(chan);
+	int rc = k_msgq_put(&s_mqtt_queue, evt, K_NO_WAIT);
 
-	/* Drop silently if the queue is full (thread is busy reconnecting) */
-	k_msgq_put(&s_mqtt_queue, evt, K_NO_WAIT);
+	if (rc != 0) {
+		LOG_WRN("sensor event dropped: queue full (uid=0x%08x type=%d)", evt->sensor_uid,
+			evt->type);
+	} else {
+		LOG_DBG("sensor event enqueued uid=0x%08x type=%d", evt->sensor_uid, evt->type);
+	}
 }
 
 ZBUS_LISTENER_DEFINE(mqtt_publisher_listener, mqtt_sensor_event_cb);
