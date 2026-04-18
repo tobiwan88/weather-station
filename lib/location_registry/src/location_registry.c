@@ -24,10 +24,13 @@ static K_MUTEX_DEFINE(loc_mutex);
 int location_registry_add(const char *name)
 {
 	if (name == NULL || name[0] == '\0') {
+		LOG_DBG("location_add: invalid name");
 		return -EINVAL;
 	}
 
 	if (strlen(name) > CONFIG_LOCATION_REGISTRY_NAME_LEN) {
+		LOG_WRN("location_add: name '%s' too long (max %d)", name,
+			CONFIG_LOCATION_REGISTRY_NAME_LEN);
 		return -ENAMETOOLONG;
 	}
 
@@ -42,6 +45,8 @@ int location_registry_add(const char *name)
 
 	if (location_count >= CONFIG_LOCATION_REGISTRY_MAX_LOCATIONS) {
 		k_mutex_unlock(&loc_mutex);
+		LOG_ERR("location_add: table full (max %d), cannot add '%s'",
+			CONFIG_LOCATION_REGISTRY_MAX_LOCATIONS, name);
 		return -ENOMEM;
 	}
 
@@ -73,6 +78,7 @@ int location_registry_add(const char *name)
 int location_registry_remove(const char *name)
 {
 	if (name == NULL || name[0] == '\0') {
+		LOG_DBG("location_remove: invalid name");
 		return -EINVAL;
 	}
 
@@ -89,6 +95,7 @@ int location_registry_remove(const char *name)
 
 	if (found < 0) {
 		k_mutex_unlock(&loc_mutex);
+		LOG_DBG("location_remove: '%s' not found", name);
 		return -ENOENT;
 	}
 

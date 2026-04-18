@@ -389,6 +389,7 @@ static void remote_trigger_cb(const struct zbus_channel *chan)
 
 		uint32_t uid = peer_table[i].uid;
 
+		LOG_DBG("trigger → uid=0x%08x proto=%d", uid, peer_table[i].proto);
 		k_mutex_unlock(&peer_table_mutex);
 		t->send_trigger(t, uid);
 		k_mutex_lock(&peer_table_mutex, K_FOREVER);
