@@ -15,6 +15,7 @@ Project context for AI coding agents. Full rationale: [`docs/adr/`](docs/adr/REA
 
 ```bash
 west init -l . && west update --narrow
+west patch apply          # apply all patches in zephyr/patches.yml
 ./.devcontainer/start-display.sh
 ```
 
@@ -23,6 +24,17 @@ Binary: `/home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr
 Build and test: `/build-and-test`. Display problems: `/display-reset`.
 
 Integration tests: `/run-integration-tests [marker]`. New test: `/new-integration-test`. New harness: `/new-harness`.
+
+## Zephyr patches (`west patch`)
+
+Out-of-tree fixes to Zephyr are managed as `git format-patch` files in
+`zephyr/patches/zephyr/`, tracked in `zephyr/patches.yml`, and applied with
+`west patch apply` (run after `west update`). Use `west patch clean` before
+`west update` to revert.
+
+To add a new patch: `/west-patch`.
+
+**Do NOT** edit Zephyr source directly without a patch entry — changes are lost on `west patch clean` / `west update`.
 
 ## Architecture rules (non-negotiable)
 

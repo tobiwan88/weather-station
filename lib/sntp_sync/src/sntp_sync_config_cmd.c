@@ -14,7 +14,7 @@
 #include <config_cmd/config_cmd.h>
 #include <sntp_sync/sntp_sync.h>
 
-LOG_MODULE_REGISTER(sntp_sync_config_cmd, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(sntp_sync_config_cmd, CONFIG_SNTP_SYNC_LOG_LEVEL);
 
 static void config_cmd_cb(const struct zbus_channel *chan)
 {

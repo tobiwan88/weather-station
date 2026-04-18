@@ -18,7 +18,7 @@
 
 #include <sntp_sync/sntp_sync.h>
 
-LOG_MODULE_REGISTER(sntp_sync, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(sntp_sync, CONFIG_SNTP_SYNC_LOG_LEVEL);
 
 static atomic_t synced;
 

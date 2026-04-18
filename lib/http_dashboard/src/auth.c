@@ -10,7 +10,7 @@
 
 #include "auth.h"
 
-LOG_MODULE_DECLARE(http_dashboard, LOG_LEVEL_DBG);
+LOG_MODULE_DECLARE(http_dashboard, CONFIG_HTTP_DASHBOARD_LOG_LEVEL);
 
 /* -------------------------------------------------------------------------- */
 /* Static token storage                                                        */

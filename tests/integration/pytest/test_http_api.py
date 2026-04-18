@@ -119,6 +119,8 @@ def test_post_config_returns_ok_json(authed_harness):
 @pytest.mark.http
 def test_post_config_without_token_returns_401(http_harness):
     """``POST /api/config`` without an Authorization header must return 401."""
+
+    time.sleep(1)
     r = http_harness._post("/api/config", {"trigger_interval_ms": "5000"},
                            authenticated=False)
     assert r.status_code == 401, f"Expected 401, got {r.status_code}"
@@ -127,6 +129,7 @@ def test_post_config_without_token_returns_401(http_harness):
 @pytest.mark.http
 def test_post_config_with_wrong_token_returns_401(http_harness):
     """``POST /api/config`` with an invalid token must return 401."""
+    time.sleep(1)
     r = http_harness._post(
         "/api/config",
         {"trigger_interval_ms": "5000"},
@@ -138,6 +141,7 @@ def test_post_config_with_wrong_token_returns_401(http_harness):
 @pytest.mark.http
 def test_post_config_with_valid_token_returns_200(authed_harness):
     """``POST /api/config`` with the correct bearer token must succeed."""
+    time.sleep(1)
     status = authed_harness.set_trigger_interval(5000)
     assert 200 <= status < 300, f"Unexpected status code: {status}"
     time.sleep(0.3)
@@ -161,6 +165,7 @@ def test_dashboard_and_config_pages_always_open(http_harness):
 @pytest.mark.http
 def test_token_rotation_invalidates_old_token(authed_harness, shell_harness):
     """After rotation, the old token must be rejected and the new one accepted."""
+    time.sleep(1)
     old_token = authed_harness._token
 
     # Rotate via shell and give the command time to complete.

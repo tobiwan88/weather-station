@@ -21,7 +21,7 @@
 
 #include <sensor_event/sensor_event.h>
 
-LOG_MODULE_REGISTER(sensor_event_log, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(sensor_event_log, CONFIG_SENSOR_EVENT_LOG_LOG_LEVEL);
 
 static void sensor_event_log_cb(const struct zbus_channel *chan)
 {

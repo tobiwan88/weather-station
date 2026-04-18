@@ -64,7 +64,7 @@
 
 #include "theme.h"
 
-LOG_MODULE_REGISTER(lvgl_display, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(lvgl_display, CONFIG_LVGL_DISPLAY_LOG_LEVEL);
 
 /* --------------------------------------------------------------------------
  * Layout constants

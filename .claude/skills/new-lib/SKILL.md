@@ -94,8 +94,16 @@ if <KCONFIG_SYMBOL>
 # 	int "Thread stack size in bytes"
 # 	default 1024
 
+module = <KCONFIG_SYMBOL>
+module-str = <KCONFIG_SYMBOL>
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # <KCONFIG_SYMBOL>
 ```
+
+The log template generates `CONFIG_<KCONFIG_SYMBOL>_LOG_LEVEL` (defaults to `LOG_LEVEL_INF`)
+and exposes it in menuconfig under the library's menu. Use this symbol in the source file
+instead of a hardcoded level (see Step 7).
 
 ---
 
@@ -161,7 +169,7 @@ Canonical structure:
 #include <sensor_event/sensor_event.h>   /* if consuming sensor events */
 #include <<lib_name>/<lib_name>.h>
 
-LOG_MODULE_REGISTER(<lib_name>, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(<lib_name>, CONFIG_<KCONFIG_SYMBOL>_LOG_LEVEL);
 
 /* If this library defines a new channel: */
 /* ZBUS_CHAN_DEFINE(<lib_name>_chan, <msg_type>, NULL, NULL, ZBUS_OBSERVERS_EMPTY,

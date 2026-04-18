@@ -80,4 +80,8 @@ config REMOTE_SENSOR_SHELL
 	    remote_sensor pair <uid_hex>     — confirm pending sensor (AUTO_REGISTER=n)
 	    remote_sensor unpair <uid_hex>   — remove and forget a peer
 
+module = REMOTE_SENSOR
+module-str = REMOTE_SENSOR
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # REMOTE_SENSOR

@@ -83,4 +83,8 @@ config MQTT_PUBLISHER_SHELL
 	    mqtt_pub set auth <user> <pass>
 	    mqtt_pub set gateway <name>
 
+module = MQTT_PUBLISHER
+module-str = MQTT_PUBLISHER
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # MQTT_PUBLISHER

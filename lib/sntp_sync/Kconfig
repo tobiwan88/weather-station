@@ -58,4 +58,8 @@ config SNTP_SYNC_PRESYNC_DELAY_MS
 	  Set to 0 to disable (suitable for real hardware where the issue does not
 	  apply).
 
+module = SNTP_SYNC
+module-str = SNTP_SYNC
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # SNTP_SYNC
