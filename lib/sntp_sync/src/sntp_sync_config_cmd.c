@@ -21,6 +21,7 @@ static void config_cmd_cb(const struct zbus_channel *chan)
 	const struct config_cmd_event *evt = zbus_chan_const_msg(chan);
 
 	if (evt->cmd == CONFIG_CMD_SNTP_RESYNC) {
+		LOG_DBG("config_cmd: SNTP_RESYNC received");
 		sntp_sync_trigger_resync();
 	}
 }
@@ -29,7 +30,14 @@ ZBUS_LISTENER_DEFINE(sntp_sync_config_cmd_listener, config_cmd_cb);
 
 static int sntp_sync_config_cmd_init(void)
 {
-	return zbus_chan_add_obs(&config_cmd_chan, &sntp_sync_config_cmd_listener, K_NO_WAIT);
+	int rc = zbus_chan_add_obs(&config_cmd_chan, &sntp_sync_config_cmd_listener, K_NO_WAIT);
+
+	if (rc != 0) {
+		LOG_ERR("failed to subscribe to config_cmd_chan: %d", rc);
+		return rc;
+	}
+	LOG_DBG("sntp_sync_config_cmd: init done");
+	return 0;
 }
 
 SYS_INIT(sntp_sync_config_cmd_init, APPLICATION, 95);

@@ -104,6 +104,8 @@ static void sntp_thread_fn(void *p1, void *p2, void *p3)
 		 * return value is intentionally ignored. */
 		(void)k_sem_take(&sntp_trigger_sem, K_FOREVER);
 #endif
+		LOG_DBG("sntp_sync: resync triggered, settling %d ms",
+			CONFIG_SNTP_SYNC_PRESYNC_DELAY_MS);
 		/* Brief settling delay: on native_sim the HTTP server thread may still
 		 * be completing its response (sendto + epoll cleanup) when this thread
 		 * wakes.  Sleeping here lets any in-flight socket operations drain before
@@ -122,5 +124,6 @@ K_THREAD_DEFINE(sntp_sync_thread, CONFIG_SNTP_SYNC_THREAD_STACK_SIZE, sntp_threa
 
 void sntp_sync_trigger_resync(void)
 {
+	LOG_DBG("sntp_sync: manual resync requested");
 	k_sem_give(&sntp_trigger_sem);
 }

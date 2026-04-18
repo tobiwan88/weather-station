@@ -30,7 +30,7 @@
 #include "remote_sensor_priv.h"
 #include <remote_sensor/remote_sensor.h>
 
-LOG_MODULE_DECLARE(remote_sensor, LOG_LEVEL_INF);
+LOG_MODULE_DECLARE(remote_sensor, CONFIG_REMOTE_SENSOR_LOG_LEVEL);
 
 /* --------------------------------------------------------------------------
  * Per-peer load context — accumulates fields for one uid during load
