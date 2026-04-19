@@ -1,6 +1,6 @@
 patches:
   - path: zephyr/0001-drivers-net-nsos-fix-epoll-race-and-poll-dlist-corru.patch
-    sha256sum: fd43a1f99718554e6242150324fddea6a20c7a79765926eed4acdb6656486687
+    sha256sum: cf22abdc047edc2c36011d381b075d95357d4716691be00b581d3f242deb55a4
     module: zephyr
     author: Tobias Meyer
     email: tobiuhg@gmail.com
