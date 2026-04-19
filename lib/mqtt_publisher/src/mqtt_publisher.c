@@ -178,6 +178,26 @@ static void mqtt_evt_handler(struct mqtt_client *const client, const struct mqtt
 }
 
 /* --------------------------------------------------------------------------
+ * Epoch cache — avoids calling sntp_sync_get_epoch_ms() per publish.
+ * TODO: Replace with a system-wide epoch cache that is updated by
+ * sntp_sync when a new sync completes, rather than polling here.
+ * -------------------------------------------------------------------------- */
+static int64_t s_cached_epoch_s;
+static int64_t s_epoch_cache_updated_ms;
+
+static int64_t get_cached_epoch_s(void)
+{
+	int64_t now = k_uptime_get();
+
+	if (now - s_epoch_cache_updated_ms > CONFIG_MQTT_PUBLISHER_EPOCH_CACHE_TTL_MS) {
+		s_cached_epoch_s = sntp_sync_get_epoch_ms() / 1000;
+		s_epoch_cache_updated_ms = now;
+	}
+
+	return s_cached_epoch_s;
+}
+
+/* --------------------------------------------------------------------------
  * Publish one event
  * -------------------------------------------------------------------------- */
 static void publish_event(const struct env_sensor_data *evt)
@@ -187,7 +207,7 @@ static void publish_event(const struct env_sensor_data *evt)
 
 	const char *location = sensor_registry_get_location(evt->sensor_uid);
 	const char *name = sensor_registry_get_display_name(evt->sensor_uid);
-	int64_t epoch_s = sntp_sync_get_epoch_ms() / 1000;
+	int64_t epoch_s = get_cached_epoch_s();
 
 	mqtt_publisher_build_topic(s_gateway_name, location, name, evt->type, topic_buf,
 				   sizeof(topic_buf));
@@ -389,6 +409,13 @@ static void mqtt_thread_fn(void *p1, void *p2, void *p3)
 			while (s_state == MQTT_PUB_CONNECTED &&
 			       k_msgq_get(&s_mqtt_queue, &evt, K_NO_WAIT) == 0) {
 				publish_event(&evt);
+			}
+
+			/* Backpressure warning: queue filling up */
+			uint32_t used = k_msgq_num_used_get(&s_mqtt_queue);
+			if (used >= CONFIG_MQTT_PUBLISHER_QUEUE_HIGH) {
+				LOG_WRN("mqtt queue at %u/%u — consider increasing queue depth",
+					used, CONFIG_MQTT_PUBLISHER_QUEUE_DEPTH);
 			}
 		}
 
