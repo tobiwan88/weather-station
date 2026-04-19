@@ -38,8 +38,8 @@ def test_set_trigger_interval_via_http(authed_harness, restore_trigger_interval)
 
 @pytest.mark.http
 def test_trigger_interval_bounds_accepted(authed_harness, restore_trigger_interval):
-    time.sleep(1)
     """Boundary values for trigger_interval_ms must be accepted."""
+    time.sleep(1)
     for ms in (1000, 60000):
         status = authed_harness.set_trigger_interval(ms)
         assert 200 <= status < 300, f"Status {status} for interval={ms}"

@@ -1,0 +1,30 @@
+patches:
+  - path: zephyr/0001-drivers-net-nsos-fix-epoll-race-and-polls-dlist-corruption.patch
+    sha256sum: 994d2892bfa1257e924746521c8dc47d17fe5c08b46290cfaa56b2b62ecd7e24
+    module: zephyr
+    author: Tobias Meyer
+    email: tobiuhg@gmail.com
+    date: 2026-04-19
+    upstreamable: true
+    apply-command: git am
+    comments: |
+      Three interrelated bugs cause crashes on native_sim/native/64 when
+      HTTP, MQTT, and SNTP sockets are active concurrently.
+
+      Bug 1 (nsos_adapt.c): EPOLL_CTL_ADD EEXIST called nsi_print_error_and_exit.
+      Fix: on EEXIST use EPOLL_CTL_MOD; silently ignore ENOENT on DEL.
+
+      Bug 2 (nsos_adapt.c): Multiple Zephyr threads race on epoll_ctl with no
+      lock around nsos_epoll_fd. Fix: static pthread_mutex_t around poll_add
+      and poll_remove.
+
+      Bug 3 (nsos_sockets.c): nsos_close() freed sock without removing
+      sock->poll.node from nsos_polls (use-after-free), and nsos_poll_prepare /
+      nsos_poll_update accessed the shared dlist without a lock (concurrent
+      sys_dlist_append + sys_dlist_remove → prev=NULL → SIGSEGV).
+      Fix: static pthread_mutex_t around all sys_dlist operations; SAFE loop
+      with is_linked check in nsos_close; early is_linked guard in poll_prepare.
+
+      Root cause confirmed via GDB host-attach (gdb -p <pid>) in the pytest
+      integration suite — backtrace showed sys_dlist_remove with prev=NULL on
+      http_server_tid.

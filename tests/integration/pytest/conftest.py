@@ -26,6 +26,8 @@ Use ``--log-cli-level=DEBUG`` to see all harness traffic; INFO is the default.
 """
 
 import logging
+import subprocess
+from pathlib import Path
 
 import pytest
 
@@ -108,6 +110,61 @@ def _drain_device_logs(device_logger: DeviceLogger) -> None:
     """
     yield
     device_logger.drain()
+
+
+# ---------------------------------------------------------------------------
+# GDB crash watcher
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture()
+def gdb_crash_watcher(dut, tmp_path):
+    """Attach GDB to the DUT and capture a backtrace on any crash.
+
+    Sets breakpoints on nsi_print_error_and_exit, z_fatal_error, and SIGABRT
+    before the test body runs. On crash, the GDB commands block prints a full
+    bt + thread list to gdb_crash.log and to the test log.
+
+    Opt-in: only tests that list this fixture get GDB attached.
+    """
+    if dut._process is None:
+        _log.warning("gdb_crash_watcher: DUT process not running, skipping GDB attach")
+        yield
+        return
+
+    pid = dut._process.pid
+    gdb_log = tmp_path / "gdb_crash.log"
+    gdbinit = Path(__file__).parent / "crash_watch.gdbinit"
+
+    cmd = [
+        "gdb", "--batch",
+        "-ex", "set pagination off",
+        "-ex", f"set logging file {gdb_log}",
+        "-ex", "set logging overwrite on",
+        "-ex", "set logging enabled on",
+        "-x", str(gdbinit),
+        "-p", str(pid),
+    ]
+
+    _log.debug("gdb_crash_watcher: attaching gdb to pid %d", pid)
+    gdb_proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    yield
+
+    try:
+        gdb_proc.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        gdb_proc.terminate()
+        gdb_proc.wait(timeout=2)
+
+    stdout = (gdb_proc.stdout.read() or b"").decode(errors="replace")
+    if stdout.strip():
+        _log.error("GDB stdout:\n%s", stdout)
+
+    if gdb_log.exists():
+        content = gdb_log.read_text()
+        if content.strip():
+            _log.error("GDB crash log (%s):\n%s", gdb_log, content)
 
 
 # ---------------------------------------------------------------------------

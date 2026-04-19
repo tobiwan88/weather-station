@@ -14,3 +14,4 @@ tests:
       - native_sim/native/64
     extra_configs:
       - CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y
+    timeout: 240
