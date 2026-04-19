@@ -44,8 +44,8 @@ tools via a PR to `tobiwan88/zephyr_docker`.
 |----------|-------|
 | Image | `ghcr.io/tobiwan88/zephyr_docker:latest` |
 | Base | Debian Trixie Slim |
-| Zephyr SDK | v0.17.4 |
-| Zephyr version | v4.3.0 |
+| Zephyr SDK | v1.0.1 |
+| Zephyr version | v4.4.0 |
 | User | `zephyr` (UID 1000, non-root) |
 | Python venv | `/home/zephyr/.venv` |
 | SDK path | `/home/zephyr/zephyr-sdk` |
