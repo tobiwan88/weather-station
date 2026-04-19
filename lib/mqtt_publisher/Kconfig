@@ -63,7 +63,21 @@ config MQTT_PUBLISHER_RECONNECT_MS
 
 config MQTT_PUBLISHER_QUEUE_DEPTH
 	int "Event queue depth (events dropped when full)"
-	default 16
+	default 64
+
+config MQTT_PUBLISHER_QUEUE_HIGH
+	int "Queue watermark for backpressure warning (events)"
+	default 48
+	help
+	  When the queue fills past this threshold, a warning is logged.
+	  Must be less than MQTT_PUBLISHER_QUEUE_DEPTH.
+
+config MQTT_PUBLISHER_EPOCH_CACHE_TTL_MS
+	int "SNTP epoch cache TTL (milliseconds)"
+	default 1000
+	help
+	  Cache the epoch_s value for this duration to avoid repeated
+	  sntp_sync_get_epoch_ms() calls in the publish loop.
 
 config MQTT_PUBLISHER_STACK_SIZE
 	int "Publisher thread stack size (bytes)"
