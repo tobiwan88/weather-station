@@ -28,6 +28,6 @@ int main(void)
 	 *   r"integration:.*device:.*ready"
 	 */
 	k_sleep(K_SECONDS(1));
-	LOG_INF("Weather Station Ready For Testing");
-	return 0; /* unreachable — Zephyr main convention */
+	LOG_INF("device: ready");
+	k_sleep(K_FOREVER);
 }

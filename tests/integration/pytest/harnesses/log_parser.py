@@ -31,7 +31,7 @@ _ANSI_RE = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 # Match a Zephyr log line after ANSI stripping:
 #   [00:00:01.234,567] <inf> http_dashboard: server ready on port 8080
 _LOG_RE = re.compile(
-    r"\[(\d{2}:\d{2}:\d{2}\.\d+)\]"  # [HH:MM:SS.mmm,mmm]
+    r"\[(\d{2}:\d{2}:\d{2}\.[\d,]+)\]"  # [HH:MM:SS.mmm,mmm]
     r"[^\<]*"                          # optional gap / extra ANSI residue
     r"<(inf|dbg|wrn|err)>\s+"         # <level>
     r"([\w]+):\s*(.*)"                 # module: message

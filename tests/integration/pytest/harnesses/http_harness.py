@@ -133,14 +133,15 @@ class HttpHarness:
             _log.error("POST %s connection error after %.3fs: %s",
                        urljoin(self.base_url, path), time.monotonic() - t0, exc)
             raise
+        finally:
+            # Sleep first, then close: gives the embedded server time to complete
+            # any in-flight epoll operations before the TCP FIN arrives.
+            time.sleep(0.15)
+            post_session.close()
         elapsed = time.monotonic() - t0
         _log.debug("POST %s %s → %s (%.3fs)", path, list(data.keys()), r.status_code, elapsed)
         if r.status_code >= 400:
             _log.debug("POST %s error body: %r", path, r.text[:200])
-        # Sleep first, then close: gives the embedded server time to complete
-        # any in-flight epoll operations before the TCP FIN arrives.
-        time.sleep(0.15)
-        post_session.close()
         return r
 
     def get_token_from_shell(self, shell_harness) -> str:
@@ -152,7 +153,7 @@ class HttpHarness:
         Returns the 32-character hex token string.
         Raises ``AssertionError`` if the output cannot be parsed.
         """
-        lines = shell_harness._exec("http_dashboard token show")
+        lines = shell_harness.exec("http_dashboard token show")
         for line in lines:
             m = re.search(r"Bearer\s+([0-9a-fA-F]{32})", line)
             if m:
