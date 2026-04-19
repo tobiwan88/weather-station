@@ -1,0 +1,187 @@
+From b88d5172c6c2c033416da02b31f5298b33c690e7 Mon Sep 17 00:00:00 2001
+From: Tobias Meyer <tobiuhg@gmail.com>
+Date: Sun, 19 Apr 2026 05:29:19 +0000
+Subject: [PATCH] drivers: net: nsos: fix epoll race and nsos_polls dlist
+ corruption
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Three interrelated bugs cause crashes on native_sim/native/64 when
+HTTP, MQTT, and SNTP sockets are active concurrently.
+
+Bug 1 — EEXIST fatal exit in nsos_adapt_poll_add (nsos_adapt.c)
+An fd closed and reopened before EPOLL_CTL_DEL completes causes the
+subsequent EPOLL_CTL_ADD to return EEXIST, which previously called
+nsi_print_error_and_exit.  Fix: on EEXIST use EPOLL_CTL_MOD to
+update the stale entry atomically.  On ENOENT in poll_remove, silently
+ignore — Linux auto-removes epoll entries on close().
+
+Bug 2 — TOCTOU race on shared nsos_epoll_fd (nsos_adapt.c)
+Multiple Zephyr threads call nsos_adapt_poll_add / nsos_adapt_poll_remove
+concurrently with no lock around epoll_ctl.  Fix: protect both functions
+with a static pthread_mutex_t (PTHREAD_MUTEX_INITIALIZER).
+
+Bug 3 — nsos_polls dlist corruption and use-after-free (nsos_sockets.c)
+a) nsos_close() called k_free(sock) without removing sock->poll.node
+   from nsos_polls, leaving a dangling pointer.  A subsequent
+   nsos_poll_update() on the freed slot produced SIGSEGV.
+b) nsos_poll_prepare / nsos_poll_update accessed nsos_polls without any
+   lock; concurrent Zephyr threads (preempted between is_linked check
+   and sys_dlist_remove) produced nodes with next!=NULL but prev==NULL.
+Fix: protect all sys_dlist operations with a static pthread_mutex_t.
+In nsos_close, use SYS_DLIST_FOR_EACH_CONTAINER_SAFE with an explicit
+is_linked check to remove the node before k_free.  Add an early
+is_linked guard in nsos_poll_prepare to prevent double-append.
+
+Root cause confirmed via GDB host-attach (gdb -p <pid>) with
+breakpoints on nsi_print_error_and_exit, z_fatal_error, SIGABRT and
+SIGSEGV — backtrace pointed to sys_dlist_remove with prev=NULL.
+
+Signed-off-by: Tobias Meyer <tobiuhg@gmail.com>
+---
+ drivers/net/nsos_adapt.c   | 18 ++++++++++++++++--
+ drivers/net/nsos_sockets.c | 26 ++++++++++++++++++++++++--
+ 2 files changed, 40 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/nsos_adapt.c b/drivers/net/nsos_adapt.c
+index 377649cdd1f..e7d222dc001 100644
+--- a/drivers/net/nsos_adapt.c
++++ b/drivers/net/nsos_adapt.c
+@@ -12,6 +12,7 @@
+
+ #define _DEFAULT_SOURCE
+
++#include <pthread.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <netdb.h>
+@@ -44,6 +45,7 @@
+
+ static int nsos_epoll_fd;
+ static int nsos_adapt_nfds;
++static pthread_mutex_t nsos_epoll_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+ #ifndef ARRAY_SIZE
+ #define ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
+@@ -890,11 +892,16 @@ void nsos_adapt_poll_add(struct nsos_mid_pollfd *pollfd)
+ 	};
+ 	int err;
+
++	pthread_mutex_lock(&nsos_epoll_mutex);
+ 	nsos_adapt_nfds++;
+-
+ 	err = epoll_ctl(nsos_epoll_fd, EPOLL_CTL_ADD, pollfd->fd, &ev);
++	if (err && errno == EEXIST) {
++		ev.events = nsos_poll_to_epoll_events(pollfd->events);
++		err = epoll_ctl(nsos_epoll_fd, EPOLL_CTL_MOD, pollfd->fd, &ev);
++	}
++	pthread_mutex_unlock(&nsos_epoll_mutex);
+ 	if (err) {
+-		nsi_print_error_and_exit("error in EPOLL_CTL_ADD: errno=%d\n", errno);
++		nsi_print_error_and_exit("error in EPOLL_CTL_ADD/MOD: errno=%d\n", errno);
+ 		return;
+ 	}
+
+@@ -906,7 +913,14 @@ void nsos_adapt_poll_remove(struct nsos_mid_pollfd *pollfd)
+ {
+ 	int err;
+
++	pthread_mutex_lock(&nsos_epoll_mutex);
+ 	err = epoll_ctl(nsos_epoll_fd, EPOLL_CTL_DEL, pollfd->fd, NULL);
++	if (err && errno == ENOENT) {
++		pthread_mutex_unlock(&nsos_epoll_mutex);
++		nsos_adapt_nfds--;
++		return;
++	}
++	pthread_mutex_unlock(&nsos_epoll_mutex);
+ 	if (err) {
+ 		nsi_print_error_and_exit("error in EPOLL_CTL_DEL: errno=%d\n", errno);
+ 		return;
+diff --git a/drivers/net/nsos_sockets.c b/drivers/net/nsos_sockets.c
+index 9f50512cda5..67931644ec1 100644
+--- a/drivers/net/nsos_sockets.c
++++ b/drivers/net/nsos_sockets.c
+@@ -13,6 +13,8 @@
+ #undef _POSIX_C_SOURCE
+ #define _POSIX_C_SOURCE 200809L
+
++#include <pthread.h>
++
+ #include <zephyr/logging/log.h>
+ LOG_MODULE_REGISTER(nsos_sockets);
+
+@@ -61,6 +63,7 @@ struct nsos_socket {
+ };
+
+ static sys_dlist_t nsos_polls = SYS_DLIST_STATIC_INIT(&nsos_polls);
++static pthread_mutex_t nsos_polls_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+ /* Forward declaration of the interface */
+ NET_IF_DECLARE(nsos_socket, 0);
+@@ -263,7 +266,9 @@ static ssize_t nsos_write(void *obj, const void *buf, size_t sz)
+ static int nsos_close(void *obj)
+ {
+ 	struct nsos_socket *sock = obj;
++
+ 	struct nsos_socket_poll *poll;
++	struct nsos_socket_poll *poll_cns;
+ 	int ret;
+
+ 	ret = nsi_host_close(sock->poll.mid.fd);
+@@ -271,12 +276,19 @@ static int nsos_close(void *obj)
+ 		errno = nsos_adapt_get_zephyr_errno();
+ 	}
+
+-	SYS_DLIST_FOR_EACH_CONTAINER(&nsos_polls, poll, node) {
+-		if (poll == &sock->poll) {
++	pthread_mutex_lock(&nsos_polls_mutex);
++	SYS_DLIST_FOR_EACH_CONTAINER_SAFE(&nsos_polls, poll,poll_cns, node) {
++		bool was_linked;
++		was_linked = sys_dnode_is_linked(&sock->poll.node);
++		if (was_linked) {
++			sys_dlist_remove(&sock->poll.node);
++		}
++		if (was_linked && poll == &sock->poll) {
+ 			poll->mid.revents = ZSOCK_POLLHUP;
+ 			poll->mid.cb(&poll->mid);
+ 		}
+ 	}
++	pthread_mutex_unlock(&nsos_polls_mutex);
+
+ 	k_free(sock);
+
+@@ -308,7 +320,14 @@ static int nsos_poll_prepare(struct nsos_socket *sock, struct zsock_pollfd *pfd,
+ 	k_poll_signal_init(&poll->signal);
+ 	k_poll_event_init(*pev, K_POLL_TYPE_SIGNAL, K_POLL_MODE_NOTIFY_ONLY, &poll->signal);
+
++	if (sys_dnode_is_linked(&poll->node)) {
++		nsos_adapt_poll_add(&poll->mid);
++		return -EALREADY;
++	}
++
++	pthread_mutex_lock(&nsos_polls_mutex);
+ 	sys_dlist_append(&nsos_polls, &poll->node);
++	pthread_mutex_unlock(&nsos_polls_mutex);
+
+ 	nsos_adapt_poll_add(&poll->mid);
+
+@@ -338,13 +357,16 @@ static int nsos_poll_update(struct nsos_socket *sock, struct zsock_pollfd *pfd,
+ 	signaled = 0;
+ 	flags = 0;
+
++	pthread_mutex_lock(&nsos_polls_mutex);
+ 	if (!sys_dnode_is_linked(&poll->node)) {
++		pthread_mutex_unlock(&nsos_polls_mutex);
+ 		nsos_adapt_poll_update(&poll->mid);
+ 		return 0;
+ 	}
+
+ 	nsos_adapt_poll_remove(&poll->mid);
+ 	sys_dlist_remove(&poll->node);
++	pthread_mutex_unlock(&nsos_polls_mutex);
+
+ 	k_poll_signal_check(&poll->signal, &signaled, &flags);
+ 	if (!signaled) {
+--
+2.47.3
