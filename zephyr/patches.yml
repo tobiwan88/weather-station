@@ -1,6 +1,6 @@
 patches:
-  - path: zephyr/0001-drivers-net-nsos-fix-epoll-race-and-polls-dlist-corruption.patch
-    sha256sum: 6aa368603f7d2286382a6ad4c13fcd8b0c7ed3d0d98bcc45b6f273d22fcd21ad
+  - path: zephyr/0001-drivers-net-nsos-fix-epoll-race-and-poll-dlist-corru.patch
+    sha256sum: fd43a1f99718554e6242150324fddea6a20c7a79765926eed4acdb6656486687
     module: zephyr
     author: Tobias Meyer
     email: tobiuhg@gmail.com
@@ -8,29 +8,15 @@ patches:
     upstreamable: true
     apply-command: git am
     comments: |
-      Three interrelated bugs cause crashes on native_sim/native/64 when
-      HTTP, MQTT, and SNTP sockets are active concurrently.
-
       Bug 1 (nsos_adapt.c): EPOLL_CTL_ADD EEXIST called nsi_print_error_and_exit.
-      Fix: on EEXIST use EPOLL_CTL_MOD; silently ignore ENOENT on DEL.
+      Fix: on EEXIST use EPOLL_CTL_MOD to update the stale entry atomically.
 
       Bug 2 (nsos_adapt.c): Multiple Zephyr threads race on epoll_ctl with no
       lock around nsos_epoll_fd. Fix: static pthread_mutex_t around poll_add
       and poll_remove.
 
-      Bug 3 (nsos_sockets.c): nsos_close() freed sock without removing
-      sock->poll.node from nsos_polls (use-after-free), and nsos_poll_prepare /
-      nsos_poll_update accessed the shared dlist without a lock (concurrent
-      sys_dlist_append + sys_dlist_remove → prev=NULL → SIGSEGV).
-      Fix: static pthread_mutex_t around all sys_dlist operations; SAFE loop
-      with is_linked check in nsos_close; early is_linked guard in poll_prepare.
-
-      Root cause confirmed via GDB host-attach (gdb -p <pid>) in the pytest
-      integration suite — backtrace showed sys_dlist_remove with prev=NULL on
-      http_server_tid.
-
-  - path: zephyr/0002-drivers-net-nsos-use-k-spinlock-instead-of-pthread-mutex.patch
-    sha256sum: 47d308a352d8cf14a06e0f2e1c3f83e3c8e7d2c1b5a9f6e8d0c3b2a1f0e9d8c
+  - path: zephyr/0002-drivers-net-nsos-use-k_spinlock-for-nsos_polls-prote.patch
+    sha256sum: 85113c02257fa146c404e8b4e0cbbb7389d4c24e3daf5a12af9b520cc00d3e3e
     module: zephyr
     author: Tobias Meyer
     email: tobiuhg@gmail.com
@@ -40,12 +26,11 @@ patches:
     comments: |
       Replace pthread_mutex with k_spinlock for nsos_polls protection in
       nsos_sockets.c.  native_sim's NCE (Native Co-operating Engine) uses POSIX
-      semaphores for scheduling — only irq_lock (used by k_spinlock) blocks NCE
-      context switches; pthread_mutex does not.  This prevents the dlist
+      semaphores for scheduling — only irq_lock (used by k_spinlock) blocks
+      NCE context switches; pthread_mutex does not.  This prevents the dlist
       corruption that caused SIGSEGV crashes in pytest tests.
 
       Changes:
-      - Removed #include <pthread.h>
       - nsos_polls_mutex (pthread_mutex_t) → nsos_polls_lock (k_spinlock)
       - nsos_close: spinlock around is_linked + sys_dlist_remove; callback
         called outside lock
