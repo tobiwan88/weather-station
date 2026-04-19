@@ -124,7 +124,12 @@
       "Bash(pkill -9 -f zephyr.exe)",
       "Bash(nc -z localhost 1883)",
       "Bash(kill -0 1473934)",
-      "Bash(ZEPHYR_BASE=/home/zephyr/workspace/zephyr west patch *)"
+      "Bash(ZEPHYR_BASE=/home/zephyr/workspace/zephyr west patch *)",
+      "Bash(nm /home/zephyr/workspace/weather-station/twister-out/native_sim_native_64/host/weather-station/tests/integration/weather_station.integration/zephyr/zephyr.exe)",
+      "Skill(west-patch)",
+      "Bash(west patch *)",
+      "Bash(west list *)",
+      "Bash(west help *)"
     ]
   },
   "hooks": {
