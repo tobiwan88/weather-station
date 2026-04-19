@@ -91,7 +91,7 @@ ZBUS_LISTENER_DEFINE(http_dashboard_listener, sensor_event_cb);
 /* GET / — dashboard page                                                      */
 /* -------------------------------------------------------------------------- */
 
-static int root_handler(struct http_client_ctx *client, enum http_data_status status,
+static int root_handler(struct http_client_ctx *client, enum http_transaction_status status,
 			const struct http_request_ctx *request_ctx,
 			struct http_response_ctx *response_ctx, void *user_data)
 {
@@ -99,10 +99,10 @@ static int root_handler(struct http_client_ctx *client, enum http_data_status st
 	ARG_UNUSED(request_ctx);
 	ARG_UNUSED(user_data);
 
-	if (status == HTTP_SERVER_DATA_ABORTED) {
+	if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
 		return 0;
 	}
-	if (status == HTTP_SERVER_DATA_FINAL) {
+	if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
 		response_ctx->status = HTTP_200_OK;
 		response_ctx->headers = html_ct_hdr;
 		response_ctx->header_count = ARRAY_SIZE(html_ct_hdr);
@@ -126,7 +126,7 @@ static struct http_resource_detail_dynamic root_detail = {
 /* GET /config — configuration page                                           */
 /* -------------------------------------------------------------------------- */
 
-static int config_page_handler(struct http_client_ctx *client, enum http_data_status status,
+static int config_page_handler(struct http_client_ctx *client, enum http_transaction_status status,
 			       const struct http_request_ctx *request_ctx,
 			       struct http_response_ctx *response_ctx, void *user_data)
 {
@@ -134,10 +134,10 @@ static int config_page_handler(struct http_client_ctx *client, enum http_data_st
 	ARG_UNUSED(request_ctx);
 	ARG_UNUSED(user_data);
 
-	if (status == HTTP_SERVER_DATA_ABORTED) {
+	if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
 		return 0;
 	}
-	if (status == HTTP_SERVER_DATA_FINAL) {
+	if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
 		response_ctx->status = HTTP_200_OK;
 		response_ctx->headers = html_ct_hdr;
 		response_ctx->header_count = ARRAY_SIZE(html_ct_hdr);
@@ -161,7 +161,7 @@ static struct http_resource_detail_dynamic config_page_detail = {
 /* GET /api/data — JSON sensor history                                        */
 /* -------------------------------------------------------------------------- */
 
-static int api_data_handler(struct http_client_ctx *client, enum http_data_status status,
+static int api_data_handler(struct http_client_ctx *client, enum http_transaction_status status,
 			    const struct http_request_ctx *request_ctx,
 			    struct http_response_ctx *response_ctx, void *user_data)
 {
@@ -169,10 +169,10 @@ static int api_data_handler(struct http_client_ctx *client, enum http_data_statu
 	ARG_UNUSED(request_ctx);
 	ARG_UNUSED(user_data);
 
-	if (status == HTTP_SERVER_DATA_ABORTED) {
+	if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
 		return 0;
 	}
-	if (status != HTTP_SERVER_DATA_FINAL) {
+	if (status != HTTP_SERVER_REQUEST_DATA_FINAL) {
 		return 0;
 	}
 
@@ -209,13 +209,13 @@ static struct http_resource_detail_dynamic api_data_detail = {
 /* GET+POST /api/config                                                        */
 /* -------------------------------------------------------------------------- */
 
-static int api_config_handler(struct http_client_ctx *client, enum http_data_status status,
+static int api_config_handler(struct http_client_ctx *client, enum http_transaction_status status,
 			      const struct http_request_ctx *request_ctx,
 			      struct http_response_ctx *response_ctx, void *user_data)
 {
 	ARG_UNUSED(user_data);
 
-	if (status == HTTP_SERVER_DATA_ABORTED) {
+	if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
 		post_cursor = 0;
 		return 0;
 	}
@@ -229,7 +229,7 @@ static int api_config_handler(struct http_client_ctx *client, enum http_data_sta
 			post_cursor += copy;
 		}
 
-		if (status == HTTP_SERVER_DATA_FINAL) {
+		if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
 			process_post(post_buf, post_cursor);
 			post_cursor = 0;
 
@@ -244,7 +244,7 @@ static int api_config_handler(struct http_client_ctx *client, enum http_data_sta
 	}
 
 	/* GET /api/config */
-	if (status != HTTP_SERVER_DATA_FINAL) {
+	if (status != HTTP_SERVER_REQUEST_DATA_FINAL) {
 		return 0;
 	}
 
@@ -283,7 +283,8 @@ static struct http_resource_detail_dynamic api_config_detail = {
 /* GET /api/locations — JSON list of all named locations                       */
 /* -------------------------------------------------------------------------- */
 
-static int api_locations_handler(struct http_client_ctx *client, enum http_data_status status,
+static int api_locations_handler(struct http_client_ctx *client,
+				 enum http_transaction_status status,
 				 const struct http_request_ctx *request_ctx,
 				 struct http_response_ctx *response_ctx, void *user_data)
 {
@@ -291,10 +292,10 @@ static int api_locations_handler(struct http_client_ctx *client, enum http_data_
 	ARG_UNUSED(request_ctx);
 	ARG_UNUSED(user_data);
 
-	if (status == HTTP_SERVER_DATA_ABORTED) {
+	if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
 		return 0;
 	}
-	if (status != HTTP_SERVER_DATA_FINAL) {
+	if (status != HTTP_SERVER_REQUEST_DATA_FINAL) {
 		return 0;
 	}
 
