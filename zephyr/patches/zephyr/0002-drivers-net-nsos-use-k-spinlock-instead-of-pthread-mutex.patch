@@ -1,0 +1,132 @@
+diff --git a/drivers/net/nsos_sockets.c b/drivers/net/nsos_sockets.c
+index 67931644ec1..5a868e64aa1 100644
+--- a/drivers/net/nsos_sockets.c
++++ b/drivers/net/nsos_sockets.c
+@@ -13,8 +13,6 @@
+ #undef _POSIX_C_SOURCE
+ #define _POSIX_C_SOURCE 200809L
+
+-#include <pthread.h>
+-
+ #include <zephyr/logging/log.h>
+ LOG_MODULE_REGISTER(nsos_sockets);
+
+@@ -63,7 +61,7 @@ struct nsos_socket {
+ };
+
+ static sys_dlist_t nsos_polls = SYS_DLIST_STATIC_INIT(&nsos_polls);
+-static pthread_mutex_t nsos_polls_mutex = PTHREAD_MUTEX_INITIALIZER;
++static struct k_spinlock nsos_polls_lock;
+
+ /* Forward declaration of the interface */
+ NET_IF_DECLARE(nsos_socket, 0);
+@@ -267,8 +265,6 @@ static int nsos_close(void *obj)
+ {
+ 	struct nsos_socket *sock = obj;
+
+-	struct nsos_socket_poll *poll;
+-	struct nsos_socket_poll *poll_cns;
+ 	int ret;
+
+ 	ret = nsi_host_close(sock->poll.mid.fd);
+@@ -276,19 +272,17 @@ static int nsos_close(void *obj)
+ 		errno = nsos_adapt_get_zephyr_errno();
+ 	}
+
+-	pthread_mutex_lock(&nsos_polls_mutex);
+-	SYS_DLIST_FOR_EACH_CONTAINER_SAFE(&nsos_polls, poll,poll_cns, node) {
+-		bool was_linked;
+-		was_linked = sys_dnode_is_linked(&sock->poll.node);
+-		if (was_linked) {
+-			sys_dlist_remove(&sock->poll.node);
+-		}
+-		if (was_linked && poll == &sock->poll) {
+-			poll->mid.revents = ZSOCK_POLLHUP;
+-			poll->mid.cb(&poll->mid);
+-		}
++	k_spinlock_key_t key = k_spin_lock(&nsos_polls_lock);
++	bool was_linked = sys_dnode_is_linked(&sock->poll.node);
++	if (was_linked) {
++		sys_dlist_remove(&sock->poll.node);
++	}
++	k_spin_unlock(&nsos_polls_lock, key);
++
++	if (was_linked) {
++		sock->poll.mid.revents = ZSOCK_POLLHUP;
++		sock->poll.mid.cb(&sock->poll.mid);
+ 	}
+-	pthread_mutex_unlock(&nsos_polls_mutex);
+
+ 	k_free(sock);
+
+@@ -320,18 +314,23 @@ static int nsos_poll_prepare(struct nsos_socket *sock, struct zsock_pollfd *pfd,
+ 	k_poll_signal_init(&poll->signal);
+ 	k_poll_event_init(*pev, K_POLL_TYPE_SIGNAL, K_POLL_MODE_NOTIFY_ONLY, &poll->signal);
+
+-	if (sys_dnode_is_linked(&poll->node)) {
++	k_spinlock_key_t key = k_spin_lock(&nsos_polls_lock);
++	bool was_linked = sys_dnode_is_linked(&poll->node);
++	if (was_linked) {
++		sys_dlist_remove(&poll->node);
++	}
++	k_spin_unlock(&nsos_polls_lock, key);
++
++	if (was_linked) {
++		nsos_adapt_poll_remove(&poll->mid);
+ 		nsos_adapt_poll_add(&poll->mid);
+ 		return -EALREADY;
+ 	}
+
+-	pthread_mutex_lock(&nsos_polls_mutex);
+ 	sys_dlist_append(&nsos_polls, &poll->node);
+-	pthread_mutex_unlock(&nsos_polls_mutex);
+
+ 	nsos_adapt_poll_add(&poll->mid);
+
+-	/* Let other sockets use another k_poll_event */
+ 	(*pev)++;
+
+ 	signaled = 0;
+@@ -342,7 +341,6 @@ static int nsos_poll_prepare(struct nsos_socket *sock, struct zsock_pollfd *pfd,
+ 		return 0;
+ 	}
+
+-	/* Events are ready, don't wait */
+ 	return -EALREADY;
+ }
+
+@@ -351,22 +349,27 @@ static int nsos_poll_update(struct nsos_socket *sock, struct zsock_pollfd *pfd,
+ {
+ 	unsigned int signaled;
+ 	int flags;
++	bool was_linked;
++	k_spinlock_key_t key;
+
+ 	(*pev)++;
+
+-	signaled = 0;
+-	flags = 0;
++	key = k_spin_lock(&nsos_polls_lock);
++	was_linked = sys_dnode_is_linked(&poll->node);
++	if (was_linked) {
++		sys_dlist_remove(&poll->node);
++	}
++	k_spin_unlock(&nsos_polls_lock, key);
+
+-	pthread_mutex_lock(&nsos_polls_mutex);
+-	if (!sys_dnode_is_linked(&poll->node)) {
+-		pthread_mutex_unlock(&nsos_polls_mutex);
++	if (!was_linked) {
+ 		nsos_adapt_poll_update(&poll->mid);
+ 		return 0;
+ 	}
+
+ 	nsos_adapt_poll_remove(&poll->mid);
+-	sys_dlist_remove(&poll->node);
+-	pthread_mutex_unlock(&nsos_polls_mutex);
++
++	signaled = 0;
++	flags = 0;
+
+ 	k_poll_signal_check(&poll->signal, &signaled, &flags);
+ 	if (!signaled) {
