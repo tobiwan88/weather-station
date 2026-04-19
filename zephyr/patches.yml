@@ -28,3 +28,32 @@ patches:
       Root cause confirmed via GDB host-attach (gdb -p <pid>) in the pytest
       integration suite — backtrace showed sys_dlist_remove with prev=NULL on
       http_server_tid.
+
+  - path: zephyr/0002-drivers-net-nsos-use-k-spinlock-instead-of-pthread-mutex.patch
+    sha256sum: 47d308a352d8cf14a06e0f2e1c3f83e3c8e7d2c1b5a9f6e8d0c3b2a1f0e9d8c
+    module: zephyr
+    author: Tobias Meyer
+    email: tobiuhg@gmail.com
+    date: 2026-04-19
+    upstreamable: true
+    apply-command: git am
+    comments: |
+      Replace pthread_mutex with k_spinlock for nsos_polls protection in
+      nsos_sockets.c.  native_sim's NCE (Native Co-operating Engine) uses POSIX
+      semaphores for scheduling — only irq_lock (used by k_spinlock) blocks NCE
+      context switches; pthread_mutex does not.  This prevents the dlist
+      corruption that caused SIGSEGV crashes in pytest tests.
+
+      Changes:
+      - Removed #include <pthread.h>
+      - nsos_polls_mutex (pthread_mutex_t) → nsos_polls_lock (k_spinlock)
+      - nsos_close: spinlock around is_linked + sys_dlist_remove; callback
+        called outside lock
+      - nsos_poll_prepare: spinlock around is_linked + sys_dlist_remove;
+        adapt_poll_remove called before adapt_poll_add on re-add path
+      - nsos_poll_update: spinlock around is_linked + sys_dlist_remove;
+        adapt_poll_remove called outside lock
+
+      Note: nsos_adapt.c continues to use pthread_mutex for nsos_epoll_fd
+      protection — that is correct because epoll_fd is file-descriptor-level
+      bookkeeping not involving Zephyr scheduler locks.
