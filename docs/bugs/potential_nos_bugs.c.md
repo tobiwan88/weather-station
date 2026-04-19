@@ -2,7 +2,7 @@
 
 **Date**: April 2026
 **Symptom**: `test_trigger_interval_bounds_accepted` crashes DUT with SIGSEGV (exit -11)
-**Status**: Root cause confirmed. Three patches applied. Tests passing after 0003.
+**Status**: Root cause confirmed. Two patches applied and verified. Tests passing — SIGSEGV and ConnectionResetError crashes eliminated.
 
 ---
 
@@ -139,7 +139,8 @@ static struct k_spinlock nsos_polls_lock;
 | Ignored EEXIST/ENOENT in `nsos_adapt.c` (patch 0001) | Fixed Bug 1 (DUT no longer exits on errno=17) |
 | `pthread_mutex` around `epoll_ctl` in `nsos_adapt.c` (patch 0002) | Fixed Bug 2. Crash (SIGSEGV) persisted — wrong location |
 | GDB host-attach via `gdb_crash_watcher` pytest fixture | Identified exact crash site: `sys_dlist_remove` with `prev=NULL` |
-| `k_spinlock` around `nsos_polls` dlist + `nsos_close` node removal (patch 0003) | Fixed Bug 3. Full suite passes. |
+| `pthread_mutex` around `nsos_polls` in `nsos_sockets.c` (patch 0003) | SIGSEGV persisted — `pthread_mutex` does not block NCE preemptions |
+| `k_spinlock` around `nsos_polls` dlist + `nsos_close` node removal (patch 0004) | Fixed Bug 3. Full suite passes. No SIGSEGV or ConnectionResetError. |
 
 ---
 
@@ -149,9 +150,8 @@ In `zephyr/patches/zephyr/`, applied in order by `west patch apply`:
 
 | Patch | File | What it fixes |
 |-------|------|---------------|
-| `0001-nsos-adapt-use-EPOLL_CTL_MOD-on-EEXIST-in-poll-add.patch` | `nsos_adapt.c` | EEXIST crash + ENOENT ignored |
-| `0002-drivers-net-nsos-add-pthread-mutex-around-epoll-ctl.patch` | `nsos_adapt.c` | `epoll_ctl` TOCTOU race |
-| `0003-drivers-net-nsos-protect-nsos_polls-dlist-with-spinlock.patch` | `nsos_sockets.c` | dlist race + use-after-free in `nsos_close` |
+| `0001-drivers-net-nsos-fix-epoll-race-and-polls-dlist-corruption.patch` | `nsos_adapt.c` + `nsos_sockets.c` | EEXIST crash (adapt.c) + dlist race with `pthread_mutex` (sockets.c) |
+| `0002-drivers-net-nsos-use-k-spinlock-instead-of-pthread-mutex.patch` | `nsos_sockets.c` | `pthread_mutex` → `k_spinlock` for `nsos_polls`; fixes SIGSEGV |
 
 ---
 
