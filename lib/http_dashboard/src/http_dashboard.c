@@ -80,6 +80,7 @@ static const struct http_header auth_hdrs[] = {
 
 static void respond_401(struct http_response_ctx *rsp)
 {
+	LOG_INF("respond_401: ENTRY rsp=%p final_chunk=%d", (void *)rsp, rsp->final_chunk);
 	LOG_DBG("respond_401: sending 401 Unauthorized");
 	rsp->status = HTTP_401_UNAUTHORIZED;
 	rsp->headers = auth_hdrs;
@@ -87,6 +88,8 @@ static void respond_401(struct http_response_ctx *rsp)
 	rsp->body = (const uint8_t *)auth_body;
 	rsp->body_len = sizeof(auth_body) - 1;
 	rsp->final_chunk = true;
+	LOG_INF("respond_401: EXIT rsp->status=%d body_len=%zu final_chunk=%d", rsp->status,
+		rsp->body_len, rsp->final_chunk);
 }
 #endif /* CONFIG_HTTP_DASHBOARD_AUTH */
 
@@ -251,12 +254,18 @@ static int api_config_handler(struct http_client_ctx *client, enum http_transact
 {
 	ARG_UNUSED(user_data);
 
-if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
+	LOG_INF("api_config_handler: ENTRY client=%p method=%d status=%d data_len=%zu",
+		(void *)client, client->method, status, request_ctx->data_len);
+
+	if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
+		LOG_INF("api_config_handler: ABORTED client=%p", (void *)client);
 		post_cursor = 0;
 		return 0;
 	}
 
 	if (client->method == HTTP_POST) {
+		LOG_DBG("api_config_handler: POST status=%d, data_len=%zu, post_cursor=%zu", status,
+			request_ctx->data_len, post_cursor);
 		if (request_ctx->data_len > 0) {
 			size_t space = sizeof(post_buf) - post_cursor;
 			size_t copy = MIN(request_ctx->data_len, space);
@@ -266,25 +275,40 @@ if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
 			LOG_DBG("POST /api/config: chunk %zuB, cursor=%zu", copy, post_cursor);
 		}
 
-if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
+		if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
+			LOG_DBG("api_config_handler: HTTP_SERVER_REQUEST_DATA_FINAL for POST");
 #if defined(CONFIG_HTTP_DASHBOARD_AUTH)
+			LOG_DBG("api_config_handler: calling auth_check");
 			if (!auth_check(request_ctx)) {
 				post_cursor = 0;
+				LOG_DBG("api_config_handler: auth denied, calling respond_401");
 				respond_401(response_ctx);
 				LOG_DBG("POST /api/config: auth denied, responded 401");
 				return 0;
 			}
+			LOG_DBG("api_config_handler: auth passed");
 #endif
+			LOG_DBG("api_config_handler: calling process_post with %zu bytes",
+				post_cursor);
 			process_post(post_buf, post_cursor);
+			LOG_DBG("api_config_handler: process_post returned");
 			post_cursor = 0;
 
+			LOG_DBG("api_config_handler: setting up 200 OK response");
 			response_ctx->status = HTTP_200_OK;
 			response_ctx->headers = json_ct_hdr;
 			response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
 			response_ctx->body = (const uint8_t *)post_ok;
 			response_ctx->body_len = sizeof(post_ok) - 1;
 			response_ctx->final_chunk = true;
+			LOG_INF("api_config_handler: POST completed, final_chunk=true, "
+				"body_len=%zu",
+				response_ctx->body_len);
 			LOG_DBG("POST /api/config: responded 200 OK");
+		} else if (status == HTTP_SERVER_TRANSACTION_COMPLETE) {
+			LOG_INF("api_config_handler: TRANSACTION_COMPLETE client=%p",
+				(void *)client);
+			post_cursor = 0;
 		}
 		return 0;
 	}

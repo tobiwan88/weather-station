@@ -98,27 +98,30 @@ class HttpHarness:
         so ``header_count`` stays 0 and the Authorization header is never seen
         by the handler even when the client sends it.
 
-        ``Connection: close`` is intentionally omitted — it makes the server
-        close the connection immediately after responding, which races with the
-        NSOS shared epoll fd on native_sim (EPOLL_CTL_ADD EEXIST, errno=17).
-        Instead, the pacing sleep runs while the connection is still open; the
-        server-side keepalive timer and the client-side session.close() that
-        follows give the embedded server enough time to finish its epoll
-        housekeeping before the fd is freed and potentially reused.
+        ``Connection: close`` is sent so the Zephyr HTTP server transitions to
+        ``HTTP_SERVER_DONE_STATE`` immediately after responding (rather than
+        keeping the slot in keep-alive wait).  This frees the client slot
+        within the server thread before the Python side even wakes from the
+        pacing sleep, avoiding client-slot exhaustion on back-to-back POSTs.
+        The original NSOS EPOLL_CTL_ADD EEXIST race that motivated omitting
+        this header is resolved by CONFIG_ZVFS_POLL_MAX=8,
+        CONFIG_NET_MAX_CONTEXTS=16, and the NSOS spinlock patches.
 
         ``token`` overrides ``self._token`` for this single call, allowing
         tests to send a specific (e.g. wrong or rotated) bearer value without
         mutating harness state.
         """
-        headers = {}
+        headers = {"Connection": "close"}
         if token is not None:
             headers["Authorization"] = f"Bearer {token}"
+            _log.info("_post: using explicit token=%s", token)
         elif authenticated:
-            headers.update(self._auth_headers())
-        _log.debug("POST %s data=%s auth_header_present=%s token=%r",
-                   path, list(data.keys()),
-                   "Authorization" in headers,
-                   token if token is not None else self._token)
+            auth = self._auth_headers()
+            headers.update(auth)
+            _log.info("_post: using auth headers, token=%s", auth.get("Authorization", "NONE"))
+        else:
+            _log.info("_post: no auth")
+        _log.info("_post: final headers = %s", headers)
         post_session = requests.Session()
         t0 = time.monotonic()
         try:
