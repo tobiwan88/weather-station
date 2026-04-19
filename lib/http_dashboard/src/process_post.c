@@ -39,7 +39,7 @@ void config_state_copy_sntp_server(char *out, size_t len)
 
 void process_post(const uint8_t *body, size_t len)
 {
-	LOG_DBG("process_post: body %zu B", len);
+	LOG_DBG("process_post: entry body %zu B", len);
 	/* Buffer must hold the full accumulated POST body (1024 B max). */
 	static char buf[1025];
 	size_t copy_len = MIN(len, sizeof(buf) - 1);
@@ -85,7 +85,10 @@ void process_post(const uint8_t *body, size_t len)
 				};
 
 				trigger_interval_ms = ms;
+				LOG_DBG("process_post: publishing CONFIG_CMD_SET_TRIGGER_INTERVAL "
+					"to config_cmd_chan");
 				int rc = zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+				LOG_DBG("process_post: config_cmd_chan pub rc=%d", rc);
 
 				if (rc != 0) {
 					LOG_WRN("config_cmd_chan pub failed: %d", rc);
