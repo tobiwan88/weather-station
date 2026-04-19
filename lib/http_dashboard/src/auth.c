@@ -167,8 +167,7 @@ bool auth_check(const struct http_request_ctx *request_ctx)
 
 		k_spin_unlock(&s_token_lock, key);
 
-		LOG_DBG("auth_check: presented='%.32s' stored='%s' diff=%d", presented, s_token,
-			diff);
+		LOG_DBG("auth_check: result=%s", (diff == 0) ? "ok" : "mismatch");
 		return (diff == 0);
 	}
 

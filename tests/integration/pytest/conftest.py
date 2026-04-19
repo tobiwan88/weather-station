@@ -188,6 +188,7 @@ def device_ready(shell):
     All harness fixtures that interact with the device should depend on this
     fixture instead of ``dut`` directly so tests never race against boot.
     """
+    shell.wait_for_prompt()
 
 
 # ---------------------------------------------------------------------------

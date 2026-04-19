@@ -45,6 +45,10 @@ class ShellHarness:
         _log.debug("← %d line(s)", len(lines))
         return lines
 
+    def exec(self, cmd: str) -> list[str]:
+        """Public interface to execute a raw shell command and return lines."""
+        return self._exec(cmd)
+
     # ------------------------------------------------------------------
     # kernel commands
     # ------------------------------------------------------------------

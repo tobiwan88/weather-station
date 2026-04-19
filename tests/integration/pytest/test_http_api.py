@@ -169,7 +169,7 @@ def test_token_rotation_invalidates_old_token(authed_harness, shell_harness):
     old_token = authed_harness._token
 
     # Rotate via shell and give the command time to complete.
-    shell_harness._shell.exec_command("http_dashboard token rotate")
+    shell_harness.exec("http_dashboard token rotate")
     time.sleep(0.3)
 
     # Retrieve and store the new token.
