@@ -16,7 +16,7 @@ patches:
       and poll_remove.
 
   - path: zephyr/0002-drivers-net-nsos-use-k_spinlock-for-nsos_polls-prote.patch
-    sha256sum: 85113c02257fa146c404e8b4e0cbbb7389d4c24e3daf5a12af9b520cc00d3e3e
+    sha256sum: c995e2a4056c5dca4e1659834fc0a45e294f2c941a8ff57dbaa076bb7415295c
     module: zephyr
     author: Tobias Meyer
     email: tobiuhg@gmail.com
