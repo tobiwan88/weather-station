@@ -2,7 +2,7 @@
 name: open-pr
 description: Push the current branch, open a GitHub PR, wait for CI checks to complete, and fix any issues found.
 argument-hint: "[base-branch]"
-disable-model-invocation: true
+disable-model-invocation: false
 allowed-tools: Bash
 ---
 
