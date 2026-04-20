@@ -4,7 +4,7 @@
 
 The gateway is a coordinator node that aggregates sensor readings, displays them locally, exposes them over HTTP, and keeps wall-clock time via SNTP. The design prioritises two properties above all else:
 
-1. **Adding a new consumer of sensor data must not require touching any existing code.** The gateway listener, the HTTP dashboard, and a future MQTT publisher are all independent — none knows the others exist.
+1. **Adding a new consumer of sensor data must not require touching any existing code.** The gateway listener, the HTTP dashboard, and the MQTT publisher are all independent — none knows the others exist.
 2. **Feature selection must be possible without editing C code.** Whether the HTTP dashboard or LVGL display is included is a `prj.conf` decision, not a `main.c` decision.
 
 These two goals drive every structural choice in the codebase.
@@ -49,6 +49,7 @@ These two goals drive every structural choice in the codebase.
 | `config_cmd` | Owns the `config_cmd_chan` zbus channel; decouples config producers (HTTP) from consumers (fake_sensors, sntp_sync) |
 | `location_registry` | Runtime CRUD for named physical locations; replaces compile-time DT location properties |
 | `sensor_event_log` | Self-registering zbus listener that logs every sensor event to console; no public API |
+| `mqtt_publisher` | Subscribes to `sensor_event_chan`; publishes readings to an MQTT broker under `{gw}/{location}/{name}/{type}` |
 | `remote_sensor` | Transport-agnostic abstraction for wireless remote sensors; vtable pattern, manager thread, UID derivation |
 | `fake_remote_sensor` | Simulated remote sensor transport adapter for testing; implements the `remote_transport` vtable |
 
@@ -72,7 +73,7 @@ The critical point: `http_dashboard` and `fake_sensors` do not reference each ot
 
 | To add | What changes | What does not change |
 |---|---|---|
-| New sensor consumer (MQTT, flash, display) | One new zbus listener on `sensor_event_chan` | All existing consumers and sensor drivers |
+| New sensor consumer (flash logger, display) | One new zbus listener on `sensor_event_chan` (this is how `mqtt_publisher` was added) | All existing consumers and sensor drivers |
 | New trigger source (button, MQTT command) | Publish `sensor_trigger_event` to `sensor_trigger_chan` | All sensor drivers |
 | Real hardware sensor (BME280, SHT4x) | New driver that subscribes to trigger chan, publishes to event chan | All consumers |
 | New sensor type (pressure, CO₂) | New `enum sensor_type` value; existing consumers that don't handle it ignore it | All existing consumers |

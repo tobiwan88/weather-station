@@ -2,7 +2,7 @@
 
 ## Execution Contexts
 
-Five distinct contexts run concurrently in the gateway:
+Eight distinct contexts run concurrently in the gateway:
 
 | Context | What runs there | Scheduling |
 |---|---|---|
@@ -10,9 +10,14 @@ Five distinct contexts run concurrently in the gateway:
 | zbus thread | All zbus listener callbacks | Zephyr internal thread, runs after each publish |
 | System work queue | `k_work_delayable` handlers (sntp resync, clock display) | Cooperative within the work queue thread |
 | HTTP server thread(s) | HTTP request handlers | Per Zephyr HTTP server configuration |
+| sntp_sync thread | Periodic NTP sync; executes config-cmd resync requests | Dedicated `k_thread` |
+| remote_sensor manager thread | Peer registration, scan start/stop dispatch | Dedicated `k_thread` |
+| mqtt_publisher thread | MQTT connect/reconnect loop and broker publish | Dedicated `k_thread` |
 | Main thread | LVGL render loop or `k_sleep(K_FOREVER)` | Lowest priority |
 
 zbus listeners are dispatched sequentially from the zbus thread in registration order. A listener that blocks stalls all subsequent listeners on that channel. Listeners must not sleep or acquire mutexes that another thread might hold — only spinlocks are safe.
+
+The `mqtt_publisher` listener enqueues the event into an internal ring buffer and returns immediately, so the zbus thread is never blocked by network I/O. The dedicated mqtt_publisher thread drains that buffer and handles broker reconnection independently.
 
 ---
 

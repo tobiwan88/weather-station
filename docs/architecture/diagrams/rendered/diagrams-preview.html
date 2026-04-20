@@ -43,6 +43,12 @@ graph TB
             HTTP[&quot;http_dashboard\nChart.js + config API\nport 8080&quot;]
             CLK[&quot;clock_display\nHH:MM UTC ticker&quot;]
             LVGL[&quot;lvgl_display\nSDL window (native_sim)&quot;]
+            CC[&quot;config_cmd\ncmd channel&quot;]
+            LOC[&quot;location_registry\nnamed locations&quot;]
+            SEL[&quot;sensor_event_log\nconsole logger&quot;]
+            RS[&quot;remote_sensor\ntransport abstraction + manager&quot;]
+            FRS[&quot;fake_remote_sensor\ntesting stub&quot;]
+            MQTT[&quot;mqtt_publisher\nMQTT egress&quot;]
         end
     end
 
@@ -62,9 +68,18 @@ graph TB
 
     FS --&gt;|publishes| SEC
     FS --&gt;|subscribes| STC
+    FS --&gt;|subscribes| CC
     HTTP --&gt;|subscribes| SEC
     HTTP --&gt;|reads| SR
+    HTTP --&gt;|reads| LOC
+    HTTP --&gt;|publishes| CC
     FS --&gt;|registers| SR
+    SNTP --&gt;|subscribes| CC
+    SEL --&gt;|subscribes| SEC
+    RS --&gt;|publishes| SEC
+    RS --&gt;|subscribes| STC
+    FRS --&gt;|implements vtable| RS
+    MQTT --&gt;|subscribes| SEC
 
     SEC --&gt; ZBUS
     STC --&gt; ZBUS
@@ -93,7 +108,6 @@ graph LR
     subgraph TRIGGERS[&quot;Trigger Sources&quot;]
         TMR[&quot;fake_sensors_timer\nk_timer periodic&quot;]
         BOOT[&quot;SYS_INIT startup\none-shot at boot&quot;]
-        HTTP_CFG[&quot;HTTP POST /api/config\ninterval change&quot;]
         BTN[&quot;button ISR\n(future)&quot;]
         MQTT_CMD[&quot;MQTT command\n(future)&quot;]
     end
@@ -105,6 +119,7 @@ graph LR
     subgraph SENSORS[&quot;Sensor Listeners&quot;]
         FT[&quot;fake_temperature\nlistener&quot;]
         FH[&quot;fake_humidity\nlistener&quot;]
+        RSM[&quot;remote_sensor_manager\n(pull transports)&quot;]
         RD[&quot;real drivers\n(future)&quot;]
     end
 
@@ -113,38 +128,79 @@ graph LR
     end
 
     subgraph CONSUMERS[&quot;Event Consumers&quot;]
-        GWL[&quot;gateway listener\nLOG_INF per event&quot;]
+        SEL[&quot;sensor_event_log\nLOG_INF per event&quot;]
         HTTPL[&quot;http_dashboard\nring buffer append&quot;]
-        MQTTP[&quot;MQTT publisher\n(future)&quot;]
+        MQTTP[&quot;mqtt_publisher\nbroker egress&quot;]
         FLASH[&quot;flash storage\n(future)&quot;]
-        DISP[&quot;display manager\n(future)&quot;]
+    end
+
+    subgraph CHAN_CFG[&quot;config_cmd_chan (zbus)&quot;]
+        CC[&quot;struct config_cmd_event\n{ cmd, arg }&quot;]
+    end
+
+    subgraph CFG_CONSUMERS[&quot;Config Consumers&quot;]
+        FS_CFG[&quot;fake_sensors\ninterval update&quot;]
+        SNTP_CFG[&quot;sntp_sync\nresync trigger&quot;]
+    end
+
+    subgraph CHAN_DISC[&quot;remote_discovery_chan (zbus)&quot;]
+        RD2[&quot;struct remote_discovery_event\n{ action, proto, uid, addr }&quot;]
+    end
+
+    subgraph CHAN_SCAN[&quot;remote_scan_ctrl_chan (zbus)&quot;]
+        SC[&quot;struct remote_scan_ctrl_event\n{ action, proto }&quot;]
+    end
+
+    subgraph TRANSPORTS[&quot;Transport Adapters&quot;]
+        FAKE_T[&quot;fake_remote_sensor\n(testing stub)&quot;]
+        BLE_T[&quot;ble_sensor\n(future)&quot;]
+        LORA_T[&quot;lora_sensor\n(future)&quot;]
     end
 
     TMR --&gt;|pub K_NO_WAIT| ST
     BOOT --&gt;|pub K_NO_WAIT| ST
-    HTTP_CFG -.-&gt;|reschedule timer| TMR
     BTN --&gt;|pub K_NO_WAIT| ST
     MQTT_CMD --&gt;|pub K_NO_WAIT| ST
 
     ST --&gt;|sub| FT
     ST --&gt;|sub| FH
+    ST --&gt;|sub| RSM
     ST --&gt;|sub| RD
 
     FT --&gt;|pub K_NO_WAIT| SE
     FH --&gt;|pub K_NO_WAIT| SE
+    RSM --&gt;|remote_sensor_publish_data| SE
     RD --&gt;|pub K_NO_WAIT| SE
 
-    SE --&gt;|sub| GWL
+    SE --&gt;|sub| SEL
     SE --&gt;|sub| HTTPL
     SE --&gt;|sub| MQTTP
     SE --&gt;|sub| FLASH
-    SE --&gt;|sub| DISP
+
+    HTTPL --&gt;|pub config_cmd_event| CC
+    CC --&gt;|sub| FS_CFG
+    CC --&gt;|sub| SNTP_CFG
+
+    FAKE_T --&gt;|remote_sensor_announce_disc| RD2
+    BLE_T --&gt;|remote_sensor_announce_disc| RD2
+    LORA_T --&gt;|remote_sensor_announce_disc| RD2
+    RD2 --&gt;|sub| RSM
+
+    RSM --&gt;|pub K_NO_WAIT| SC
+    SC --&gt;|vtable scan_start/stop| FAKE_T
+    SC --&gt;|vtable scan_start/stop| BLE_T
+    SC --&gt;|vtable scan_start/stop| LORA_T
 
     style CHAN_T fill:#fef9c3,stroke:#ca8a04
     style CHAN_E fill:#fef9c3,stroke:#ca8a04
+    style CHAN_CFG fill:#fef9c3,stroke:#ca8a04
+    style CHAN_DISC fill:#fef9c3,stroke:#ca8a04
+    style CHAN_SCAN fill:#fef9c3,stroke:#ca8a04
     style TRIGGERS fill:#dbeafe,stroke:#3b82f6
     style SENSORS fill:#dcfce7,stroke:#16a34a
     style CONSUMERS fill:#fce7f3,stroke:#db2777
+    style CFG_CONSUMERS fill:#fce7f3,stroke:#db2777
+    style TRANSPORTS fill:#e0e7ff,stroke:#6366f1
     </div>
   </div>
 
@@ -205,12 +261,19 @@ graph TD
     HTTP[&quot;http_dashboard\nweb dashboard + API&quot;]
     CLK[&quot;clock_display\nHH:MM ticker&quot;]
     LVGL[&quot;lvgl_display\nSDL window&quot;]
+    CC[&quot;config_cmd\ncmd channel&quot;]
+    LOC[&quot;location_registry\nnamed locations&quot;]
+    SEL[&quot;sensor_event_log\nconsole logger&quot;]
+    RS[&quot;remote_sensor\ntransport abstraction&quot;]
+    FRS[&quot;fake_remote_sensor\ntesting stub&quot;]
+    MQTT[&quot;mqtt_publisher\nMQTT egress&quot;]
 
     ZBUS([&quot;ZBUS\n(Zephyr)&quot;])
     NET([&quot;NETWORKING\n(Zephyr)&quot;])
     HTTPD([&quot;HTTP_SERVER\n(Zephyr)&quot;])
     LVGLLIB([&quot;LVGL + DISPLAY\n(Zephyr)&quot;])
     SNTPLIB([&quot;SNTP\n(Zephyr)&quot;])
+    SETTINGS([&quot;SETTINGS\n(Zephyr)&quot;])
 
     APP --&gt;|Kconfig| SE
     APP --&gt;|Kconfig| ST
@@ -220,23 +283,46 @@ graph TD
     APP --&gt;|Kconfig| HTTP
     APP --&gt;|Kconfig| CLK
     APP --&gt;|Kconfig| LVGL
+    APP --&gt;|Kconfig| CC
+    APP --&gt;|Kconfig| LOC
+    APP --&gt;|Kconfig| SEL
+    APP --&gt;|Kconfig| RS
+    APP --&gt;|Kconfig| FRS
+    APP --&gt;|Kconfig| MQTT
 
     FS --&gt; SE
     FS --&gt; ST
     FS --&gt; SR
+    FS --&gt; CC
 
     HTTP --&gt; SE
     HTTP --&gt; SR
+    HTTP --&gt; LOC
+    HTTP --&gt; CC
     HTTP --&gt; HTTPD
+
+    SNTP --&gt; CC
+    SNTP --&gt; NET
+    SNTP --&gt; SNTPLIB
+
+    SEL --&gt; SE
+
+    RS --&gt; SE
+    RS --&gt; SR
+    RS --&gt; SETTINGS
+    FRS --&gt; RS
+
+    MQTT --&gt; SE
+    MQTT --&gt; NET
+
+    LOC --&gt; SETTINGS
 
     SE --&gt; ZBUS
     ST --&gt; ZBUS
     SR --&gt; ZBUS
+    CC --&gt; ZBUS
 
-    SNTP --&gt; NET
-    SNTP --&gt; SNTPLIB
     HTTP --&gt; NET
-
     LVGL --&gt; LVGLLIB
 
     style APP fill:#dbeafe,stroke:#3b82f6
@@ -245,6 +331,7 @@ graph TD
     style HTTPD fill:#fce7f3,stroke:#db2777
     style LVGLLIB fill:#fce7f3,stroke:#db2777
     style SNTPLIB fill:#fce7f3,stroke:#db2777
+    style SETTINGS fill:#fce7f3,stroke:#db2777
     </div>
   </div>
 
@@ -256,8 +343,16 @@ sequenceDiagram
     participant SNTP as sntp_sync&lt;br/&gt;priority 80
     participant FT as fake_temperature&lt;br/&gt;priority 90
     participant FH as fake_humidity&lt;br/&gt;priority 91
-    participant GW as gateway_init&lt;br/&gt;priority 95
+    participant LVGL as lvgl_display&lt;br/&gt;priority 91
+    participant CO2 as fake_co2&lt;br/&gt;priority 92
+    participant RSM as remote_sensor_mgr&lt;br/&gt;priority 92
+    participant VOC as fake_voc&lt;br/&gt;priority 93
+    participant FRS as fake_remote_sensor&lt;br/&gt;priority 93
+    participant RSET as remote_sensor_settings&lt;br/&gt;priority 94
+    participant SEL as sensor_event_log&lt;br/&gt;priority 95
+    participant LOC as location_registry&lt;br/&gt;priority 96
     participant DASH as http_dashboard&lt;br/&gt;priority 97
+    participant MQTTP as mqtt_publisher&lt;br/&gt;priority 98
     participant TMR as fake_sensors_timer&lt;br/&gt;priority 99
     participant CLK as clock_display&lt;br/&gt;priority 99
     participant MAIN as main()
@@ -279,15 +374,54 @@ sequenceDiagram
     FH-&gt;&gt;FH: pub sensor_trigger_event(STARTUP)
     FH--&gt;&gt;KERNEL: return 0
 
-    KERNEL-&gt;&gt;GW: gateway_init()
-    GW-&gt;&gt;GW: zbus_chan_add_obs(sensor_event_chan)
-    GW-&gt;&gt;GW: LOG_INF(&quot;Gateway started&quot;)
-    GW--&gt;&gt;KERNEL: return 0
+    KERNEL-&gt;&gt;LVGL: lvgl_display_init()
+    LVGL-&gt;&gt;LVGL: zbus_chan_add_obs(sensor_event_chan)
+    LVGL-&gt;&gt;LVGL: start LVGL workqueue thread
+    LVGL--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;CO2: fake_co2_init()
+    CO2-&gt;&gt;CO2: sensor_registry_register(uid, ...)
+    CO2-&gt;&gt;CO2: zbus_chan_add_obs(sensor_trigger_chan)
+    CO2-&gt;&gt;CO2: pub sensor_trigger_event(STARTUP)
+    CO2--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;RSM: remote_sensor_manager_init()
+    RSM-&gt;&gt;RSM: zbus_chan_add_obs(remote_discovery_chan)
+    RSM-&gt;&gt;RSM: pub remote_scan_ctrl_event(START_ALL)
+    RSM--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;VOC: fake_voc_init()
+    VOC-&gt;&gt;VOC: sensor_registry_register(uid, ...)
+    VOC-&gt;&gt;VOC: zbus_chan_add_obs(sensor_trigger_chan)
+    VOC-&gt;&gt;VOC: pub sensor_trigger_event(STARTUP)
+    VOC--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;FRS: fake_remote_sensor_init()
+    FRS-&gt;&gt;FRS: init node state + start simulation timers
+    FRS--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;RSET: remote_sensor_settings_init()
+    RSET-&gt;&gt;RSET: load persisted peer list → re-register known remote sensors
+    RSET--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;SEL: sensor_event_log_init()
+    SEL-&gt;&gt;SEL: zbus_chan_add_obs(sensor_event_chan)
+    Note over SEL: also at priority 95: sensor_registry settings load,&lt;br/&gt;sntp_sync config_cmd init, fake_sensors config_cmd init
+    SEL--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;LOC: location_registry_settings_load()
+    LOC-&gt;&gt;LOC: load persisted location names from settings
+    LOC--&gt;&gt;KERNEL: return 0
 
     KERNEL-&gt;&gt;DASH: http_dashboard_init()
     DASH-&gt;&gt;DASH: zbus_chan_add_obs(sensor_event_chan)
     DASH-&gt;&gt;DASH: HTTP_SERVICE start on port 8080
     DASH--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;MQTTP: mqtt_publisher_init()
+    MQTTP-&gt;&gt;MQTTP: zbus_chan_add_obs(sensor_event_chan)
+    MQTTP-&gt;&gt;MQTTP: start publisher thread (connect to broker)
+    MQTTP--&gt;&gt;KERNEL: return 0
 
     KERNEL-&gt;&gt;TMR: fake_sensors_timer_init()
     TMR-&gt;&gt;TMR: k_timer_start(AUTO_PUBLISH_MS)
