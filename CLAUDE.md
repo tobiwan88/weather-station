@@ -40,17 +40,17 @@ To add a new patch: `/west-patch`.
 
 **1. One event = one physical measurement.** Temp and humidity are separate `env_sensor_data` events.
 
-**2. `env_sensor_data` is a flat 20-byte struct — no pointers, no heap.** Fields: `sensor_uid` (uint32), `type` (enum), `q31_value` (Q31 int32), `timestamp_ms` (int64).
+**2. `env_sensor_data` is a flat struct — no pointers, no heap.** Fields: `sensor_uid` (uint32), `type` (enum), `q31_value` (Q31 int32), `timestamp_ms` (int64). Size: 20 bytes on 32-bit, 24 bytes on 64-bit (padding before `int64_t`).
 
 **3. No sensor manager. No polling. No tight coupling.** Sensors subscribe to `sensor_trigger_chan`. See [ADR-004](docs/adr/ADR-004-trigger-driven-sampling.md).
 
-**4. `main.c` = `LOG_MODULE_REGISTER` + `k_sleep(K_FOREVER)` only.** All logic lives in libraries, self-wired via `SYS_INIT`. See [ADR-008](docs/adr/ADR-008-kconfig-app-composition.md).
+**4. `main.c` = `LOG_MODULE_REGISTER` + `return 0` only.** All logic lives in libraries, self-wired via `SYS_INIT`. Zephyr keeps running after `main()` returns. See [ADR-008](docs/adr/ADR-008-kconfig-app-composition.md).
 
 **5. Fake sensors are production-quality drivers**, not stubs. Instantiated via `DT_FOREACH_STATUS_OKAY`. See [ADR-005](docs/adr/ADR-005-fake-sensor-subsystem.md).
 
 **6. `sensor_uid` is the identity key.** `sensor_registry` maps uid → metadata. Never hardcode UIDs in consumers.
 
-**7. zbus channel ownership is strict.** `ZBUS_CHAN_DEFINE` in exactly one `.c` per channel; `ZBUS_CHAN_DECLARE` in the public header only. Channels: `sensor_trigger_chan`, `sensor_event_chan`, `config_cmd_chan`, `remote_discovery_chan`, `remote_scan_ctrl_chan`. See [ADR-002](docs/adr/ADR-002-zbus-as-system-bus.md).
+**7. zbus channel ownership is strict.** `ZBUS_CHAN_DEFINE` in exactly one `.c` per channel; `ZBUS_CHAN_DECLARE` in the public header only. Channels: `sensor_trigger_chan`, `sensor_event_chan`, `config_cmd_chan`, `remote_scan_ctrl_chan`. Discovery events use `k_msgq` (not zbus) inside `remote_sensor_manager` for ordering guarantees. See [ADR-002](docs/adr/ADR-002-zbus-as-system-bus.md).
 
 **8. Apps configure features via Kconfig only.** No `target_link_libraries()` in app `CMakeLists.txt`. See [ADR-001](docs/adr/ADR-001-repo-and-workspace-structure.md).
 
