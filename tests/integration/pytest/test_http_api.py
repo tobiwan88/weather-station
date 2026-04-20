@@ -11,9 +11,13 @@ Markers:
   http   — tests that interact via HTTP
 """
 
+import logging
 import time
 
 import pytest
+
+_log = logging.getLogger("test_http_api")
+
 
 
 @pytest.mark.smoke
@@ -91,20 +95,147 @@ def test_api_locations_endpoint_returns_json(http_harness):
 
 
 @pytest.mark.http
-def test_post_trigger_interval_accepted(http_harness):
+def test_post_trigger_interval_accepted(authed_harness):
     """``POST /api/config`` with trigger_interval_ms must return 2xx."""
-    status = http_harness.set_trigger_interval(10000)
+    status = authed_harness.set_trigger_interval(10000)
     assert 200 <= status < 300, f"Unexpected status code: {status}"
     # Restore — pause lets the embedded server close the previous connection
     # and return to its idle poll loop before we open another one.
     time.sleep(0.3)
-    http_harness.set_trigger_interval(5000)
+    authed_harness.set_trigger_interval(5000)
     # Settle after restore before the next test.
     time.sleep(0.3)
 
 
 @pytest.mark.http
-def test_post_config_returns_ok_json(http_harness):
+def test_post_config_returns_ok_json(authed_harness):
     """``POST /api/config`` must return JSON body ``{"ok": true}``."""
-    body = http_harness.post_config({"trigger_interval_ms": "5000"})
+    body = authed_harness.post_config({"trigger_interval_ms": "5000"})
     assert body == {"ok": True}, f"Unexpected POST /api/config response body: {body}"
+
+
+# ---------------------------------------------------------------------------
+# Auth-specific tests
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.http
+def test_post_config_without_token_returns_401(http_harness):
+    """``POST /api/config`` without an Authorization header must return 401."""
+
+    time.sleep(1)
+    r = http_harness._post("/api/config", {"trigger_interval_ms": "5000"},
+                           authenticated=False)
+    assert r.status_code == 401, f"Expected 401, got {r.status_code}"
+
+
+@pytest.mark.http
+def test_post_config_with_wrong_token_returns_401(http_harness):
+    """``POST /api/config`` with an invalid token must return 401."""
+    time.sleep(1)
+    r = http_harness._post(
+        "/api/config",
+        {"trigger_interval_ms": "5000"},
+        token="deadbeefdeadbeefdeadbeefdeadbeef",
+    )
+    assert r.status_code == 401, f"Expected 401, got {r.status_code}"
+
+
+@pytest.mark.http
+def test_post_config_with_valid_token_returns_200(authed_harness):
+    """``POST /api/config`` with the correct bearer token must succeed."""
+    time.sleep(1)
+    status = authed_harness.set_trigger_interval(5000)
+    assert 200 <= status < 300, f"Unexpected status code: {status}"
+    time.sleep(0.3)
+
+
+@pytest.mark.http
+def test_get_api_data_open_without_token_by_default(http_harness):
+    """``GET /api/data`` must return 200 without auth (read protection off by default)."""
+    r = http_harness._get("/api/data", authenticated=False)
+    assert r.status_code == 200, f"Expected 200, got {r.status_code}"
+
+
+@pytest.mark.http
+def test_dashboard_and_config_pages_always_open(http_harness):
+    """``GET /`` and ``GET /config`` must return 200 regardless of auth config."""
+    for path in ("/", "/config"):
+        r = http_harness._get(path, authenticated=False)
+        assert r.status_code == 200, f"Path {path} returned {r.status_code}"
+
+
+@pytest.mark.http
+def test_token_rotation_invalidates_old_token(authed_harness, shell_harness, device_logger):
+    """After rotation, the old token must be rejected and the new one accepted."""
+    _log.info("=== STEP 1: Initial state ===")
+    time.sleep(1)
+    old_token = authed_harness._token
+    _log.info("Old token: %s", old_token)
+
+    # Rotate via shell and give the command time to complete.
+    _log.info("=== STEP 2: Rotating token ===")
+    shell_harness.exec("http_dashboard token rotate")
+    time.sleep(1)
+    device_logger.drain()  # Flush server logs so rotation completion is visible
+
+    # Retrieve and store the new token.
+    _log.info("=== STEP 3: Getting new token from shell ===")
+    new_token = authed_harness.get_token_from_shell(shell_harness)
+    _log.info("New token: %s", new_token)
+    assert new_token != old_token, "Token did not change after rotation"
+
+    # Old token must now be rejected; pace request to avoid connection pool saturation.
+
+    time.sleep(1)
+    _log.info("=== STEP 4: POST with OLD token (should get 401) ===")
+    _log.info("Sending old_token=%s", old_token)
+    device_logger.drain()  # Clear any pending device logs before POST
+    r = authed_harness._post(
+        "/api/config",
+        {"trigger_interval_ms": "5000"},
+        token=old_token,
+    )
+    _log.info("Old token POST response: status=%d body=%s", r.status_code, r.text[:100])
+    device_logger.drain()  # Show server's 401 response processing
+    assert r.status_code == 401, f"Old token still accepted after rotation: {r.status_code}"
+
+    time.sleep(3)  # Longer delay after 401 to ensure connection cleanup
+    # Update harness and verify the new token works.
+    _log.info("=== STEP 5: POST with NEW token (should get 200) ===")
+    _log.info("Sending new_token=%s", new_token)
+    device_logger.drain()  # Clear pending logs before new POST
+    authed_harness.set_token(new_token)
+    _log.info("Harness token now set to: %s", authed_harness._token)
+    status = authed_harness.set_trigger_interval(5000)
+    _log.info("New token POST response: status=%d", status)
+    device_logger.drain()  # Show server's 200 response processing
+    assert 200 <= status < 300, f"New token rejected after rotation: {status}"
+    _log.info("=== TEST COMPLETE ===")
+
+
+@pytest.mark.http
+def test_two_back_to_back_posts_different_tokens(authed_harness, shell_harness, device_logger):
+    """Test two consecutive POSTs with different tokens - used to isolate token rotation issue."""
+    _log.info("=== STEP A: Setup - get initial token ===")
+    time.sleep(1)
+    token_a = authed_harness._token
+    _log.info("Token A: %s", token_a)
+
+    _log.info("=== STEP B: First POST with token A (should succeed) ===")
+    device_logger.drain()
+    r1 = authed_harness._post("/api/config", {"trigger_interval_ms": "3000"}, token=token_a)
+    _log.info("First POST response: status=%d body=%s", r1.status_code, r1.text[:100])
+    device_logger.drain()
+    assert 200 <= r1.status_code < 300, f"First POST failed: {r1.status_code}"
+
+    _log.info("=== STEP C: Second POST with same token A (should succeed) ===")
+    time.sleep(2)
+    device_logger.drain()
+    r2 = authed_harness._post("/api/config", {"trigger_interval_ms": "4000"}, token=token_a)
+    _log.info("Second POST response: status=%d body=%s", r2.status_code, r2.text[:100])
+    device_logger.drain()
+    assert 200 <= r2.status_code < 300, f"Second POST failed: {r2.status_code}"
+
+    _log.info("=== TEST COMPLETE ===")
+    time.sleep(1)

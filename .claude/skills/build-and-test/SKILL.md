@@ -1,7 +1,7 @@
 ---
 name: build-and-test
 description: Run the mandatory build and test gate for the weather-station project. Invoke after any code, Kconfig, DTS, or config change.
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Build and Test Gate

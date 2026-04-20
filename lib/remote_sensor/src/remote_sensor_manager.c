@@ -27,7 +27,7 @@
 #include <sensor_registry/sensor_registry.h>
 #include <sensor_trigger/sensor_trigger.h>
 
-LOG_MODULE_REGISTER(remote_sensor, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(remote_sensor, CONFIG_REMOTE_SENSOR_LOG_LEVEL);
 
 /* --------------------------------------------------------------------------
  * Peer table — owned by this module
@@ -389,6 +389,7 @@ static void remote_trigger_cb(const struct zbus_channel *chan)
 
 		uint32_t uid = peer_table[i].uid;
 
+		LOG_DBG("trigger → uid=0x%08x proto=%d", uid, peer_table[i].proto);
 		k_mutex_unlock(&peer_table_mutex);
 		t->send_trigger(t, uid);
 		k_mutex_lock(&peer_table_mutex, K_FOREVER);

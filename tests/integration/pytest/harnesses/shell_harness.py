@@ -10,10 +10,13 @@ updating.
 
 from __future__ import annotations
 
+import logging
 import re
 from dataclasses import dataclass
 
 from twister_harness import Shell
+
+_log = logging.getLogger("shell")
 
 
 @dataclass
@@ -31,13 +34,28 @@ class ShellHarness:
     def __init__(self, shell: Shell) -> None:
         self._shell = shell
 
+    def wait_for_prompt(self, timeout: float | None = None) -> None:
+        """Block until the shell prompt is ready."""
+        self._shell.wait_for_prompt(timeout)
+
+    def _exec(self, cmd: str) -> list[str]:
+        """Execute a shell command and return lines, with structured logging."""
+        _log.debug("exec: %s", cmd)
+        lines = self._shell.exec_command(cmd)
+        _log.debug("← %d line(s)", len(lines))
+        return lines
+
+    def exec(self, cmd: str) -> list[str]:
+        """Public interface to execute a raw shell command and return lines."""
+        return self._exec(cmd)
+
     # ------------------------------------------------------------------
     # kernel commands
     # ------------------------------------------------------------------
 
     def get_uptime_ms(self) -> int:
         """Return device uptime in milliseconds via ``kernel uptime``."""
-        lines = self._shell.exec_command("kernel uptime")
+        lines = self._exec("kernel uptime")
         for line in lines:
             # Zephyr shell prints: "Uptime: 1234 ms"
             m = re.search(r"(\d+)\s*ms", line)
@@ -47,7 +65,7 @@ class ShellHarness:
 
     def get_version(self) -> str:
         """Return the Zephyr version string via ``kernel version``."""
-        lines = self._shell.exec_command("kernel version")
+        lines = self._exec("kernel version")
         for line in lines:
             if "Zephyr version" in line:
                 return line.strip()
@@ -63,7 +81,7 @@ class ShellHarness:
         Example row:
             0x0001  temperature   living room           21000 mdeg C
         """
-        lines = self._shell.exec_command("fake_sensors list")
+        lines = self._exec("fake_sensors list")
         sensors: list[SensorEntry] = []
         # Match lines starting with 0x<hex>
         row_re = re.compile(
@@ -91,7 +109,7 @@ class ShellHarness:
 
         Returns the confirmation line from the shell.
         """
-        lines = self._shell.exec_command("fake_sensors trigger")
+        lines = self._exec("fake_sensors trigger")
         for line in lines:
             if "trigger" in line.lower():
                 return line.strip()
@@ -99,19 +117,19 @@ class ShellHarness:
 
     def set_temperature(self, uid: int, mdegc: int) -> None:
         """Set a fake temperature sensor value via shell."""
-        self._shell.exec_command(f"fake_sensors temperature_set {uid:#06x} {mdegc}")
+        self._exec(f"fake_sensors temperature_set {uid:#06x} {mdegc}")
 
     def set_humidity(self, uid: int, mpct: int) -> None:
         """Set a fake humidity sensor value via shell."""
-        self._shell.exec_command(f"fake_sensors humidity_set {uid:#06x} {mpct}")
+        self._exec(f"fake_sensors humidity_set {uid:#06x} {mpct}")
 
     def set_co2(self, uid: int, mppm: int) -> None:
         """Set a fake CO2 sensor value via shell."""
-        self._shell.exec_command(f"fake_sensors co2_set {uid:#06x} {mppm}")
+        self._exec(f"fake_sensors co2_set {uid:#06x} {mppm}")
 
     def set_voc(self, uid: int, miaq: int) -> None:
         """Set a fake VOC sensor value via shell."""
-        self._shell.exec_command(f"fake_sensors voc_set {uid:#06x} {miaq}")
+        self._exec(f"fake_sensors voc_set {uid:#06x} {miaq}")
 
     # ------------------------------------------------------------------
     # help
@@ -119,4 +137,4 @@ class ShellHarness:
 
     def help(self) -> list[str]:
         """Return lines from the ``help`` command."""
-        return self._shell.exec_command("help")
+        return self._exec("help")

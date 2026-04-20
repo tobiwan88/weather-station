@@ -1,5 +1,29 @@
 # Backlog
 
+## [ADR-008-RULE4] Move lvgl_display_run() out of gateway/main.c
+
+`apps/gateway/src/main.c` violates ADR-008 Rule 4 by calling `lvgl_display_run()`
+(a blocking SDL timer loop) under `#if CONFIG_LVGL_DISPLAY`. On Linux (devcontainer /
+CI target) SDL2 works fine from any thread, so the "must run on main thread" constraint
+does not apply.
+
+**Goal:** `main.c` becomes `LOG_MODULE_REGISTER + return 0`, conforming to Rule 4.
+
+**Implementation:**
+- In `lib/lvgl_display/src/lvgl_display.c`: rename `lvgl_display_run()` to a static
+  thread entry `lvgl_thread_fn()`; call `create_ui()` + `display_blanking_off()` at
+  thread start, then loop `lv_timer_handler()` with `k_msleep()`.
+- Start the thread from `lvgl_display_init()` (already runs via `SYS_INIT APPLICATION 91`).
+  Use `K_THREAD_DEFINE` with a new `CONFIG_LVGL_DISPLAY_STACK_SIZE` Kconfig (default 8192).
+- Remove `lvgl_display_run()` declaration from
+  `lib/lvgl_display/include/lvgl_display/lvgl_display.h`.
+- Simplify `apps/gateway/src/main.c` to remove the `#if CONFIG_LVGL_DISPLAY` block.
+
+**Acceptance:** `/build-and-test` passes; LVGL window opens on native_sim; `main.c`
+contains only `LOG_MODULE_REGISTER` + `return 0`.
+
+---
+
 ## [ADR-008-REVIEW] Review main.c files exceeding 50-line rule
 
 Both app `main.c` files exceed the ADR-008 50-line rule:
@@ -45,25 +69,6 @@ Additional CI gaps to fix alongside:
 
 Reference: ADR-010.
 
----
-
-## [HTTP-DASHBOARD] Decouple HTML/JS from C source via LittleFS
-
-The current implementation embeds the dashboard HTML, CSS, and Chart.js glue code as C string
-literals in `lib/http_dashboard/src/http_dashboard.c`. This makes web asset editing difficult
-and prevents live-reload workflows.
-
-**Goal:** serve static assets (HTML, CSS, JS) from LittleFS. The C layer becomes an HTTP router
-only. Web assets live in a dedicated source directory, compiled into a filesystem image at build
-time.
-
-**Acceptance:**
-- No HTML/CSS/JS in `.c` files; all web assets in a dedicated directory.
-- Build produces a LittleFS image mounted at a known path.
-- HTTP handler reads files from the filesystem; responds with `404` for missing assets.
-- Existing endpoints (`/`, `/config`, `/api/data`, `/api/config`) continue to work.
-
-Reference: ADR-011 §Design goal.
 
 ---
 
@@ -165,3 +170,12 @@ Reference: ADR-003 §Serialisation, ADR-006.
 ## [Remote sensor manager] Thread maybe more busy as eneded
 
 - we use zbus + timeout and drain afterwards. Normal operation we should not have to many events at once. Maybe enough just to put events on simple message que or other format?
+
+## [HTTP Dashboard] User login to access configuraiton dashboard
+
+- Instead of posting the token there shall be a small user webpage to loging to the configuration, for dev we use admin: admin
+- the user can change the password and username
+
+## [MQTT Config] MQTT can be configured
+- can be enabled/disabled
+- user can change address, authentication

@@ -46,16 +46,23 @@ The mechanism is `SYS_INIT`. Each library registers its own initialisation funct
 The initialisation chain is the application's wiring diagram. Reading it tells you every feature that is active and the order they come up:
 
 ```
-priority 80  sntp_sync       — must complete initial NTP query before others read time
-priority 90  fake_sensors    — sensor drivers register themselves in the registry
-priority 95  gateway         — subscribes to sensor_event_chan for logging
-priority 97  http_dashboard  — subscribes to sensor_event_chan, starts HTTP server
-priority 99  sensors timer   — starts periodic broadcast (all listeners now registered)
-priority 99  clock_display   — schedules 60-second wall-clock tick
-             main()          — runs LVGL loop or sleeps forever
+priority 80  sntp_sync              — initial SNTP query before timestamps are needed
+priority 90  fake_temperature       — registers in sensor_registry, subscribes trigger chan
+priority 91  fake_humidity          — same; lvgl_display also at 91 (subscribes event chan)
+priority 92  fake_co2               — same; remote_sensor_manager also at 92
+priority 93  fake_voc               — same; fake_remote_sensor also at 93
+priority 94  remote_sensor_settings — loads persisted peer list after manager is up
+priority 95  sensor_event_log       — gateway listener subscribes to sensor_event_chan
+             (+ settings loads)       sensor_registry, sntp_sync, fake_sensors config-cmd callbacks
+priority 96  location_registry      — loads persisted location names after registry is up
+priority 97  http_dashboard         — subscribes to sensor_event_chan, starts HTTP server
+priority 98  mqtt_publisher         — subscribes to sensor_event_chan, connects to MQTT broker
+priority 99  fake_sensors_timer     — starts periodic broadcast (all listeners now registered)
+priority 99  clock_display          — schedules 60-second wall-clock tick
+             main()                 — runs LVGL loop or k_sleep(K_FOREVER)
 ```
 
-The ordering matters: the sensors timer fires at priority 99 because all subscribers (gateway at 95, dashboard at 97) must be registered before the first broadcast. A trigger fired before a listener is registered loses the event permanently — zbus has no replay.
+The ordering matters: the sensors timer fires at priority 99 because all subscribers (sensor_event_log at 95, http_dashboard at 97, mqtt_publisher at 98) must be registered before the first broadcast. A trigger fired before a listener is registered loses the event permanently — zbus has no replay.
 
 ---
 

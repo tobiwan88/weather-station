@@ -27,6 +27,7 @@ graph TB
             SEL["sensor_event_log\nconsole logger"]
             RS["remote_sensor\ntransport abstraction + manager"]
             FRS["fake_remote_sensor\ntesting stub"]
+            MQTT["mqtt_publisher\nMQTT egress"]
         end
     end
 
@@ -57,6 +58,7 @@ graph TB
     RS -->|publishes| SEC
     RS -->|subscribes| STC
     FRS -->|implements vtable| RS
+    MQTT -->|subscribes| SEC
 
     SEC --> ZBUS
     STC --> ZBUS

@@ -21,7 +21,7 @@
 
 #include <sensor_event/sensor_event.h>
 
-LOG_MODULE_REGISTER(sensor_event_log, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(sensor_event_log, CONFIG_SENSOR_EVENT_LOG_LOG_LEVEL);
 
 static void sensor_event_log_cb(const struct zbus_channel *chan)
 {
@@ -60,6 +60,13 @@ ZBUS_LISTENER_DEFINE(sensor_event_log_listener, sensor_event_log_cb);
 
 static int sensor_event_log_init(void)
 {
-	return zbus_chan_add_obs(&sensor_event_chan, &sensor_event_log_listener, K_NO_WAIT);
+	int rc = zbus_chan_add_obs(&sensor_event_chan, &sensor_event_log_listener, K_NO_WAIT);
+
+	if (rc != 0) {
+		LOG_ERR("failed to subscribe to sensor_event_chan: %d", rc);
+		return rc;
+	}
+	LOG_DBG("sensor_event_log: init done");
+	return 0;
 }
 SYS_INIT(sensor_event_log_init, APPLICATION, 95);

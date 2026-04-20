@@ -6,3 +6,11 @@ menuconfig CLOCK_DISPLAY
 	  Logs the current wall-clock time as HH:MM UTC every 60 seconds via
 	  a delayable work item. Useful as a minimal clock widget for a
 	  weather-station console display.
+
+if CLOCK_DISPLAY
+
+module = CLOCK_DISPLAY
+module-str = CLOCK_DISPLAY
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # CLOCK_DISPLAY

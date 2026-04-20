@@ -30,11 +30,19 @@
 
 #include <sensor_event/sensor_event.h>
 
+#if defined(CONFIG_HTTP_DASHBOARD_AUTH)
+#	include "auth.h"
+#endif
 #include "json_serialise.h"
 #include "process_post.h"
 #include "sensor_history.h"
 
-LOG_MODULE_REGISTER(http_dashboard, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(http_dashboard, CONFIG_HTTP_DASHBOARD_LOG_LEVEL);
+
+#if defined(CONFIG_HTTP_DASHBOARD_AUTH)
+/* Capture the Authorization header so handlers can validate bearer tokens. */
+HTTP_SERVER_REGISTER_HEADER_CAPTURE(auth_hdr_capture, "Authorization");
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* HTML page content                                                           */
@@ -62,6 +70,28 @@ static const struct http_header json_ct_hdr[] = {
 
 /* POST /api/config success response body */
 static const char post_ok[] = "{\"ok\":true}";
+
+#if defined(CONFIG_HTTP_DASHBOARD_AUTH)
+static const char auth_body[] = "{\"error\":\"unauthorized\"}";
+static const struct http_header auth_hdrs[] = {
+	{.name = "Content-Type", .value = "application/json"},
+	{.name = "WWW-Authenticate", .value = "Bearer realm=\"weather-station\""},
+};
+
+static void respond_401(struct http_response_ctx *rsp)
+{
+	LOG_INF("respond_401: ENTRY rsp=%p final_chunk=%d", (void *)rsp, rsp->final_chunk);
+	LOG_DBG("respond_401: sending 401 Unauthorized");
+	rsp->status = HTTP_401_UNAUTHORIZED;
+	rsp->headers = auth_hdrs;
+	rsp->header_count = ARRAY_SIZE(auth_hdrs);
+	rsp->body = (const uint8_t *)auth_body;
+	rsp->body_len = sizeof(auth_body) - 1;
+	rsp->final_chunk = true;
+	LOG_INF("respond_401: EXIT rsp->status=%d body_len=%zu final_chunk=%d", rsp->status,
+		rsp->body_len, rsp->final_chunk);
+}
+#endif /* CONFIG_HTTP_DASHBOARD_AUTH */
 
 /* -------------------------------------------------------------------------- */
 /* Static output buffers                                                       */
@@ -176,6 +206,15 @@ static int api_data_handler(struct http_client_ctx *client, enum http_transactio
 		return 0;
 	}
 
+	LOG_DBG("GET /api/data: serving");
+
+#if defined(CONFIG_HTTP_DASHBOARD_AUTH) && defined(CONFIG_HTTP_DASHBOARD_AUTH_PROTECT_READ)
+	if (!auth_check(request_ctx)) {
+		respond_401(response_ctx);
+		return 0;
+	}
+#endif
+
 	history_do_snapshot();
 
 	size_t len = history_to_json(history_get_snap(), CONFIG_HTTP_DASHBOARD_MAX_SENSORS,
@@ -215,30 +254,61 @@ static int api_config_handler(struct http_client_ctx *client, enum http_transact
 {
 	ARG_UNUSED(user_data);
 
+	LOG_INF("api_config_handler: ENTRY client=%p method=%d status=%d data_len=%zu",
+		(void *)client, client->method, status, request_ctx->data_len);
+
 	if (status == HTTP_SERVER_TRANSACTION_ABORTED) {
+		LOG_INF("api_config_handler: ABORTED client=%p", (void *)client);
 		post_cursor = 0;
 		return 0;
 	}
 
 	if (client->method == HTTP_POST) {
+		LOG_DBG("api_config_handler: POST status=%d, data_len=%zu, post_cursor=%zu", status,
+			request_ctx->data_len, post_cursor);
 		if (request_ctx->data_len > 0) {
 			size_t space = sizeof(post_buf) - post_cursor;
 			size_t copy = MIN(request_ctx->data_len, space);
 
 			memcpy(post_buf + post_cursor, request_ctx->data, copy);
 			post_cursor += copy;
+			LOG_DBG("POST /api/config: chunk %zuB, cursor=%zu", copy, post_cursor);
 		}
 
 		if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
+			LOG_DBG("api_config_handler: HTTP_SERVER_REQUEST_DATA_FINAL for POST");
+#if defined(CONFIG_HTTP_DASHBOARD_AUTH)
+			LOG_DBG("api_config_handler: calling auth_check");
+			if (!auth_check(request_ctx)) {
+				post_cursor = 0;
+				LOG_DBG("api_config_handler: auth denied, calling respond_401");
+				respond_401(response_ctx);
+				LOG_DBG("POST /api/config: auth denied, responded 401");
+				return 0;
+			}
+			LOG_DBG("api_config_handler: auth passed");
+#endif
+			LOG_DBG("api_config_handler: calling process_post with %zu bytes",
+				post_cursor);
 			process_post(post_buf, post_cursor);
+			LOG_DBG("api_config_handler: process_post returned");
 			post_cursor = 0;
 
+			LOG_DBG("api_config_handler: setting up 200 OK response");
 			response_ctx->status = HTTP_200_OK;
 			response_ctx->headers = json_ct_hdr;
 			response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
 			response_ctx->body = (const uint8_t *)post_ok;
 			response_ctx->body_len = sizeof(post_ok) - 1;
 			response_ctx->final_chunk = true;
+			LOG_INF("api_config_handler: POST completed, final_chunk=true, "
+				"body_len=%zu",
+				response_ctx->body_len);
+			LOG_DBG("POST /api/config: responded 200 OK");
+		} else if (status == HTTP_SERVER_TRANSACTION_COMPLETE) {
+			LOG_INF("api_config_handler: TRANSACTION_COMPLETE client=%p",
+				(void *)client);
+			post_cursor = 0;
 		}
 		return 0;
 	}
@@ -247,6 +317,13 @@ static int api_config_handler(struct http_client_ctx *client, enum http_transact
 	if (status != HTTP_SERVER_REQUEST_DATA_FINAL) {
 		return 0;
 	}
+
+#if defined(CONFIG_HTTP_DASHBOARD_AUTH) && defined(CONFIG_HTTP_DASHBOARD_AUTH_PROTECT_READ)
+	if (!auth_check(request_ctx)) {
+		respond_401(response_ctx);
+		return 0;
+	}
+#endif
 
 	char sntp_snap[64];
 
@@ -299,6 +376,15 @@ static int api_locations_handler(struct http_client_ctx *client,
 		return 0;
 	}
 
+	LOG_DBG("GET /api/locations: serving");
+
+#if defined(CONFIG_HTTP_DASHBOARD_AUTH) && defined(CONFIG_HTTP_DASHBOARD_AUTH_PROTECT_READ)
+	if (!auth_check(request_ctx)) {
+		respond_401(response_ctx);
+		return 0;
+	}
+#endif
+
 	size_t len = locations_to_json(loc_json_buf, sizeof(loc_json_buf));
 
 	if (len == 0) {
@@ -346,6 +432,15 @@ HTTP_RESOURCE_DEFINE(api_locations_resource, dashboard_svc, "/api/locations",
 
 static int http_dashboard_init(void)
 {
+#if defined(CONFIG_HTTP_DASHBOARD_AUTH)
+	int auth_rc = auth_init();
+
+	if (auth_rc != 0) {
+		LOG_ERR("auth_init failed: %d", auth_rc);
+		return auth_rc;
+	}
+#endif
+
 	int rc = zbus_chan_add_obs(&sensor_event_chan, &http_dashboard_listener, K_NO_WAIT);
 
 	if (rc != 0) {
@@ -362,5 +457,53 @@ static int http_dashboard_init(void)
 	LOG_INF("HTTP dashboard started on port %d", CONFIG_HTTP_DASHBOARD_PORT);
 	return 0;
 }
+
+#if defined(CONFIG_HTTP_DASHBOARD_AUTH) && defined(CONFIG_HTTP_DASHBOARD_AUTH_SHELL)
+#	include <zephyr/shell/shell.h>
+
+static int cmd_token_show(const struct shell *sh, size_t argc, char **argv)
+{
+	ARG_UNUSED(argc);
+	ARG_UNUSED(argv);
+
+	char tok[AUTH_TOKEN_STR_LEN + 1];
+
+	auth_token_copy(tok, sizeof(tok));
+	shell_print(sh, "Authorization: Bearer %s", tok);
+	return 0;
+}
+
+static int cmd_token_rotate(const struct shell *sh, size_t argc, char **argv)
+{
+	ARG_UNUSED(argc);
+	ARG_UNUSED(argv);
+
+	int rc = auth_token_rotate();
+
+	if (rc != 0) {
+		shell_error(sh, "token rotation failed: %d", rc);
+		return rc;
+	}
+
+	char tok[AUTH_TOKEN_STR_LEN + 1];
+
+	auth_token_copy(tok, sizeof(tok));
+	shell_print(sh, "New token — Authorization: Bearer %s", tok);
+	return 0;
+}
+
+SHELL_STATIC_SUBCMD_SET_CREATE(sub_token,
+			       SHELL_CMD(show, NULL, "Print current bearer token", cmd_token_show),
+			       SHELL_CMD(rotate, NULL, "Generate and apply a new random token",
+					 cmd_token_rotate),
+			       SHELL_SUBCMD_SET_END);
+
+SHELL_STATIC_SUBCMD_SET_CREATE(sub_http_dashboard,
+			       SHELL_CMD(token, &sub_token, "Token management", NULL),
+			       SHELL_SUBCMD_SET_END);
+
+SHELL_CMD_REGISTER(http_dashboard, &sub_http_dashboard, "HTTP dashboard commands", NULL);
+
+#endif /* CONFIG_HTTP_DASHBOARD_AUTH && CONFIG_HTTP_DASHBOARD_AUTH_SHELL */
 
 SYS_INIT(http_dashboard_init, APPLICATION, 97);

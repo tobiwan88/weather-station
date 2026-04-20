@@ -37,7 +37,7 @@ sensor drivers           sensor_event_chan          consumers
 ──────────────           ────────────────           ──────────────
 fake_temperature  ──►                        ──►  sensor_event_log
 fake_humidity     ──►    { uid, type,         ──►  http_dashboard
-remote_sensor     ──►      q31, timestamp }   ──►  (future: MQTT)
+remote_sensor     ──►      q31, timestamp }   ──►  mqtt_publisher
 (future: real hw) ──►                        ──►  (future: flash)
 ```
 
@@ -61,7 +61,7 @@ The principle: adding a new consumer must not require modifying existing produce
 
 Concretely, when `http_dashboard` was added to the project, the following files were **not touched**: `fake_temperature.c`, `fake_humidity.c`, `fake_sensors_timer.c`, `apps/gateway/src/main.c`. The dashboard simply registered a listener on `sensor_event_chan` in its own `SYS_INIT` callback.
 
-The same will be true for the next consumer (MQTT, flash, another display widget). The channel is the only shared contract.
+The same was true when `mqtt_publisher` was added, and will continue to be true for the next consumer (flash logger, another display widget). The channel is the only shared contract.
 
 ---
 

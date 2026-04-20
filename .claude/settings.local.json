@@ -110,7 +110,27 @@
       "Bash(kill 1036484)",
       "Bash(xargs cat:*)",
       "Bash(awk '{print $2}')",
-      "Bash(xxd)"
+      "Bash(xxd)",
+      "Skill(run-integration-tests)",
+      "Bash(mosquitto --version)",
+      "Bash(pkill -f \"mosquitto -p 1883\")",
+      "Bash(pkill mosquitto:*)",
+      "Bash(pkill -x mosquitto)",
+      "Bash(/usr/sbin/mosquitto -p 1883 -d)",
+      "Bash(awk 'NR>1 {split\\($2,a,\":\"\\); printf \"%d\\\\n\", strtonum\\(\"0x\"a[2]\\)}')",
+      "Bash(/usr/sbin/mosquitto -p 1883)",
+      "Bash(pkill -f \"zephyr.exe\")",
+      "Bash(pkill -f zephyr.exe)",
+      "Bash(pkill -9 -f zephyr.exe)",
+      "Bash(nc -z localhost 1883)",
+      "Bash(kill -0 1473934)",
+      "Bash(ZEPHYR_BASE=/home/zephyr/workspace/zephyr west patch *)",
+      "Bash(nm /home/zephyr/workspace/weather-station/twister-out/native_sim_native_64/host/weather-station/tests/integration/weather_station.integration/zephyr/zephyr.exe)",
+      "Skill(west-patch)",
+      "Bash(west patch *)",
+      "Bash(west list *)",
+      "Bash(west help *)",
+      "Bash(gh run *)"
     ]
   },
   "hooks": {

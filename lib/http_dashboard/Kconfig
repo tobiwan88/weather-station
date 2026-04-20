@@ -31,4 +31,48 @@ config HTTP_DASHBOARD_MAX_SENSORS
 	default 16
 	depends on HTTP_DASHBOARD
 
+config HTTP_DASHBOARD_AUTH
+	bool "Enable bearer token authentication for API endpoints"
+	depends on HTTP_DASHBOARD
+	select HTTP_SERVER_CAPTURE_HEADERS
+	help
+	  Generates a random 128-bit bearer token at boot (via sys_csrand_get).
+	  POST /api/config requires "Authorization: Bearer <token>" on every
+	  request. Use 'http_dashboard token show' in the shell to read the
+	  active token, and 'http_dashboard token rotate' to replace it.
+
+if HTTP_DASHBOARD_AUTH
+
+config HTTP_DASHBOARD_AUTH_DEFAULT_TOKEN
+	string "Compile-time development token (empty = generate random at boot)"
+	default ""
+	help
+	  When non-empty must be exactly 32 lowercase hex characters. The token
+	  is loaded verbatim instead of calling sys_csrand_get(), giving
+	  scripted tests a predictable value. Leave empty in production builds;
+	  an empty string forces random generation at every boot.
+
+config HTTP_DASHBOARD_AUTH_PROTECT_READ
+	bool "Require auth on GET /api/* endpoints (not just POST)"
+	default n
+	help
+	  When enabled, GET /api/data, GET /api/config, and GET /api/locations
+	  also require the Authorization header. GET / and GET /config remain
+	  open because they serve static HTML with no privileged data.
+
+config HTTP_DASHBOARD_AUTH_SHELL
+	bool "Shell commands for token management (show / rotate)"
+	depends on SHELL
+	default y
+	help
+	  Adds 'http_dashboard token' sub-commands:
+	    http_dashboard token show   — print current bearer token
+	    http_dashboard token rotate — generate and apply a new random token
+
+endif # HTTP_DASHBOARD_AUTH
+
+module = HTTP_DASHBOARD
+module-str = HTTP_DASHBOARD
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # HTTP_DASHBOARD

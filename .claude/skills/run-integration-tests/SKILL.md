@@ -61,13 +61,45 @@ ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
   --pytest-args="-m $0"
 ```
 
+## Run a single test by name (most useful for debugging)
+
+Use `-k <test_name>` to run exactly one test function. This is the fastest
+way to iterate on a failing test — Twister still builds once and boots one DUT,
+but pytest only executes the matched test.
+
+```bash
+ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
+  west twister -p native_sim/native/64 -T tests/integration \
+  --inline-logs -v -N \
+  --pytest-args='-k test_post_config_without_token_returns_401'
+```
+
+`-k` matches on the test function name (substring or exact). Examples:
+
+```bash
+# exact name
+--pytest-args='-k test_token_rotation_invalidates_old_token'
+
+# substring — runs all tests whose name contains "token"
+--pytest-args='-k token'
+
+# combine with a marker
+--pytest-args='-m http -k rotation'
+```
+
+> **Tip for debugging crashes:** run the single failing test in isolation so
+> the DUT log (`handler.log`) and pytest output (`twister_harness.log`) contain
+> only that test's traffic, making the crash signal much easier to spot.
+> Log files are at:
+> `twister-out/native_sim_native_64/host/weather-station/tests/integration/weather_station.integration/`
+
 ## Run a single test file
 
 ```bash
 ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
   west twister -p native_sim/native/64 -T tests/integration \
   --inline-logs -v -N \
-  --pytest-args="-k test_file_name"
+  --pytest-args="-k test_http_api"
 ```
 
 ## Run all tests (unit + integration)
@@ -129,6 +161,11 @@ Multiple markers: `--pytest-args="-m 'smoke or http'"`
 8. **Regex parse failures in ShellHarness** → the shell output format changed.
    Fix the regex in `tests/integration/pytest/harnesses/shell_harness.py`.
 
+9. *** Extended debugging ***
+   For better debugging increase the log level of involved modules
+   e.g. CONFIG_NET_HTTP_SERVER_LOG_LEVEL_DBG=y in prj.conf
+   do not increase the generic log level!
+
 ---
 
 ## Do NOT
@@ -139,3 +176,4 @@ Multiple markers: `--pytest-args="-m 'smoke or http'"`
   `ModuleNotFoundError: No module named 'twisterlib'`.
 - Do not run integration tests with `pytest` directly — Twister manages the
   build, the DUT lifecycle, and the `twister_harness` plugin wiring.
+- Do not increase in the prj.conf CONFIG_LOG_DEFAULT_LEVEL=4 too many messages

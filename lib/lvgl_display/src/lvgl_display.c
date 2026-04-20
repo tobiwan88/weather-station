@@ -64,7 +64,7 @@
 
 #include "theme.h"
 
-LOG_MODULE_REGISTER(lvgl_display, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(lvgl_display, CONFIG_LVGL_DISPLAY_LOG_LEVEL);
 
 /* --------------------------------------------------------------------------
  * Layout constants
@@ -260,7 +260,7 @@ static void update_nav_indicators(void)
 		pages = 1;
 	}
 	int current_page = page_first_card / CONFIG_LVGL_DISPLAY_SENSORS_PER_PAGE + 1;
-	char buf[16];
+	char buf[32];
 
 	snprintf(buf, sizeof(buf), "%d/%d", current_page, pages);
 	lv_label_set_text(nav_page_label, buf);

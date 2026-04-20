@@ -51,4 +51,8 @@ config FAKE_REMOTE_SENSOR_SHELL
 	    fake_remote publish   — publish one synthetic measurement round
 	    fake_remote status    — show fake node state
 
+module = FAKE_REMOTE_SENSOR
+module-str = FAKE_REMOTE_SENSOR
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # FAKE_REMOTE_SENSOR

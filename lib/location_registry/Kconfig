@@ -38,4 +38,8 @@ config LOCATION_REGISTRY_SHELL
 	    location remove <name>
 	    location list
 
+module = LOCATION_REGISTRY
+module-str = LOCATION_REGISTRY
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # LOCATION_REGISTRY

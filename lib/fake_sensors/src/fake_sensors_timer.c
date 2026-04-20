@@ -18,7 +18,7 @@
 #include <fake_sensors/fake_sensors.h>
 #include <sensor_trigger/sensor_trigger.h>
 
-LOG_MODULE_REGISTER(fake_sensors_timer, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(fake_sensors_timer, CONFIG_FAKE_SENSORS_LOG_LEVEL);
 
 static void auto_timer_cb(struct k_timer *timer);
 

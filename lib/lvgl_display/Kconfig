@@ -86,4 +86,8 @@ config LVGL_DISPLAY_USE_SENSOR_REGISTRY
 	  When enabled, sensor card name labels use the user-settable
 	  display_name from sensor_registry rather than a generic type string.
 
+module = LVGL_DISPLAY
+module-str = LVGL_DISPLAY
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # LVGL_DISPLAY
