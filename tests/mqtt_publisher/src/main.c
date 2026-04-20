@@ -236,7 +236,119 @@ ZTEST(format_suite, test_payload_is_valid_json_start_end)
 }
 
 /* ============================================================================
- * Suite 2: integration — zbus trigger → queue enqueue
+ * Suite 2: config API unit tests
+ * ============================================================================ */
+
+ZTEST_SUITE(config_suite, NULL, NULL, NULL, NULL, NULL);
+
+ZTEST(config_suite, test_get_config_defaults)
+{
+	struct mqtt_publisher_config cfg;
+
+	mqtt_publisher_get_config(&cfg);
+
+	zassert_true(cfg.enabled, "MQTT should be enabled by default");
+	zassert_str_equal(cfg.host, "127.0.0.1", "host mismatch");
+	zassert_equal(cfg.port, 1883, "port mismatch");
+	zassert_str_equal(cfg.gateway_name, "testgw", "gateway name mismatch");
+}
+
+ZTEST(config_suite, test_set_enabled_disable)
+{
+	struct mqtt_publisher_config cfg;
+
+	zassert_ok(mqtt_publisher_set_enabled(false), "disable must succeed");
+	mqtt_publisher_get_config(&cfg);
+	zassert_false(cfg.enabled, "MQTT should be disabled after set_enabled(false)");
+
+	zassert_ok(mqtt_publisher_set_enabled(true), "enable must succeed");
+	mqtt_publisher_get_config(&cfg);
+	zassert_true(cfg.enabled, "MQTT should be enabled after set_enabled(true)");
+}
+
+ZTEST(config_suite, test_set_broker)
+{
+	struct mqtt_publisher_config cfg;
+
+	cfg.port = 9876;
+	strncpy(cfg.host, "broker.test", sizeof(cfg.host) - 1);
+	cfg.host[sizeof(cfg.host) - 1] = '\0';
+	cfg.keepalive = 120;
+
+	zassert_ok(mqtt_publisher_set_broker(&cfg), "set_broker must succeed");
+
+	mqtt_publisher_get_config(&cfg);
+	zassert_str_equal(cfg.host, "broker.test", "host not updated");
+	zassert_equal(cfg.port, 9876, "port not updated");
+	zassert_equal(cfg.keepalive, 120, "keepalive not updated");
+
+	/* Restore defaults. */
+	strncpy(cfg.host, "127.0.0.1", sizeof(cfg.host) - 1);
+	cfg.host[sizeof(cfg.host) - 1] = '\0';
+	cfg.port = 1883;
+	cfg.keepalive = 60;
+	mqtt_publisher_set_broker(&cfg);
+}
+
+ZTEST(config_suite, test_set_auth)
+{
+	struct mqtt_publisher_config cfg;
+
+	zassert_ok(mqtt_publisher_set_auth("testuser", "testpass"), "set_auth must succeed");
+
+	mqtt_publisher_get_config(&cfg);
+	zassert_str_equal(cfg.username, "testuser", "username not updated");
+
+	/* Restore defaults. */
+	zassert_ok(mqtt_publisher_set_auth("", ""), "clear auth must succeed");
+	mqtt_publisher_get_config(&cfg);
+	zassert_str_equal(cfg.username, "", "username not cleared");
+}
+
+ZTEST(config_suite, test_set_gateway_name)
+{
+	struct mqtt_publisher_config cfg;
+
+	zassert_ok(mqtt_publisher_set_gateway_name("newgw"), "set_gateway_name must succeed");
+
+	mqtt_publisher_get_config(&cfg);
+	zassert_str_equal(cfg.gateway_name, "newgw", "gateway_name not updated");
+
+	/* Restore default. */
+	zassert_ok(mqtt_publisher_set_gateway_name("testgw"), "restore gateway_name must succeed");
+}
+
+ZTEST(config_suite, test_set_broker_null_rejected)
+{
+	zassert_equal(mqtt_publisher_set_broker(NULL), -EINVAL, "null broker must be rejected");
+}
+
+ZTEST(config_suite, test_set_auth_null_rejected)
+{
+	zassert_equal(mqtt_publisher_set_auth(NULL, "pass"), -EINVAL, "null user must be rejected");
+	zassert_equal(mqtt_publisher_set_auth("user", NULL), -EINVAL, "null pass must be rejected");
+}
+
+ZTEST(config_suite, test_set_gateway_null_rejected)
+{
+	zassert_equal(mqtt_publisher_set_gateway_name(NULL), -EINVAL,
+		      "null gateway must be rejected");
+}
+
+ZTEST(config_suite, test_set_enabled_idempotent)
+{
+	zassert_ok(mqtt_publisher_set_enabled(true), "enable must succeed");
+	zassert_ok(mqtt_publisher_set_enabled(true), "re-enable must succeed");
+
+	zassert_ok(mqtt_publisher_set_enabled(false), "disable must succeed");
+	zassert_ok(mqtt_publisher_set_enabled(false), "re-disable must succeed");
+
+	/* Restore enabled state. */
+	zassert_ok(mqtt_publisher_set_enabled(true), "restore must succeed");
+}
+
+/* ============================================================================
+ * Suite 3: integration — zbus trigger → queue enqueue
  * ============================================================================ */
 
 ZTEST_SUITE(integration_suite, NULL, NULL, NULL, NULL, NULL);
@@ -281,4 +393,42 @@ ZTEST(integration_suite, test_trigger_enqueues_events)
 		     "Queue count did not increase after trigger "
 		     "(before=%d after=%d) — listener may not be registered",
 		     before, after);
+}
+
+/**
+ * @brief When MQTT is disabled, triggering sensors must NOT enqueue events.
+ */
+ZTEST(integration_suite, test_disabled_drops_events)
+{
+	/* Drain any events from startup. */
+	k_sleep(K_MSEC(100));
+
+	/* Disable MQTT publisher. */
+	zassert_ok(mqtt_publisher_set_enabled(false), "disable must succeed");
+	k_sleep(K_MSEC(50));
+
+	int before = mqtt_publisher_queue_used();
+
+	/* Publish a broadcast trigger. */
+	struct sensor_trigger_event trig = {
+		.source = TRIGGER_SOURCE_TIMER,
+		.target_uid = 0,
+	};
+
+	int rc = zbus_chan_pub(&sensor_trigger_chan, &trig, K_MSEC(100));
+
+	zassert_ok(rc, "Failed to publish trigger: %d", rc);
+
+	/* Give time for any potential enqueue. */
+	k_sleep(K_MSEC(200));
+
+	int after = mqtt_publisher_queue_used();
+
+	zassert_equal(after, before,
+		      "Queue must not grow when MQTT is disabled "
+		      "(before=%d after=%d)",
+		      before, after);
+
+	/* Restore enabled state. */
+	zassert_ok(mqtt_publisher_set_enabled(true), "restore must succeed");
 }

@@ -30,6 +30,10 @@
 
 #include <sensor_event/sensor_event.h>
 
+#if defined(CONFIG_MQTT_PUBLISHER)
+#	include <mqtt_publisher/mqtt_publisher.h>
+#endif
+
 #if defined(CONFIG_HTTP_DASHBOARD_AUTH)
 #	include "auth.h"
 #endif
@@ -329,8 +333,16 @@ static int api_config_handler(struct http_client_ctx *client, enum http_transact
 
 	config_state_copy_sntp_server(sntp_snap, sizeof(sntp_snap));
 
+#if defined(CONFIG_MQTT_PUBLISHER)
+	struct mqtt_publisher_config mqtt_cfg;
+
+	mqtt_publisher_get_config(&mqtt_cfg);
 	size_t len = config_to_json(CONFIG_HTTP_DASHBOARD_PORT, config_state_get_trigger_ms(),
-				    sntp_snap, cfg_json_buf, sizeof(cfg_json_buf));
+				    sntp_snap, &mqtt_cfg, cfg_json_buf, sizeof(cfg_json_buf));
+#else
+	size_t len = config_to_json(CONFIG_HTTP_DASHBOARD_PORT, config_state_get_trigger_ms(),
+				    sntp_snap, NULL, cfg_json_buf, sizeof(cfg_json_buf));
+#endif
 
 	if (len == 0) {
 		LOG_ERR("config_to_json: buffer overflow");

@@ -9,17 +9,22 @@ menuconfig MQTT_PUBLISHER
 	depends on SENSOR_REGISTRY_USER_META
 	depends on SNTP_SYNC
 	select SETTINGS
+	select BASE64
+	depends on CONFIG_CMD
 	help
 	  Subscribes to sensor_event_chan and publishes every measurement to an
 	  MQTT broker as:
 	    topic:   {gw}/{location}/{display_name}/{type}
 	    payload: {"time":<epoch_s>,"value":<float>,"unit":"<str>"}
 
-	  Broker host, port, username, and password are stored in the settings
-	  subsystem under the "mqttp/" subtree and can be changed at runtime.
+	  Broker host, port, username, password, gateway name, and keepalive are
+	  persisted in the settings subsystem under the "config/mqtt/" subtree and
+	  can be changed at runtime via shell commands or the HTTP dashboard.
+	  Passwords are base64-encoded before storage.
 
 	  No public API — enable with CONFIG_MQTT_PUBLISHER=y and the library
-	  self-registers via SYS_INIT.
+	  self-registers via SYS_INIT.  Runtime configuration is available via
+	  shell commands and the HTTP dashboard.
 
 if MQTT_PUBLISHER
 
@@ -96,6 +101,8 @@ config MQTT_PUBLISHER_SHELL
 	    mqtt_pub set server <host> <port>
 	    mqtt_pub set auth <user> <pass>
 	    mqtt_pub set gateway <name>
+	    mqtt_pub enable
+	    mqtt_pub disable
 
 module = MQTT_PUBLISHER
 module-str = MQTT_PUBLISHER

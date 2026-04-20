@@ -70,6 +70,43 @@
     </section>
 
     <section class="card">
+      <h2>MQTT</h2>
+      <form method="post" action="/api/config" id="mqttForm">
+        <div class="field field-row">
+          <label for="mqEnabled">Enable</label>
+          <input type="checkbox" name="mqtt_enabled" id="mqEnabled">
+        </div>
+        <div class="field">
+          <label for="mqHost">Broker host</label>
+          <input type="text" name="mqtt_host" id="mqHost" size="40">
+        </div>
+        <div class="field">
+          <label for="mqPort">Port</label>
+          <input type="number" name="mqtt_port" id="mqPort" min="1" max="65535">
+        </div>
+        <div class="field">
+          <label for="mqUser">Username</label>
+          <input type="text" name="mqtt_user" id="mqUser">
+        </div>
+        <div class="field">
+          <label for="mqPass">Password</label>
+          <input type="password" name="mqtt_pass" id="mqPass" placeholder="leave blank to keep current">
+        </div>
+        <div class="field">
+          <label for="mqGw">Gateway name</label>
+          <input type="text" name="mqtt_gw" id="mqGw">
+        </div>
+        <div class="field">
+          <label for="mqKeepalive">Keepalive (s)</label>
+          <input type="number" name="mqtt_keepalive" id="mqKeepalive" min="10" max="3600">
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn-primary">Apply MQTT</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
       <h2>Registered Sensors</h2>
       <p class="hint">Edit the columns to customise the dashboard. Location dropdown is populated from defined locations above.</p>
       <form method="post" action="/api/config" id="sensorsForm">
