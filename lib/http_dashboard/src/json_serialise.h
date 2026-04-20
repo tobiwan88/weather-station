@@ -36,17 +36,18 @@ size_t history_to_json(const struct sensor_history *snap, int n_sensors, uint8_t
  * @brief Serialise runtime config to the GET /api/config JSON format.
  *
  * Emits {"port":...,"trigger_interval_ms":...,"sntp_server":...,"locations":[...],
- * "sensors":[...]} into @p buf.
+ * "sensors":[...],"mqtt":{...}} into @p buf.
  *
  * @param port         HTTP server port.
  * @param trigger_ms   Current trigger interval in milliseconds.
  * @param sntp_server  Current SNTP server string. Must not be NULL.
+ * @param mqtt_cfg     MQTT config snapshot (NULL if MQTT not enabled).
  * @param buf          Output buffer. Must not be NULL.
  * @param buf_size     Size of @p buf in bytes.
  * @return Number of bytes written (without NUL terminator), or 0 on failure/overflow.
  */
-size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_server, uint8_t *buf,
-		      size_t buf_size);
+size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_server,
+		      const void *mqtt_cfg, uint8_t *buf, size_t buf_size);
 
 /**
  * @brief Serialise the location registry to the GET /api/locations JSON format.
