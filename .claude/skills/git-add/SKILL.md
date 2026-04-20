@@ -1,7 +1,7 @@
 ---
 name: git-add
 description: Stage explicitly listed files and create a conventional commit. Run only after build, smoke-test, Twister, and pre-commit are all green.
-disable-model-invocation: true
+disable-model-invocation: false
 allowed-tools: Bash(git *)
 ---
 
