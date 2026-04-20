@@ -29,6 +29,11 @@ jobs:
       - name: Mark workspace safe for git
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+
       - name: Install pre-commit
         run: source /home/zephyr/.venv/bin/activate && pip install pre-commit --quiet
 
@@ -58,6 +63,11 @@ jobs:
 
       - name: Mark workspace safe for git
         run: git config --global --add safe.directory '*'
+
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
 
       - name: Cache west modules
         uses: actions/cache@v4
@@ -119,6 +129,11 @@ jobs:
 
       - name: Mark workspace safe for git
         run: git config --global --add safe.directory '*'
+
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
 
       - name: Cache west modules
         uses: actions/cache@v4
