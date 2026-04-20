@@ -18,13 +18,14 @@ Zephyr format (shell prompts, blank lines, raw output) are emitted at DEBUG.
 Boot sentinel
 -------------
 ``main.c`` emits ``LOG_INF("device: ready")`` after all ``SYS_INIT`` callbacks
-have run.  The pytest ``device_ready`` fixture in ``conftest.py`` waits for this
-line via ``wait_for_ready()`` before any test starts.  The Zephyr log line looks
-like::
+have run.  The pytest ``device_ready`` fixture in ``conftest.py`` gates on this
+by calling ``shell.wait_for_prompt()``: since ``main()`` runs before the Zephyr
+shell thread prints its prompt, the prompt appearing guarantees ``main.c`` has
+already emitted the sentinel.  The Zephyr log line looks like::
 
     [00:00:00.xxx] <inf> integration: device: ready
 
-and is detected by ``READY_PATTERN``.
+and is detected by ``READY_PATTERN`` when searching ``handler.log``.
 """
 
 from __future__ import annotations

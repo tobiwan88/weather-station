@@ -114,14 +114,17 @@ class HttpHarness:
         headers = {"Connection": "close"}
         if token is not None:
             headers["Authorization"] = f"Bearer {token}"
-            _log.info("_post: using explicit token=%s", token)
+            _log.info("_post: using explicit token=<redacted>")
         elif authenticated:
             auth = self._auth_headers()
             headers.update(auth)
-            _log.info("_post: using auth headers, token=%s", auth.get("Authorization", "NONE"))
+            _log.info("_post: using auth headers, token=%s",
+                      "<set>" if auth.get("Authorization") else "NONE")
         else:
             _log.info("_post: no auth")
-        _log.info("_post: final headers = %s", headers)
+        safe_headers = {k: ("<redacted>" if k == "Authorization" else v)
+                        for k, v in headers.items()}
+        _log.info("_post: final headers = %s", safe_headers)
         post_session = requests.Session()
         t0 = time.monotonic()
         try:

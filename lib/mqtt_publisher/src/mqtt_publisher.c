@@ -189,7 +189,8 @@ static int64_t get_cached_epoch_s(void)
 {
 	int64_t now = k_uptime_get();
 
-	if (now - s_epoch_cache_updated_ms > CONFIG_MQTT_PUBLISHER_EPOCH_CACHE_TTL_MS) {
+	if (s_epoch_cache_updated_ms == 0 ||
+	    now - s_epoch_cache_updated_ms > CONFIG_MQTT_PUBLISHER_EPOCH_CACHE_TTL_MS) {
 		s_cached_epoch_s = sntp_sync_get_epoch_ms() / 1000;
 		s_epoch_cache_updated_ms = now;
 	}

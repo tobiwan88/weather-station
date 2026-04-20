@@ -129,7 +129,8 @@
       "Skill(west-patch)",
       "Bash(west patch *)",
       "Bash(west list *)",
-      "Bash(west help *)"
+      "Bash(west help *)",
+      "Bash(gh run *)"
     ]
   },
   "hooks": {

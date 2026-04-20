@@ -163,14 +163,11 @@ bool auth_check(const struct http_request_ctx *request_ctx)
 		size_t plen = vlen - BEARER_PREFIX_LEN;
 
 		k_spinlock_key_t key = k_spin_lock(&s_token_lock);
-		LOG_DBG("auth_check: comparing token, presented_len=%zu, s_token_len=%d", plen,
-			AUTH_TOKEN_STR_LEN);
-		LOG_INF("auth_check: comparing presented=%.32s with s_token=%.32s", presented,
-			s_token);
+		LOG_DBG("auth_check: presented_len=%zu token_len=%d", plen, AUTH_TOKEN_STR_LEN);
 		int diff = ct_strcmp(presented, plen, s_token, AUTH_TOKEN_STR_LEN);
 		k_spin_unlock(&s_token_lock, key);
 
-		LOG_INF("auth_check: result=%s (diff=%d)", (diff == 0) ? "ok" : "mismatch", diff);
+		LOG_DBG("auth_check: result=%s", (diff == 0) ? "ok" : "mismatch");
 		return (diff == 0);
 	}
 
