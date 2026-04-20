@@ -1,0 +1,44 @@
+patches:
+  - path: zephyr/0001-drivers-net-nsos-fix-epoll-race-and-poll-dlist-corru.patch
+    sha256sum: cf22abdc047edc2c36011d381b075d95357d4716691be00b581d3f242deb55a4
+    module: zephyr
+    author: Tobias Meyer
+    email: tobiuhg@gmail.com
+    date: 2026-04-19
+    upstreamable: true
+    apply-command: git am
+    comments: |
+      Bug 1 (nsos_adapt.c): EPOLL_CTL_ADD EEXIST called nsi_print_error_and_exit.
+      Fix: on EEXIST use EPOLL_CTL_MOD to update the stale entry atomically.
+
+      Bug 2 (nsos_adapt.c): Multiple Zephyr threads race on epoll_ctl with no
+      lock around nsos_epoll_fd. Fix: static pthread_mutex_t around poll_add
+      and poll_remove.
+
+  - path: zephyr/0002-drivers-net-nsos-use-k_spinlock-for-nsos_polls-prote.patch
+    sha256sum: c995e2a4056c5dca4e1659834fc0a45e294f2c941a8ff57dbaa076bb7415295c
+    module: zephyr
+    author: Tobias Meyer
+    email: tobiuhg@gmail.com
+    date: 2026-04-19
+    upstreamable: true
+    apply-command: git am
+    comments: |
+      Replace pthread_mutex with k_spinlock for nsos_polls protection in
+      nsos_sockets.c.  native_sim's NCE (Native Co-operating Engine) uses POSIX
+      semaphores for scheduling — only irq_lock (used by k_spinlock) blocks
+      NCE context switches; pthread_mutex does not.  This prevents the dlist
+      corruption that caused SIGSEGV crashes in pytest tests.
+
+      Changes:
+      - nsos_polls_mutex (pthread_mutex_t) → nsos_polls_lock (k_spinlock)
+      - nsos_close: spinlock around is_linked + sys_dlist_remove; callback
+        called outside lock
+      - nsos_poll_prepare: spinlock around is_linked + sys_dlist_remove;
+        adapt_poll_remove called before adapt_poll_add on re-add path
+      - nsos_poll_update: spinlock around is_linked + sys_dlist_remove;
+        adapt_poll_remove called outside lock
+
+      Note: nsos_adapt.c continues to use pthread_mutex for nsos_epoll_fd
+      protection — that is correct because epoll_fd is file-descriptor-level
+      bookkeeping not involving Zephyr scheduler locks.

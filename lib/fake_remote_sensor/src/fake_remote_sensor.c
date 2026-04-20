@@ -32,7 +32,7 @@
 #include <remote_sensor/remote_sensor.h>
 #include <sensor_event/sensor_event.h>
 
-LOG_MODULE_REGISTER(fake_remote_sensor, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(fake_remote_sensor, CONFIG_FAKE_REMOTE_SENSOR_LOG_LEVEL);
 
 /* --------------------------------------------------------------------------
  * Per-node state

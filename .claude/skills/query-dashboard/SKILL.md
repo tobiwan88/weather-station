@@ -2,7 +2,7 @@
 name: query-dashboard
 description: Query or update the HTTP dashboard on port 8080. Accepts one argument: data | config | set-interval | resync.
 argument-hint: <action>
-disable-model-invocation: true
+disable-model-invocation: false
 allowed-tools: Bash
 ---
 

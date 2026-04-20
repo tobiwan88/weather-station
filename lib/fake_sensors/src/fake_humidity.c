@@ -27,7 +27,7 @@
 /* Jitter range for humidity: ±2 %RH */
 #define FAKE_HUM_JITTER_MILLI 2000
 
-LOG_MODULE_REGISTER(fake_humidity, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(fake_humidity, CONFIG_FAKE_SENSORS_LOG_LEVEL);
 
 /* Compatible string that DT nodes must carry. */
 #define DT_COMPAT fake_humidity

@@ -27,7 +27,7 @@
 /* Jitter range for VOC: ±5 IAQ */
 #define FAKE_VOC_JITTER_MILLI 5000
 
-LOG_MODULE_REGISTER(fake_voc, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(fake_voc, CONFIG_FAKE_SENSORS_LOG_LEVEL);
 
 /* Compatible string that DT nodes must carry. */
 #define DT_COMPAT fake_voc

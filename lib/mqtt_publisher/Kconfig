@@ -47,13 +47,37 @@ config MQTT_PUBLISHER_KEEPALIVE
 	int "MQTT keepalive interval (seconds)"
 	default 60
 
+config MQTT_PUBLISHER_STARTUP_DELAY_MS
+	int "Initial startup delay before first broker connect (milliseconds)"
+	default 0
+	help
+	  Delay applied once at thread start, before the first connection attempt.
+	  Set to a non-zero value (e.g. 500) in test builds to avoid the NSOS
+	  epoll EEXIST race on native_sim: the HTTP server registers its sockets
+	  in epoll at boot; connecting the MQTT TCP socket concurrently triggers
+	  EPOLL_CTL_ADD on an fd that is still registered, causing DUT exit.
+
 config MQTT_PUBLISHER_RECONNECT_MS
 	int "Reconnect retry delay (milliseconds)"
 	default 5000
 
 config MQTT_PUBLISHER_QUEUE_DEPTH
 	int "Event queue depth (events dropped when full)"
-	default 16
+	default 64
+
+config MQTT_PUBLISHER_QUEUE_HIGH
+	int "Queue watermark for backpressure warning (events)"
+	default 48
+	help
+	  When the queue fills past this threshold, a warning is logged.
+	  Must be less than MQTT_PUBLISHER_QUEUE_DEPTH.
+
+config MQTT_PUBLISHER_EPOCH_CACHE_TTL_MS
+	int "SNTP epoch cache TTL (milliseconds)"
+	default 1000
+	help
+	  Cache the epoch_s value for this duration to avoid repeated
+	  sntp_sync_get_epoch_ms() calls in the publish loop.
 
 config MQTT_PUBLISHER_STACK_SIZE
 	int "Publisher thread stack size (bytes)"
@@ -72,5 +96,9 @@ config MQTT_PUBLISHER_SHELL
 	    mqtt_pub set server <host> <port>
 	    mqtt_pub set auth <user> <pass>
 	    mqtt_pub set gateway <name>
+
+module = MQTT_PUBLISHER
+module-str = MQTT_PUBLISHER
+source "subsys/logging/Kconfig.template.log_config"
 
 endif # MQTT_PUBLISHER

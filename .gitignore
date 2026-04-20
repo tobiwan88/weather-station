@@ -39,9 +39,11 @@ Makefile
 *.hex
 *.map
 
-# Zephyr generated files (zephyr/* not zephyr/ so !module.yml negation works)
+# Zephyr generated files (zephyr/* not zephyr/ so negations work)
 zephyr/*
 !zephyr/module.yml
+!zephyr/patches.yml
+!zephyr/patches/
 
 # Logs
 *.log

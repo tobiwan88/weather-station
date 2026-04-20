@@ -27,7 +27,7 @@ graph LR
     subgraph CONSUMERS["Event Consumers"]
         SEL["sensor_event_log\nLOG_INF per event"]
         HTTPL["http_dashboard\nring buffer append"]
-        MQTTP["MQTT publisher\n(future)"]
+        MQTTP["mqtt_publisher\nbroker egress"]
         FLASH["flash storage\n(future)"]
     end
 

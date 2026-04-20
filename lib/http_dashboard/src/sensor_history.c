@@ -6,7 +6,7 @@
 
 #include "sensor_history.h"
 
-LOG_MODULE_DECLARE(http_dashboard, LOG_LEVEL_INF);
+LOG_MODULE_DECLARE(http_dashboard, CONFIG_HTTP_DASHBOARD_LOG_LEVEL);
 
 static struct sensor_history histories[CONFIG_HTTP_DASHBOARD_MAX_SENSORS];
 static struct sensor_history snap[CONFIG_HTTP_DASHBOARD_MAX_SENSORS];

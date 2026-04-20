@@ -18,6 +18,16 @@
   <main>
     <div id="flashMsg" class="flash hidden"></div>
 
+    <section class="card" id="tokenCard">
+      <h2>Dashboard Token</h2>
+      <p class="hint">Enter the bearer token shown by <code>http_dashboard token show</code> in the shell. Saved in your browser only.</p>
+      <div class="field field-inline">
+        <input type="password" id="tokenInput" placeholder="32-character hex token" maxlength="32" size="34">
+        <button type="button" class="btn-primary" onclick="onTokenSave()">Save Token</button>
+      </div>
+      <p id="tokenStatus" class="status"></p>
+    </section>
+
     <section class="card">
       <h2>Locations</h2>
       <p class="hint">Define named locations. Sensors can then be assigned to a location below.</p>

@@ -50,4 +50,8 @@ config SENSOR_REGISTRY_SETTINGS
 
 endif # SENSOR_REGISTRY_USER_META
 
+module = SENSOR_REGISTRY
+module-str = SENSOR_REGISTRY
+source "subsys/logging/Kconfig.template.log_config"
+
 endif # SENSOR_REGISTRY

@@ -74,13 +74,16 @@ Wraps `requests`. Calls HTTP endpoints and returns parsed JSON.
 
 | Method | Endpoint | Returns |
 |--------|----------|---------|
+| `wait_until_ready(timeout)` | `GET /` (polls) | — raises `TimeoutError` |
 | `get_sensor_data()` | `GET /api/data` | `dict` (sensors + readings) |
 | `wait_for_readings(min_sensors, timeout)` | `GET /api/data` (polls) | `dict` or raises `TimeoutError` |
 | `get_config()` | `GET /api/config` | `dict` |
+| `post_config(data)` | `POST /api/config` | `dict` (JSON response) |
 | `set_trigger_interval(ms)` | `POST /api/config` | HTTP status code |
 | `request_sntp_resync()` | `POST /api/config` | HTTP status code |
 | `get_locations()` | `GET /api/locations` | `dict` |
 | `get_dashboard_page()` | `GET /` | HTML string |
+| `get_token_from_shell(shell_harness)` | — | bearer token string |
 
 ### MqttHarness
 
@@ -97,6 +100,21 @@ thread-safe list.
 
 The conftest fixture calls `connect()` and skips the entire MQTT test
 subset if it returns `False`.
+
+### DeviceLogger
+
+Drains the DUT's UART queue and re-emits structured Python log records under
+the `"device"` logger. Parses Zephyr's `[HH:MM:SS.mmm,mmm] <level> module: message`
+format, stripping ANSI escape codes. Used by conftest to detect the boot-complete
+sentinel and to drain logs after each test.
+
+| Method | Purpose |
+|--------|---------|
+| `drain()` | Return `list[ZephyrLogEntry]` and clear the buffer |
+| `wait_for_ready(timeout)` | Block until `"device: ready"` log line appears |
+
+The `device_ready` fixture depends on `DeviceLogger.wait_for_ready()` to guarantee
+all `SYS_INIT` callbacks have completed before any test runs.
 
 ---
 
@@ -134,9 +152,11 @@ tests/integration/
 ├── boards/
 │   └── native_sim_native_64.overlay  ← 6 fake sensors, no SDL
 └── pytest/
-    ├── conftest.py         ← markers, fixture wiring (shell/http/mqtt_harness)
+    ├── conftest.py         ← markers, fixture wiring, DeviceLogger setup
     ├── harnesses/
     │   ├── __init__.py
+    │   ├── device_logger.py   ← drains UART, parses Zephyr log format
+    │   ├── log_parser.py      ← ZephyrLogEntry dataclass, ANSI strip
     │   ├── shell_harness.py
     │   ├── http_harness.py
     │   └── mqtt_harness.py
@@ -145,6 +165,20 @@ tests/integration/
     ├── test_sensor_flow.py ← [e2e] trigger→HTTP, trigger→MQTT, value propagation
     └── test_config.py      ← [http, shell] trigger interval, SNTP resync
 ```
+
+---
+
+## Conftest Fixtures
+
+| Fixture | Scope | Purpose |
+|---------|-------|---------|
+| `device_logger` | session | `DeviceLogger` instance; drains UART after every test (autouse) |
+| `device_ready` | session | Blocks until shell prompt; guarantees all `SYS_INIT` callbacks complete |
+| `shell_harness` | session | `ShellHarness` instance (depends on `device_ready`) |
+| `http_harness` | session | `HttpHarness` instance with `wait_until_ready()` called (depends on `device_ready`) |
+| `authed_harness` | session | `http_harness` with bearer token loaded via `get_token_from_shell()`; for authenticated `POST /api/config` tests |
+| `mqtt_harness` | session | `MqttHarness` instance; auto-skips test if broker unreachable |
+| `gdb_crash_watcher` | session | Optional; attaches GDB to the DUT process and captures a backtrace on crash |
 
 ---
 

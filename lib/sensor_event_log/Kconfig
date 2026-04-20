@@ -13,3 +13,11 @@ menuconfig SENSOR_EVENT_LOG
 
 	  No public API — enable with CONFIG_SENSOR_EVENT_LOG=y and the
 	  library registers itself via SYS_INIT.
+
+if SENSOR_EVENT_LOG
+
+module = SENSOR_EVENT_LOG
+module-str = SENSOR_EVENT_LOG
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # SENSOR_EVENT_LOG

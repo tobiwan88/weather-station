@@ -8,6 +8,9 @@
 
 #include <sensor_registry/sensor_registry.h>
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+
+LOG_MODULE_REGISTER(sensor_registry, CONFIG_SENSOR_REGISTRY_LOG_LEVEL);
 
 #ifdef CONFIG_SENSOR_REGISTRY_SETTINGS
 #	include <zephyr/settings/settings.h>
@@ -35,12 +38,16 @@ int sensor_registry_register(const struct sensor_registry_entry *entry)
 	for (int i = 0; i < registry_count; i++) {
 		if (registry[i]->uid == entry->uid) {
 			k_mutex_unlock(&registry_mutex);
+			LOG_WRN("uid 0x%08x already registered (label='%s')", entry->uid,
+				entry->label);
 			return -EEXIST;
 		}
 	}
 
 	if (registry_count >= SENSOR_REGISTRY_MAX_ENTRIES) {
 		k_mutex_unlock(&registry_mutex);
+		LOG_ERR("registry full (max %d), cannot register uid 0x%08x",
+			SENSOR_REGISTRY_MAX_ENTRIES, entry->uid);
 		return -ENOMEM;
 	}
 
@@ -60,6 +67,8 @@ int sensor_registry_register(const struct sensor_registry_entry *entry)
 
 	registry_count++;
 	k_mutex_unlock(&registry_mutex);
+	LOG_DBG("registered uid=0x%08x label='%s' (total %d)", entry->uid, entry->label,
+		registry_count);
 	return 0;
 }
 

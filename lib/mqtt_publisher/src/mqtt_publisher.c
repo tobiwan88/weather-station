@@ -39,7 +39,7 @@
 
 #include "mqtt_publisher_format.h"
 
-LOG_MODULE_REGISTER(mqtt_publisher, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(mqtt_publisher, CONFIG_MQTT_PUBLISHER_LOG_LEVEL);
 
 /* --------------------------------------------------------------------------
  * Message queue: zbus callback → MQTT thread
@@ -178,6 +178,27 @@ static void mqtt_evt_handler(struct mqtt_client *const client, const struct mqtt
 }
 
 /* --------------------------------------------------------------------------
+ * Epoch cache — avoids calling sntp_sync_get_epoch_ms() per publish.
+ * TODO: Replace with a system-wide epoch cache that is updated by
+ * sntp_sync when a new sync completes, rather than polling here.
+ * -------------------------------------------------------------------------- */
+static int64_t s_cached_epoch_s;
+static int64_t s_epoch_cache_updated_ms;
+
+static int64_t get_cached_epoch_s(void)
+{
+	int64_t now = k_uptime_get();
+
+	if (s_epoch_cache_updated_ms == 0 ||
+	    now - s_epoch_cache_updated_ms > CONFIG_MQTT_PUBLISHER_EPOCH_CACHE_TTL_MS) {
+		s_cached_epoch_s = sntp_sync_get_epoch_ms() / 1000;
+		s_epoch_cache_updated_ms = now;
+	}
+
+	return s_cached_epoch_s;
+}
+
+/* --------------------------------------------------------------------------
  * Publish one event
  * -------------------------------------------------------------------------- */
 static void publish_event(const struct env_sensor_data *evt)
@@ -187,7 +208,7 @@ static void publish_event(const struct env_sensor_data *evt)
 
 	const char *location = sensor_registry_get_location(evt->sensor_uid);
 	const char *name = sensor_registry_get_display_name(evt->sensor_uid);
-	int64_t epoch_s = sntp_sync_get_epoch_ms() / 1000;
+	int64_t epoch_s = get_cached_epoch_s();
 
 	mqtt_publisher_build_topic(s_gateway_name, location, name, evt->type, topic_buf,
 				   sizeof(topic_buf));
@@ -209,6 +230,7 @@ static void publish_event(const struct env_sensor_data *evt)
 	param.message.payload.len = (uint32_t)payload_len;
 	param.message_id = sys_rand16_get();
 
+	LOG_DBG("publish uid=0x%08x type=%d topic=%s", evt->sensor_uid, evt->type, topic_buf);
 	int rc = mqtt_publish(&s_client, &param);
 
 	if (rc != 0) {
@@ -267,6 +289,7 @@ static int broker_resolve(void)
 	char port_str[8];
 
 	snprintf(port_str, sizeof(port_str), "%u", s_broker_port);
+	LOG_DBG("resolving %s:%s", s_broker_host, port_str);
 
 	int rc = zsock_getaddrinfo(s_broker_host, port_str, &hints, &res);
 
@@ -277,6 +300,7 @@ static int broker_resolve(void)
 
 	memcpy(&s_broker_addr, res->ai_addr, res->ai_addrlen);
 	zsock_freeaddrinfo(res);
+	LOG_DBG("broker resolved");
 	return 0;
 }
 
@@ -312,6 +336,7 @@ static int try_connect(void)
 
 	s_state = MQTT_PUB_CONNECTING;
 	k_sem_reset(&s_connack_sem);
+	LOG_DBG("mqtt_connect: opening TCP socket");
 
 	int rc = mqtt_connect(&s_client);
 
@@ -348,10 +373,25 @@ static void mqtt_thread_fn(void *p1, void *p2, void *p3)
 	ARG_UNUSED(p2);
 	ARG_UNUSED(p3);
 
+	/*
+	 * On native_sim all Zephyr threads share one NSOS epoll fd (no mutex).
+	 * The HTTP server registers its listen socket right at boot; connecting
+	 * the MQTT TCP socket at the same instant triggers a concurrent
+	 * epoll_ctl ADD on the same fd number, which returns EEXIST and exits
+	 * the DUT.  A short startup delay lets the HTTP server finish its epoll
+	 * setup before we open any socket.  Default 0 ms for production builds.
+	 */
+	if (CONFIG_MQTT_PUBLISHER_STARTUP_DELAY_MS > 0) {
+		LOG_DBG("startup delay %d ms", CONFIG_MQTT_PUBLISHER_STARTUP_DELAY_MS);
+		k_sleep(K_MSEC(CONFIG_MQTT_PUBLISHER_STARTUP_DELAY_MS));
+	}
+
 	while (true) {
 		LOG_INF("connecting to %s:%u ...", s_broker_host, s_broker_port);
 
 		if (try_connect() != 0) {
+			LOG_DBG("connect failed, waiting %d ms before retry",
+				CONFIG_MQTT_PUBLISHER_RECONNECT_MS);
 			k_sleep(K_MSEC(CONFIG_MQTT_PUBLISHER_RECONNECT_MS));
 			continue;
 		}
@@ -370,6 +410,13 @@ static void mqtt_thread_fn(void *p1, void *p2, void *p3)
 			while (s_state == MQTT_PUB_CONNECTED &&
 			       k_msgq_get(&s_mqtt_queue, &evt, K_NO_WAIT) == 0) {
 				publish_event(&evt);
+			}
+
+			/* Backpressure warning: queue filling up */
+			uint32_t used = k_msgq_num_used_get(&s_mqtt_queue);
+			if (used >= CONFIG_MQTT_PUBLISHER_QUEUE_HIGH) {
+				LOG_WRN("mqtt queue at %u/%u — consider increasing queue depth",
+					used, CONFIG_MQTT_PUBLISHER_QUEUE_DEPTH);
 			}
 		}
 
@@ -397,9 +444,14 @@ static struct k_thread s_mqtt_thread;
 static void mqtt_sensor_event_cb(const struct zbus_channel *chan)
 {
 	const struct env_sensor_data *evt = zbus_chan_const_msg(chan);
+	int rc = k_msgq_put(&s_mqtt_queue, evt, K_NO_WAIT);
 
-	/* Drop silently if the queue is full (thread is busy reconnecting) */
-	k_msgq_put(&s_mqtt_queue, evt, K_NO_WAIT);
+	if (rc != 0) {
+		LOG_WRN("sensor event dropped: queue full (uid=0x%08x type=%d)", evt->sensor_uid,
+			evt->type);
+	} else {
+		LOG_DBG("sensor event enqueued uid=0x%08x type=%d", evt->sensor_uid, evt->type);
+	}
 }
 
 ZBUS_LISTENER_DEFINE(mqtt_publisher_listener, mqtt_sensor_event_cb);

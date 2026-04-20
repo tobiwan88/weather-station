@@ -29,6 +29,11 @@ jobs:
       - name: Mark workspace safe for git
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+
       - name: Install pre-commit
         run: source /home/zephyr/.venv/bin/activate && pip install pre-commit --quiet
 
@@ -59,6 +64,11 @@ jobs:
       - name: Mark workspace safe for git
         run: git config --global --add safe.directory '*'
 
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+
       - name: Cache west modules
         uses: actions/cache@v4
         with:
@@ -73,6 +83,11 @@ jobs:
           source /home/zephyr/.venv/bin/activate
           west init -l . 2>/dev/null || true
           west update --narrow
+
+      - name: Apply out-of-tree patches
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          west patch apply
 
       - name: Install build dependencies
         run: apt-get update -qq && apt-get install -y --no-install-recommends pkgconf libsdl2-dev
@@ -115,6 +130,11 @@ jobs:
       - name: Mark workspace safe for git
         run: git config --global --add safe.directory '*'
 
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+
       - name: Cache west modules
         uses: actions/cache@v4
         with:
@@ -129,6 +149,11 @@ jobs:
           source /home/zephyr/.venv/bin/activate
           west init -l . 2>/dev/null || true
           west update --narrow
+
+      - name: Apply out-of-tree patches
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          west patch apply
 
       - name: Install gcovr
         run: source /home/zephyr/.venv/bin/activate && pip install gcovr --quiet

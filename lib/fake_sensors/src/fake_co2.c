@@ -27,7 +27,7 @@
 /* Jitter range for CO2: ±25 ppm */
 #define FAKE_CO2_JITTER_MILLI 25000
 
-LOG_MODULE_REGISTER(fake_co2, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(fake_co2, CONFIG_FAKE_SENSORS_LOG_LEVEL);
 
 /* Compatible string that DT nodes must carry. */
 #define DT_COMPAT fake_co2

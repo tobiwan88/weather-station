@@ -217,30 +217,29 @@ in a library. Code may stay in `apps/*/src/` when it satisfies **both**:
 it, it belongs in a library. If it would be nonsensical to reuse it in any
 other app, it can stay in `apps/*/src/`.
 
-Current `apps/gateway/src/main.c` (31 lines — well within 50-line rule):
+Target shape for `apps/gateway/src/main.c`:
 
 ```c
 /* SPDX-License-Identifier: Apache-2.0 */
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
-#if CONFIG_LVGL_DISPLAY
-#	include <lvgl_display/lvgl_display.h>
-#endif
-
 LOG_MODULE_REGISTER(gateway, LOG_LEVEL_INF);
 
 int main(void)
 {
 	LOG_INF("weather-station gateway v0.1.0");
-#if CONFIG_LVGL_DISPLAY
-	lvgl_display_run(); /* never returns; SDL must run on main thread */
-#else
-	k_sleep(K_FOREVER);
-#endif
 	return 0;
 }
 ```
+
+On native_sim the Zephyr scheduler keeps running after `main()` returns; no
+`k_sleep(K_FOREVER)` is needed. All subsystems are wired via `SYS_INIT`.
+
+> **Note (backlog):** The current implementation still calls `lvgl_display_run()`
+> from `main()` when `CONFIG_LVGL_DISPLAY=y`. This is a known ADR violation tracked
+> in `docs/backlog.md` ([ADR-008-RULE4]). Fix: move the LVGL timer loop into a
+> private Zephyr thread inside `lib/lvgl_display`.
 
 ### ADR-008-REVIEW resolution (2026-04-03)
 

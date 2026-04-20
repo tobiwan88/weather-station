@@ -17,6 +17,7 @@ graph TD
     SEL["sensor_event_log\nconsole logger"]
     RS["remote_sensor\ntransport abstraction"]
     FRS["fake_remote_sensor\ntesting stub"]
+    MQTT["mqtt_publisher\nMQTT egress"]
 
     ZBUS(["ZBUS\n(Zephyr)"])
     NET(["NETWORKING\n(Zephyr)"])
@@ -38,6 +39,7 @@ graph TD
     APP -->|Kconfig| SEL
     APP -->|Kconfig| RS
     APP -->|Kconfig| FRS
+    APP -->|Kconfig| MQTT
 
     FS --> SE
     FS --> ST
@@ -60,6 +62,9 @@ graph TD
     RS --> SR
     RS --> SETTINGS
     FRS --> RS
+
+    MQTT --> SE
+    MQTT --> NET
 
     LOC --> SETTINGS
 
