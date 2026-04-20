@@ -161,7 +161,7 @@ Multiple markers: `--pytest-args="-m 'smoke or http'"`
 8. **Regex parse failures in ShellHarness** → the shell output format changed.
    Fix the regex in `tests/integration/pytest/harnesses/shell_harness.py`.
 
-9. *** Exten debugging ***
+9. *** Extended debugging ***
    For better debugging increase the log level of involved modules
    e.g. CONFIG_NET_HTTP_SERVER_LOG_LEVEL_DBG=y in prj.conf
    do not increase the generic log level!
@@ -176,4 +176,4 @@ Multiple markers: `--pytest-args="-m 'smoke or http'"`
   `ModuleNotFoundError: No module named 'twisterlib'`.
 - Do not run integration tests with `pytest` directly — Twister manages the
   build, the DUT lifecycle, and the `twister_harness` plugin wiring.
-- Do not increase in the prj.conf CONFIG_LOG_DEFAULT_LEVEL=4 to many messages
+- Do not increase in the prj.conf CONFIG_LOG_DEFAULT_LEVEL=4 too many messages
