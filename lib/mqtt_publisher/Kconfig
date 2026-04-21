@@ -22,9 +22,10 @@ menuconfig MQTT_PUBLISHER
 	  can be changed at runtime via shell commands or the HTTP dashboard.
 	  Passwords are base64-encoded before storage.
 
-	  No public API — enable with CONFIG_MQTT_PUBLISHER=y and the library
-	  self-registers via SYS_INIT.  Runtime configuration is available via
-	  shell commands and the HTTP dashboard.
+	  Enable with CONFIG_MQTT_PUBLISHER=y; the library self-registers via
+	  SYS_INIT.  Runtime configuration is available via the public API
+	  (mqtt_publisher_set_broker/auth/gateway_name/enabled, get_config),
+	  shell commands, and the HTTP dashboard.
 
 if MQTT_PUBLISHER
 

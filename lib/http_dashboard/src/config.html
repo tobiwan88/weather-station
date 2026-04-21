@@ -74,7 +74,8 @@
       <form method="post" action="/api/config" id="mqttForm">
         <div class="field field-row">
           <label for="mqEnabled">Enable</label>
-          <input type="checkbox" name="mqtt_enabled" id="mqEnabled">
+          <input type="hidden" name="mqtt_enabled" value="off">
+          <input type="checkbox" name="mqtt_enabled" id="mqEnabled" value="on">
         </div>
         <div class="field">
           <label for="mqHost">Broker host</label>

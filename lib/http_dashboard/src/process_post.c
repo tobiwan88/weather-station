@@ -12,10 +12,6 @@
 #include <sensor_registry/sensor_registry.h>
 #include <zephyr/zbus/zbus.h>
 
-#if defined(CONFIG_MQTT_PUBLISHER)
-#	include <mqtt_publisher/mqtt_publisher.h>
-#endif
-
 #include "form_parse.h"
 #include "process_post.h"
 
@@ -252,31 +248,34 @@ void process_post(const uint8_t *body, size_t len)
 	}
 
 	if (mqtt_broker_set) {
-		struct mqtt_publisher_config cfg;
+		struct config_cmd_event cmd = {
+			.cmd = CONFIG_CMD_MQTT_SET_BROKER,
+			.data.broker = mqtt_broker,
+		};
 
-		mqtt_publisher_get_config(&cfg);
-		if (mqtt_broker.host[0] != '\0') {
-			strncpy(cfg.host, mqtt_broker.host, sizeof(cfg.host) - 1);
-			cfg.host[sizeof(cfg.host) - 1] = '\0';
-		}
-		if (mqtt_broker.port != 0) {
-			cfg.port = mqtt_broker.port;
-		}
-		if (mqtt_broker.keepalive != 0) {
-			cfg.keepalive = mqtt_broker.keepalive;
-		}
-		mqtt_publisher_set_broker(&cfg);
-		LOG_INF("MQTT broker updated: %s:%u", cfg.host, cfg.port);
+		zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+		LOG_INF("MQTT broker config update published");
 	}
 
 	if (mqtt_auth_set) {
-		mqtt_publisher_set_auth(mqtt_auth.username, mqtt_auth.password);
-		LOG_INF("MQTT auth updated");
+		struct config_cmd_event cmd = {
+			.cmd = CONFIG_CMD_MQTT_SET_AUTH,
+			.data.auth = mqtt_auth,
+		};
+
+		zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+		LOG_INF("MQTT auth update published");
 	}
 
 	if (mqtt_gw_set) {
-		mqtt_publisher_set_gateway_name(mqtt_gw);
-		LOG_INF("MQTT gateway name set to '%s'", mqtt_gw);
+		struct config_cmd_event cmd = {
+			.cmd = CONFIG_CMD_MQTT_SET_GATEWAY,
+		};
+
+		strncpy(cmd.data.gateway_name, mqtt_gw, sizeof(cmd.data.gateway_name) - 1);
+		cmd.data.gateway_name[sizeof(cmd.data.gateway_name) - 1] = '\0';
+		zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+		LOG_INF("MQTT gateway name update published");
 	}
 #endif
 }
