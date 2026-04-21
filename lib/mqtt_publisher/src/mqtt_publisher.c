@@ -62,6 +62,16 @@ enum mqtt_pub_state {
 static enum mqtt_pub_state s_state = MQTT_PUB_DISCONNECTED;
 static bool s_enabled = true;
 
+/* Protects all runtime config vars (s_broker_host, s_broker_port, s_keepalive,
+ * s_username, s_password_plain, s_gateway_name, s_enabled, s_state).
+ * The MQTT thread copies config under the lock before opening a socket, and
+ * setters write under the lock then signal the thread via s_reconnect_pending. */
+static K_MUTEX_DEFINE(s_cfg_mutex);
+
+/* Set by config setters to request the MQTT thread to disconnect and
+ * reconnect with the new config.  Checked in the inner poll loop. */
+static atomic_t s_reconnect_pending;
+
 /* Signalled by the event handler when CONNACK arrives (success or failure). */
 static K_SEM_DEFINE(s_connack_sem, 0, 1);
 
@@ -142,13 +152,18 @@ static int mqtt_settings_set(const char *key, size_t len, settings_read_cb read_
 
 		ret = read_cb(cb_arg, &encoded, sizeof(encoded));
 		if (ret >= (ssize_t)sizeof(uint16_t) && encoded.encoded_len > 0 &&
-		    encoded.encoded_len <= sizeof(encoded.data)) {
-			size_t plain_len;
+		    encoded.encoded_len <= sizeof(encoded.data) &&
+		    ret >= (ssize_t)(sizeof(uint16_t) + encoded.encoded_len)) {
+			size_t plain_len = 0;
+			int rc = base64_decode((uint8_t *)s_password_plain,
+					       sizeof(s_password_plain) - 1, &plain_len,
+					       encoded.data, encoded.encoded_len);
 
-			base64_decode((uint8_t *)s_password_plain, sizeof(s_password_plain),
-				      &plain_len, encoded.data, encoded.encoded_len);
-			if (plain_len < sizeof(s_password_plain)) {
+			if (rc == 0) {
 				s_password_plain[plain_len] = '\0';
+			} else {
+				s_password_plain[0] = '\0';
+				LOG_WRN("password base64_decode failed: %d", rc);
 			}
 		}
 	} else if (strcmp(key, "gw") == 0) {
@@ -310,7 +325,20 @@ static int process_and_sleep(int timeout_ms)
 /* --------------------------------------------------------------------------
  * Broker resolve + connect
  * -------------------------------------------------------------------------- */
-static int broker_resolve(void)
+
+/* Snapshot of config vars used for one connection attempt. Populated under
+ * s_cfg_mutex at the start of try_connect so the rest of the connect path
+ * runs locklessly against a stable local copy. */
+struct connect_cfg {
+	char host[64];
+	uint16_t port;
+	uint16_t keepalive;
+	char gateway_name[32];
+	char username[32];
+	char password[64];
+};
+
+static int broker_resolve(const struct connect_cfg *cfg)
 {
 	struct zsock_addrinfo hints = {
 		.ai_family = AF_INET,
@@ -319,13 +347,13 @@ static int broker_resolve(void)
 	struct zsock_addrinfo *res;
 	char port_str[8];
 
-	snprintf(port_str, sizeof(port_str), "%u", s_broker_port);
-	LOG_DBG("resolving %s:%s", s_broker_host, port_str);
+	snprintf(port_str, sizeof(port_str), "%u", cfg->port);
+	LOG_DBG("resolving %s:%s", cfg->host, port_str);
 
-	int rc = zsock_getaddrinfo(s_broker_host, port_str, &hints, &res);
+	int rc = zsock_getaddrinfo(cfg->host, port_str, &hints, &res);
 
 	if (rc != 0) {
-		LOG_ERR("DNS lookup for '%s' failed: %d", s_broker_host, rc);
+		LOG_ERR("DNS lookup for '%s' failed: %d", cfg->host, rc);
 		return -ENOENT;
 	}
 
@@ -337,7 +365,22 @@ static int broker_resolve(void)
 
 static int try_connect(void)
 {
-	if (broker_resolve() != 0) {
+	struct connect_cfg cfg;
+
+	k_mutex_lock(&s_cfg_mutex, K_FOREVER);
+	strncpy(cfg.host, s_broker_host, sizeof(cfg.host) - 1);
+	cfg.host[sizeof(cfg.host) - 1] = '\0';
+	cfg.port = s_broker_port;
+	cfg.keepalive = s_keepalive;
+	strncpy(cfg.gateway_name, s_gateway_name, sizeof(cfg.gateway_name) - 1);
+	cfg.gateway_name[sizeof(cfg.gateway_name) - 1] = '\0';
+	strncpy(cfg.username, s_username, sizeof(cfg.username) - 1);
+	cfg.username[sizeof(cfg.username) - 1] = '\0';
+	strncpy(cfg.password, s_password_plain, sizeof(cfg.password) - 1);
+	cfg.password[sizeof(cfg.password) - 1] = '\0';
+	k_mutex_unlock(&s_cfg_mutex);
+
+	if (broker_resolve(&cfg) != 0) {
 		return -ENOENT;
 	}
 
@@ -345,23 +388,23 @@ static int try_connect(void)
 
 	s_client.broker = &s_broker_addr;
 	s_client.evt_cb = mqtt_evt_handler;
-	s_client.client_id.utf8 = (uint8_t *)s_gateway_name;
-	s_client.client_id.size = strlen(s_gateway_name);
+	s_client.client_id.utf8 = (uint8_t *)cfg.gateway_name;
+	s_client.client_id.size = strlen(cfg.gateway_name);
 	s_client.protocol_version = MQTT_VERSION_3_1_1;
 	s_client.rx_buf = s_rx_buf;
 	s_client.rx_buf_size = sizeof(s_rx_buf);
 	s_client.tx_buf = s_tx_buf;
 	s_client.tx_buf_size = sizeof(s_tx_buf);
 	s_client.transport.type = MQTT_TRANSPORT_NON_SECURE;
-	s_client.keepalive = s_keepalive;
+	s_client.keepalive = cfg.keepalive;
 
-	if (s_username[0] != '\0') {
-		s_user_utf8.utf8 = (uint8_t *)s_username;
-		s_user_utf8.size = strlen(s_username);
+	if (cfg.username[0] != '\0') {
+		s_user_utf8.utf8 = (uint8_t *)cfg.username;
+		s_user_utf8.size = strlen(cfg.username);
 		s_client.user_name = &s_user_utf8;
 
-		s_pass_utf8.utf8 = (uint8_t *)s_password_plain;
-		s_pass_utf8.size = strlen(s_password_plain);
+		s_pass_utf8.utf8 = (uint8_t *)cfg.password;
+		s_pass_utf8.size = strlen(cfg.password);
 		s_client.password = &s_pass_utf8;
 	}
 
@@ -384,7 +427,7 @@ static int try_connect(void)
 	}
 
 	if (k_sem_take(&s_connack_sem, K_MSEC(1000)) != 0 || s_state != MQTT_PUB_CONNECTED) {
-		LOG_ERR("no CONNACK from %s:%u", s_broker_host, s_broker_port);
+		LOG_ERR("no CONNACK from %s:%u", cfg.host, cfg.port);
 		mqtt_abort(&s_client);
 		s_state = MQTT_PUB_DISCONNECTED;
 		clear_fds();
@@ -405,18 +448,6 @@ static void drain_queue(void)
 }
 
 /* --------------------------------------------------------------------------
- * Disconnect and abort the current connection.
- * -------------------------------------------------------------------------- */
-static void do_disconnect(void)
-{
-	if (s_state != MQTT_PUB_DISCONNECTED && s_state != MQTT_PUB_DISABLED) {
-		mqtt_abort(&s_client);
-	}
-	s_state = MQTT_PUB_DISCONNECTED;
-	clear_fds();
-}
-
-/* --------------------------------------------------------------------------
  * MQTT thread
  * -------------------------------------------------------------------------- */
 static void mqtt_thread_fn(void *p1, void *p2, void *p3)
@@ -431,13 +462,21 @@ static void mqtt_thread_fn(void *p1, void *p2, void *p3)
 	}
 
 	while (true) {
-		if (!s_enabled) {
+		k_mutex_lock(&s_cfg_mutex, K_FOREVER);
+		bool enabled = s_enabled;
+		k_mutex_unlock(&s_cfg_mutex);
+
+		if (!enabled) {
 			s_state = MQTT_PUB_DISABLED;
 			k_sleep(K_SECONDS(1));
 			continue;
 		}
 
-		LOG_INF("connecting to %s:%u ...", s_broker_host, s_broker_port);
+		{
+			k_mutex_lock(&s_cfg_mutex, K_FOREVER);
+			LOG_INF("connecting to %s:%u ...", s_broker_host, s_broker_port);
+			k_mutex_unlock(&s_cfg_mutex);
+		}
 
 		if (try_connect() != 0) {
 			LOG_DBG("connect failed, waiting %d ms before retry",
@@ -447,6 +486,11 @@ static void mqtt_thread_fn(void *p1, void *p2, void *p3)
 		}
 
 		while (s_state == MQTT_PUB_CONNECTED) {
+			if (atomic_cas(&s_reconnect_pending, 1, 0)) {
+				LOG_INF("config changed — reconnecting");
+				break;
+			}
+
 			int rc = process_and_sleep(100);
 
 			if (rc != 0) {
@@ -536,18 +580,21 @@ SYS_INIT(mqtt_publisher_init, APPLICATION, 98);
 
 int mqtt_publisher_set_enabled(bool enabled)
 {
-	if (enabled == s_enabled) {
+	k_mutex_lock(&s_cfg_mutex, K_FOREVER);
+	bool was_enabled = s_enabled;
+	s_enabled = enabled;
+	k_mutex_unlock(&s_cfg_mutex);
+
+	if (enabled == was_enabled) {
 		return 0;
 	}
 
-	s_enabled = enabled;
-
 	if (!enabled) {
 		drain_queue();
-		do_disconnect();
+		/* Signal the MQTT thread to disconnect; it calls mqtt_abort itself. */
+		atomic_set(&s_reconnect_pending, 1);
 		LOG_INF("MQTT publisher disabled");
 	} else {
-		s_state = MQTT_PUB_DISCONNECTED;
 		LOG_INF("MQTT publisher enabled — will reconnect on next cycle");
 	}
 
@@ -562,21 +609,26 @@ int mqtt_publisher_set_broker(const struct mqtt_publisher_config *broker)
 		return -EINVAL;
 	}
 
+	k_mutex_lock(&s_cfg_mutex, K_FOREVER);
 	strncpy(s_broker_host, broker->host, sizeof(s_broker_host) - 1);
 	s_broker_host[sizeof(s_broker_host) - 1] = '\0';
 	s_broker_port = broker->port;
 	s_keepalive = broker->keepalive;
+	/* Snapshot for logging after unlock */
+	char log_host[64];
+	uint16_t log_port = s_broker_port, log_keepalive = s_keepalive;
 
-	settings_save_one("config/mqtt/server", s_broker_host, strlen(s_broker_host) + 1);
-	settings_save_one("config/mqtt/port", &s_broker_port, sizeof(s_broker_port));
-	settings_save_one("config/mqtt/keepalive", &s_keepalive, sizeof(s_keepalive));
+	strncpy(log_host, s_broker_host, sizeof(log_host) - 1);
+	log_host[sizeof(log_host) - 1] = '\0';
+	k_mutex_unlock(&s_cfg_mutex);
 
-	if (s_state == MQTT_PUB_CONNECTED) {
-		do_disconnect();
-	}
+	settings_save_one("config/mqtt/server", broker->host, strlen(broker->host) + 1);
+	settings_save_one("config/mqtt/port", &log_port, sizeof(log_port));
+	settings_save_one("config/mqtt/keepalive", &log_keepalive, sizeof(log_keepalive));
 
-	LOG_INF("broker set to %s:%u keepalive=%u — reconnecting", s_broker_host, s_broker_port,
-		s_keepalive);
+	atomic_set(&s_reconnect_pending, 1);
+	LOG_INF("broker set to %s:%u keepalive=%u — reconnecting", log_host, log_port,
+		log_keepalive);
 	return 0;
 }
 
@@ -586,14 +638,19 @@ int mqtt_publisher_set_auth(const char *username, const char *password)
 		return -EINVAL;
 	}
 
+	k_mutex_lock(&s_cfg_mutex, K_FOREVER);
 	strncpy(s_username, username, sizeof(s_username) - 1);
 	s_username[sizeof(s_username) - 1] = '\0';
-	strncpy(s_password_plain, password, sizeof(s_password_plain) - 1);
-	s_password_plain[sizeof(s_password_plain) - 1] = '\0';
+	/* Empty password means "keep existing" — matches the UI hint. */
+	if (password[0] != '\0') {
+		strncpy(s_password_plain, password, sizeof(s_password_plain) - 1);
+		s_password_plain[sizeof(s_password_plain) - 1] = '\0';
+	}
+	k_mutex_unlock(&s_cfg_mutex);
 
 	settings_save_one("config/mqtt/user", s_username, strlen(s_username) + 1);
 
-	if (s_password_plain[0] != '\0') {
+	if (password[0] != '\0') {
 		struct {
 			uint16_t encoded_len;
 			uint8_t data[88];
@@ -605,14 +662,9 @@ int mqtt_publisher_set_auth(const char *username, const char *password)
 			      (uint8_t *)s_password_plain, strlen(s_password_plain));
 		encoded.encoded_len = (uint16_t)olen;
 		settings_save_one("config/mqtt/pass", &encoded, sizeof(uint16_t) + olen);
-	} else {
-		settings_delete("config/mqtt/pass");
 	}
 
-	if (s_state == MQTT_PUB_CONNECTED) {
-		do_disconnect();
-	}
-
+	atomic_set(&s_reconnect_pending, 1);
 	LOG_INF("credentials updated — reconnecting");
 	return 0;
 }
@@ -623,16 +675,15 @@ int mqtt_publisher_set_gateway_name(const char *name)
 		return -EINVAL;
 	}
 
+	k_mutex_lock(&s_cfg_mutex, K_FOREVER);
 	strncpy(s_gateway_name, name, sizeof(s_gateway_name) - 1);
 	s_gateway_name[sizeof(s_gateway_name) - 1] = '\0';
+	k_mutex_unlock(&s_cfg_mutex);
 
 	settings_save_one("config/mqtt/gw", s_gateway_name, strlen(s_gateway_name) + 1);
 
-	if (s_state == MQTT_PUB_CONNECTED) {
-		do_disconnect();
-	}
-
-	LOG_INF("gateway name set to '%s' — reconnecting", s_gateway_name);
+	atomic_set(&s_reconnect_pending, 1);
+	LOG_INF("gateway name set to '%s' — reconnecting", name);
 	return 0;
 }
 
@@ -640,6 +691,7 @@ void mqtt_publisher_get_config(struct mqtt_publisher_config *out)
 {
 	__ASSERT(out, "out must not be NULL");
 
+	k_mutex_lock(&s_cfg_mutex, K_FOREVER);
 	out->enabled = s_enabled;
 	strncpy(out->host, s_broker_host, sizeof(out->host) - 1);
 	out->host[sizeof(out->host) - 1] = '\0';
@@ -649,6 +701,7 @@ void mqtt_publisher_get_config(struct mqtt_publisher_config *out)
 	strncpy(out->gateway_name, s_gateway_name, sizeof(out->gateway_name) - 1);
 	out->gateway_name[sizeof(out->gateway_name) - 1] = '\0';
 	out->keepalive = s_keepalive;
+	k_mutex_unlock(&s_cfg_mutex);
 }
 
 /* --------------------------------------------------------------------------

@@ -31,10 +31,17 @@ static void mqtt_config_cmd_cb(const struct zbus_channel *chan)
 		struct mqtt_publisher_config cfg;
 
 		mqtt_publisher_get_config(&cfg);
-		strncpy(cfg.host, cmd->data.broker.host, sizeof(cfg.host) - 1);
-		cfg.host[sizeof(cfg.host) - 1] = '\0';
-		cfg.port = cmd->data.broker.port;
-		cfg.keepalive = cmd->data.broker.keepalive;
+		/* Only overwrite fields that the producer explicitly set (non-zero/non-empty). */
+		if (cmd->data.broker.host[0] != '\0') {
+			strncpy(cfg.host, cmd->data.broker.host, sizeof(cfg.host) - 1);
+			cfg.host[sizeof(cfg.host) - 1] = '\0';
+		}
+		if (cmd->data.broker.port != 0) {
+			cfg.port = cmd->data.broker.port;
+		}
+		if (cmd->data.broker.keepalive != 0) {
+			cfg.keepalive = cmd->data.broker.keepalive;
+		}
 		mqtt_publisher_set_broker(&cfg);
 		break;
 	}

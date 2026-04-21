@@ -32,6 +32,11 @@ const char *sensor_type_str(enum sensor_type t);
 size_t history_to_json(const struct sensor_history *snap, int n_sensors, uint8_t *buf,
 		       size_t buf_size);
 
+/* Forward declaration — pointer-to-incomplete is valid; callers that pass NULL
+ * need no full definition, and callers that pass &mqtt_cfg already include
+ * mqtt_publisher.h inside an appropriate CONFIG_MQTT_PUBLISHER guard. */
+struct mqtt_publisher_config;
+
 /**
  * @brief Serialise runtime config to the GET /api/config JSON format.
  *
@@ -47,7 +52,7 @@ size_t history_to_json(const struct sensor_history *snap, int n_sensors, uint8_t
  * @return Number of bytes written (without NUL terminator), or 0 on failure/overflow.
  */
 size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_server,
-		      const void *mqtt_cfg, uint8_t *buf, size_t buf_size);
+		      const struct mqtt_publisher_config *mqtt_cfg, uint8_t *buf, size_t buf_size);
 
 /**
  * @brief Serialise the location registry to the GET /api/locations JSON format.
