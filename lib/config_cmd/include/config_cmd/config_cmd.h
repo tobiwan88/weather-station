@@ -21,19 +21,38 @@ extern "C" {
 
 /** Type of configuration command. */
 enum config_cmd_type {
-	/** Change auto-publish interval; arg = interval in ms (0 = disable). */
 	CONFIG_CMD_SET_TRIGGER_INTERVAL,
-	/** Trigger an immediate SNTP resync; arg is unused. */
 	CONFIG_CMD_SNTP_RESYNC,
+	CONFIG_CMD_MQTT_SET_ENABLED,
+	CONFIG_CMD_MQTT_SET_BROKER,
+	CONFIG_CMD_MQTT_SET_AUTH,
+	CONFIG_CMD_MQTT_SET_GATEWAY,
+};
+
+struct config_cmd_mqtt_broker {
+	char host[64];
+	uint16_t port;
+	uint16_t keepalive;
+};
+
+struct config_cmd_mqtt_auth {
+	char username[32];
+	char password[64];
+};
+
+struct config_cmd_event {
+	enum config_cmd_type cmd;
+	uint32_t arg;
+	union {
+		struct config_cmd_mqtt_broker broker;
+		struct config_cmd_mqtt_auth auth;
+		char gateway_name[32];
+	} data;
 };
 
 /**
  * @brief Command event transmitted on config_cmd_chan.
  */
-struct config_cmd_event {
-	enum config_cmd_type cmd; /**< Which command to execute */
-	uint32_t arg;             /**< Command argument (see enum above) */
-};
 
 /** zbus channel carrying config_cmd_event (defined in config_cmd.c). */
 ZBUS_CHAN_DECLARE(config_cmd_chan);
