@@ -9,6 +9,10 @@
 #include <sensor_event/sensor_event.h>
 #include <sensor_registry/sensor_registry.h>
 
+#if defined(CONFIG_MQTT_PUBLISHER)
+#	include <mqtt_publisher/mqtt_publisher.h>
+#endif
+
 #include "json_serialise.h"
 #include "sensor_history.h"
 
@@ -265,8 +269,8 @@ static int sensor_entry_to_json_cb(const struct sensor_registry_entry *e, void *
 	return 0;
 }
 
-size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_server, uint8_t *buf,
-		      size_t buf_size)
+size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_server,
+		      const struct mqtt_publisher_config *mqtt_cfg, uint8_t *buf, size_t buf_size)
 {
 	int pos = 0;
 	int rem = (int)buf_size - 1;
@@ -289,7 +293,22 @@ size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_serve
 	pos = sctx.pos;
 	rem = sctx.rem;
 
-	JAPPEND("]}");
+	JAPPEND("]");
+
+#if defined(CONFIG_MQTT_PUBLISHER)
+	if (mqtt_cfg) {
+		JAPPEND(",\"mqtt\":{\"enabled\":%s,\"host\":\"",
+			mqtt_cfg->enabled ? "true" : "false");
+		JAPPEND_STR(mqtt_cfg->host);
+		JAPPEND("\",\"port\":%u,\"user\":\"", mqtt_cfg->port);
+		JAPPEND_STR(mqtt_cfg->username);
+		JAPPEND("\",\"gateway\":\"");
+		JAPPEND_STR(mqtt_cfg->gateway_name);
+		JAPPEND("\",\"keepalive\":%u}", mqtt_cfg->keepalive);
+	}
+#endif /* CONFIG_MQTT_PUBLISHER */
+
+	JAPPEND("}");
 
 	buf[pos] = '\0';
 	return (rem < 0) ? 0 : (size_t)pos;

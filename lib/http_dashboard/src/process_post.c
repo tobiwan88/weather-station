@@ -40,16 +40,25 @@ void config_state_copy_sntp_server(char *out, size_t len)
 void process_post(const uint8_t *body, size_t len)
 {
 	LOG_DBG("process_post: entry body %zu B", len);
-	/* Buffer must hold the full accumulated POST body (1024 B max). */
 	static char buf[1025];
 	size_t copy_len = MIN(len, sizeof(buf) - 1);
 
 	memcpy(buf, body, copy_len);
 	buf[copy_len] = '\0';
 
-	/* Pre-extract loc_name before the loop mutates buf. */
 	char loc_name_pre[CONFIG_LOCATION_REGISTRY_NAME_LEN + 1];
 	bool has_loc_name = form_extract(buf, "loc_name", loc_name_pre, sizeof(loc_name_pre));
+
+#if defined(CONFIG_MQTT_PUBLISHER)
+	struct config_cmd_mqtt_broker mqtt_broker = {0};
+	struct config_cmd_mqtt_auth mqtt_auth = {0};
+	char mqtt_gw[32] = {0};
+	bool mqtt_enabled_set = false;
+	bool mqtt_enabled_val = false;
+	bool mqtt_broker_set = false;
+	bool mqtt_auth_set = false;
+	bool mqtt_gw_set = false;
+#endif
 
 	char *token = buf;
 
@@ -137,9 +146,43 @@ void process_post(const uint8_t *body, size_t len)
 						}
 					}
 				}
+#if defined(CONFIG_MQTT_PUBLISHER)
+			} else if (strcmp(key, "mqtt_enabled") == 0) {
+				mqtt_enabled_set = true;
+				mqtt_enabled_val = (strcmp(val, "on") == 0);
+			} else if (strcmp(key, "mqtt_host") == 0) {
+				strncpy(mqtt_broker.host, val, sizeof(mqtt_broker.host) - 1);
+				mqtt_broker.host[sizeof(mqtt_broker.host) - 1] = '\0';
+				mqtt_broker_set = true;
+			} else if (strcmp(key, "mqtt_port") == 0) {
+				long p = strtol(val, NULL, 10);
+
+				if (p > 0 && p <= 65535) {
+					mqtt_broker.port = (uint16_t)p;
+				}
+				mqtt_broker_set = true;
+			} else if (strcmp(key, "mqtt_keepalive") == 0) {
+				long k = strtol(val, NULL, 10);
+
+				if (k >= 10 && k <= 3600) {
+					mqtt_broker.keepalive = (uint16_t)k;
+				}
+				mqtt_broker_set = true;
+			} else if (strcmp(key, "mqtt_user") == 0) {
+				strncpy(mqtt_auth.username, val, sizeof(mqtt_auth.username) - 1);
+				mqtt_auth.username[sizeof(mqtt_auth.username) - 1] = '\0';
+				mqtt_auth_set = true;
+			} else if (strcmp(key, "mqtt_pass") == 0 && val[0] != '\0') {
+				strncpy(mqtt_auth.password, val, sizeof(mqtt_auth.password) - 1);
+				mqtt_auth.password[sizeof(mqtt_auth.password) - 1] = '\0';
+				mqtt_auth_set = true;
+			} else if (strcmp(key, "mqtt_gw") == 0) {
+				strncpy(mqtt_gw, val, sizeof(mqtt_gw) - 1);
+				mqtt_gw[sizeof(mqtt_gw) - 1] = '\0';
+				mqtt_gw_set = true;
+#endif /* CONFIG_MQTT_PUBLISHER */
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
 			} else if (strncmp(key, "sensor_", 7) == 0) {
-				/* sensor_<uid>_<field>: name, loc, desc, en */
 				char tmp[64];
 
 				strncpy(tmp, key + 7, sizeof(tmp) - 1);
@@ -192,4 +235,47 @@ void process_post(const uint8_t *body, size_t len)
 
 		token = amp ? (amp + 1) : NULL;
 	}
+
+#if defined(CONFIG_MQTT_PUBLISHER)
+	if (mqtt_enabled_set) {
+		struct config_cmd_event cmd = {
+			.cmd = CONFIG_CMD_MQTT_SET_ENABLED,
+			.arg = mqtt_enabled_val ? 1 : 0,
+		};
+
+		zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+		LOG_INF("MQTT enabled set to %d", cmd.arg);
+	}
+
+	if (mqtt_broker_set) {
+		struct config_cmd_event cmd = {
+			.cmd = CONFIG_CMD_MQTT_SET_BROKER,
+			.data.broker = mqtt_broker,
+		};
+
+		zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+		LOG_INF("MQTT broker config update published");
+	}
+
+	if (mqtt_auth_set) {
+		struct config_cmd_event cmd = {
+			.cmd = CONFIG_CMD_MQTT_SET_AUTH,
+			.data.auth = mqtt_auth,
+		};
+
+		zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+		LOG_INF("MQTT auth update published");
+	}
+
+	if (mqtt_gw_set) {
+		struct config_cmd_event cmd = {
+			.cmd = CONFIG_CMD_MQTT_SET_GATEWAY,
+		};
+
+		strncpy(cmd.data.gateway_name, mqtt_gw, sizeof(cmd.data.gateway_name) - 1);
+		cmd.data.gateway_name[sizeof(cmd.data.gateway_name) - 1] = '\0';
+		zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+		LOG_INF("MQTT gateway name update published");
+	}
+#endif
 }
