@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Weather Station — Sign In</title>
+  <!-- @@CSS@@ -->
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Weather Station</h1>
+    </div>
+  </header>
+  <main class="login-main">
+    <div class="card login-card">
+      <h2>Sign In</h2>
+      <div id="loginError" class="flash flash-error hidden"></div>
+      <form id="loginForm">
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username"
+                 autocomplete="username" maxlength="64" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password"
+                 autocomplete="current-password" maxlength="64" required>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn-primary">Sign In</button>
+        </div>
+      </form>
+    </div>
+  </main>
+  <!-- @@JS@@ -->
+</body>
+</html>

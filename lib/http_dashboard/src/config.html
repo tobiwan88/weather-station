@@ -12,21 +12,12 @@
       <h1>Configuration</h1>
       <nav>
         <a href="/">Dashboard</a>
+        <button type="button" class="btn-secondary btn-small" onclick="onLogout()">Sign Out</button>
       </nav>
     </div>
   </header>
   <main>
     <div id="flashMsg" class="flash hidden"></div>
-
-    <section class="card" id="tokenCard">
-      <h2>Dashboard Token</h2>
-      <p class="hint">Enter the bearer token shown by <code>http_dashboard token show</code> in the shell. Saved in your browser only.</p>
-      <div class="field field-inline">
-        <input type="password" id="tokenInput" placeholder="32-character hex token" maxlength="32" size="34">
-        <button type="button" class="btn-primary" onclick="onTokenSave()">Save Token</button>
-      </div>
-      <p id="tokenStatus" class="status"></p>
-    </section>
 
     <section class="card">
       <h2>Locations</h2>
@@ -121,6 +112,41 @@
         </div>
         <div class="actions">
           <button type="submit" class="btn-primary">Save sensor config</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>API Token</h2>
+      <p class="hint">Use this token to access the REST API from scripts or automation tools: <code>Authorization: Bearer &lt;token&gt;</code></p>
+      <div class="field field-inline">
+        <input type="text" id="apiTokenDisplay" readonly size="34" style="font-family:monospace">
+        <button type="button" class="btn-secondary" onclick="onRotateToken()">Rotate</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Change Credentials</h2>
+      <p class="hint">Update the dashboard username and password.</p>
+      <form id="changeCredsForm">
+        <div class="field">
+          <label for="oldUser">Current username</label>
+          <input type="text" id="oldUser" name="old_user" maxlength="64" required>
+        </div>
+        <div class="field">
+          <label for="oldPass">Current password</label>
+          <input type="password" id="oldPass" name="old_pass" maxlength="64" required>
+        </div>
+        <div class="field">
+          <label for="newUser">New username</label>
+          <input type="text" id="newUser" name="new_user" maxlength="64" required>
+        </div>
+        <div class="field">
+          <label for="newPass">New password</label>
+          <input type="password" id="newPass" name="new_pass" maxlength="64" required>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn-primary">Update Credentials</button>
         </div>
       </form>
     </section>
