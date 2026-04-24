@@ -1,5 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0 */
+#include <errno.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 
 #include <zephyr/init.h>
@@ -13,6 +15,14 @@
 #include "auth.h"
 
 LOG_MODULE_DECLARE(http_dashboard, CONFIG_HTTP_DASHBOARD_LOG_LEVEL);
+
+#define DASH_SUBTREE        "dash"
+#define DASH_KEY_USER       "user"
+#define DASH_KEY_PASS       "pass"
+#define DASH_KEY_TOKEN      "token"
+#define DASH_SETTINGS_USER  DASH_SUBTREE "/" DASH_KEY_USER
+#define DASH_SETTINGS_PASS  DASH_SUBTREE "/" DASH_KEY_PASS
+#define DASH_SETTINGS_TOKEN DASH_SUBTREE "/" DASH_KEY_TOKEN
 
 /* -------------------------------------------------------------------------- */
 /* Session table                                                                */
@@ -169,25 +179,25 @@ static int dash_settings_set(const char *key, size_t len, settings_read_cb read_
 	}
 	buf[ret] = '\0';
 
-	if (strcmp(key, "user") == 0) {
+	if (strcmp(key, DASH_KEY_USER) == 0) {
 		strncpy(s_username, buf, AUTH_CRED_MAX - 1);
 		s_username[AUTH_CRED_MAX - 1] = '\0';
-	} else if (strcmp(key, "pass") == 0) {
+	} else if (strcmp(key, DASH_KEY_PASS) == 0) {
 		strncpy(s_password, buf, AUTH_CRED_MAX - 1);
 		s_password[AUTH_CRED_MAX - 1] = '\0';
-	} else if (strcmp(key, "token") == 0) {
+	} else if (strcmp(key, DASH_KEY_TOKEN) == 0) {
 		strncpy(s_api_token, buf, AUTH_SESSION_TOKEN_LEN);
 		s_api_token[AUTH_SESSION_TOKEN_LEN] = '\0';
 	}
 	return 0;
 }
 
-SETTINGS_STATIC_HANDLER_DEFINE(dash, "dash", NULL, dash_settings_set, NULL, NULL);
+SETTINGS_STATIC_HANDLER_DEFINE(dash, DASH_SUBTREE, NULL, dash_settings_set, NULL, NULL);
 
 /* Load settings subtree before auth_init() runs at APPLICATION 97. */
 static int auth_settings_load(void)
 {
-	return settings_load_subtree("dash");
+	return settings_load_subtree(DASH_SUBTREE);
 }
 
 SYS_INIT(auth_settings_load, APPLICATION, 96);
@@ -201,12 +211,12 @@ int auth_init(void)
 	/* Credentials: write defaults on first boot (settings returned empty). */
 	if (s_username[0] == '\0') {
 		strncpy(s_username, CONFIG_HTTP_DASHBOARD_AUTH_DEFAULT_USER, AUTH_CRED_MAX - 1);
-		settings_save_one("dash/user", s_username, strlen(s_username) + 1);
+		settings_save_one(DASH_SETTINGS_USER, s_username, strlen(s_username) + 1);
 		LOG_INF("HTTP auth: first-boot username set to '%s'", s_username);
 	}
 	if (s_password[0] == '\0') {
 		strncpy(s_password, CONFIG_HTTP_DASHBOARD_AUTH_DEFAULT_PASS, AUTH_CRED_MAX - 1);
-		settings_save_one("dash/pass", s_password, strlen(s_password) + 1);
+		settings_save_one(DASH_SETTINGS_PASS, s_password, strlen(s_password) + 1);
 		LOG_INF("HTTP auth: first-boot password set");
 	}
 
@@ -218,7 +228,7 @@ int auth_init(void)
 			LOG_ERR("HTTP auth: failed to generate API token: %d", rc);
 			return rc;
 		}
-		settings_save_one("dash/token", s_api_token, AUTH_SESSION_TOKEN_LEN + 1);
+		settings_save_one(DASH_SETTINGS_TOKEN, s_api_token, AUTH_SESSION_TOKEN_LEN + 1);
 		LOG_INF("HTTP auth: API token generated "
 			"(run 'http_dashboard token show' to read it)");
 	} else {
@@ -419,8 +429,8 @@ int auth_change_credentials(const char *old_user, const char *old_pass, const ch
 	s_password[AUTH_CRED_MAX - 1] = '\0';
 	k_spin_unlock(&s_cred_lock, key);
 
-	settings_save_one("dash/user", new_user, strlen(new_user) + 1);
-	settings_save_one("dash/pass", new_pass, strlen(new_pass) + 1);
+	settings_save_one(DASH_SETTINGS_USER, new_user, strlen(new_user) + 1);
+	settings_save_one(DASH_SETTINGS_PASS, new_pass, strlen(new_pass) + 1);
 	LOG_INF("HTTP auth: credentials updated");
 	return 0;
 }
@@ -453,7 +463,7 @@ int auth_token_rotate(void)
 
 	memcpy(s_api_token, new_token, AUTH_SESSION_TOKEN_LEN + 1);
 	k_spin_unlock(&s_api_token_lock, key);
-	settings_save_one("dash/token", new_token, AUTH_SESSION_TOKEN_LEN + 1);
+	settings_save_one(DASH_SETTINGS_TOKEN, new_token, AUTH_SESSION_TOKEN_LEN + 1);
 	LOG_INF("HTTP auth: API token rotated");
 	return 0;
 }

@@ -86,6 +86,10 @@ When the HTTP dashboard needs to interact with another subsystem (e.g. changing 
 
 Direct calls from `http_dashboard.c` into another subsystem's public API (as in the current prototype) are a known violation of this rule to be resolved in future iterations.
 
+### 9. Session-cookie + API bearer-token authentication (`CONFIG_HTTP_DASHBOARD_AUTH=y`)
+
+A browser login page (`GET /login`, `POST /login`) validates username and password and issues an `HttpOnly` session cookie. Automation clients send `Authorization: Bearer <token>`. Both mechanisms guard all `/api/*` and `/config` endpoints. Credentials and the API token are persisted in Zephyr settings under `dash/user`, `dash/pass`, and `dash/token`. First-boot defaults are set via Kconfig (`lib/http_dashboard/Kconfig`). When `CONFIG_HTTP_DASHBOARD_AUTH=n` all endpoints remain open — suitable for local development without credentials.
+
 ---
 
 ## Design goal — HTML decoupling
@@ -112,6 +116,7 @@ This work is deferred to a future iteration (see backlog: `[HTTP-DASHBOARD] Deco
 **Harder:**
 - HTML/CSS/JS embedded in C strings is difficult to edit and has no live-reload capability.
 - The linker fragment `http_dashboard_sections.ld` must be included or the build fails with opaque linker errors.
+- When `CONFIG_HTTP_DASHBOARD_AUTH=y`, unauthenticated requests to `/api/*` return 401; integration tests must use the `authed_harness` fixture or supply a bearer token.
 
 **Constrained:**
 - `k_spinlock` callbacks must not sleep or block — the ring-buffer copy must complete in bounded time.
