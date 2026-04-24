@@ -170,12 +170,3 @@ Reference: ADR-003 §Serialisation, ADR-006.
 ## [Remote sensor manager] Thread maybe more busy as eneded
 
 - we use zbus + timeout and drain afterwards. Normal operation we should not have to many events at once. Maybe enough just to put events on simple message que or other format?
-
-## [HTTP Dashboard] User login to access configuraiton dashboard
-
-- Instead of posting the token there shall be a small user webpage to loging to the configuration, for dev we use admin: admin
-- the user can change the password and username
-
-## [MQTT Config] MQTT can be configured
-- can be enabled/disabled
-- user can change address, authentication

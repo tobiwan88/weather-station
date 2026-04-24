@@ -25,6 +25,8 @@ Build and test: `/build-and-test`. Display problems: `/display-reset`.
 
 Integration tests: `/run-integration-tests [marker]`. New test: `/new-integration-test`. New harness: `/new-harness`.
 
+**CRITICAL — ZEPHYR_BASE:** Always prefix `west build` and `west twister` with `ZEPHYR_BASE=/home/zephyr/workspace/zephyr`; the env default points to a non-existent path. If builds fail with a stale path, delete `CMakeCache.txt`.
+
 ## Zephyr patches (`west patch`)
 
 Out-of-tree fixes to Zephyr are managed as `git format-patch` files in
@@ -87,6 +89,7 @@ To add a new patch: `/west-patch`.
 - **Config decoupling:** POST publishes `config_cmd_event` on `config_cmd_chan` — does NOT call `fake_sensors`/`sntp_sync` directly.
 - **Concurrency:** `k_spinlock` + snapshot pattern (lock → memcpy → unlock → serialize).
 - **Linker:** `http_dashboard_sections.ld` required (`ITERABLE_SECTION_ROM(http_resource_desc_dashboard_svc, ...)`).
+- **Auth (`CONFIG_HTTP_DASHBOARD_AUTH=y`):** two mechanisms — browser gets a session cookie via `POST /login`; API clients use `Authorization: Bearer <token>` (shell: `http_dashboard token show`). Credentials and API token persisted in settings under `dash/user`, `dash/pass`, `dash/token`. All `/api/*` and `/config` endpoints require auth when enabled. Default credentials and session count are Kconfig-configurable (`lib/http_dashboard/Kconfig`).
 
 ## Key libraries
 
@@ -97,6 +100,7 @@ To add a new patch: `/west-patch`.
 | `sensor_event_log` | No public API. Self-registers via `SYS_INIT`. Enable: `CONFIG_SENSOR_EVENT_LOG=y`. |
 | `remote_sensor` | Transport vtable (`REMOTE_TRANSPORT_DEFINE()`). Needs `remote_sensor_iterables.ld`. UID helpers: `remote_sensor_uid_from_addr()`, `remote_sensor_uid_from_node_id()`. Publish: `remote_sensor_publish_data(uid, type, q31)`. |
 | `fake_remote_sensor` | Testing stub implementing `remote_transport` vtable (`REMOTE_TRANSPORT_PROTO_FAKE`). |
+| `mqtt_publisher` | No public API. Self-registers via `SYS_INIT` (priority 98). Subscribes to `sensor_event_chan`. Topic: `{gw}/{location}/{display_name}/{type}`. Settings under `mqttp/` (server, port, user, pass, gw). Shell: `mqtt_pub status/set`. Requires `CONFIG_SENSOR_REGISTRY_USER_META=y`. Use `zsock_pollfd`/`zsock_poll()`/`ZSOCK_POLLIN` — not POSIX variants. |
 
 ## Integration tests (`tests/integration`)
 
@@ -106,6 +110,7 @@ Pytest via Twister `harness: pytest`. Full gateway on `native_sim/native/64`. Bu
 |---|---|---|
 | UART shell | `ShellHarness` | `shell_harness` |
 | HTTP API (port 8080) | `HttpHarness` | `http_harness` |
+| HTTP API (authenticated) | `HttpHarness` + bearer token | `authed_harness` — use for all `POST /api/config` tests when auth is enabled |
 | MQTT (port 1883) | `MqttHarness` | `mqtt_harness` (auto-skips if no broker) |
 
 - **Page Object Model:** tests call harness methods, never raw strings.
