@@ -88,7 +88,7 @@ Direct calls from `http_dashboard.c` into another subsystem's public API (as in 
 
 ### 9. Session-cookie + API bearer-token authentication (`CONFIG_HTTP_DASHBOARD_AUTH=y`)
 
-A browser login page (`GET /login`, `POST /login`) validates username and password and issues an `HttpOnly` session cookie. Automation clients send `Authorization: Bearer <token>`. Both mechanisms guard all `/api/*` and `/config` endpoints. Credentials and the API token are persisted in Zephyr settings under `dash/user`, `dash/pass`, and `dash/token`. First-boot defaults are set via Kconfig (`lib/http_dashboard/Kconfig`). When `CONFIG_HTTP_DASHBOARD_AUTH=n` all endpoints remain open — suitable for local development without credentials.
+A browser login page (`GET /login`, `POST /api/login`) validates username and password and issues an `HttpOnly` session cookie. Automation clients send `Authorization: Bearer <token>`. Both mechanisms guard all `/api/*` and `/config` endpoints. Credentials and the API token are persisted in Zephyr settings under `dash/user`, `dash/pass`, and `dash/token`. First-boot defaults are set via Kconfig (`lib/http_dashboard/Kconfig`). When `CONFIG_HTTP_DASHBOARD_AUTH=n` all endpoints remain open — suitable for local development without credentials.
 
 ---
 

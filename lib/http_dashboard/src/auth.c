@@ -114,7 +114,7 @@ static bool cookie_extract(const char *cookie_str, const char *field, char *out,
 		/* Check if this pair starts with field= */
 		if (strncmp(p, field, flen) == 0 && p[flen] == '=') {
 			const char *val = p + flen + 1;
-			const char *end = strstr(val, "; ");
+			const char *end = strchr(val, ';');
 
 			if (!end) {
 				end = val + strlen(val);
@@ -128,13 +128,16 @@ static bool cookie_extract(const char *cookie_str, const char *field, char *out,
 			out[vlen] = '\0';
 			return true;
 		}
-		/* Advance to next "; " separator */
-		const char *sep = strstr(p, "; ");
+		/* Advance to next cookie pair (RFC 6265: "; " or ";") */
+		const char *sep = strchr(p, ';');
 
 		if (!sep) {
 			break;
 		}
-		p = sep + 2;
+		p = sep + 1;
+		while (*p == ' ') {
+			p++;
+		}
 	}
 	return false;
 }
@@ -211,11 +214,13 @@ int auth_init(void)
 	/* Credentials: write defaults on first boot (settings returned empty). */
 	if (s_username[0] == '\0') {
 		strncpy(s_username, CONFIG_HTTP_DASHBOARD_AUTH_DEFAULT_USER, AUTH_CRED_MAX - 1);
+		s_username[AUTH_CRED_MAX - 1] = '\0';
 		settings_save_one(DASH_SETTINGS_USER, s_username, strlen(s_username) + 1);
 		LOG_INF("HTTP auth: first-boot username set to '%s'", s_username);
 	}
 	if (s_password[0] == '\0') {
 		strncpy(s_password, CONFIG_HTTP_DASHBOARD_AUTH_DEFAULT_PASS, AUTH_CRED_MAX - 1);
+		s_password[AUTH_CRED_MAX - 1] = '\0';
 		settings_save_one(DASH_SETTINGS_PASS, s_password, strlen(s_password) + 1);
 		LOG_INF("HTTP auth: first-boot password set");
 	}

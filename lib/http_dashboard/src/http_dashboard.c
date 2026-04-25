@@ -127,7 +127,7 @@ static void respond_200_with_cookie(struct http_response_ctx *rsp, const char *t
 				    const char *json_body, size_t body_len, char *sc_buf,
 				    size_t sc_buf_len)
 {
-	snprintf(sc_buf, sc_buf_len, "session=%s; HttpOnly; Path=/", token);
+	snprintf(sc_buf, sc_buf_len, "session=%s; HttpOnly; Path=/; SameSite=Strict", token);
 
 	/* Two-element header array: Content-Type + Set-Cookie. */
 	static struct http_header resp_hdrs[2] = {

@@ -1,2 +1,2 @@
 CompileFlags:
-  CompilationDatabase: /home/zephyr/workspace/build/native_sim_native_64/gateway
+  CompilationDatabase: build/native_sim_native_64/gateway
