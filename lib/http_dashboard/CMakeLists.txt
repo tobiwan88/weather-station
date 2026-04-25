@@ -49,6 +49,23 @@ if(CONFIG_HTTP_DASHBOARD)
     COMMENT "Bundling config HTML")
   generate_inc_file_for_target(app ${config_bundled} ${gen_dir}/config.html.inc)
 
+  if(CONFIG_HTTP_DASHBOARD_AUTH)
+    # Bundle and embed login page
+    set(login_bundled ${gen_dir}/login.bundled.html)
+    add_custom_command(
+      OUTPUT ${login_bundled}
+      COMMAND
+        ${PYTHON_EXECUTABLE} ${bundle_script} --html
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/login.html --css
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/login.css --js
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/login.js --out ${login_bundled}
+      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/login.html
+              ${CMAKE_CURRENT_SOURCE_DIR}/src/login.css
+              ${CMAKE_CURRENT_SOURCE_DIR}/src/login.js ${bundle_script}
+      COMMENT "Bundling login HTML")
+    generate_inc_file_for_target(app ${login_bundled} ${gen_dir}/login.html.inc)
+  endif()
+
   # Linker section for per-service HTTP resource descriptor iterable.
   zephyr_linker_sources(SECTIONS http_dashboard_sections.ld)
 

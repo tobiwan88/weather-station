@@ -129,24 +129,38 @@ serves a browser-accessible dashboard on port **8080**.
 
 | URL | Description |
 |-----|-------------|
+| `http://localhost:8080/login` | Login page |
 | `http://localhost:8080/` | Live Chart.js timeseries for temperature and humidity |
 | `http://localhost:8080/config` | Configuration page (trigger interval, SNTP resync) |
 | `http://localhost:8080/api/data` | JSON sensor history (ring buffer) |
 | `http://localhost:8080/api/config` | JSON current runtime config (GET) / update config (POST) |
 
-Start the gateway binary, then open `http://localhost:8080` in a browser.
-The dashboard auto-refreshes by polling `/api/data`.
+Start the gateway binary, then open `http://localhost:8080` in a browser — you will be redirected to `/login`.
 
-To change the sampling interval at runtime:
+### Authentication
+
+The dashboard uses two parallel auth mechanisms (enabled by `CONFIG_HTTP_DASHBOARD_AUTH=y`; credentials and session count are Kconfig-configurable — see `lib/http_dashboard/Kconfig`):
+
+- **Browser:** log in at `/login` with username `admin` / password `admin` (first-boot defaults). A session cookie is set for subsequent requests.
+- **API / curl:** retrieve the bearer token from the Zephyr shell, then pass it as a header:
 
 ```bash
-curl -X POST http://localhost:8080/api/config -d "trigger_interval_ms=2000"
+# Get the token (run once from the Zephyr shell prompt)
+http_dashboard token show
+# Output: Authorization: Bearer <32hexchars>
+
+# Use it in curl
+curl -X POST http://localhost:8080/api/config \
+  -H "Authorization: Bearer <token>" \
+  -d "trigger_interval_ms=2000"
 ```
 
 To trigger an immediate SNTP resync:
 
 ```bash
-curl -X POST http://localhost:8080/api/config -d "action=sntp_resync"
+curl -X POST http://localhost:8080/api/config \
+  -H "Authorization: Bearer <token>" \
+  -d "action=sntp_resync"
 ```
 
 Kconfig options (in `apps/gateway/prj.conf`):
@@ -156,6 +170,7 @@ Kconfig options (in `apps/gateway/prj.conf`):
 | `CONFIG_HTTP_DASHBOARD_PORT` | `8080` | TCP port |
 | `CONFIG_HTTP_DASHBOARD_HISTORY_SIZE` | `60` | Samples per sensor per type |
 | `CONFIG_HTTP_DASHBOARD_MAX_SENSORS` | `16` | Max sensor × type slots |
+| `CONFIG_HTTP_DASHBOARD_AUTH` | `y` | Session + bearer-token login; see `lib/http_dashboard/Kconfig` for credentials and session options |
 
 ---
 

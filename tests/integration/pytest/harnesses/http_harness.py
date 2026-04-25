@@ -29,34 +29,107 @@ class HttpHarness:
         # (HTTP/1.1 keep-alive).  Reusing the connection avoids rapid fd open/
         # close cycles that would race with the Zephyr HTTP server's NSOS epoll
         # cleanup, causing EPOLL_CTL_ADD EEXIST on fd reuse → DUT exit.
+        # The session also automatically stores the HttpOnly session cookie set
+        # by POST /api/login, so subsequent requests carry it without extra code.
         self._session = requests.Session()
 
     def set_token(self, token: str) -> None:
-        """Store the bearer token used for all subsequent authenticated requests."""
+        """Store a bearer token for use in subsequent authenticated requests.
+
+        Used by automation-oriented tests that authenticate via bearer token
+        rather than the session cookie login flow.
+        """
         self._token = token
 
     def _auth_headers(self) -> dict:
-        """Return Authorization header dict if a token is set, otherwise empty dict."""
+        """Return Authorization header dict if a bearer token is set."""
         if self._token:
             return {"Authorization": f"Bearer {self._token}"}
         return {}
 
-    def wait_until_ready(self, timeout: float = 30.0, poll_interval: float = 0.2) -> None:
-        """Block until GET / returns successfully or timeout expires.
+    # ------------------------------------------------------------------
+    # Session cookie auth (browser-style login/logout)
+    # ------------------------------------------------------------------
 
-        Called by the ``http_harness`` fixture before any test runs so that
-        tests do not race against the HTTP server's bind on port 8080.
+    def login(self, username: str = "admin", password: str = "admin") -> bool:
+        """POST /api/login and store the resulting session cookie.
+
+        The ``requests.Session`` in ``self._session`` automatically stores the
+        HttpOnly Set-Cookie header returned on success, so all subsequent
+        requests via ``_get`` and ``_post`` carry the session cookie.
+
+        Returns True on success (HTTP 200), False otherwise.
+        """
+        _log.info("login: POST /api/login username=%s", username)
+        post_session = requests.Session()
+        try:
+            r = post_session.post(
+                urljoin(self.base_url, "/api/login"),
+                data={"username": username, "password": password},
+                headers={"Content-Type": "application/x-www-form-urlencoded",
+                         "Connection": "close"},
+                timeout=self.timeout,
+                allow_redirects=False,
+            )
+        except Exception as exc:
+            _log.error("login: connection error: %s", exc)
+            return False
+        finally:
+            time.sleep(0.15)
+            post_session.close()
+
+        _log.info("login: status=%d", r.status_code)
+        if r.status_code == 200:
+            # Transfer the session cookie to the persistent session.
+            for c in post_session.cookies:
+                self._session.cookies.set(c.name, c.value, domain=c.domain, path=c.path)
+            return True
+        return False
+
+    def logout(self) -> None:
+        """POST /api/logout to invalidate the current session."""
+        self._post("/api/logout", {})
+
+    def change_credentials(self, old_user: str, old_pass: str,
+                           new_user: str, new_pass: str) -> int:
+        """POST /api/change-credentials. Returns the HTTP status code."""
+        r = self._post("/api/change-credentials", {
+            "old_user": old_user,
+            "old_pass": old_pass,
+            "new_user": new_user,
+            "new_pass": new_pass,
+        })
+        return r.status_code
+
+    def rotate_api_token(self) -> str:
+        """POST /api/token/rotate and return the new token string."""
+        r = self._post("/api/token/rotate", {})
+        if r.status_code == 200:
+            return r.json().get("token", "")
+        return ""
+
+    def wait_until_ready(self, timeout: float = 30.0, poll_interval: float = 0.2) -> None:
+        """Block until GET /login returns successfully or timeout expires.
+
+        Polls /login (always public, no session required) rather than /
+        because / now redirects to /login when unauthenticated.
         Raises ``TimeoutError`` if the server never responds.
         """
         _log.info("waiting for HTTP server at %s (timeout=%ss)", self.base_url, timeout)
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             try:
-                self._get("/")
-                _log.info("HTTP server ready")
-                return
+                r = self._session.get(
+                    urljoin(self.base_url, "/login"),
+                    timeout=self.timeout,
+                    allow_redirects=False,
+                )
+                if r.status_code == 200:
+                    _log.info("HTTP server ready")
+                    return
             except Exception:
-                time.sleep(poll_interval)
+                pass
+            time.sleep(poll_interval)
         raise TimeoutError(f"HTTP server at {self.base_url} not reachable within {timeout}s")
 
     def _get(self, path: str, authenticated: bool = False) -> requests.Response:
@@ -122,7 +195,12 @@ class HttpHarness:
                       "<set>" if auth.get("Authorization") else "NONE")
         else:
             _log.info("_post: no auth")
-        safe_headers = {k: ("<redacted>" if k == "Authorization" else v)
+        # Forward session cookie (set by login()) to the fresh POST connection.
+        session_cookie = self._session.cookies.get("session")
+        if session_cookie:
+            headers["Cookie"] = f"session={session_cookie}"
+            _log.info("_post: forwarding session cookie")
+        safe_headers = {k: ("<redacted>" if k in ("Authorization", "Cookie") else v)
                         for k, v in headers.items()}
         _log.info("_post: final headers = %s", safe_headers)
         post_session = requests.Session()

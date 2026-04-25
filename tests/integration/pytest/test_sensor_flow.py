@@ -28,10 +28,10 @@ def restore_co2(shell_harness):
 @pytest.mark.e2e
 @pytest.mark.shell
 @pytest.mark.http
-def test_trigger_propagates_to_http(shell_harness, http_harness):
+def test_trigger_propagates_to_http(shell_harness, authed_harness):
     """A manual trigger must cause sensor readings to appear in /api/data."""
     shell_harness.trigger_all()
-    data = http_harness.wait_for_readings(min_sensors=4, timeout=10.0)
+    data = authed_harness.wait_for_readings(min_sensors=4, timeout=10.0)
     sensors = data["sensors"]
     assert len(sensors) >= 4, f"Expected >=4 sensors after trigger, got {len(sensors)}"
 
@@ -39,11 +39,11 @@ def test_trigger_propagates_to_http(shell_harness, http_harness):
 @pytest.mark.e2e
 @pytest.mark.shell
 @pytest.mark.http
-def test_indoor_temp_value_in_http(shell_harness, http_harness):
+def test_indoor_temp_value_in_http(shell_harness, authed_harness):
     """Indoor temperature sensor (0x0001) must appear in /api/data with a
     plausible value after a trigger."""
     shell_harness.trigger_all()
-    data = http_harness.wait_for_readings(min_sensors=1, timeout=10.0)
+    data = authed_harness.wait_for_readings(min_sensors=1, timeout=10.0)
     by_uid = {s["uid"]: s for s in data["sensors"]}
     assert 0x0001 in by_uid, "Indoor temp sensor (0x0001) missing from /api/data"
     readings = by_uid[0x0001]["readings"]
@@ -56,12 +56,12 @@ def test_indoor_temp_value_in_http(shell_harness, http_harness):
 @pytest.mark.e2e
 @pytest.mark.shell
 @pytest.mark.http
-def test_set_value_reflected_in_http(shell_harness, http_harness, restore_co2):
+def test_set_value_reflected_in_http(shell_harness, authed_harness, restore_co2):
     """Setting a sensor value via shell must appear in /api/data after a trigger."""
     # Set CO2 to a distinctive value
     shell_harness.set_co2(0x0003, 1500000)  # 1500 ppm
     shell_harness.trigger_all()
-    data = http_harness.wait_for_readings(min_sensors=1, timeout=10.0)
+    data = authed_harness.wait_for_readings(min_sensors=1, timeout=10.0)
     by_uid = {s["uid"]: s for s in data["sensors"]}
     assert 0x0003 in by_uid, "CO2 sensor (0x0003) missing from /api/data"
     readings = by_uid[0x0003]["readings"]
