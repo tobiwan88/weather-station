@@ -120,8 +120,11 @@ static void respond_redirect_login(struct http_response_ctx *rsp)
 }
 
 /* respond_200_with_cookie — send 200 JSON and set an HttpOnly session cookie.
- * @p sc_buf must be a caller-provided buffer >= 64 bytes that outlives the
+ * @p sc_buf must be a caller-provided buffer >= 96 bytes that outlives the
  * HTTP response transmission (i.e. static or per-handler static).
+ * Minimum size: "session=" (8) + AUTH_SESSION_TOKEN_LEN (32) +
+ *               "; HttpOnly; Path=/; SameSite=Strict" (35) + NUL = 76 bytes.
+ * 96 bytes gives comfortable headroom.
  */
 static void respond_200_with_cookie(struct http_response_ctx *rsp, const char *token,
 				    const char *json_body, size_t body_len, char *sc_buf,
@@ -349,7 +352,7 @@ static int api_login_handler(struct http_client_ctx *client, enum http_transacti
 
 	/* Static Set-Cookie buffer — safe because the login handler is called
 	 * once per request and the response is transmitted before the next call. */
-	static char sc_buf[64];
+	static char sc_buf[96];
 	char token[AUTH_SESSION_TOKEN_LEN + 1];
 	int rc = auth_login(username, password, token, sizeof(token));
 
