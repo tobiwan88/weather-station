@@ -224,7 +224,7 @@ def authed_harness(http_harness):
     """
     ok = http_harness.login("admin", "admin")
     if not ok:
-        _log.warning("authed_harness: login failed, proceeding unauthenticated")
+        pytest.fail("authed_harness: login failed; authenticated tests require a successful /api/login session setup")
     return http_harness
 
 

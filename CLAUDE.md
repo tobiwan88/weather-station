@@ -89,7 +89,7 @@ To add a new patch: `/west-patch`.
 - **Config decoupling:** POST publishes `config_cmd_event` on `config_cmd_chan` — does NOT call `fake_sensors`/`sntp_sync` directly.
 - **Concurrency:** `k_spinlock` + snapshot pattern (lock → memcpy → unlock → serialize).
 - **Linker:** `http_dashboard_sections.ld` required (`ITERABLE_SECTION_ROM(http_resource_desc_dashboard_svc, ...)`).
-- **Auth (`CONFIG_HTTP_DASHBOARD_AUTH=y`):** two mechanisms — browser gets a session cookie via `POST /login`; API clients use `Authorization: Bearer <token>` (shell: `http_dashboard token show`). Credentials and API token persisted in settings under `dash/user`, `dash/pass`, `dash/token`. All `/api/*` and `/config` endpoints require auth when enabled. Default credentials and session count are Kconfig-configurable (`lib/http_dashboard/Kconfig`).
+- **Auth (`CONFIG_HTTP_DASHBOARD_AUTH=y`):** two mechanisms — browser gets a session cookie via `POST /api/login`; API clients use `Authorization: Bearer <token>` (shell: `http_dashboard token show`). Credentials and API token persisted in settings under `dash/user`, `dash/pass`, `dash/token`. All `/api/*` and `/config` endpoints require auth when enabled. Default credentials and session count are Kconfig-configurable (`lib/http_dashboard/Kconfig`).
 
 ## Key libraries
 
