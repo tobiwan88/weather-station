@@ -216,22 +216,32 @@ def http_harness(device_ready):
 
 
 @pytest.fixture()
-def authed_harness(http_harness, shell_harness):
-    """Return http_harness with the bearer token loaded from the shell.
+def authed_harness(http_harness):
+    """Return http_harness authenticated via the login form (session cookie).
 
-    Reads the active token via ``http_dashboard token show`` and stores it so
-    that all authenticated POST requests include the Authorization header.  If
-    the build does not have ``CONFIG_HTTP_DASHBOARD_AUTH=y`` (shell command is
-    absent), the harness is returned without a token and POST requests proceed
-    unauthenticated.
+    Logs in as admin/admin (the first-boot defaults).  All subsequent requests
+    on this harness carry the session cookie automatically via requests.Session.
+    """
+    ok = http_harness.login("admin", "admin")
+    if not ok:
+        pytest.fail("authed_harness: login failed; authenticated tests require a successful /api/login session setup")
+    return http_harness
+
+
+@pytest.fixture()
+def api_token_harness(http_harness, shell_harness):
+    """Return http_harness authenticated via bearer API token (no session cookie).
+
+    Reads the active API token via ``http_dashboard token show`` and stores it
+    so that all authenticated POST requests include the Authorization header.
+    Used for tests that specifically exercise the bearer-token auth path.
     """
     try:
         token = http_harness.get_token_from_shell(shell_harness)
-        _log.debug("authed_harness: retrieved token %r (len=%d)", token, len(token))
+        _log.debug("api_token_harness: retrieved token (len=%d)", len(token))
         http_harness.set_token(token)
-        _log.debug("authed_harness: token stored on harness (_token=%r)", http_harness._token)
     except AssertionError as exc:
-        _log.warning("authed_harness: token retrieval failed (%s), proceeding unauthenticated", exc)
+        _log.warning("api_token_harness: token retrieval failed (%s)", exc)
     return http_harness
 
 

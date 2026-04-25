@@ -270,14 +270,21 @@ static int sensor_entry_to_json_cb(const struct sensor_registry_entry *e, void *
 }
 
 size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_server,
-		      const struct mqtt_publisher_config *mqtt_cfg, uint8_t *buf, size_t buf_size)
+		      const char *api_token, const struct mqtt_publisher_config *mqtt_cfg,
+		      uint8_t *buf, size_t buf_size)
 {
 	int pos = 0;
 	int rem = (int)buf_size - 1;
 
 	JAPPEND("{\"port\":%d,\"trigger_interval_ms\":%u,\"sntp_server\":\"", port, trigger_ms);
 	JAPPEND_STR(sntp_server);
-	JAPPEND("\",\"locations\":[");
+	JAPPEND("\"");
+	if (api_token && api_token[0] != '\0') {
+		JAPPEND(",\"api_token\":\"");
+		JAPPEND_STR(api_token);
+		JAPPEND("\"");
+	}
+	JAPPEND(",\"locations\":[");
 
 	struct json_write_ctx lctx = {.buf = buf, .pos = pos, .rem = rem, .first = true};
 
