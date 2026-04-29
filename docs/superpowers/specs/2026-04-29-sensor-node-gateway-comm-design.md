@@ -101,10 +101,13 @@ decodes protobuf frames, and calls `remote_sensor_publish_data()`.
 - **FIFO path:** `CONFIG_PIPE_TRANSPORT_FIFO_PATH` (default `"/tmp/ws-node-0"`, must
   match publisher). Created by the gateway at `SYS_INIT` with `mkfifo()`; `EEXIST`
   is ignored.
-- **Reader thread:** `K_THREAD_DEFINE` thread opens FIFO `O_RDONLY | O_NONBLOCK`,
-  polls with `zsock_poll()` (uses `zsock_pollfd` / `ZSOCK_POLLIN` — not POSIX variants,
-  per native_sim socket constraints). On data ready: read 2-byte LE length, read payload,
-  decode with nanopb, call `remote_sensor_publish_data()`.
+- **Reader thread:** `K_THREAD_DEFINE` thread opens FIFO with `open(O_RDONLY)` — this
+  blocks until the sensor-node opens the write end, so no polling loop is needed for
+  the initial connection. Then calls blocking `read()` in a loop: read 2-byte LE length,
+  read payload, decode with nanopb, call `remote_sensor_publish_data()`. On EOF
+  (`read()` returns 0, i.e. writer closed), close fd and retry `open()`. Note: do NOT
+  use `zsock_poll()` here — the `zsock_*` constraint in CLAUDE.md applies to network
+  sockets only; FIFOs are host-OS file descriptors on `native_sim` and use POSIX I/O.
 - **Discovery (`scan_start`):** Emits `REMOTE_DISCOVERY_FOUND` events for each node via
   `remote_sensor_announce_disc()`. Node count and UIDs are Kconfig-driven
   (`CONFIG_PIPE_TRANSPORT_NODE_COUNT`, `CONFIG_PIPE_TRANSPORT_UID_PREFIX`). UIDs derived
@@ -130,11 +133,12 @@ decodes protobuf frames, and calls `remote_sensor_publish_data()`.
 
 ```python
 @pytest.fixture()
-def sensor_node_harness(tmp_path):
+def sensor_node_harness():
     fifo = "/tmp/ws-node-0"   # fixed default; both Kconfig defaults agree
-    harness = SensorNodeHarness(os.environ.get("SENSOR_NODE_EXE", ""), fifo_path=fifo)
-    if not harness.exe:
+    exe = os.environ.get("SENSOR_NODE_EXE", "")
+    if not exe:
         pytest.skip("SENSOR_NODE_EXE not set")
+    harness = SensorNodeHarness(exe, fifo_path=fifo)
     harness.start()
     harness.wait_for_ready()
     yield harness
