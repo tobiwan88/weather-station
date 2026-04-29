@@ -61,6 +61,7 @@ enum remote_transport_proto {
 	REMOTE_TRANSPORT_PROTO_BLE = 1,     /**< Bluetooth Low Energy           */
 	REMOTE_TRANSPORT_PROTO_LORA = 2,    /**< LoRa / LoRaWAN                 */
 	REMOTE_TRANSPORT_PROTO_THREAD = 3,  /**< Thread (IEEE 802.15.4)         */
+	REMOTE_TRANSPORT_PROTO_PIPE = 4,    /**< POSIX FIFO (native_sim testing) */
 	REMOTE_TRANSPORT_PROTO_FAKE = 15,   /**< Simulated stub (testing only)  */
 };
 
