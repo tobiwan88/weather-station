@@ -26,6 +26,7 @@ Use ``--log-cli-level=DEBUG`` to see all harness traffic; INFO is the default.
 """
 
 import logging
+import os
 import subprocess
 from pathlib import Path
 
@@ -36,6 +37,7 @@ _log = logging.getLogger("conftest")
 from harnesses.device_logger import DeviceLogger
 from harnesses.http_harness import HttpHarness
 from harnesses.mqtt_harness import MqttHarness
+from harnesses.sensor_node_harness import SensorNodeHarness
 from harnesses.shell_harness import ShellHarness
 
 # ---------------------------------------------------------------------------
@@ -52,6 +54,7 @@ def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line("markers", "http: tests using HTTP dashboard API")
     config.addinivalue_line("markers", "mqtt: tests using MQTT broker (requires mosquitto)")
     config.addinivalue_line("markers", "e2e: full end-to-end data-flow tests")
+    config.addinivalue_line("markers", "system: two-process system tests requiring SENSOR_NODE_EXE")
 
     # Set root level so all loggers (urllib3, twister_harness, …) are captured.
     # Do NOT call logging.basicConfig() here — that would install a second root
@@ -243,6 +246,18 @@ def api_token_harness(http_harness, shell_harness):
     except AssertionError as exc:
         _log.warning("api_token_harness: token retrieval failed (%s)", exc)
     return http_harness
+
+
+@pytest.fixture()
+def sensor_node_harness():
+    exe = os.environ.get("SENSOR_NODE_EXE", "")
+    if not exe:
+        pytest.skip("SENSOR_NODE_EXE not set — skipping system test")
+    harness = SensorNodeHarness(exe, fifo_path="/tmp/ws-node-0")
+    harness.start()
+    harness.wait_for_ready()
+    yield harness
+    harness.stop()
 
 
 @pytest.fixture()
