@@ -62,13 +62,14 @@ message SensorReading {
 One message per physical measurement (rule: one event = one physical measurement).
 Fields map 1:1 to `env_sensor_data` — no conversion logic in the gateway transport.
 
-**Framing:** 2-byte little-endian length prefix followed by nanopb-encoded bytes.
-Max encoded size is bounded at compile time by `SensorReading_size` from nanopb.
+**Framing:** 2-byte little-endian length prefix followed by hand-rolled protobuf varint
+encoding of the `SensorReading` fields. The encoding mirrors the standard protobuf
+wire format (field tag + varint value pairs) without using nanopb or any generated
+code on the C side. Max payload is bounded at compile time by `PAYLOAD_MAX` (64 bytes).
 
-**nanopb integration:** nanopb is added as a west module entry in `west.yml`
-(already ships as a Zephyr module at `modules/lib/nanopb`). Both `lib/pipe_publisher`
-and `lib/pipe_transport` use `nanopb_generate_cpp(proto/sensor_message.proto)` in
-CMake and link `nanopb`. No changes to the Zephyr tree.
+**Encoding:** `lib/pipe_publisher` contains a `varint_encode()` / `sensor_reading_encode()`
+and `lib/pipe_transport` contains a matching `varint_decode()` / `sensor_reading_decode()`.
+Both are self-contained — no external protobuf library is required in the firmware build.
 
 **Python side:** The test harness uses the standard `protobuf` package with the
 generated `sensor_message_pb2` module (generated from the same `.proto` and committed
@@ -80,12 +81,14 @@ to the repo) if it needs to inject or decode messages directly.
 encode as `SensorReading` protobuf and write 2-byte LE length prefix + payload to FIFO.
 
 - **FIFO path:** `CONFIG_PIPE_PUBLISHER_FIFO_PATH` (default `"/tmp/ws-node-0"`).
-- **Open mode:** `O_WRONLY | O_NONBLOCK` at `SYS_INIT APPLICATION 94`. If the gateway
-  read end is not yet open, `open()` fails — publisher retries on first publish attempt.
+- **Open mode:** `O_WRONLY | O_NONBLOCK`, opened lazily from the subscriber thread
+  (`ensure_open()`) on the first publish attempt. `SYS_INIT APPLICATION 94` only
+  registers the zbus observer; the FIFO is not opened at boot. If the gateway read end
+  is not yet open, `open()` returns `ENXIO` — the publisher retries on the next event.
   Avoids boot-time deadlock where both sides block waiting for the other.
 - **Write path:** Runs in a `ZBUS_SUBSCRIBER_DEFINE` thread (not a listener) so it can
   block briefly on `write()` without stalling the zbus fast path. Static
-  `uint8_t tx_buf[SensorReading_size + 2]` on the thread stack — no heap.
+  `uint8_t tx_buf[PAYLOAD_MAX + 2]` — no heap.
 - **Dropped writes:** `write()` with `O_NONBLOCK`; if the pipe is full or the read end
   is gone, the event is dropped with `LOG_WRN`. No retry — acceptable for a test channel.
 - **Enabled by:** `CONFIG_PIPE_PUBLISHER=y`. Off by default; added to
@@ -103,17 +106,16 @@ decodes protobuf frames, and calls `remote_sensor_publish_data()`.
   is ignored.
 - **Reader thread:** `K_THREAD_DEFINE` thread opens FIFO with `open(O_RDONLY)` — this
   blocks until the sensor-node opens the write end, so no polling loop is needed for
-  the initial connection. Then calls blocking `read()` in a loop: read 2-byte LE length,
-  read payload, decode with nanopb, call `remote_sensor_publish_data()`. On EOF
+  the initial connection. Then calls blocking `read()` in a loop: read 2-byte LE length
+  (looping until both bytes arrive), read payload (same loop pattern), decode with
+  `sensor_reading_decode()`, call `remote_sensor_publish_data()`. On EOF
   (`read()` returns 0, i.e. writer closed), close fd and retry `open()`. Note: do NOT
   use `zsock_poll()` here — the `zsock_*` constraint in CLAUDE.md applies to network
   sockets only; FIFOs are host-OS file descriptors on `native_sim` and use POSIX I/O.
-- **Discovery (`scan_start`):** Emits `REMOTE_DISCOVERY_FOUND` events for each node via
-  `remote_sensor_announce_disc()`. Node count and UIDs are Kconfig-driven
-  (`CONFIG_PIPE_TRANSPORT_NODE_COUNT`, `CONFIG_PIPE_TRANSPORT_UID_PREFIX`). UIDs derived
-  with `remote_sensor_uid_from_node_id()`.
+- **Discovery:** Lazy — the first frame from a new sensor UID triggers a
+  `REMOTE_DISCOVERY_FOUND` event via `remote_sensor_announce_disc()`. No `scan_start`
+  involvement; capability flags: none (`caps = 0`).
 - **No `send_trigger`:** Pipe is unidirectional (node → gateway).
-  Capability flags: `REMOTE_TRANSPORT_CAP_SCAN` only.
 - **Protocol enum:** `REMOTE_TRANSPORT_PROTO_PIPE = 4` — added after `THREAD = 3`,
   before `FAKE = 15` in `remote_sensor.h`. Values are stored in settings and must never
   be renumbered.

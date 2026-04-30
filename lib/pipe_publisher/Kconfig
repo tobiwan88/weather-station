@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 menuconfig PIPE_PUBLISHER
 	bool "FIFO pipe publisher (sensor-node side, native_sim only)"
+	depends on BOARD_NATIVE_SIM
 	depends on ZBUS
 	depends on SENSOR_EVENT
 	help

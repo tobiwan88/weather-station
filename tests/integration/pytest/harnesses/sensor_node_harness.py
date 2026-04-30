@@ -14,9 +14,8 @@ _log = logging.getLogger("sensor_node")
 class SensorNodeHarness:
     """Controls a sensor-node.exe subprocess via stdin/stdout shell interaction."""
 
-    def __init__(self, exe: str, fifo_path: str) -> None:
+    def __init__(self, exe: str) -> None:
         self.exe = exe
-        self.fifo_path = fifo_path
         self._proc: subprocess.Popen | None = None
         self._lines: queue.Queue[str] = queue.Queue()
         self._reader: threading.Thread | None = None
@@ -61,7 +60,7 @@ class SensorNodeHarness:
             try:
                 line = self._lines.get(timeout=0.2)
                 lines.append(line)
-                if "uart:~$" in line:
+                if "uart:~$" in line or "> " in line:
                     break
             except queue.Empty:
                 continue

@@ -253,7 +253,7 @@ def sensor_node_harness():
     exe = os.environ.get("SENSOR_NODE_EXE", "")
     if not exe:
         pytest.skip("SENSOR_NODE_EXE not set — skipping system test")
-    harness = SensorNodeHarness(exe, fifo_path="/tmp/ws-node-0")
+    harness = SensorNodeHarness(exe)
     harness.start()
     harness.wait_for_ready()
     yield harness

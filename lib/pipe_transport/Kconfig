@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 menuconfig PIPE_TRANSPORT
 	bool "FIFO pipe transport (gateway side, native_sim only)"
+	depends on BOARD_NATIVE_SIM
 	select REMOTE_SENSOR
 	help
 	  Implements the remote_transport vtable reading from a POSIX FIFO.

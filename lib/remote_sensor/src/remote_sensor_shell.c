@@ -37,6 +37,9 @@ static enum remote_transport_proto proto_from_str(const char *s)
 	if (strcmp(s, "thread") == 0) {
 		return REMOTE_TRANSPORT_PROTO_THREAD;
 	}
+	if (strcmp(s, "pipe") == 0) {
+		return REMOTE_TRANSPORT_PROTO_PIPE;
+	}
 	if (strcmp(s, "fake") == 0) {
 		return REMOTE_TRANSPORT_PROTO_FAKE;
 	}
@@ -52,6 +55,8 @@ static const char *proto_to_str(enum remote_transport_proto proto)
 		return "lora";
 	case REMOTE_TRANSPORT_PROTO_THREAD:
 		return "thread";
+	case REMOTE_TRANSPORT_PROTO_PIPE:
+		return "pipe";
 	case REMOTE_TRANSPORT_PROTO_FAKE:
 		return "fake";
 	default:
@@ -112,7 +117,7 @@ static int cmd_scan_start(const struct shell *sh, size_t argc, char **argv)
 		if (proto == REMOTE_TRANSPORT_PROTO_UNKNOWN && argv[1][0] != '\0') {
 			shell_error(sh,
 				    "Unknown protocol '%s'. "
-				    "Valid: ble, lora, thread, fake",
+				    "Valid: ble, lora, thread, pipe, fake",
 				    argv[1]);
 			return -EINVAL;
 		}
@@ -146,7 +151,7 @@ static int cmd_scan_stop(const struct shell *sh, size_t argc, char **argv)
 		if (proto == REMOTE_TRANSPORT_PROTO_UNKNOWN && argv[1][0] != '\0') {
 			shell_error(sh,
 				    "Unknown protocol '%s'. "
-				    "Valid: ble, lora, thread, fake",
+				    "Valid: ble, lora, thread, pipe, fake",
 				    argv[1]);
 			return -EINVAL;
 		}
@@ -200,14 +205,13 @@ static int cmd_transports(const struct shell *sh, size_t argc, char **argv)
  * Command tree
  * -------------------------------------------------------------------------- */
 
-SHELL_STATIC_SUBCMD_SET_CREATE(scan_cmds,
-			       SHELL_CMD_ARG(start, NULL,
-					     "Start scanning [ble|lora|thread|fake] (empty = all)",
-					     cmd_scan_start, 1, 1),
-			       SHELL_CMD_ARG(stop, NULL,
-					     "Stop scanning [ble|lora|thread|fake] (empty = all)",
-					     cmd_scan_stop, 1, 1),
-			       SHELL_SUBCMD_SET_END);
+SHELL_STATIC_SUBCMD_SET_CREATE(
+	scan_cmds,
+	SHELL_CMD_ARG(start, NULL, "Start scanning [ble|lora|thread|pipe|fake] (empty = all)",
+		      cmd_scan_start, 1, 1),
+	SHELL_CMD_ARG(stop, NULL, "Stop scanning [ble|lora|thread|pipe|fake] (empty = all)",
+		      cmd_scan_stop, 1, 1),
+	SHELL_SUBCMD_SET_END);
 
 SHELL_STATIC_SUBCMD_SET_CREATE(remote_sensor_cmds,
 			       SHELL_CMD(list, NULL, "List registered remote sensors", cmd_list),
