@@ -12,6 +12,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -119,20 +120,8 @@ static void uid_mark_seen(uint32_t uid)
 }
 
 /* --------------------------------------------------------------------------
- * Transport vtable (no-op stubs — pipe is receive-only)
+ * Transport vtable (pipe is receive-only; no scan, no trigger)
  * -------------------------------------------------------------------------- */
-
-static int pipe_scan_start(const struct remote_transport *t)
-{
-	ARG_UNUSED(t);
-	return 0;
-}
-
-static int pipe_scan_stop(const struct remote_transport *t)
-{
-	ARG_UNUSED(t);
-	return 0;
-}
 
 static int pipe_peer_add(const struct remote_transport *t, const uint8_t *peer_addr,
 			 size_t addr_len, uint32_t uid)
@@ -154,9 +143,9 @@ static int pipe_peer_remove(const struct remote_transport *t, uint32_t uid)
 REMOTE_TRANSPORT_DEFINE(pipe_remote_transport, {
 						       .name = "pipe",
 						       .proto = REMOTE_TRANSPORT_PROTO_PIPE,
-						       .caps = REMOTE_TRANSPORT_CAP_SCAN,
-						       .scan_start = pipe_scan_start,
-						       .scan_stop = pipe_scan_stop,
+						       .caps = 0,
+						       .scan_start = NULL,
+						       .scan_stop = NULL,
 						       .peer_add = pipe_peer_add,
 						       .peer_remove = pipe_peer_remove,
 						       .send_trigger = NULL,
@@ -189,20 +178,24 @@ static void pipe_reader_thread(void *a, void *b, void *c)
 		while (true) {
 			/* Read 2-byte little-endian length prefix. */
 			uint8_t len_buf[2];
-			ssize_t n = read(fd, len_buf, sizeof(len_buf));
+			size_t len_received = 0;
+			ssize_t n = 0;
+
+			while (len_received < sizeof(len_buf)) {
+				n = read(fd, len_buf + len_received,
+					 sizeof(len_buf) - len_received);
+				if (n <= 0) {
+					break;
+				}
+				len_received += (size_t)n;
+			}
 
 			if (n == 0) {
-				/* EOF — writer closed its end. */
 				LOG_INF("pipe_transport: writer disconnected, reopening");
 				break;
 			}
 			if (n < 0) {
 				LOG_WRN("fifo read error (errno=%d)", errno);
-				break;
-			}
-			if (n < 2) {
-				/* Partial length prefix — discard and reopen. */
-				LOG_WRN("partial length prefix (%zd bytes), discarding", n);
 				break;
 			}
 
