@@ -1,0 +1,99 @@
+name: Benchmark
+
+on:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  footprint:
+    name: ROM/RAM Footprint
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/tobiwan88/zephyr_docker:arm
+      options: --user root
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Mark workspace safe for git
+        run: git config --global --add safe.directory '*'
+
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+
+      - name: Cache west modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/../zephyr
+            ${{ github.workspace }}/../modules
+          key: west-${{ hashFiles('west.yml') }}
+          restore-keys: west-
+
+      - name: West init + update
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          west init -l . 2>/dev/null || true
+          west update --narrow
+
+      - name: Apply out-of-tree patches
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          west patch apply
+
+      - name: Install build dependencies
+        run: apt-get update -qq && apt-get install -y --no-install-recommends pkgconf libsdl2-dev
+
+      - name: Build ROM report
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          WEST_ROOT=$(west topdir)
+          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
+          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
+            west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
+              --build-dir "${GITHUB_WORKSPACE}/build/bench-rom" \
+              "${WEST_ROOT}/weather-station/apps/gateway" \
+              -- rom_report 2>&1 | tee "${GITHUB_WORKSPACE}/rom_report.txt"
+
+      - name: Build RAM report
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          WEST_ROOT=$(west topdir)
+          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
+          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
+            west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
+              --build-dir "${GITHUB_WORKSPACE}/build/bench-ram" \
+              "${WEST_ROOT}/weather-station/apps/gateway" \
+              -- ram_report 2>&1 | tee "${GITHUB_WORKSPACE}/ram_report.txt"
+
+      - name: Parse reports
+        run: |
+          python3 scripts/parse_footprint.py \
+            --rom "${GITHUB_WORKSPACE}/rom_report.txt" \
+            --ram "${GITHUB_WORKSPACE}/ram_report.txt" \
+            --label gateway-frdm-mcxn947 \
+            -o "${GITHUB_WORKSPACE}/benchmark-data.json"
+
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: Weather Station Footprint
+          tool: customSmallerIsBetter
+          output-file-path: benchmark-data.json
+          auto-push: true
+          gh-pages-branch: gh-pages
+          benchmark-data-dir-path: dev/bench
+          alert-threshold: "110%"
+          comment-on-alert: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fail-on-alert: true
+          summary-always: true
