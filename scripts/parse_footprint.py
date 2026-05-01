@@ -4,6 +4,7 @@
 import argparse
 import json
 import re
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -151,8 +152,18 @@ def main() -> None:
     parser.add_argument("-o", "--output", required=True, help="Output JSON file path")
     args = parser.parse_args()
 
-    rom_text = Path(args.rom).read_text()
-    ram_text = Path(args.ram).read_text()
+    rom_path = Path(args.rom)
+    ram_path = Path(args.ram)
+
+    if not rom_path.exists():
+        print(f"Error: ROM report not found at {rom_path}. Did the rom_report build succeed?", file=sys.stderr)
+        sys.exit(1)
+    if not ram_path.exists():
+        print(f"Error: RAM report not found at {ram_path}. Did the ram_report build succeed?", file=sys.stderr)
+        sys.exit(1)
+
+    rom_text = rom_path.read_text()
+    ram_text = ram_path.read_text()
 
     rom_roots = parse_report(rom_text)
     ram_roots = parse_report(ram_text)

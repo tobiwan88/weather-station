@@ -3,6 +3,8 @@ name: Benchmark
 on:
   push:
     branches: [main, master]
+  pull_request:
+    branches: [main, master]
 
 concurrency:
   group: benchmark-${{ github.ref }}
@@ -70,6 +72,11 @@ jobs:
               --build-dir "${GITHUB_WORKSPACE}/build/bench-rom" \
               "${WEST_ROOT}/weather-station/apps/gateway" \
               -- rom_report 2>&1 | tee "${GITHUB_WORKSPACE}/rom_report.txt"
+          # Verify the build produced a report
+          if ! grep -q "^Root" "${GITHUB_WORKSPACE}/rom_report.txt"; then
+            echo "Error: ROM report does not contain a Root line — build may have failed"
+            exit 1
+          fi
 
       - name: Build RAM report
         run: |
@@ -81,6 +88,11 @@ jobs:
               --build-dir "${GITHUB_WORKSPACE}/build/bench-ram" \
               "${WEST_ROOT}/weather-station/apps/gateway" \
               -- ram_report 2>&1 | tee "${GITHUB_WORKSPACE}/ram_report.txt"
+          # Verify the build produced a report
+          if ! grep -q "^Root" "${GITHUB_WORKSPACE}/ram_report.txt"; then
+            echo "Error: RAM report does not contain a Root line — build may have failed"
+            exit 1
+          fi
 
       - name: Parse reports
         run: |
