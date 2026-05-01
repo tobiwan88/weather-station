@@ -71,13 +71,11 @@ jobs:
             west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
               --build-dir "${GITHUB_WORKSPACE}/build/bench-rom" \
               "${WEST_ROOT}/weather-station/apps/gateway"
-          # Run rom_report as a separate build target
+          # rom_report outputs tree to stdout
           ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
-            west build --build-dir "${GITHUB_WORKSPACE}/build/bench-rom" -- rom_report
-          # Find the generated report
-          find "${GITHUB_WORKSPACE}/build/bench-rom" -name "*rom_report*" -o -name "*ram_report*" 2>/dev/null || true
-          ls -la "${GITHUB_WORKSPACE}/build/bench-rom/zephyr/"*.txt 2>/dev/null || true
+            west build --build-dir "${GITHUB_WORKSPACE}/build/bench-rom" -- rom_report \
+            > "${GITHUB_WORKSPACE}/rom_report.txt" 2>/dev/null
 
       - name: Build RAM report
         run: |
@@ -88,13 +86,11 @@ jobs:
             west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
               --build-dir "${GITHUB_WORKSPACE}/build/bench-ram" \
               "${WEST_ROOT}/weather-station/apps/gateway"
-          # Run ram_report as a separate build target
+          # ram_report outputs tree to stdout
           ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
-            west build --build-dir "${GITHUB_WORKSPACE}/build/bench-ram" -- ram_report
-          # Find the generated report
-          find "${GITHUB_WORKSPACE}/build/bench-ram" -name "*rom_report*" -o -name "*ram_report*" 2>/dev/null || true
-          ls -la "${GITHUB_WORKSPACE}/build/bench-ram/zephyr/"*.txt 2>/dev/null || true
+            west build --build-dir "${GITHUB_WORKSPACE}/build/bench-ram" -- ram_report \
+            > "${GITHUB_WORKSPACE}/ram_report.txt" 2>/dev/null
 
       - name: Parse reports
         run: |
