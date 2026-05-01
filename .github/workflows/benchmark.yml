@@ -4,8 +4,15 @@ on:
   push:
     branches: [main, master]
 
+concurrency:
+  group: benchmark-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
+
+env:
+  VENV: /home/zephyr/.venv/bin/activate
 
 defaults:
   run:
@@ -23,7 +30,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Mark workspace safe for git
-        run: git config --global --add safe.directory '*'
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Configure git user
         run: |
@@ -41,13 +48,13 @@ jobs:
 
       - name: West init + update
         run: |
-          source /home/zephyr/.venv/bin/activate
+          source $VENV
           west init -l . 2>/dev/null || true
           west update --narrow
 
       - name: Apply out-of-tree patches
         run: |
-          source /home/zephyr/.venv/bin/activate
+          source $VENV
           west patch apply
 
       - name: Install build dependencies
@@ -55,7 +62,7 @@ jobs:
 
       - name: Build ROM report
         run: |
-          source /home/zephyr/.venv/bin/activate
+          source $VENV
           WEST_ROOT=$(west topdir)
           ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
@@ -66,7 +73,7 @@ jobs:
 
       - name: Build RAM report
         run: |
-          source /home/zephyr/.venv/bin/activate
+          source $VENV
           WEST_ROOT=$(west topdir)
           ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
