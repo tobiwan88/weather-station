@@ -16,6 +16,7 @@ USER root
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get update && apt-get install -y --no-install-recommends \
     nodejs npm \
+    protobuf-compiler \
     && rm -rf /var/lib/apt/lists/*
 
 USER zephyr
@@ -23,7 +24,8 @@ USER zephyr
 # Coverage + lint tooling inside the existing venv
 RUN /home/zephyr/.venv/bin/pip install --no-cache-dir \
     pre-commit \
-    gcovr
+    gcovr \
+    nanopb
 
 # Mermaid CLI for diagram rendering
 RUN npm install -g @mermaid-js/mermaid-cli
