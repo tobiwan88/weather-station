@@ -70,11 +70,14 @@ jobs:
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
             west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
               --build-dir "${GITHUB_WORKSPACE}/build/bench-rom" \
-              "${WEST_ROOT}/weather-station/apps/gateway" \
-              -- rom_report
-          # rom_report target writes tree output to build dir
-          cp "${GITHUB_WORKSPACE}/build/bench-rom/zephyr/rom_report.txt" \
-             "${GITHUB_WORKSPACE}/rom_report.txt"
+              "${WEST_ROOT}/weather-station/apps/gateway"
+          # Run rom_report as a separate build target
+          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
+          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
+            west build --build-dir "${GITHUB_WORKSPACE}/build/bench-rom" -- rom_report
+          # Find the generated report
+          find "${GITHUB_WORKSPACE}/build/bench-rom" -name "*rom_report*" -o -name "*ram_report*" 2>/dev/null || true
+          ls -la "${GITHUB_WORKSPACE}/build/bench-rom/zephyr/"*.txt 2>/dev/null || true
 
       - name: Build RAM report
         run: |
@@ -84,11 +87,14 @@ jobs:
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
             west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
               --build-dir "${GITHUB_WORKSPACE}/build/bench-ram" \
-              "${WEST_ROOT}/weather-station/apps/gateway" \
-              -- ram_report
-          # ram_report target writes tree output to build dir
-          cp "${GITHUB_WORKSPACE}/build/bench-ram/zephyr/ram_report.txt" \
-             "${GITHUB_WORKSPACE}/ram_report.txt"
+              "${WEST_ROOT}/weather-station/apps/gateway"
+          # Run ram_report as a separate build target
+          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
+          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
+            west build --build-dir "${GITHUB_WORKSPACE}/build/bench-ram" -- ram_report
+          # Find the generated report
+          find "${GITHUB_WORKSPACE}/build/bench-ram" -name "*rom_report*" -o -name "*ram_report*" 2>/dev/null || true
+          ls -la "${GITHUB_WORKSPACE}/build/bench-ram/zephyr/"*.txt 2>/dev/null || true
 
       - name: Parse reports
         run: |
