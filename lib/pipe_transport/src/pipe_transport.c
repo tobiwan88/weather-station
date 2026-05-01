@@ -22,75 +22,12 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/iterable_sections.h>
 
+#include "sensor_message.pb.h"
+#include <pb_decode.h>
 #include <remote_sensor/remote_sensor.h>
 #include <sensor_event/sensor_event.h>
 
 LOG_MODULE_REGISTER(pipe_transport, CONFIG_PIPE_TRANSPORT_LOG_LEVEL);
-
-/* --------------------------------------------------------------------------
- * Manual protobuf varint decoder
- * -------------------------------------------------------------------------- */
-
-static int varint_decode(const uint8_t *buf, size_t len, uint64_t *out)
-{
-	*out = 0;
-	for (int i = 0; i < (int)len && i < 10; i++) {
-		*out |= (uint64_t)(buf[i] & 0x7F) << (7 * i);
-		if (!(buf[i] & 0x80)) {
-			return i + 1;
-		}
-	}
-	return -EINVAL;
-}
-
-static int sensor_reading_decode(const uint8_t *buf, size_t len, uint32_t *uid, uint32_t *type,
-				 int32_t *q31, int64_t *ts_ms)
-{
-	*uid = 0;
-	*type = 0;
-	*q31 = 0;
-	*ts_ms = 0;
-
-	size_t pos = 0;
-
-	while (pos < len) {
-		uint64_t tag_val;
-		int consumed = varint_decode(buf + pos, len - pos, &tag_val);
-
-		if (consumed < 0) {
-			return -EINVAL;
-		}
-		pos += consumed;
-
-		uint32_t field_num = (uint32_t)(tag_val >> 3);
-		uint64_t value;
-
-		consumed = varint_decode(buf + pos, len - pos, &value);
-		if (consumed < 0) {
-			return -EINVAL;
-		}
-		pos += consumed;
-
-		switch (field_num) {
-		case 1:
-			*uid = (uint32_t)value;
-			break;
-		case 2:
-			*type = (uint32_t)value;
-			break;
-		case 3:
-			*q31 = (int32_t)(uint32_t)value;
-			break;
-		case 4:
-			*ts_ms = (int64_t)value;
-			break;
-		default:
-			/* unknown field, skip */
-			break;
-		}
-	}
-	return 0;
-}
 
 /* --------------------------------------------------------------------------
  * Per-UID seen table for lazy discovery
@@ -155,8 +92,6 @@ REMOTE_TRANSPORT_DEFINE(pipe_remote_transport, {
  * Reader thread — blocking FIFO read loop
  * -------------------------------------------------------------------------- */
 
-#define PAYLOAD_MAX 64
-
 static void pipe_reader_thread(void *a, void *b, void *c)
 {
 	ARG_UNUSED(a);
@@ -201,13 +136,13 @@ static void pipe_reader_thread(void *a, void *b, void *c)
 
 			uint16_t payload_len = (uint16_t)len_buf[0] | ((uint16_t)len_buf[1] << 8);
 
-			if (payload_len > PAYLOAD_MAX) {
+			if (payload_len > SensorReading_size) {
 				LOG_WRN("payload_len=%u exceeds max=%d, discarding frame",
-					payload_len, PAYLOAD_MAX);
+					payload_len, SensorReading_size);
 				break;
 			}
 
-			uint8_t payload[PAYLOAD_MAX];
+			uint8_t payload[SensorReading_size];
 			size_t received = 0;
 
 			while (received < payload_len) {
@@ -224,15 +159,17 @@ static void pipe_reader_thread(void *a, void *b, void *c)
 				break;
 			}
 
-			uint32_t uid, type;
-			int32_t q31;
-			int64_t ts_ms;
+			SensorReading msg = SensorReading_init_zero;
+			pb_istream_t istream = pb_istream_from_buffer(payload, payload_len);
 
-			if (sensor_reading_decode(payload, payload_len, &uid, &type, &q31,
-						  &ts_ms) != 0) {
-				LOG_WRN("protobuf decode failed, discarding frame");
+			if (!pb_decode(&istream, SensorReading_fields, &msg)) {
+				LOG_WRN("pb_decode: %s", PB_GET_ERROR(&istream));
 				continue;
 			}
+
+			uint32_t uid = msg.sensor_uid;
+			uint32_t type = msg.sensor_type;
+			int32_t q31 = msg.q31_value;
 
 			/* Announce new UIDs before publishing data. */
 			if (!uid_is_seen(uid)) {
