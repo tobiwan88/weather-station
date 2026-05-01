@@ -71,12 +71,10 @@ jobs:
             west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
               --build-dir "${GITHUB_WORKSPACE}/build/bench-rom" \
               "${WEST_ROOT}/weather-station/apps/gateway" \
-              -- rom_report 2>&1 | tee "${GITHUB_WORKSPACE}/rom_report.txt"
-          # Verify the build produced a report
-          if ! grep -q "^Root" "${GITHUB_WORKSPACE}/rom_report.txt"; then
-            echo "Error: ROM report does not contain a Root line — build may have failed"
-            exit 1
-          fi
+              -- rom_report
+          # rom_report target writes tree output to build dir
+          cp "${GITHUB_WORKSPACE}/build/bench-rom/zephyr/rom_report.txt" \
+             "${GITHUB_WORKSPACE}/rom_report.txt"
 
       - name: Build RAM report
         run: |
@@ -87,12 +85,10 @@ jobs:
             west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
               --build-dir "${GITHUB_WORKSPACE}/build/bench-ram" \
               "${WEST_ROOT}/weather-station/apps/gateway" \
-              -- ram_report 2>&1 | tee "${GITHUB_WORKSPACE}/ram_report.txt"
-          # Verify the build produced a report
-          if ! grep -q "^Root" "${GITHUB_WORKSPACE}/ram_report.txt"; then
-            echo "Error: RAM report does not contain a Root line — build may have failed"
-            exit 1
-          fi
+              -- ram_report
+          # ram_report target writes tree output to build dir
+          cp "${GITHUB_WORKSPACE}/build/bench-ram/zephyr/ram_report.txt" \
+             "${GITHUB_WORKSPACE}/ram_report.txt"
 
       - name: Parse reports
         run: |
