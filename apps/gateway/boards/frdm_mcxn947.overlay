@@ -1,0 +1,60 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Gateway DT overlay for frdm_mcxn947.
+ *
+ * Defines six fake sensors (simulated on hardware):
+ *   - Two indoor sensors (living room): temperature + humidity
+ *   - Two outdoor sensors: temperature + humidity
+ *   - Indoor CO2 + VOC
+ *
+ * UIDs 0x0001–0x000F are reserved for gateway local sensors.
+ * UIDs 0x0011–0x001F are reserved for gateway outdoor sensors.
+ * UIDs 0x0021+ are for remote sensor nodes.
+ *
+ * No display — LVGL is disabled on this target.
+ */
+
+/ {
+	fake_temp_indoor: fake-temp-indoor {
+		compatible = "fake,temperature";
+		sensor-uid = <0x0001>;
+		initial-value-mdegc = <21000>;
+		status = "okay";
+	};
+
+	fake_hum_indoor: fake-hum-indoor {
+		compatible = "fake,humidity";
+		sensor-uid = <0x0002>;
+		initial-value-mpct = <50000>;
+		status = "okay";
+	};
+
+	fake_temp_outdoor: fake-temp-outdoor {
+		compatible = "fake,temperature";
+		sensor-uid = <0x0011>;
+		initial-value-mdegc = <4000>;
+		status = "okay";
+	};
+
+	fake_hum_outdoor: fake-hum-outdoor {
+		compatible = "fake,humidity";
+		sensor-uid = <0x0012>;
+		initial-value-mpct = <30000>;
+		status = "okay";
+	};
+
+	fake_co2_indoor: fake-co2-indoor {
+		compatible = "fake,co2";
+		sensor-uid = <0x0003>;
+		initial-value-mppm = <800000>;
+		status = "okay";
+	};
+
+	fake_voc_indoor: fake-voc-indoor {
+		compatible = "fake,voc";
+		sensor-uid = <0x0004>;
+		initial-value-miaq = <25000>;
+		status = "okay";
+	};
+};
