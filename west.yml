@@ -16,7 +16,9 @@ manifest:
         name-allowlist:
           - cmsis_6
           - hal_nordic
+          - hal_nxp
           - mbedtls
           - lvgl
           - loramac-node
           - segger
+          - nanopb

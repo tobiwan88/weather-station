@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+message SensorReading {
+  uint32 sensor_uid   = 1;
+  uint32 sensor_type  = 2;
+  int32  q31_value    = 3;
+  int64  timestamp_ms = 4;
+}

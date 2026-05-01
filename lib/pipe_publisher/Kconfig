@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: Apache-2.0
+menuconfig PIPE_PUBLISHER
+	bool "FIFO pipe publisher (sensor-node side, native_sim only)"
+	depends on BOARD_NATIVE_SIM
+	depends on ZBUS
+	depends on SENSOR_EVENT
+	select NANOPB
+	help
+	  Subscribes to sensor_event_chan and writes each env_sensor_data
+	  event as a length-prefixed protobuf SensorReading to a POSIX FIFO.
+	  For native_sim integration testing only.
+
+if PIPE_PUBLISHER
+
+config PIPE_PUBLISHER_FIFO_PATH
+	string "FIFO path"
+	default "/tmp/ws-node-0"
+
+config PIPE_PUBLISHER_THREAD_STACK_SIZE
+	int "Subscriber thread stack size (bytes)"
+	default 1024
+	range 512 4096
+
+config PIPE_PUBLISHER_THREAD_PRIORITY
+	int "Subscriber thread priority"
+	default 5
+	range 0 NUM_PREEMPT_PRIORITIES
+
+module = PIPE_PUBLISHER
+module-str = PIPE_PUBLISHER
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # PIPE_PUBLISHER
