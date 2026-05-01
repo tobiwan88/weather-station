@@ -4,6 +4,7 @@ menuconfig PIPE_PUBLISHER
 	depends on BOARD_NATIVE_SIM
 	depends on ZBUS
 	depends on SENSOR_EVENT
+	select NANOPB
 	help
 	  Subscribes to sensor_event_chan and writes each env_sensor_data
 	  event as a length-prefixed protobuf SensorReading to a POSIX FIFO.

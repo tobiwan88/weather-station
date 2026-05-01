@@ -16,6 +16,8 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
 
+#include "sensor_message.pb.h"
+#include <pb_encode.h>
 #include <sensor_event/sensor_event.h>
 
 LOG_MODULE_REGISTER(pipe_publisher, CONFIG_PIPE_PUBLISHER_LOG_LEVEL);
@@ -23,52 +25,9 @@ LOG_MODULE_REGISTER(pipe_publisher, CONFIG_PIPE_PUBLISHER_LOG_LEVEL);
 ZBUS_CHAN_DECLARE(sensor_event_chan);
 ZBUS_SUBSCRIBER_DEFINE(pipe_pub_sub, 8);
 
-/* 64-byte payload + 2-byte LE length prefix */
-#define PAYLOAD_MAX 64
-#define TX_BUF_SIZE (PAYLOAD_MAX + 2)
-
+/* 2-byte LE length prefix + max nanopb-encoded SensorReading */
 static int s_fifo_fd = -1;
-static uint8_t s_tx_buf[TX_BUF_SIZE];
-
-/* --------------------------------------------------------------------------
- * Manual protobuf varint encoder
- * -------------------------------------------------------------------------- */
-
-static int varint_encode(uint8_t *buf, uint64_t v)
-{
-	int n = 0;
-
-	while (v > 0x7FU) {
-		buf[n++] = (uint8_t)((v & 0x7FU) | 0x80U);
-		v >>= 7;
-	}
-	buf[n++] = (uint8_t)v;
-	return n;
-}
-
-static int sensor_reading_encode(uint8_t *buf, size_t buf_size, uint32_t uid, uint32_t type,
-				 int32_t q31, int64_t ts_ms)
-{
-	uint8_t tmp[64];
-	int n = 0;
-
-#define TAG(f) ((uint64_t)((unsigned)(f) << 3))
-	n += varint_encode(tmp + n, TAG(1));
-	n += varint_encode(tmp + n, uid);
-	n += varint_encode(tmp + n, TAG(2));
-	n += varint_encode(tmp + n, type);
-	n += varint_encode(tmp + n, TAG(3));
-	n += varint_encode(tmp + n, (uint64_t)(int64_t)q31);
-	n += varint_encode(tmp + n, TAG(4));
-	n += varint_encode(tmp + n, (uint64_t)ts_ms);
-#undef TAG
-
-	if ((size_t)n > buf_size) {
-		return -ENOMEM;
-	}
-	memcpy(buf, tmp, n);
-	return n;
-}
+static uint8_t s_tx_buf[SensorReading_size + 2];
 
 /* --------------------------------------------------------------------------
  * FIFO open with retry
@@ -128,29 +87,36 @@ static void pipe_pub_thread(void *a, void *b, void *c)
 			}
 		}
 
-		uint8_t payload[PAYLOAD_MAX];
-		int plen =
-			sensor_reading_encode(payload, sizeof(payload), evt.sensor_uid,
-					      (uint32_t)evt.type, evt.q31_value, evt.timestamp_ms);
+		SensorReading msg = {
+			.sensor_uid = evt.sensor_uid,
+			.sensor_type = (uint32_t)evt.type,
+			.q31_value = evt.q31_value,
+			.timestamp_ms = evt.timestamp_ms,
+		};
 
-		if (plen < 0) {
-			LOG_ERR("encode failed: %d", plen);
+		uint8_t payload[SensorReading_size];
+		pb_ostream_t ostream = pb_ostream_from_buffer(payload, sizeof(payload));
+
+		if (!pb_encode(&ostream, SensorReading_fields, &msg)) {
+			LOG_ERR("pb_encode: %s", PB_GET_ERROR(&ostream));
 			continue;
 		}
+
+		size_t plen = ostream.bytes_written;
 
 		/* 2-byte little-endian length prefix. */
 		s_tx_buf[0] = (uint8_t)(plen & 0xFF);
 		s_tx_buf[1] = (uint8_t)((plen >> 8) & 0xFF);
 		memcpy(s_tx_buf + 2, payload, plen);
 
-		ssize_t written = write(s_fifo_fd, s_tx_buf, (size_t)(plen + 2));
+		ssize_t written = write(s_fifo_fd, s_tx_buf, plen + 2);
 
 		if (written < 0) {
 			LOG_WRN("fifo write failed (errno=%d), closing", errno);
 			close(s_fifo_fd);
 			s_fifo_fd = -1;
 		} else {
-			LOG_DBG("published uid=0x%08x type=%u q31=%d (%d bytes)", evt.sensor_uid,
+			LOG_DBG("published uid=0x%08x type=%u q31=%d (%zu bytes)", evt.sensor_uid,
 				(unsigned)evt.type, evt.q31_value, plen);
 		}
 	}
