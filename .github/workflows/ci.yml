@@ -55,8 +55,13 @@ jobs:
         include:
           - app: gateway
             board: native_sim/native/64
+            board-label: native64
           - app: sensor-node
             board: native_sim/native/64
+            board-label: native64
+          - app: gateway
+            board: frdm_mcxn947/mcxn947/cpu0
+            board-label: frdm-mcxn947
 
     steps:
       - uses: actions/checkout@v4
@@ -108,7 +113,7 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.app }}-${{ matrix.board == 'native_sim/native/64' && 'native64' || matrix.board }}
+          name: ${{ matrix.app }}-${{ matrix.board-label }}
           path: build/${{ matrix.app }}/zephyr/zephyr.exe
           retention-days: 7
 
