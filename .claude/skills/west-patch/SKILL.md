@@ -77,7 +77,7 @@ patches:
 
 ```bash
 cd /home/zephyr/workspace/zephyr
-git reset --hard v4.3.0
+git reset --hard v4.4.0
 ```
 
 ### 6. Verify the patch applies cleanly

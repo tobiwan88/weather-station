@@ -55,3 +55,4 @@ zephyr/*
 
 # Worktrees
 .worktrees/
+site/

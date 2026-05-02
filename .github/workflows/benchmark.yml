@@ -72,7 +72,6 @@ jobs:
             west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
               --build-dir "${GITHUB_WORKSPACE}/build/bench" \
               "${WEST_ROOT}/weather-station/apps/gateway"
-          # rom_report outputs tree to both stdout and stderr depending on env
           ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
             west build --build-dir "${GITHUB_WORKSPACE}/build/bench" --target rom_report \
