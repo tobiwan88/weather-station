@@ -140,7 +140,9 @@ jobs:
 
       - if: steps.changes.outputs.docs == 'true'
         name: Build MkDocs site
-        run: mkdocs build
+        run: |
+          mkdocs build
+          cp -r site /tmp/mkdocs-site
 
       - if: steps.changes.outputs.docs == 'true'
         name: Checkout gh-pages
@@ -154,7 +156,7 @@ jobs:
       - if: steps.changes.outputs.docs == 'true'
         name: Deploy to GitHub Pages
         run: |
-          cp -r site/* .
+          cp -r /tmp/mkdocs-site/* .
           cp index.html .
           git add -A
           if git diff --staged --quiet; then
