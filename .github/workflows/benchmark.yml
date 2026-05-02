@@ -126,13 +126,8 @@ jobs:
               - 'index.html'
 
       - if: steps.changes.outputs.docs == 'true'
-        name: Checkout gh-pages
+        name: Checkout source
         uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }}
-          ref: gh-pages
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
 
       - if: steps.changes.outputs.docs == 'true'
         name: Configure git user
@@ -147,6 +142,15 @@ jobs:
       - if: steps.changes.outputs.docs == 'true'
         name: Build MkDocs site
         run: mkdocs build
+
+      - if: steps.changes.outputs.docs == 'true'
+        name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - if: steps.changes.outputs.docs == 'true'
         name: Deploy to GitHub Pages
