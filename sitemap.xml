@@ -97,6 +97,10 @@
          <lastmod>2026-05-02</lastmod>
     </url>
     <url>
+         <loc>https://tobiwan88.github.io/weather-station/hardware/</loc>
+         <lastmod>2026-05-02</lastmod>
+    </url>
+    <url>
          <loc>https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-01-nanopb-pipe-transport/</loc>
          <lastmod>2026-05-02</lastmod>
     </url>
@@ -118,6 +122,10 @@
     </url>
     <url>
          <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-02-documentation-github-pages-design/</loc>
+         <lastmod>2026-05-02</lastmod>
+    </url>
+    <url>
+         <loc>https://tobiwan88.github.io/weather-station/user/</loc>
          <lastmod>2026-05-02</lastmod>
     </url>
 </urlset>

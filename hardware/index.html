@@ -8,29 +8,27 @@
       
       
       
-        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/">
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/hardware/">
       
       
-      
-        <link rel="next" href="architecture/">
       
       
         
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Weather Station Documentation</title>
+        <title>Hardware - Weather Station Documentation</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,7 +47,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#weather-station" class="md-skip">
+        <a href="#hardware" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +86,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+    <a href=".." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Hardware
             
           </span>
         </div>
@@ -219,11 +217,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="." class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -244,7 +240,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="architecture/" class="md-tabs__link">
+        <a href="../architecture/" class="md-tabs__link">
           
   
   
@@ -264,7 +260,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="adr/" class="md-tabs__link">
+        <a href="../adr/" class="md-tabs__link">
           
   
   
@@ -282,7 +278,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="backlog/" class="md-tabs__link">
+      <a href="../backlog/" class="md-tabs__link">
         
   
   
@@ -317,7 +313,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+    <a href=".." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -344,37 +340,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -390,48 +359,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#project-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Project Structure
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-links" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Links
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -495,7 +422,7 @@
   
   
     <li class="md-nav__item">
-      <a href="architecture/" class="md-nav__link">
+      <a href="../architecture/" class="md-nav__link">
         
   
   
@@ -523,7 +450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="architecture/system-overview/" class="md-nav__link">
+      <a href="../architecture/system-overview/" class="md-nav__link">
         
   
   
@@ -551,7 +478,7 @@
   
   
     <li class="md-nav__item">
-      <a href="architecture/event-bus/" class="md-nav__link">
+      <a href="../architecture/event-bus/" class="md-nav__link">
         
   
   
@@ -579,7 +506,7 @@
   
   
     <li class="md-nav__item">
-      <a href="architecture/composition-model/" class="md-nav__link">
+      <a href="../architecture/composition-model/" class="md-nav__link">
         
   
   
@@ -607,7 +534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="architecture/integration-tests/" class="md-nav__link">
+      <a href="../architecture/integration-tests/" class="md-nav__link">
         
   
   
@@ -635,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="architecture/concurrency/" class="md-nav__link">
+      <a href="../architecture/concurrency/" class="md-nav__link">
         
   
   
@@ -722,7 +649,7 @@
   
   
     <li class="md-nav__item">
-      <a href="adr/" class="md-nav__link">
+      <a href="../adr/" class="md-nav__link">
         
   
   
@@ -757,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="backlog/" class="md-nav__link">
+      <a href="../backlog/" class="md-nav__link">
         
   
   
@@ -804,24 +731,130 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#project-structure" class="md-nav__link">
+  <a href="#supported-targets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Project Structure
+        Supported Targets
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported Targets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#native_simnative64-primary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        native_sim/native/64 (Primary)
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-links" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#frdm-mcxn947" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Links
+        FRDM-MCXN947
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Targets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware-setup-placeholder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware Setup (Placeholder)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hardware Setup (Placeholder)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flashing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flashing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serial-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Serial Console
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#device-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Device Tree
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Device Tree">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sensor-uid-allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor UID Allocation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -845,18 +878,71 @@
   
 
 
-<h1 id="weather-station">Weather Station</h1>
-<p>Welcome to the Weather Station project documentation.</p>
-<h2 id="project-structure">Project Structure</h2>
-<p>This project uses Zephyr RTOS on a network of sensors and a central gateway.</p>
-<h2 id="quick-links">Quick Links</h2>
+<h1 id="hardware">Hardware</h1>
+<p>This document covers hardware setup and target board information for the Weather Station project.</p>
+<h2 id="supported-targets">Supported Targets</h2>
+<h3 id="native_simnative64-primary">native_sim/native/64 (Primary)</h3>
+<p>The primary development and testing target. Runs on the host machine as native POSIX threads.</p>
 <ul>
-<li><a href="user/">User Guide</a></li>
-<li><a href="hardware/">Hardware</a></li>
-<li><a href="architecture/">Architecture</a></li>
-<li><a href="adr/">Architecture Decision Records</a></li>
-<li><a href="backlog/">Backlog</a></li>
+<li><strong>No hardware required</strong> — everything runs on the host</li>
+<li><strong>Display:</strong> SDL window (320×240) via Xvfb in devcontainer</li>
+<li><strong>Network:</strong> Host network stack (HTTP, MQTT, SNTP all use real sockets)</li>
+<li><strong>Sensors:</strong> Fake sensor drivers instantiated via device tree</li>
 </ul>
+<p>Build command:</p>
+<pre><code class="language-bash">ZEPHYR_BASE=/home/zephyr/workspace/zephyr west build -b native_sim/native/64 apps/gateway
+</code></pre>
+<p>Binary output: <code>build/native_sim_native_64/gateway/zephyr/zephyr.exe</code></p>
+<h3 id="frdm-mcxn947">FRDM-MCXN947</h3>
+<p>NXP FRDM-MCXN947 development board support. See the board support spec for details.</p>
+<h3 id="future-targets">Future Targets</h3>
+<p>Additional hardware targets can be added by creating a board overlay and defconfig under <code>apps/gateway/boards/</code>.</p>
+<h2 id="hardware-setup-placeholder">Hardware Setup (Placeholder)</h2>
+<p><em>This section will evolve as hardware-specific setup instructions are added.</em></p>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li>Target board (see supported targets above)</li>
+<li>USB cable for serial console and flashing</li>
+<li>Network connectivity (Ethernet or Wi-Fi, depending on board)</li>
+<li>Optional: MQTT broker on the local network for sensor data publishing</li>
+</ul>
+<h3 id="flashing">Flashing</h3>
+<p><em>Flashing instructions will be added per target board.</em></p>
+<h3 id="serial-console">Serial Console</h3>
+<p><em>Serial console configuration and access instructions will be added per target board.</em></p>
+<h2 id="device-tree">Device Tree</h2>
+<p>Sensor instances are defined in board overlay files (<code>.overlay</code>). Each sensor node specifies:
+- Compatible driver (e.g., <code>fake-temp-sensor</code>, <code>fake-humidity-sensor</code>)
+- Status (<code>okay</code> to enable)
+- Sensor UID (unique identifier, see UID allocation ranges below)</p>
+<h3 id="sensor-uid-allocation">Sensor UID Allocation</h3>
+<table>
+<thead>
+<tr>
+<th>Range</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x0001–0x000F</code></td>
+<td>Gateway-local / indoor sensors</td>
+</tr>
+<tr>
+<td><code>0x0011–0x001F</code></td>
+<td>Gateway outdoor sensors</td>
+</tr>
+<tr>
+<td><code>0x0021–0x00FF</code></td>
+<td>Remote sensor nodes</td>
+</tr>
+<tr>
+<td><code>0x0101+</code></td>
+<td>Test-only instances</td>
+</tr>
+</tbody>
+</table>
+<p>UIDs must be unique across all overlay files — they are the identity key for the sensor registry, LVGL display, and MQTT topics.</p>
 
 
 
@@ -906,10 +992,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
