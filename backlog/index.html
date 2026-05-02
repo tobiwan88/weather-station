@@ -587,6 +587,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -759,17 +787,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#adr-008-review-review-mainc-files-exceeding-50-line-rule" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        [ADR-008-REVIEW] Review main.c files exceeding 50-line rule
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#adr-010-devcontainer-align-devcontainer-and-ci-on-single-approved-image" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -785,17 +802,6 @@
     <span class="md-ellipsis">
       
         [SENSOR-REGISTRY-SCALING] Extend sensor_registry with per-UID scaling metadata
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sensor-registry-remote-uid-persist-remote-sensor-uids-via-zephyr-settings-backend" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        [SENSOR-REGISTRY-REMOTE-UID] Persist remote sensor UIDs via Zephyr settings backend
       
     </span>
   </a>
@@ -881,17 +887,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#adr-008-review-review-mainc-files-exceeding-50-line-rule" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        [ADR-008-REVIEW] Review main.c files exceeding 50-line rule
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#adr-010-devcontainer-align-devcontainer-and-ci-on-single-approved-image" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -907,17 +902,6 @@
     <span class="md-ellipsis">
       
         [SENSOR-REGISTRY-SCALING] Extend sensor_registry with per-UID scaling metadata
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sensor-registry-remote-uid-persist-remote-sensor-uids-via-zephyr-settings-backend" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        [SENSOR-REGISTRY-REMOTE-UID] Persist remote sensor UIDs via Zephyr settings backend
       
     </span>
   </a>
@@ -996,19 +980,6 @@ does not apply.</p>
 <p><strong>Acceptance:</strong> <code>/build-and-test</code> passes; LVGL window opens on native_sim; <code>main.c</code>
 contains only <code>LOG_MODULE_REGISTER</code> + <code>return 0</code>.</p>
 <hr />
-<h2 id="adr-008-review-review-mainc-files-exceeding-50-line-rule">[ADR-008-REVIEW] Review main.c files exceeding 50-line rule</h2>
-<p>Both app <code>main.c</code> files exceed the ADR-008 50-line rule:
-- <code>apps/gateway/src/main.c</code>: 77 lines — contains a zbus listener callback with
-  sensor event logging logic
-- <code>apps/sensor-node/src/main.c</code>: 66 lines — same pattern</p>
-<p><strong>Goal:</strong> Assess whether the excess logic qualifies as app-specific policy (and
-is therefore acceptable per the "When app-level C code is acceptable" section)
-or should be extracted to a library.</p>
-<p><strong>Acceptance:</strong>
-- Decision documented: either the ADR's 50-line limit is adjusted for these
-  specific cases with justification, or the logic is extracted to a library.</p>
-<p>Reference: ADR-008 §<code>main.c</code> 50-line rule.</p>
-<hr />
 <h2 id="adr-010-devcontainer-align-devcontainer-and-ci-on-single-approved-image">[ADR-010-DEVCONTAINER] Align devcontainer and CI on single approved image</h2>
 <p><strong>Status: BLOCKED</strong> — remote container build currently does not work.</p>
 <p><code>devcontainer.json</code> uses a local <code>Dockerfile</code> with <code>FROM dev:latest</code> instead
@@ -1022,10 +993,6 @@ from the ADR-010 requirement that local and CI use the same image.</p>
   approved image (<code>FROM ghcr.io/tobiwan88/zephyr_docker:latest</code>) and update
   ADR-010 to document the local-build approach.</p>
 <p>Additional CI gaps to fix alongside:
-- Add <code>ZEPHYR_BASE=/home/zephyr/workspace/zephyr</code> prefix to all <code>west build</code>
-  and <code>west twister</code> commands in <code>.github/workflows/ci.yml</code>.
-- Replace <code>native_sim</code> shorthand with <code>native_sim/native/64</code> in CI matrix and
-  test job.
 - Add <code>zephyr-checkpatch-diff</code> hook to <code>.pre-commit-config.yaml</code>.
 - Add <code>ci-success</code> aggregator job to block PR merge on failure.</p>
 <p>Reference: ADR-010.</p>
@@ -1047,22 +1014,6 @@ different scaling.</p>
 - Fake sensors register their default scaling at <code>SYS_INIT</code> time.
 - Unit test: register two sensors of the same type with different ranges; verify independent decode.</p>
 <p>Reference: ADR-003 §Q31 encoding, §sensor_uid contract.</p>
-<hr />
-<h2 id="sensor-registry-remote-uid-persist-remote-sensor-uids-via-zephyr-settings-backend">[SENSOR-REGISTRY-REMOTE-UID] Persist remote sensor UIDs via Zephyr settings backend</h2>
-<p>Remote sensors (LoRa, BLE) cannot be pre-assigned UIDs in the gateway's
-devicetree. Their UIDs must be generated at first registration and persisted
-across gateway reboots so that display routing and MQTT topics remain stable.</p>
-<p><strong>Goal:</strong> <code>sensor_registry_register_remote(node_id, type, scaling, &amp;uid)</code> assigns
-a pseudo-random UID on first call, saves it via <code>CONFIG_SETTINGS</code>, and returns
-the same UID on subsequent calls for the same <code>node_id</code>.</p>
-<p><strong>Acceptance:</strong>
-- UID generated in range <code>0x1000–0xFFFF</code>; collision-checked against all known UIDs.
-- Settings key format: <code>sens/rem/&lt;node_id_hex&gt;</code> → <code>uint32_t</code> UID.
-- UID survives gateway reboot (settings loaded at boot).
-- <code>native_sim</code> uses a RAM-backed settings stub (no flash required).
-- Build-time check or documentation enforces that local UIDs stay in <code>0x0001–0x0FFF</code>.
-- Unit test: register same node_id twice; assert same UID returned; assert no collision with local UIDs.</p>
-<p>Reference: ADR-003 §UID assignment — remote sensors.</p>
 <hr />
 <h2 id="renode-phase2-multi-node-simulation-with-renode">[RENODE-PHASE2] Multi-node simulation with Renode</h2>
 <p>Once the native_sim architecture is validated end-to-end and an MCU is selected

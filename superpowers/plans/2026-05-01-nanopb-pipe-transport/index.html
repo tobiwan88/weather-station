@@ -1,225 +1,116 @@
 
-<!doctype html>
-<html lang="en" class="no-js">
-  <head>
-    
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      
-      
-      
-        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-01-nanopb-pipe-transport/">
-      
-      
-      
-      
-        
-      
-      
-      <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
-    
-    
-      
-        <title>nanopb Migration: pipe_publisher + pipe_transport - Weather Station Documentation</title>
-      
-    
-    
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
-      
-        
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
-      
-      
+<!DOCTYPE html>
 
-
-    
-    
-      
-    
-    
-      
-        
-        
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-      
-    
-    
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
-    
-      
-
-    
-    
-  </head>
-  
-  
-    
-    
-      
-    
-    
-    
-    
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
-  
-    
-    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
-    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
-    <label class="md-overlay" for="__drawer"></label>
-    <div data-md-component="skip">
-      
-        
-        <a href="#nanopb-migration-pipe_publisher-pipe_transport" class="md-skip">
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-01-nanopb-pipe-transport/" rel="canonical"/>
+<link href="../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>nanopb Migration: pipe_publisher + pipe_transport - Weather Station Documentation</title>
+<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#nanopb-migration-pipe_publisher-pipe_transport">
           Skip to content
         </a>
-      
-    </div>
-    <div data-md-component="announce">
-      
-    </div>
-    
-    
-      
-
+</div>
+<div data-md-component="announce">
+</div>
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
-    </a>
-    <label class="md-header__button md-icon" for="__drawer">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
-    </label>
-    <div class="md-header__title" data-md-component="header-title">
-      <div class="md-header__ellipsis">
-        <div class="md-header__topic">
-          <span class="md-ellipsis">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Weather Station Documentation" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="Weather Station Documentation">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
             Weather Station Documentation
           </span>
-        </div>
-        <div class="md-header__topic" data-md-component="header-topic">
-          <span class="md-ellipsis">
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
             
               nanopb Migration: pipe_publisher + pipe_transport
             
           </span>
-        </div>
-      </div>
-    </div>
-    
-      
-        <form class="md-header__option" data-md-component="palette">
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
-    
-      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
-      </label>
-    
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
-    
-      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
-      </label>
-    
-  
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
 </form>
-      
-    
-    
-      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
-    
-    
-    
-      
-      
-        <label class="md-header__button md-icon" for="__search">
-          
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
-        </label>
-        <div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
-      <label class="md-search__icon md-icon" for="__search">
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
-      </label>
-      <nav class="md-search__options" aria-label="Search">
-        
-        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
-          
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </button>
-      </nav>
-      
-        <div class="md-search__suggest" data-md-component="search-suggest"></div>
-      
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="search-result">
-          <div class="md-search-result__meta">
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
             Initializing search
           </div>
-          <ol class="md-search-result__list" role="presentation"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+<ol class="md-search-result__list" role="presentation"></ol>
 </div>
-      
-    
-    
-      <div class="md-header__source">
-        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/tobiwan88/weather-station" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
     tobiwan88/weather-station
   </div>
 </a>
-      </div>
-    
-  </nav>
-  
+</div>
+</nav>
 </header>
-    
-    <div class="md-container" data-md-component="container">
-      
-      
-        
-          
-            
-<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-grid">
-    <ul class="md-tabs__list">
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../.." class="md-tabs__link">
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
         
   
   
@@ -228,57 +119,27 @@
   Home
 
       </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../../architecture/" class="md-tabs__link">
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../architecture/">
           
   
   
   Architecture
 
         </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../../adr/" class="md-tabs__link">
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../adr/">
           
   
   
   ADR
 
         </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../../backlog/" class="md-tabs__link">
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../backlog/">
         
   
   
@@ -287,67 +148,36 @@
   Backlog
 
       </a>
-    </li>
-  
-
-      
-    </ul>
-  </div>
+</li>
+</ul>
+</div>
 </nav>
-          
-        
-      
-      <main class="md-main" data-md-component="main">
-        <div class="md-main__inner md-grid">
-          
-            
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-
-  
-
-
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
-  <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
-      
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
-
-    </a>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Weather Station Documentation" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="Weather Station Documentation">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
     Weather Station Documentation
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/tobiwan88/weather-station" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
     tobiwan88/weather-station
   </div>
 </a>
-    </div>
-  
-  <ul class="md-nav__list" data-md-scrollfix>
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
     
   
     Home
@@ -355,42 +185,12 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
     
   
     Architecture
@@ -398,35 +198,21 @@
 
     
   </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
-            <span class="md-nav__icon md-icon"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
             
   
     Architecture
   
 
           </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture/">
+<span class="md-ellipsis">
     
   
     Overview
@@ -434,27 +220,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../architecture/system-overview/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture/system-overview/">
+<span class="md-ellipsis">
     
   
     System Overview
@@ -462,27 +232,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../architecture/event-bus/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture/event-bus/">
+<span class="md-ellipsis">
     
   
     Event Bus
@@ -490,27 +244,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../architecture/composition-model/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture/composition-model/">
+<span class="md-ellipsis">
     
   
     Composition Model
@@ -518,27 +256,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../architecture/integration-tests/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture/integration-tests/">
+<span class="md-ellipsis">
     
   
     Integration Tests
@@ -546,27 +268,11 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../architecture/concurrency/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture/concurrency/">
+<span class="md-ellipsis">
     
   
     Concurrency
@@ -574,50 +280,27 @@
 
     
   </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture/diagrams/">
+<span class="md-ellipsis">
+    
   
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
+    Diagrams
   
 
     
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
     
   
     ADR
@@ -625,35 +308,21 @@
 
     
   </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
             
   
     ADR
   
 
           </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../adr/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../adr/">
+<span class="md-ellipsis">
     
   
     Architecture Decision Records
@@ -661,34 +330,14 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../backlog/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../backlog/">
+<span class="md-ellipsis">
     
   
     Backlog
@@ -696,126 +345,83 @@
 
     
   </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-  </ul>
+</a>
+</li>
+</ul>
 </nav>
-                  </div>
-                </div>
-              </div>
-            
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#file-map" class="md-nav__link">
-    <span class="md-ellipsis">
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#file-map">
+<span class="md-ellipsis">
       
         File map
       
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#task-1-install-protoc-nanopb-in-the-current-dev-environment" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#task-1-install-protoc-nanopb-in-the-current-dev-environment">
+<span class="md-ellipsis">
       
         Task 1: Install protoc + nanopb in the current dev environment
       
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#task-2-add-nanopb-west-module-and-pull-source" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#task-2-add-nanopb-west-module-and-pull-source">
+<span class="md-ellipsis">
       
         Task 2: Add nanopb west module and pull source
       
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#task-3-wire-pipe_publisher-and-replace-encoder" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#task-3-wire-pipe_publisher-and-replace-encoder">
+<span class="md-ellipsis">
       
         Task 3: Wire pipe_publisher and replace encoder
       
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#task-4-wire-pipe_transport-and-replace-decoder" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#task-4-wire-pipe_transport-and-replace-decoder">
+<span class="md-ellipsis">
       
         Task 4: Wire pipe_transport and replace decoder
       
     </span>
-  </a>
-  
+</a>
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#task-5-integration-tests" class="md-nav__link">
-    <span class="md-ellipsis">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#task-5-integration-tests">
+<span class="md-ellipsis">
       
         Task 5: Integration tests
       
     </span>
-  </a>
-  
+</a>
 </li>
-      
-    </ul>
-  
+</ul>
 </nav>
-                  </div>
-                </div>
-              </div>
-            
-          
-          
-            <div class="md-content" data-md-component="content">
-              
-              <article class="md-content__inner md-typeset">
-                
-                  
-
-
-  
-  
-
-
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
 <h1 id="nanopb-migration-pipe_publisher-pipe_transport">nanopb Migration: pipe_publisher + pipe_transport</h1>
 <blockquote>
 <p><strong>For agentic workers:</strong> REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (<code>- [ ]</code>) syntax for tracking.</p>
@@ -823,7 +429,7 @@
 <p><strong>Goal:</strong> Replace hand-rolled protobuf varint encode/decode in <code>lib/pipe_publisher</code> and <code>lib/pipe_transport</code> with the nanopb library, using Zephyr's build-time code-generation workflow.</p>
 <p><strong>Architecture:</strong> <code>proto/sensor_message.proto</code> is the single source of truth. Each library calls <code>nanopb_generate_cpp()</code> directly (with the proto's own directory as RELPATH) so the generated <code>sensor_message.pb.h</code> lands in <code>CMAKE_CURRENT_BINARY_DIR</code> and is reachable via a plain <code>#include "sensor_message.pb.h"</code>. The nanopb C runtime is pulled in as a Zephyr module and linked automatically when <code>CONFIG_NANOPB=y</code>.</p>
 <p><strong>Tech Stack:</strong> Zephyr v4.4 + west, nanopb, protoc (protobuf-compiler apt package), nanopb pip package (protoc-gen-nanopb plugin).</p>
-<hr />
+<hr/>
 <h2 id="file-map">File map</h2>
 <table>
 <thead>
@@ -867,7 +473,7 @@
 </tr>
 </tbody>
 </table>
-<hr />
+<hr/>
 <h2 id="task-1-install-protoc-nanopb-in-the-current-dev-environment">Task 1: Install protoc + nanopb in the current dev environment</h2>
 <p><strong>Files:</strong>
 - Modify: <code>.devcontainer/Dockerfile.ci</code></p>
@@ -881,7 +487,7 @@
 <li>[ ] <strong>Step 2: Verify both tools are available</strong></li>
 </ul>
 <pre><code class="language-bash">protoc --version
-/home/zephyr/.venv/bin/python -c &quot;import nanopb; print('nanopb ok')&quot;
+/home/zephyr/.venv/bin/python -c "import nanopb; print('nanopb ok')"
 </code></pre>
 <p>Expected: <code>libprotoc 3.x.x</code> and <code>nanopb ok</code>.</p>
 <ul>
@@ -920,15 +526,15 @@ RUN /home/zephyr/.venv/bin/pip install --no-cache-dir \
 # Mermaid CLI for diagram rendering
 RUN npm install -g @mermaid-js/mermaid-cli
 
-ENV PATH=&quot;/home/zephyr/.venv/bin:/home/zephyr/.local/bin:${PATH}&quot;
+ENV PATH="/home/zephyr/.venv/bin:/home/zephyr/.local/bin:${PATH}"
 </code></pre>
 <ul>
 <li>[ ] <strong>Step 4: Commit Dockerfile.ci</strong></li>
 </ul>
 <pre><code class="language-bash">git add .devcontainer/Dockerfile.ci
-git commit -m &quot;build(ci): add protobuf-compiler and nanopb to devcontainer&quot;
+git commit -m "build(ci): add protobuf-compiler and nanopb to devcontainer"
 </code></pre>
-<hr />
+<hr/>
 <h2 id="task-2-add-nanopb-west-module-and-pull-source">Task 2: Add nanopb west module and pull source</h2>
 <p><strong>Files:</strong>
 - Modify: <code>west.yml</code></p>
@@ -937,7 +543,7 @@ git commit -m &quot;build(ci): add protobuf-compiler and nanopb to devcontainer&
 </ul>
 <p>Edit <code>west.yml</code>. The <code>name-allowlist</code> block currently ends at <code>segger</code>. Add <code>nanopb</code>:</p>
 <pre><code class="language-yaml">manifest:
-  version: &quot;0.13&quot;
+  version: "0.13"
 
   self:
     path: weather-station
@@ -976,9 +582,9 @@ git commit -m &quot;build(ci): add protobuf-compiler and nanopb to devcontainer&
 <li>[ ] <strong>Step 4: Commit</strong></li>
 </ul>
 <pre><code class="language-bash">git add west.yml
-git commit -m &quot;build: add nanopb to west allowlist&quot;
+git commit -m "build: add nanopb to west allowlist"
 </code></pre>
-<hr />
+<hr/>
 <h2 id="task-3-wire-pipe_publisher-and-replace-encoder">Task 3: Wire pipe_publisher and replace encoder</h2>
 <p><strong>Files:</strong>
 - Modify: <code>lib/pipe_publisher/CMakeLists.txt</code>
@@ -995,7 +601,7 @@ if(CONFIG_PIPE_PUBLISHER)
   zephyr_library()
 
   # Generate sensor_message.pb.c/.pb.h into CMAKE_CURRENT_BINARY_DIR so that
-  # #include &quot;sensor_message.pb.h&quot; resolves without path gymnastics.
+  # #include "sensor_message.pb.h" resolves without path gymnastics.
   set(NANOPB_GENERATE_CPP_STANDALONE OFF)
   set(_proto_dir ${CMAKE_CURRENT_SOURCE_DIR}/../../proto)
   nanopb_generate_cpp(_pb_srcs _pb_hdrs
@@ -1003,7 +609,7 @@ if(CONFIG_PIPE_PUBLISHER)
     ${_proto_dir}/sensor_message.proto)
   target_include_directories(${ZEPHYR_CURRENT_LIBRARY} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
   target_sources(${ZEPHYR_CURRENT_LIBRARY} PRIVATE ${_pb_srcs} ${_pb_hdrs})
-  string(MD5 _hash &quot;${_pb_hdrs}&quot;)
+  string(MD5 _hash "${_pb_hdrs}")
   add_custom_target(_pipe_pub_proto_${_hash} DEPENDS ${_pb_hdrs})
   add_dependencies(nanopb_generated_headers _pipe_pub_proto_${_hash})
   add_dependencies(${ZEPHYR_CURRENT_LIBRARY} nanopb_generated_headers)
@@ -1019,7 +625,7 @@ endif()
 <p>The full file after the edit:</p>
 <pre><code class="language-kconfig"># SPDX-License-Identifier: Apache-2.0
 menuconfig PIPE_PUBLISHER
-    bool &quot;FIFO pipe publisher (sensor-node side, native_sim only)&quot;
+    bool "FIFO pipe publisher (sensor-node side, native_sim only)"
     depends on BOARD_NATIVE_SIM
     depends on ZBUS
     depends on SENSOR_EVENT
@@ -1032,22 +638,22 @@ menuconfig PIPE_PUBLISHER
 if PIPE_PUBLISHER
 
 config PIPE_PUBLISHER_FIFO_PATH
-    string &quot;FIFO path&quot;
-    default &quot;/tmp/ws-node-0&quot;
+    string "FIFO path"
+    default "/tmp/ws-node-0"
 
 config PIPE_PUBLISHER_THREAD_STACK_SIZE
-    int &quot;Subscriber thread stack size (bytes)&quot;
+    int "Subscriber thread stack size (bytes)"
     default 1024
     range 512 4096
 
 config PIPE_PUBLISHER_THREAD_PRIORITY
-    int &quot;Subscriber thread priority&quot;
+    int "Subscriber thread priority"
     default 5
     range 0 NUM_PREEMPT_PRIORITIES
 
 module = PIPE_PUBLISHER
 module-str = PIPE_PUBLISHER
-source &quot;subsys/logging/Kconfig.template.log_config&quot;
+source "subsys/logging/Kconfig.template.log_config"
 
 endif # PIPE_PUBLISHER
 </code></pre>
@@ -1074,7 +680,7 @@ endif # PIPE_PUBLISHER
 
 #include &lt;pb_encode.h&gt;
 #include &lt;sensor_event/sensor_event.h&gt;
-#include &quot;sensor_message.pb.h&quot;
+#include "sensor_message.pb.h"
 
 LOG_MODULE_REGISTER(pipe_publisher, CONFIG_PIPE_PUBLISHER_LOG_LEVEL);
 
@@ -1099,7 +705,7 @@ static void ensure_open(void)
     s_fifo_fd = open(CONFIG_PIPE_PUBLISHER_FIFO_PATH, O_WRONLY | O_NONBLOCK);
     if (s_fifo_fd &lt; 0) {
         /* Read end not yet open — caller retries later. */
-        LOG_DBG(&quot;fifo open pending (errno=%d)&quot;, errno);
+        LOG_DBG("fifo open pending (errno=%d)", errno);
     }
 }
 
@@ -1119,7 +725,7 @@ static void pipe_pub_thread(void *a, void *b, void *c)
         int rc = zbus_sub_wait(&amp;pipe_pub_sub, &amp;chan, K_FOREVER);
 
         if (rc != 0) {
-            LOG_ERR(&quot;zbus_sub_wait: %d&quot;, rc);
+            LOG_ERR("zbus_sub_wait: %d", rc);
             continue;
         }
 
@@ -1136,7 +742,7 @@ static void pipe_pub_thread(void *a, void *b, void *c)
                 k_sleep(K_MSEC(100));
                 ensure_open();
                 if (s_fifo_fd &lt; 0) {
-                    LOG_WRN(&quot;fifo not open, dropping event uid=0x%08x&quot;,
+                    LOG_WRN("fifo not open, dropping event uid=0x%08x",
                         evt.sensor_uid);
                     continue;
                 }
@@ -1154,7 +760,7 @@ static void pipe_pub_thread(void *a, void *b, void *c)
         pb_ostream_t ostream = pb_ostream_from_buffer(payload, sizeof(payload));
 
         if (!pb_encode(&amp;ostream, SensorReading_fields, &amp;msg)) {
-            LOG_ERR(&quot;pb_encode: %s&quot;, PB_GET_ERROR(&amp;ostream));
+            LOG_ERR("pb_encode: %s", PB_GET_ERROR(&amp;ostream));
             continue;
         }
 
@@ -1168,11 +774,11 @@ static void pipe_pub_thread(void *a, void *b, void *c)
         ssize_t written = write(s_fifo_fd, s_tx_buf, plen + 2);
 
         if (written &lt; 0) {
-            LOG_WRN(&quot;fifo write failed (errno=%d), closing&quot;, errno);
+            LOG_WRN("fifo write failed (errno=%d), closing", errno);
             close(s_fifo_fd);
             s_fifo_fd = -1;
         } else {
-            LOG_DBG(&quot;published uid=0x%08x type=%u q31=%d (%zu bytes)&quot;,
+            LOG_DBG("published uid=0x%08x type=%u q31=%d (%zu bytes)",
                 evt.sensor_uid, (unsigned)evt.type, evt.q31_value, plen);
         }
     }
@@ -1190,11 +796,11 @@ static int pipe_publisher_init(void)
     int rc = zbus_chan_add_obs(&amp;sensor_event_chan, &amp;pipe_pub_sub, K_NO_WAIT);
 
     if (rc != 0) {
-        LOG_ERR(&quot;add obs sensor_event_chan: %d&quot;, rc);
+        LOG_ERR("add obs sensor_event_chan: %d", rc);
         return rc;
     }
 
-    LOG_INF(&quot;pipe_publisher: init done (fifo=%s)&quot;, CONFIG_PIPE_PUBLISHER_FIFO_PATH);
+    LOG_INF("pipe_publisher: init done (fifo=%s)", CONFIG_PIPE_PUBLISHER_FIFO_PATH);
     return 0;
 }
 
@@ -1215,9 +821,9 @@ SYS_INIT(pipe_publisher_init, APPLICATION, 94);
 <pre><code class="language-bash">git add lib/pipe_publisher/CMakeLists.txt \
         lib/pipe_publisher/Kconfig \
         lib/pipe_publisher/src/pipe_publisher.c
-git commit -m &quot;feat(pipe-publisher): migrate encoder to nanopb pb_encode&quot;
+git commit -m "feat(pipe-publisher): migrate encoder to nanopb pb_encode"
 </code></pre>
-<hr />
+<hr/>
 <h2 id="task-4-wire-pipe_transport-and-replace-decoder">Task 4: Wire pipe_transport and replace decoder</h2>
 <p><strong>Files:</strong>
 - Modify: <code>lib/pipe_transport/CMakeLists.txt</code>
@@ -1234,7 +840,7 @@ if(CONFIG_PIPE_TRANSPORT)
   zephyr_library()
 
   # Generate sensor_message.pb.c/.pb.h into CMAKE_CURRENT_BINARY_DIR so that
-  # #include &quot;sensor_message.pb.h&quot; resolves without path gymnastics.
+  # #include "sensor_message.pb.h" resolves without path gymnastics.
   set(NANOPB_GENERATE_CPP_STANDALONE OFF)
   set(_proto_dir ${CMAKE_CURRENT_SOURCE_DIR}/../../proto)
   nanopb_generate_cpp(_pb_srcs _pb_hdrs
@@ -1242,7 +848,7 @@ if(CONFIG_PIPE_TRANSPORT)
     ${_proto_dir}/sensor_message.proto)
   target_include_directories(${ZEPHYR_CURRENT_LIBRARY} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
   target_sources(${ZEPHYR_CURRENT_LIBRARY} PRIVATE ${_pb_srcs} ${_pb_hdrs})
-  string(MD5 _hash &quot;${_pb_hdrs}&quot;)
+  string(MD5 _hash "${_pb_hdrs}")
   add_custom_target(_pipe_xport_proto_${_hash} DEPENDS ${_pb_hdrs})
   add_dependencies(nanopb_generated_headers _pipe_xport_proto_${_hash})
   add_dependencies(${ZEPHYR_CURRENT_LIBRARY} nanopb_generated_headers)
@@ -1258,7 +864,7 @@ endif()
 <p>The full file after the edit:</p>
 <pre><code class="language-kconfig"># SPDX-License-Identifier: Apache-2.0
 menuconfig PIPE_TRANSPORT
-    bool &quot;FIFO pipe transport (gateway side, native_sim only)&quot;
+    bool "FIFO pipe transport (gateway side, native_sim only)"
     depends on BOARD_NATIVE_SIM
     select REMOTE_SENSOR
     select NANOPB
@@ -1270,22 +876,22 @@ menuconfig PIPE_TRANSPORT
 if PIPE_TRANSPORT
 
 config PIPE_TRANSPORT_FIFO_PATH
-    string &quot;FIFO path&quot;
-    default &quot;/tmp/ws-node-0&quot;
+    string "FIFO path"
+    default "/tmp/ws-node-0"
 
 config PIPE_TRANSPORT_THREAD_STACK_SIZE
-    int &quot;Reader thread stack size (bytes)&quot;
+    int "Reader thread stack size (bytes)"
     default 1024
     range 512 4096
 
 config PIPE_TRANSPORT_THREAD_PRIORITY
-    int &quot;Reader thread priority&quot;
+    int "Reader thread priority"
     default 6
     range 0 NUM_PREEMPT_PRIORITIES
 
 module = PIPE_TRANSPORT
 module-str = PIPE_TRANSPORT
-source &quot;subsys/logging/Kconfig.template.log_config&quot;
+source "subsys/logging/Kconfig.template.log_config"
 
 endif # PIPE_TRANSPORT
 </code></pre>
@@ -1319,7 +925,7 @@ endif # PIPE_TRANSPORT
 #include &lt;pb_decode.h&gt;
 #include &lt;remote_sensor/remote_sensor.h&gt;
 #include &lt;sensor_event/sensor_event.h&gt;
-#include &quot;sensor_message.pb.h&quot;
+#include "sensor_message.pb.h"
 
 LOG_MODULE_REGISTER(pipe_transport, CONFIG_PIPE_TRANSPORT_LOG_LEVEL);
 
@@ -1347,7 +953,7 @@ static void uid_mark_seen(uint32_t uid)
             return;
         }
     }
-    LOG_WRN(&quot;seen_uids table full, uid=0x%08x not tracked&quot;, uid);
+    LOG_WRN("seen_uids table full, uid=0x%08x not tracked", uid);
 }
 
 /* --------------------------------------------------------------------------
@@ -1372,7 +978,7 @@ static int pipe_peer_remove(const struct remote_transport *t, uint32_t uid)
 }
 
 REMOTE_TRANSPORT_DEFINE(pipe_remote_transport, {
-                               .name = &quot;pipe&quot;,
+                               .name = "pipe",
                                .proto = REMOTE_TRANSPORT_PROTO_PIPE,
                                .caps = 0,
                                .scan_start = NULL,
@@ -1397,12 +1003,12 @@ static void pipe_reader_thread(void *a, void *b, void *c)
         int fd = open(CONFIG_PIPE_TRANSPORT_FIFO_PATH, O_RDONLY);
 
         if (fd &lt; 0) {
-            LOG_WRN(&quot;fifo open failed (errno=%d), retrying&quot;, errno);
+            LOG_WRN("fifo open failed (errno=%d), retrying", errno);
             k_sleep(K_MSEC(100));
             continue;
         }
 
-        LOG_INF(&quot;pipe_transport: fifo opened for reading&quot;);
+        LOG_INF("pipe_transport: fifo opened for reading");
 
         while (true) {
             /* Read 2-byte little-endian length prefix. */
@@ -1420,11 +1026,11 @@ static void pipe_reader_thread(void *a, void *b, void *c)
             }
 
             if (n == 0) {
-                LOG_INF(&quot;pipe_transport: writer disconnected, reopening&quot;);
+                LOG_INF("pipe_transport: writer disconnected, reopening");
                 break;
             }
             if (n &lt; 0) {
-                LOG_WRN(&quot;fifo read error (errno=%d)&quot;, errno);
+                LOG_WRN("fifo read error (errno=%d)", errno);
                 break;
             }
 
@@ -1432,7 +1038,7 @@ static void pipe_reader_thread(void *a, void *b, void *c)
                 (uint16_t)len_buf[0] | ((uint16_t)len_buf[1] &lt;&lt; 8);
 
             if (payload_len &gt; SensorReading_size) {
-                LOG_WRN(&quot;payload_len=%u exceeds max=%d, discarding frame&quot;,
+                LOG_WRN("payload_len=%u exceeds max=%d, discarding frame",
                     payload_len, SensorReading_size);
                 break;
             }
@@ -1449,7 +1055,7 @@ static void pipe_reader_thread(void *a, void *b, void *c)
             }
 
             if (received &lt; payload_len) {
-                LOG_WRN(&quot;truncated payload (got=%zu want=%u), discarding&quot;,
+                LOG_WRN("truncated payload (got=%zu want=%u), discarding",
                     received, payload_len);
                 break;
             }
@@ -1458,7 +1064,7 @@ static void pipe_reader_thread(void *a, void *b, void *c)
             pb_istream_t istream = pb_istream_from_buffer(payload, payload_len);
 
             if (!pb_decode(&amp;istream, SensorReading_fields, &amp;msg)) {
-                LOG_WRN(&quot;pb_decode: %s&quot;, PB_GET_ERROR(&amp;istream));
+                LOG_WRN("pb_decode: %s", PB_GET_ERROR(&amp;istream));
                 continue;
             }
 
@@ -1478,7 +1084,7 @@ static void pipe_reader_thread(void *a, void *b, void *c)
 
                 memcpy(disc.peer_addr, &amp;uid, sizeof(uid));
                 snprintf(disc.suggested_label, sizeof(disc.suggested_label),
-                     &quot;pipe-%08x&quot;, uid);
+                     "pipe-%08x", uid);
 
                 int rc = remote_sensor_announce_disc(&amp;disc);
 
@@ -1488,16 +1094,16 @@ static void pipe_reader_thread(void *a, void *b, void *c)
                      * before data arrives. */
                     k_sleep(K_MSEC(100));
                 } else {
-                    LOG_WRN(&quot;announce_disc uid=0x%08x failed: %d&quot;, uid, rc);
+                    LOG_WRN("announce_disc uid=0x%08x failed: %d", uid, rc);
                 }
             }
 
             int rc = remote_sensor_publish_data(uid, (enum sensor_type)type, q31);
 
             if (rc != 0) {
-                LOG_WRN(&quot;publish_data uid=0x%08x failed: %d&quot;, uid, rc);
+                LOG_WRN("publish_data uid=0x%08x failed: %d", uid, rc);
             } else {
-                LOG_DBG(&quot;received uid=0x%08x type=%u q31=%d&quot;, uid, type, q31);
+                LOG_DBG("received uid=0x%08x type=%u q31=%d", uid, type, q31);
             }
         }
 
@@ -1517,11 +1123,11 @@ static int pipe_transport_init(void)
     int rc = mkfifo(CONFIG_PIPE_TRANSPORT_FIFO_PATH, 0600);
 
     if (rc != 0 &amp;&amp; errno != EEXIST) {
-        LOG_ERR(&quot;mkfifo '%s' failed (errno=%d)&quot;, CONFIG_PIPE_TRANSPORT_FIFO_PATH, errno);
+        LOG_ERR("mkfifo '%s' failed (errno=%d)", CONFIG_PIPE_TRANSPORT_FIFO_PATH, errno);
         return -errno;
     }
 
-    LOG_INF(&quot;pipe_transport: init done (fifo=%s)&quot;, CONFIG_PIPE_TRANSPORT_FIFO_PATH);
+    LOG_INF("pipe_transport: init done (fifo=%s)", CONFIG_PIPE_TRANSPORT_FIFO_PATH);
     return 0;
 }
 
@@ -1539,9 +1145,9 @@ SYS_INIT(pipe_transport_init, APPLICATION, 93);
 <pre><code class="language-bash">git add lib/pipe_transport/CMakeLists.txt \
         lib/pipe_transport/Kconfig \
         lib/pipe_transport/src/pipe_transport.c
-git commit -m &quot;feat(pipe-transport): migrate decoder to nanopb pb_decode&quot;
+git commit -m "feat(pipe-transport): migrate decoder to nanopb pb_decode"
 </code></pre>
-<hr />
+<hr/>
 <h2 id="task-5-integration-tests">Task 5: Integration tests</h2>
 <p><strong>Files:</strong> none</p>
 <ul>
@@ -1562,60 +1168,30 @@ git commit -m &quot;feat(pipe-transport): migrate decoder to nanopb pb_decode&qu
 </ul>
 <pre><code class="language-bash">/open-pr
 </code></pre>
-
-
-
-
-
-
-
-
-
-
-
-
-                
-              </article>
-            </div>
-          
-          
+</article>
+</div>
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
-        </div>
-        
-      </main>
-      
-        <footer class="md-footer">
-  
-  <div class="md-footer-meta md-typeset">
-    <div class="md-footer-meta__inner md-grid">
-      <div class="md-copyright">
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
   
   
     Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
       Material for MkDocs
     </a>
-  
 </div>
-      
-    </div>
-  </div>
+</div>
+</div>
 </footer>
-      
-    </div>
-    <div class="md-dialog" data-md-component="dialog">
-      <div class="md-dialog__inner md-typeset"></div>
-    </div>
-    
-    
-    
-      
-      
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
-    
-    
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
-      
-    
-  </body>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+</body>
 </html>

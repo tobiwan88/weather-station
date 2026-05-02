@@ -1,0 +1,995 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="https://tobiwan88.github.io/weather-station/architecture/diagrams/" rel="canonical"/>
+<link href="../concurrency/" rel="prev"/>
+<link href="../../adr/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Diagrams - Weather Station Documentation</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#architecture-diagrams">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Weather Station Documentation" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Weather Station Documentation">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Diagrams
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/tobiwan88/weather-station" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../adr/">
+          
+  
+  
+  ADR
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../backlog/">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Weather Station Documentation" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Weather Station Documentation">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    Weather Station Documentation
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/tobiwan88/weather-station" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../system-overview/">
+<span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../event-bus/">
+<span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../composition-model/">
+<span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../integration-tests/">
+<span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../concurrency/">
+<span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#system-overview">
+<span class="md-ellipsis">
+      
+        System Overview
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#zbus-channel-map">
+<span class="md-ellipsis">
+      
+        zbus Channel Map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#sensor-data-flow">
+<span class="md-ellipsis">
+      
+        Sensor Data Flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#library-dependencies">
+<span class="md-ellipsis">
+      
+        Library Dependencies
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#boot-sequence">
+<span class="md-ellipsis">
+      
+        Boot Sequence
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#http-config-flow">
+<span class="md-ellipsis">
+      
+        HTTP Config Flow
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../adr/">
+<span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../backlog/">
+<span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#system-overview">
+<span class="md-ellipsis">
+      
+        System Overview
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#zbus-channel-map">
+<span class="md-ellipsis">
+      
+        zbus Channel Map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#sensor-data-flow">
+<span class="md-ellipsis">
+      
+        Sensor Data Flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#library-dependencies">
+<span class="md-ellipsis">
+      
+        Library Dependencies
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#boot-sequence">
+<span class="md-ellipsis">
+      
+        Boot Sequence
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#http-config-flow">
+<span class="md-ellipsis">
+      
+        HTTP Config Flow
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="architecture-diagrams">Architecture Diagrams</h1>
+<p>All diagrams are authored as Mermaid source files in this page. They render
+client-side via the MkDocs Mermaid plugin.</p>
+<h2 id="system-overview">System Overview</h2>
+<p>Layered component view of the weather-station firmware.</p>
+<div class="mermaid">graph TB
+    subgraph APP["APPLICATION LAYER"]
+        GW["apps/gateway\nmain.c &lt;50 lines\nprj.conf (features)"]
+        SN["apps/sensor-node\npipe_publisher egress\nprj.conf (lighter stack)"]
+    end
+
+    subgraph LIBS["LIBRARY LAYER (lib/)"]
+        direction TB
+        subgraph CHANNELS["zbus Channels"]
+            SEC["sensor_event\n(env_sensor_data)"]
+            STC["sensor_trigger\n(trigger event)"]
+        end
+        subgraph SENSORS["Sensor Layer"]
+            FS["fake_sensors\nDT-driven drivers\n+ auto-publish timer"]
+            SR["sensor_registry\nuid → metadata"]
+        end
+        subgraph SERVICES["Services"]
+            SNTP["sntp_sync\nwall-clock SNTP"]
+            HTTP["http_dashboard\nChart.js + config API\nport 8080"]
+            CLK["clock_display\nHH:MM UTC ticker"]
+            LVGL["lvgl_display\nSDL window (native_sim)"]
+            CC["config_cmd\ncmd channel"]
+            LOC["location_registry\nnamed locations"]
+            SEL["sensor_event_log\nconsole logger"]
+            RS["remote_sensor\ntransport abstraction + manager"]
+            FRS["fake_remote_sensor\ntesting stub"]
+            MQTT["mqtt_publisher\nMQTT egress"]
+            PIPE_PUB["pipe_publisher\nFIFO protobuf writer\n(sensor-node)"]
+            PIPE_TX["pipe_transport\nFIFO protobuf reader\n(gateway)"]
+        end
+    end
+
+    subgraph RTOS["ZEPHYR RTOS"]
+        ZBUS["zbus pub/sub"]
+        KTIMER["k_timer"]
+        KWORK["k_work_delayable"]
+        KSPIN["k_spinlock"]
+        KMUX["k_mutex"]
+        HTTPD["HTTP_SERVER"]
+        NET["NET_SOCKETS / SNTP"]
+        LVGLLIB["LVGL / SDL2"]
+    end
+
+    GW --&gt;|"Kconfig selects"| LIBS
+    SN --&gt;|"Kconfig selects"| LIBS
+
+    FS --&gt;|publishes| SEC
+    FS --&gt;|subscribes| STC
+    FS --&gt;|subscribes| CC
+    HTTP --&gt;|subscribes| SEC
+    HTTP --&gt;|reads| SR
+    HTTP --&gt;|reads| LOC
+    HTTP --&gt;|publishes| CC
+    FS --&gt;|registers| SR
+    SNTP --&gt;|subscribes| CC
+    SEL --&gt;|subscribes| SEC
+    RS --&gt;|publishes| SEC
+    RS --&gt;|subscribes| STC
+    FRS --&gt;|implements vtable| RS
+    MQTT --&gt;|subscribes| SEC
+    PIPE_PUB --&gt;|publishes| SEC
+    PIPE_PUB --&gt;|writes FIFO| SEC
+    PIPE_TX --&gt;|reads FIFO| SEC
+    PIPE_TX --&gt;|publishes| SEC
+
+    SEC --&gt; ZBUS
+    STC --&gt; ZBUS
+    SNTP --&gt; NET
+    HTTP --&gt; HTTPD
+    CLK --&gt; KWORK
+    SNTP --&gt; KWORK
+    FS --&gt; KTIMER
+    HTTP --&gt; KSPIN
+    SR --&gt; KMUX
+    LVGL --&gt; LVGLLIB
+
+    style APP fill:#dbeafe,stroke:#3b82f6
+    style LIBS fill:#dcfce7,stroke:#16a34a
+    style CHANNELS fill:#fef9c3,stroke:#ca8a04
+    style SENSORS fill:#f0fdf4,stroke:#16a34a
+    style SERVICES fill:#f0fdf4,stroke:#16a34a
+    style RTOS fill:#fce7f3,stroke:#db2777
+</div>
+<h2 id="zbus-channel-map">zbus Channel Map</h2>
+<p>Publishers, channels, and subscribers across the zbus event bus.</p>
+<div class="mermaid">graph LR
+    subgraph TRIGGERS["Trigger Sources"]
+        TMR["fake_sensors_timer\nk_timer periodic"]
+        BOOT["SYS_INIT startup\none-shot at boot"]
+        BTN["button ISR\n(future)"]
+        MQTT_CMD["MQTT command\n(future)"]
+    end
+
+    subgraph CHAN_T["sensor_trigger_chan (zbus)"]
+        ST["struct sensor_trigger_event\n{ source, target_uid }"]
+    end
+
+    subgraph SENSORS["Sensor Listeners"]
+        FT["fake_temperature\nlistener"]
+        FH["fake_humidity\nlistener"]
+        RSM["remote_sensor_manager\n(pull transports)"]
+        RD["real drivers\n(future)"]
+    end
+
+    subgraph CHAN_E["sensor_event_chan (zbus)"]
+        SE["struct env_sensor_data\n{ uid, type, q31_value, timestamp_ms }"]
+    end
+
+    subgraph CONSUMERS["Event Consumers"]
+        SEL["sensor_event_log\nLOG_INF per event"]
+        HTTPL["http_dashboard\nring buffer append"]
+        MQTTP["mqtt_publisher\nbroker egress"]
+        FLASH["flash storage\n(future)"]
+    end
+
+    subgraph CHAN_CFG["config_cmd_chan (zbus)"]
+        CC["struct config_cmd_event\n{ cmd, arg }"]
+    end
+
+    subgraph CFG_CONSUMERS["Config Consumers"]
+        FS_CFG["fake_sensors\ninterval update"]
+        SNTP_CFG["sntp_sync\nresync trigger"]
+    end
+
+    subgraph CHAN_DISC["remote discovery (k_msgq, not zbus)"]
+        RD2["remote_sensor_announce_disc()\n→ manager k_msgq"]
+    end
+
+    subgraph CHAN_SCAN["remote_scan_ctrl_chan (zbus)"]
+        SC["struct remote_scan_ctrl_event\n{ action, proto }"]
+    end
+
+    subgraph TRANSPORTS["Transport Adapters"]
+        FAKE_T["fake_remote_sensor\n(testing stub)"]
+        BLE_T["ble_sensor\n(future)"]
+        LORA_T["lora_sensor\n(future)"]
+    end
+
+    TMR --&gt;|pub K_NO_WAIT| ST
+    BOOT --&gt;|pub K_NO_WAIT| ST
+    BTN --&gt;|pub K_NO_WAIT| ST
+    MQTT_CMD --&gt;|pub K_NO_WAIT| ST
+
+    ST --&gt;|sub| FT
+    ST --&gt;|sub| FH
+    ST --&gt;|sub| RSM
+    ST --&gt;|sub| RD
+
+    FT --&gt;|pub K_NO_WAIT| SE
+    FH --&gt;|pub K_NO_WAIT| SE
+    RSM --&gt;|remote_sensor_publish_data| SE
+    RD --&gt;|pub K_NO_WAIT| SE
+
+    SE --&gt;|sub| SEL
+    SE --&gt;|sub| HTTPL
+    SE --&gt;|sub| MQTTP
+    SE --&gt;|sub| FLASH
+
+    HTTPL --&gt;|pub config_cmd_event| CC
+    CC --&gt;|sub| FS_CFG
+    CC --&gt;|sub| SNTP_CFG
+    CC --&gt;|sub| MQTT_CFG
+
+    FAKE_T --&gt;|remote_sensor_announce_disc| RD2
+    BLE_T --&gt;|remote_sensor_announce_disc| RD2
+    LORA_T --&gt;|remote_sensor_announce_disc| RD2
+    RD2 --&gt;|k_msgq| RSM
+
+    RSM --&gt;|pub K_NO_WAIT| SC
+    SC --&gt;|vtable scan_start/stop| FAKE_T
+    SC --&gt;|vtable scan_start/stop| BLE_T
+    SC --&gt;|vtable scan_start/stop| LORA_T
+
+    style CHAN_T fill:#fef9c3,stroke:#ca8a04
+    style CHAN_E fill:#fef9c3,stroke:#ca8a04
+    style CHAN_CFG fill:#fef9c3,stroke:#ca8a04
+    style CHAN_DISC fill:#fef9c3,stroke:#ca8a04
+    style CHAN_SCAN fill:#fef9c3,stroke:#ca8a04
+    style TRIGGERS fill:#dbeafe,stroke:#3b82f6
+    style SENSORS fill:#dcfce7,stroke:#16a34a
+    style CONSUMERS fill:#fce7f3,stroke:#db2777
+    style CFG_CONSUMERS fill:#fce7f3,stroke:#db2777
+    style TRANSPORTS fill:#e0e7ff,stroke:#6366f1
+</div>
+<h2 id="sensor-data-flow">Sensor Data Flow</h2>
+<p>Sensor trigger → event → consumers sequence.</p>
+<div class="mermaid">sequenceDiagram
+    participant TMR as fake_sensors_timer&lt;br/&gt;(k_timer ISR)
+    participant TRIG as sensor_trigger_chan&lt;br/&gt;(zbus)
+    participant FTEMP as fake_temperature&lt;br/&gt;(zbus listener)
+    participant FHUM as fake_humidity&lt;br/&gt;(zbus listener)
+    participant EVCHAN as sensor_event_chan&lt;br/&gt;(zbus)
+    participant GW as gateway listener&lt;br/&gt;(LOG_INF)
+    participant DASH as http_dashboard&lt;br/&gt;(ring buffer)
+    participant BROWSER as Browser&lt;br/&gt;GET /api/data
+
+    Note over TMR: Every AUTO_PUBLISH_MS
+    TMR-&gt;&gt;TRIG: pub sensor_trigger_event&lt;br/&gt;{ source=TIMER, target_uid=0 }
+
+    Note over TRIG,FHUM: zbus dispatches to all listeners
+    TRIG-&gt;&gt;FTEMP: listener callback
+    FTEMP-&gt;&gt;FTEMP: read milli-°C → Q31 encode
+    FTEMP-&gt;&gt;EVCHAN: pub env_sensor_data&lt;br/&gt;{ uid, TEMPERATURE, q31, ts }
+
+    TRIG-&gt;&gt;FHUM: listener callback
+    FHUM-&gt;&gt;FHUM: read milli-%RH → Q31 encode
+    FHUM-&gt;&gt;EVCHAN: pub env_sensor_data&lt;br/&gt;{ uid, HUMIDITY, q31, ts }
+
+    Note over EVCHAN,DASH: zbus dispatches to all subscribers
+    EVCHAN-&gt;&gt;GW: listener callback → LOG_INF
+    EVCHAN-&gt;&gt;DASH: listener callback
+
+    Note over DASH: acquire k_spinlock
+    DASH-&gt;&gt;DASH: append (ts, q31) to ring buffer
+    Note over DASH: release k_spinlock
+
+    Note over BROWSER,DASH: Later — HTTP GET /api/data
+    BROWSER-&gt;&gt;DASH: HTTP GET /api/data
+    Note over DASH: acquire k_spinlock
+    DASH-&gt;&gt;DASH: memcpy snapshot
+    Note over DASH: release k_spinlock
+    DASH-&gt;&gt;DASH: serialize snapshot → JSON&lt;br/&gt;(no lock held)
+    DASH--&gt;&gt;BROWSER: 200 OK { sensors: [...] }
+</div>
+<h2 id="library-dependencies">Library Dependencies</h2>
+<p>Inter-library dependency graph.</p>
+<div class="mermaid">graph TD
+    APP["apps/gateway\n(application)"]
+
+    SE["sensor_event\nenv_sensor_data + chan"]
+    ST["sensor_trigger\ntrigger event + chan"]
+    SR["sensor_registry\nuid → metadata"]
+    FS["fake_sensors\nDT-driven drivers"]
+    SNTP["sntp_sync\nwall-clock SNTP"]
+    HTTP["http_dashboard\nweb dashboard + API"]
+    CLK["clock_display\nHH:MM ticker"]
+    LVGL["lvgl_display\nSDL window"]
+    CC["config_cmd\ncmd channel"]
+    LOC["location_registry\nnamed locations"]
+    SEL["sensor_event_log\nconsole logger"]
+    RS["remote_sensor\ntransport abstraction"]
+    FRS["fake_remote_sensor\ntesting stub"]
+    MQTT["mqtt_publisher\nMQTT egress"]
+
+    ZBUS(["ZBUS\n(Zephyr)"])
+    NET(["NETWORKING\n(Zephyr)"])
+    HTTPD(["HTTP_SERVER\n(Zephyr)"])
+    LVGLLIB(["LVGL + DISPLAY\n(Zephyr)"])
+    SNTPLIB(["SNTP\n(Zephyr)"])
+    SETTINGS(["SETTINGS\n(Zephyr)"])
+
+    APP --&gt;|Kconfig| SE
+    APP --&gt;|Kconfig| ST
+    APP --&gt;|Kconfig| SR
+    APP --&gt;|Kconfig| FS
+    APP --&gt;|Kconfig| SNTP
+    APP --&gt;|Kconfig| HTTP
+    APP --&gt;|Kconfig| CLK
+    APP --&gt;|Kconfig| LVGL
+    APP --&gt;|Kconfig| CC
+    APP --&gt;|Kconfig| LOC
+    APP --&gt;|Kconfig| SEL
+    APP --&gt;|Kconfig| RS
+    APP --&gt;|Kconfig| FRS
+    APP --&gt;|Kconfig| MQTT
+
+    FS --&gt; SE
+    FS --&gt; ST
+    FS --&gt; SR
+    FS --&gt; CC
+
+    HTTP --&gt; SE
+    HTTP --&gt; SR
+    HTTP --&gt; LOC
+    HTTP --&gt; CC
+    HTTP --&gt; HTTPD
+
+    SNTP --&gt; CC
+    SNTP --&gt; NET
+    SNTP --&gt; SNTPLIB
+
+    SEL --&gt; SE
+
+    RS --&gt; SE
+    RS --&gt; SR
+    RS --&gt; SETTINGS
+    FRS --&gt; RS
+
+    MQTT --&gt; SE
+    MQTT --&gt; NET
+
+    LOC --&gt; SETTINGS
+
+    SE --&gt; ZBUS
+    ST --&gt; ZBUS
+    SR --&gt; ZBUS
+    CC --&gt; ZBUS
+
+    HTTP --&gt; NET
+    LVGL --&gt; LVGLLIB
+
+    style APP fill:#dbeafe,stroke:#3b82f6
+    style ZBUS fill:#fce7f3,stroke:#db2777
+    style NET fill:#fce7f3,stroke:#db2777
+    style HTTPD fill:#fce7f3,stroke:#db2777
+    style LVGLLIB fill:#fce7f3,stroke:#db2777
+    style SNTPLIB fill:#fce7f3,stroke:#db2777
+    style SETTINGS fill:#fce7f3,stroke:#db2777
+</div>
+<h2 id="boot-sequence">Boot Sequence</h2>
+<p>SYS_INIT boot ordering by priority.</p>
+<div class="mermaid">sequenceDiagram
+    participant KERNEL as Zephyr Kernel
+    participant SNTP as sntp_sync&lt;br/&gt;priority 80
+    participant FT as fake_temperature&lt;br/&gt;priority 90
+    participant FH as fake_humidity&lt;br/&gt;priority 91
+    participant LVGL as lvgl_display&lt;br/&gt;priority 91
+    participant CO2 as fake_co2&lt;br/&gt;priority 92
+    participant RSM as remote_sensor_mgr&lt;br/&gt;priority 92
+    participant VOC as fake_voc&lt;br/&gt;priority 93
+    participant FRS as fake_remote_sensor&lt;br/&gt;priority 93
+    participant RSET as remote_sensor_settings&lt;br/&gt;priority 94
+    participant SEL as sensor_event_log&lt;br/&gt;priority 95
+    participant LOC as location_registry&lt;br/&gt;priority 96
+    participant DASH as http_dashboard&lt;br/&gt;priority 97
+    participant MQTTP as mqtt_publisher&lt;br/&gt;priority 98
+    participant TMR as fake_sensors_timer&lt;br/&gt;priority 99
+    participant CLK as clock_display&lt;br/&gt;priority 99
+    participant MAIN as main()
+
+    KERNEL-&gt;&gt;SNTP: sntp_sync_init()
+    SNTP-&gt;&gt;SNTP: initial SNTP query (blocking)
+    SNTP-&gt;&gt;SNTP: schedule periodic_work (K_SECONDS(3600))
+    SNTP--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;FT: fake_temperature_init()
+    FT-&gt;&gt;FT: sensor_registry_register(uid, ...)
+    FT-&gt;&gt;FT: zbus_chan_add_obs(sensor_trigger_chan)
+    FT-&gt;&gt;FT: pub sensor_trigger_event(STARTUP)
+    FT--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;FH: fake_humidity_init()
+    FH-&gt;&gt;FH: sensor_registry_register(uid, ...)
+    FH-&gt;&gt;FH: zbus_chan_add_obs(sensor_trigger_chan)
+    FH-&gt;&gt;FH: pub sensor_trigger_event(STARTUP)
+    FH--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;LVGL: lvgl_display_init()
+    LVGL-&gt;&gt;LVGL: zbus_chan_add_obs(sensor_event_chan)
+    LVGL-&gt;&gt;LVGL: start LVGL workqueue thread
+    LVGL--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;CO2: fake_co2_init()
+    CO2-&gt;&gt;CO2: sensor_registry_register(uid, ...)
+    CO2-&gt;&gt;CO2: zbus_chan_add_obs(sensor_trigger_chan)
+    CO2-&gt;&gt;CO2: pub sensor_trigger_event(STARTUP)
+    CO2--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;RSM: remote_sensor_manager_init()
+    RSM-&gt;&gt;RSM: zbus_chan_add_obs(remote_discovery_chan)
+    RSM-&gt;&gt;RSM: pub remote_scan_ctrl_event(START_ALL)
+    RSM--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;VOC: fake_voc_init()
+    VOC-&gt;&gt;VOC: sensor_registry_register(uid, ...)
+    VOC-&gt;&gt;VOC: zbus_chan_add_obs(sensor_trigger_chan)
+    VOC-&gt;&gt;VOC: pub sensor_trigger_event(STARTUP)
+    VOC--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;FRS: fake_remote_sensor_init()
+    FRS-&gt;&gt;FRS: init node state + start simulation timers
+    FRS--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;RSET: remote_sensor_settings_init()
+    RSET-&gt;&gt;RSET: load persisted peer list → re-register known remote sensors
+    RSET--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;SEL: sensor_event_log_init()
+    SEL-&gt;&gt;SEL: zbus_chan_add_obs(sensor_event_chan)
+    Note over SEL: also at priority 95: sensor_registry settings load,&lt;br/&gt;sntp_sync config_cmd init, fake_sensors config_cmd init
+    SEL--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;LOC: location_registry_settings_load()
+    LOC-&gt;&gt;LOC: load persisted location names from settings
+    LOC--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;DASH: http_dashboard_init()
+    DASH-&gt;&gt;DASH: zbus_chan_add_obs(sensor_event_chan)
+    DASH-&gt;&gt;DASH: HTTP_SERVICE start on port 8080
+    DASH--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;MQTTP: mqtt_publisher_init()
+    MQTTP-&gt;&gt;MQTTP: zbus_chan_add_obs(sensor_event_chan)
+    MQTTP-&gt;&gt;MQTTP: start publisher thread (connect to broker)
+    MQTTP--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;TMR: fake_sensors_timer_init()
+    TMR-&gt;&gt;TMR: k_timer_start(AUTO_PUBLISH_MS)
+    TMR--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;CLK: clock_display_init()
+    CLK-&gt;&gt;CLK: k_work_reschedule(K_NO_WAIT)
+    CLK--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;MAIN: main()
+    Note over MAIN: if CONFIG_LVGL_DISPLAY:&lt;br/&gt;  lvgl_display_run() — never returns&lt;br/&gt;else:&lt;br/&gt;  k_sleep(K_FOREVER)
+</div>
+<h2 id="http-config-flow">HTTP Config Flow</h2>
+<p>POST /api/config side-effects.</p>
+<div class="mermaid">sequenceDiagram
+    participant BR as Browser
+    participant HTTP as HTTP Server Thread
+    participant CC as config_cmd_chan&lt;br/&gt;(zbus)
+    participant FS as fake_sensors_timer
+    participant SNTP as sntp_sync
+    participant SR as sensor_registry
+    participant LOC as location_registry
+    participant MQTTP as mqtt_publisher
+
+    BR-&gt;&gt;HTTP: POST /api/config&lt;br/&gt;trigger_interval_ms=2000&lt;br/&gt;sntp_server=ntp.ubuntu.com&lt;br/&gt;action=sntp_resync&lt;br/&gt;sensor_1_name=Kitchen&lt;br/&gt;mqtt_enabled=true
+
+    Note over HTTP: Parse URL-encoded body&lt;br/&gt;form_extract() each field
+
+    alt trigger_interval_ms present
+        HTTP-&gt;&gt;CC: publish CONFIG_CMD_SET_TRIGGER_INTERVAL
+        CC--&gt;&gt;FS: zbus listener callback
+        FS-&gt;&gt;FS: k_timer_start(&amp;g_auto_timer,&lt;br/&gt;K_MSEC(2000), K_MSEC(2000))
+    end
+
+    alt sntp_server present
+        HTTP-&gt;&gt;HTTP: update sntp_server_buf&lt;br/&gt;(spinlock-protected snapshot)
+    end
+
+    alt action=sntp_resync
+        HTTP-&gt;&gt;CC: publish CONFIG_CMD_SNTP_RESYNC
+        CC--&gt;&gt;SNTP: zbus listener callback
+        SNTP-&gt;&gt;SNTP: k_work_reschedule(&amp;immediate_work, K_NO_WAIT)
+        Note over SNTP: Runs async in work queue&lt;br/&gt;performs SNTP query
+    end
+
+    alt sensor_&lt;uid&gt;_name present and USER_META enabled
+        HTTP-&gt;&gt;SR: sensor_registry_set_meta(uid, .display_name="Kitchen")
+        alt SETTINGS enabled
+            SR-&gt;&gt;SR: settings_save_subtree(...)
+        end
+    end
+
+    alt action=add_location / action=remove_location
+        HTTP-&gt;&gt;LOC: location_registry_add/remove(name)
+        alt SETTINGS enabled
+            LOC-&gt;&gt;LOC: settings_save_subtree(...)
+        end
+    end
+
+    alt mqtt_* fields present
+        HTTP-&gt;&gt;CC: publish CONFIG_CMD_MQTT_SET_*
+        CC--&gt;&gt;MQTTP: zbus listener callback
+        MQTTP-&gt;&gt;MQTTP: update config, reconnect if needed
+    end
+
+    HTTP--&gt;&gt;BR: 303 See Other → /config
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@11.12.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

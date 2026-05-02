@@ -442,24 +442,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -476,36 +458,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#diagrams" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Diagrams
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -639,6 +591,34 @@
     
   
     Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
   
 
     
@@ -793,25 +773,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#diagrams" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Diagrams
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -860,45 +821,9 @@
 <td><a href="integration-tests/">integration-tests.md</a></td>
 <td>Pytest integration tests: harnesses, markers, data flow, session rules, HIL path</td>
 </tr>
-</tbody>
-</table>
-<h2 id="diagrams">Diagrams</h2>
-<p>Mermaid sources are in <a href="diagrams/"><code>diagrams/</code></a>. To render:</p>
-<pre><code class="language-bash">./generate-diagrams.sh          # SVG via mmdc or Docker; HTML preview if neither available
-./generate-diagrams.sh --html   # always render browser-viewable HTML
-./generate-diagrams.sh --check  # print which backend will be used
-</code></pre>
-<table>
-<thead>
 <tr>
-<th>Diagram</th>
-<th>What it shows</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="diagrams/system-overview.mmd">system-overview.mmd</a></td>
-<td>Layered component view</td>
-</tr>
-<tr>
-<td><a href="diagrams/zbus-channels.mmd">zbus-channels.mmd</a></td>
-<td>Publishers, channels, and subscribers</td>
-</tr>
-<tr>
-<td><a href="diagrams/data-flow.mmd">data-flow.mmd</a></td>
-<td>Sensor trigger → event → consumers sequence</td>
-</tr>
-<tr>
-<td><a href="diagrams/library-deps.mmd">library-deps.mmd</a></td>
-<td>Inter-library dependency graph</td>
-</tr>
-<tr>
-<td><a href="diagrams/init-sequence.mmd">init-sequence.mmd</a></td>
-<td>SYS_INIT boot ordering</td>
-</tr>
-<tr>
-<td><a href="diagrams/http-flow.mmd">http-flow.mmd</a></td>
-<td>POST /api/config side-effects</td>
+<td><a href="diagrams/">diagrams.md</a></td>
+<td>All architecture diagrams rendered inline</td>
 </tr>
 </tbody>
 </table>
