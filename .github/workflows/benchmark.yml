@@ -154,5 +154,9 @@ jobs:
           cp -r site/* .
           cp index.html .
           git add -A
-          git diff --staged --exit-code || git commit -m "docs: update GitHub Pages $(date +'%Y-%m-%d %H:%M:%S')"
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: update GitHub Pages $(date +'%Y-%m-%d %H:%M:%S')"
+          fi
           git push
