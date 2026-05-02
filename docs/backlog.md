@@ -24,25 +24,6 @@ contains only `LOG_MODULE_REGISTER` + `return 0`.
 
 ---
 
-## [ADR-008-REVIEW] Review main.c files exceeding 50-line rule
-
-Both app `main.c` files exceed the ADR-008 50-line rule:
-- `apps/gateway/src/main.c`: 77 lines — contains a zbus listener callback with
-  sensor event logging logic
-- `apps/sensor-node/src/main.c`: 66 lines — same pattern
-
-**Goal:** Assess whether the excess logic qualifies as app-specific policy (and
-is therefore acceptable per the "When app-level C code is acceptable" section)
-or should be extracted to a library.
-
-**Acceptance:**
-- Decision documented: either the ADR's 50-line limit is adjusted for these
-  specific cases with justification, or the logic is extracted to a library.
-
-Reference: ADR-008 §`main.c` 50-line rule.
-
----
-
 ## [ADR-010-DEVCONTAINER] Align devcontainer and CI on single approved image
 
 **Status: BLOCKED** — remote container build currently does not work.
@@ -60,10 +41,6 @@ from the ADR-010 requirement that local and CI use the same image.
   ADR-010 to document the local-build approach.
 
 Additional CI gaps to fix alongside:
-- Add `ZEPHYR_BASE=/home/zephyr/workspace/zephyr` prefix to all `west build`
-  and `west twister` commands in `.github/workflows/ci.yml`.
-- Replace `native_sim` shorthand with `native_sim/native/64` in CI matrix and
-  test job.
 - Add `zephyr-checkpatch-diff` hook to `.pre-commit-config.yaml`.
 - Add `ci-success` aggregator job to block PR merge on failure.
 
@@ -93,28 +70,6 @@ different scaling.
 - Unit test: register two sensors of the same type with different ranges; verify independent decode.
 
 Reference: ADR-003 §Q31 encoding, §sensor_uid contract.
-
----
-
-## [SENSOR-REGISTRY-REMOTE-UID] Persist remote sensor UIDs via Zephyr settings backend
-
-Remote sensors (LoRa, BLE) cannot be pre-assigned UIDs in the gateway's
-devicetree. Their UIDs must be generated at first registration and persisted
-across gateway reboots so that display routing and MQTT topics remain stable.
-
-**Goal:** `sensor_registry_register_remote(node_id, type, scaling, &uid)` assigns
-a pseudo-random UID on first call, saves it via `CONFIG_SETTINGS`, and returns
-the same UID on subsequent calls for the same `node_id`.
-
-**Acceptance:**
-- UID generated in range `0x1000–0xFFFF`; collision-checked against all known UIDs.
-- Settings key format: `sens/rem/<node_id_hex>` → `uint32_t` UID.
-- UID survives gateway reboot (settings loaded at boot).
-- `native_sim` uses a RAM-backed settings stub (no flash required).
-- Build-time check or documentation enforces that local UIDs stay in `0x0001–0x0FFF`.
-- Unit test: register same node_id twice; assert same UID returned; assert no collision with local UIDs.
-
-Reference: ADR-003 §UID assignment — remote sensors.
 
 ---
 
