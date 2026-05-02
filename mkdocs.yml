@@ -1,0 +1,38 @@
+site_name: Weather Station Documentation
+site_url: https://tobiwan88.github.io/weather-station/
+repo_url: https://github.com/tobiwan88/weather-station
+repo_name: tobiwan88/weather-station
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Architecture:
+    - Overview: architecture/index.md
+    - System Overview: architecture/system-overview.md
+    - Event Bus: architecture/event-bus.md
+    - Composition Model: architecture/composition-model.md
+    - Integration Tests: architecture/integration-tests.md
+    - Concurrency: architecture/concurrency.md
+  - ADR:
+    - adr/index.md
+  - Backlog: backlog.md
