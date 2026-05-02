@@ -11,10 +11,13 @@ Emits module-level summaries suitable for trend tracking:
 
 import argparse
 import json
+import logging
 import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+
+logger = logging.getLogger("parse_footprint")
 
 # Matches tree lines like:
 # "│   ├── nrfx_gpiote.c                       132   2.85%  -"
@@ -76,11 +79,12 @@ class TreeNode:
     children: list["TreeNode"] = field(default_factory=list)
 
 
-def parse_report(text: str) -> tuple[list[TreeNode], int]:
+def parse_report(text: str, label: str) -> tuple[list[TreeNode], int]:
     """Parse a rom_report or ram_report tree into root nodes and total size."""
     roots: list[TreeNode] = []
     total_size = 0
     stack: list[TreeNode] = []
+    tree_lines = 0
 
     for line in text.splitlines():
         line = line.rstrip()
@@ -99,6 +103,7 @@ def parse_report(text: str) -> tuple[list[TreeNode], int]:
         if not m:
             continue
 
+        tree_lines += 1
         indent = m.group("indent")
         name = m.group("name")
         size = int(m.group("size"))
@@ -115,6 +120,14 @@ def parse_report(text: str) -> tuple[list[TreeNode], int]:
             if stack:
                 stack[-1].children.append(node)
             stack.append(node)
+
+    logger.info("%s: %d lines, %d tree lines parsed, total=%d bytes", label, len(text.splitlines()), tree_lines, total_size)
+
+    if total_size == 0:
+        logger.warning("%s: total size is zero — report may be empty or malformed", label)
+
+    if tree_lines == 0:
+        logger.error("%s: no tree lines found — report is likely empty or build failed", label)
 
     return roots, total_size
 
@@ -160,6 +173,7 @@ def extract_workspace_entries(roots: list[TreeNode], prefix: str, report_type: s
             ws_root = r
             break
     if not ws_root:
+        logger.warning("%s: no WORKSPACE partition found in %s report", prefix, report_type)
         return entries
 
     entries.append({
@@ -170,6 +184,7 @@ def extract_workspace_entries(roots: list[TreeNode], prefix: str, report_type: s
 
     ws_node = _find_child(ws_root, "weather-station")
     if not ws_node:
+        logger.warning("%s: no weather-station directory in WORKSPACE (%s report)", prefix, report_type)
         return entries
 
     entries.append({
@@ -208,6 +223,8 @@ def extract_workspace_entries(roots: list[TreeNode], prefix: str, report_type: s
                     "unit": "bytes",
                     "value": lib_entry.size,
                 })
+            else:
+                logger.debug("%s: skipping unknown WS lib '%s' (%s report)", prefix, child.name, report_type)
 
     return entries
 
@@ -221,6 +238,7 @@ def extract_zephyr_entries(roots: list[TreeNode], prefix: str, report_type: str)
             zb_root = r
             break
     if not zb_root:
+        logger.warning("%s: no ZEPHYR_BASE partition found in %s report", prefix, report_type)
         return entries
 
     entries.append({
@@ -279,23 +297,34 @@ def main() -> None:
     parser.add_argument("--ram", required=True, help="Path to ram_report text file")
     parser.add_argument("--label", default="gateway-frdm-mcxn947", help="Benchmark label")
     parser.add_argument("-o", "--output", required=True, help="Output JSON file path")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging")
     args = parser.parse_args()
+
+    logging.basicConfig(
+        level=logging.DEBUG if args.verbose else logging.INFO,
+        format="%(levelname)s: %(message)s",
+    )
 
     rom_path = Path(args.rom)
     ram_path = Path(args.ram)
 
     if not rom_path.exists():
-        print(f"Error: ROM report not found at {rom_path}. Did the rom_report build succeed?", file=sys.stderr)
+        logger.error("ROM report not found at %s. Did the rom_report build succeed?", rom_path)
         sys.exit(1)
     if not ram_path.exists():
-        print(f"Error: RAM report not found at {ram_path}. Did the ram_report build succeed?", file=sys.stderr)
+        logger.error("RAM report not found at %s. Did the ram_report build succeed?", ram_path)
         sys.exit(1)
+
+    logger.info("Reading ROM report from %s", rom_path)
+    logger.info("Reading RAM report from %s", ram_path)
 
     rom_text = rom_path.read_text()
     ram_text = ram_path.read_text()
 
-    rom_roots, rom_total = parse_report(rom_text)
-    ram_roots, ram_total = parse_report(ram_text)
+    logger.info("ROM report: %d bytes raw, RAM report: %d bytes raw", len(rom_text), len(ram_text))
+
+    rom_roots, rom_total = parse_report(rom_text, "ROM")
+    ram_roots, ram_total = parse_report(ram_text, "RAM")
 
     entries: list[dict] = []
 
@@ -318,8 +347,9 @@ def main() -> None:
     # Stack sizes
     entries.extend(extract_stack_entries(ram_roots, args.label))
 
-    Path(args.output).write_text(json.dumps(entries, indent=2) + "\n")
-    print(f"Wrote {len(entries)} entries to {args.output}")
+    output_path = Path(args.output)
+    output_path.write_text(json.dumps(entries, indent=2) + "\n")
+    logger.info("Wrote %d entries to %s", len(entries), output_path)
 
 
 if __name__ == "__main__":
