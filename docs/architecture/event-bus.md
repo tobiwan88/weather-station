@@ -2,24 +2,27 @@
 
 ## Channels
 
-The system uses five zbus channels, each with a single owner and a distinct role:
+The system uses four zbus channels, each with a single owner and a distinct role:
 
 | Channel | Owner | Direction |
 |---|---|---|
 | `sensor_trigger_chan` | `lib/sensor_trigger` | trigger sources → sensor drivers |
 | `sensor_event_chan` | `lib/sensor_event` | sensor drivers → consumers |
-| `config_cmd_chan` | `lib/config_cmd` | config producers (HTTP) → consumers (fake_sensors, sntp_sync) |
-| `remote_discovery_chan` | `lib/remote_sensor` | transport adapters → remote_sensor_manager |
+| `config_cmd_chan` | `lib/config_cmd` | config producers (HTTP) → consumers (fake_sensors, sntp_sync, mqtt_publisher) |
 | `remote_scan_ctrl_chan` | `lib/remote_sensor` | manager / shell → transport adapters |
+
+Remote sensor discovery uses a `k_msgq` (not zbus) inside `remote_sensor_manager` for ordering guarantees. Transport adapters call `remote_sensor_announce_disc()` which enqueues into the manager's private message queue.
+
+For the sensor-node ↔ gateway FIFO communication path, `pipe_publisher` writes length-prefixed protobuf frames to a POSIX FIFO and `pipe_transport` reads them back, publishing decoded events to `sensor_event_chan`. This path bypasses zbus entirely for cross-process communication.
 
 The core sensor pipeline uses two channels. Separating trigger from event solves the question of **who decides when to sample** without coupling any component:
 
 - `sensor_trigger_chan` — *when* to sample. Any code that wants sensors to fire publishes here. Sensor drivers don't know or care who triggered them.
 - `sensor_event_chan` — *what was measured*. Any code that wants sensor readings subscribes here. Trigger sources don't know or care what consumes the data.
 
-`config_cmd_chan` applies the same pattern to configuration: `http_dashboard` publishes a `config_cmd_event` when the user changes settings; `fake_sensors` and `sntp_sync` subscribe independently. Neither module references the other.
+`config_cmd_chan` applies the same pattern to configuration: `http_dashboard` publishes a `config_cmd_event` when the user changes settings; `fake_sensors`, `sntp_sync`, and `mqtt_publisher` subscribe independently. Neither module references the other.
 
-`remote_discovery_chan` and `remote_scan_ctrl_chan` follow the same pattern for the remote sensor layer — transport adapters and the manager exchange events without direct calls.
+`remote_scan_ctrl_chan` follows the same pattern for the remote sensor layer — the manager and shell exchange scan control events without direct calls to transport adapters.
 
 ---
 

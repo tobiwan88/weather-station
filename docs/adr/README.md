@@ -28,6 +28,7 @@ Use these documents when:
 | [ADR-010](ADR-010-ci-and-dev-environment.md) | CI/CD and Developer Environment | Accepted |
 | [ADR-011](ADR-011-http-dashboard.md) | HTTP Dashboard Web Interface | Accepted |
 | [ADR-012](ADR-012-integration-test-architecture.md) | Pytest Integration Test Architecture | Accepted |
+| [ADR-013](ADR-013-mqtt-configurable.md) | MQTT Configurable | Accepted |
 
 ---
 

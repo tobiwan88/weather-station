@@ -26,14 +26,20 @@ Add `lib/http_dashboard` as a self-contained Zephyr library enabled by `CONFIG_H
 
 HTTP was chosen over the alternatives listed below because it requires no client install, works from any browser on the LAN, and Zephyr's HTTP server is already present in the tree.
 
-### 2. Four endpoints
+### 2. Endpoints
 
 | Endpoint | Purpose |
 |---|---|
 | `GET /` | Embedded Chart.js timeseries page; polls `/api/data` every second |
 | `GET /config` | Embedded HTML configuration form |
+| `GET /login` | Login page (public, no auth required) |
 | `GET /api/data` | JSON snapshot of the ring buffer (last N readings per sensor) |
-| `GET /api/config` / `POST /api/config` | Read or update runtime config: `trigger_interval_ms`, `sntp_server`, `action=sntp_resync` |
+| `GET /api/config` / `POST /api/config` | Read or update runtime config: `trigger_interval_ms`, `sntp_server`, `action=sntp_resync`, sensor metadata, location management, MQTT settings |
+| `POST /api/login` | Authenticate with username/password; returns session cookie |
+| `POST /api/logout` | Invalidate current session |
+| `POST /api/change-credentials` | Update username and password (authenticated) |
+| `POST /api/token/rotate` | Rotate the API bearer token (authenticated) |
+| `GET /api/locations` | JSON list of registered locations (authenticated) |
 
 The split between a human UI (`/`, `/config`) and a data API (`/api/*`) keeps the API stable even if the HTML changes.
 
