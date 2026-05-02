@@ -71,11 +71,12 @@ jobs:
             west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
               --build-dir "${GITHUB_WORKSPACE}/build/bench" \
               "${WEST_ROOT}/weather-station/apps/gateway"
-          # rom_report outputs tree to stderr
+          # rom_report outputs tree to both stdout and stderr depending on env
           ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
             west build --build-dir "${GITHUB_WORKSPACE}/build/bench" --target rom_report \
-            2>"${GITHUB_WORKSPACE}/rom_report.txt" >/dev/null
+            >"${GITHUB_WORKSPACE}/rom_report.txt" 2>&1
+          echo "ROM report lines: $(wc -l < "${GITHUB_WORKSPACE}/rom_report.txt")"
 
       - name: Build RAM report
         run: |
@@ -84,7 +85,8 @@ jobs:
           ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
             west build --build-dir "${GITHUB_WORKSPACE}/build/bench" --target ram_report \
-            2>"${GITHUB_WORKSPACE}/ram_report.txt" >/dev/null
+            >"${GITHUB_WORKSPACE}/ram_report.txt" 2>&1
+          echo "RAM report lines: $(wc -l < "${GITHUB_WORKSPACE}/ram_report.txt")"
 
       - name: Parse reports
         run: |
@@ -100,7 +102,7 @@ jobs:
           name: Weather Station Footprint
           tool: customSmallerIsBetter
           output-file-path: benchmark-data.json
-          auto-push: true
+          auto-push: ${{ github.event_name == 'push' }}
           gh-pages-branch: gh-pages
           benchmark-data-dir-path: dev/bench
           alert-threshold: "110%"
