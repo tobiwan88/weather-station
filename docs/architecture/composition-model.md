@@ -98,7 +98,8 @@ The two structs in `include/common/weather_messages.h` are the system's shared c
 `main.c` for the gateway application is kept under 50 lines. It contains:
 
 - `LOG_MODULE_REGISTER` — names the log module
-- One `SYS_INIT` call registering the gateway's zbus listener (the one that logs every sensor event)
 - `main()` itself: either `lvgl_display_run()` (which never returns) or `k_sleep(K_FOREVER)`
 
 If something cannot be expressed in that budget, it belongs in a library with its own `SYS_INIT`. This rule forces a clean separation: application policy lives in `prj.conf`; mechanism lives in libraries.
+
+> **Known violation:** `main()` currently calls `lvgl_display_run()` directly. This is tracked in the backlog as `[ADR-008-RULE4]`. The fix is to start the LVGL thread from `lvgl_display_init()` via `SYS_INIT`, making `main.c` a pure `LOG_MODULE_REGISTER + return 0`.

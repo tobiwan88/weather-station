@@ -138,6 +138,7 @@ all `SYS_INIT` callbacks have completed before any test runs.
 | `http` | Uses HttpHarness | ~10 tests |
 | `mqtt` | Uses MqttHarness (requires broker) | 3-4 tests |
 | `e2e` | Full pipeline across multiple surfaces | 5-6 tests |
+| `system` | Multi-process tests (sensor-node + gateway) | 1-2 tests |
 
 ---
 
@@ -160,10 +161,12 @@ tests/integration/
     │   ├── shell_harness.py
     │   ├── http_harness.py
     │   └── mqtt_harness.py
-    ├── test_shell.py       ← [smoke, shell] help, sensors, uptime, set/trigger
-    ├── test_http_api.py    ← [smoke, http] endpoints, JSON schema, config POST
-    ├── test_sensor_flow.py ← [e2e] trigger→HTTP, trigger→MQTT, value propagation
-    └── test_config.py      ← [http, shell] trigger interval, SNTP resync
+    ├── test_shell.py          ← [smoke, shell] help, sensors, uptime, set/trigger
+    ├── test_http_api.py       ← [smoke, http] endpoints, JSON schema, config POST
+    ├── test_config.py         ← [http, shell] trigger interval, SNTP resync
+    ├── test_sensor_flow.py    ← [e2e] trigger→HTTP, trigger→MQTT, value propagation
+    ├── test_mqtt_config.py    ← [http, shell, mqtt, e2e] MQTT runtime config via HTTP/shell
+    └── test_sensor_node_gateway.py ← [system, http, shell] sensor-node subprocess → FIFO → gateway
 ```
 
 ---
@@ -176,7 +179,7 @@ tests/integration/
 | `device_ready` | session | Blocks until shell prompt; guarantees all `SYS_INIT` callbacks complete |
 | `shell_harness` | session | `ShellHarness` instance (depends on `device_ready`) |
 | `http_harness` | session | `HttpHarness` instance with `wait_until_ready()` called (depends on `device_ready`) |
-| `authed_harness` | session | `http_harness` with bearer token loaded via `get_token_from_shell()`; for authenticated `POST /api/config` tests |
+| `authed_harness` | session | `http_harness` with bearer token loaded via `get_token_from_shell()`; for authenticated `POST /api/config` tests when auth is enabled |
 | `mqtt_harness` | session | `MqttHarness` instance; auto-skips test if broker unreachable |
 | `gdb_crash_watcher` | session | Optional; attaches GDB to the DUT process and captures a backtrace on crash |
 
