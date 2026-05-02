@@ -221,41 +221,26 @@ jobs:
           reporter: java-junit
           fail-on-error: false
 
-  # ── 4. Docs (Mermaid diagrams) ───────────────────────────────────────────────
+  # ── 4. Docs (MkDocs build) ───────────────────────────────────────────────────
   docs:
-    name: Docs (render diagrams)
+    name: Docs (MkDocs build)
     runs-on: ubuntu-latest
     needs: lint
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Node.js + mmdc
-        run: |
-          npm install -g @mermaid-js/mermaid-cli --silent
+      - name: Install MkDocs, Material theme, and Mermaid plugin
+        run: pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
 
-      - name: Render Mermaid diagrams
-        run: |
-          # GitHub Actions runners block the Chrome sandbox — pass --no-sandbox.
-          echo '{"args":["--no-sandbox","--disable-setuid-sandbox"]}' > /tmp/puppeteer.json
-          mkdir -p docs/architecture/diagrams/rendered
-          failed=0
-          for src in docs/architecture/diagrams/*.mmd; do
-            name=$(basename "${src%.mmd}")
-            echo "Rendering ${name}..."
-            mmdc -i "$src" \
-                 -o "docs/architecture/diagrams/rendered/${name}.svg" \
-                 --backgroundColor transparent \
-                 --puppeteerConfigFile /tmp/puppeteer.json \
-                 || { echo "FAILED: $src"; failed=1; }
-          done
-          exit $failed
+      - name: Build MkDocs site
+        run: mkdocs build --strict
 
-      - name: Upload rendered diagrams
+      - name: Upload site artifact
         uses: actions/upload-artifact@v4
         with:
-          name: rendered-docs
-          path: docs/architecture/diagrams/rendered/
+          name: mkdocs-site
+          path: site/
           retention-days: 14
 
   # ── 5. Snapshot (PR only) ────────────────────────────────────────────────────
@@ -284,11 +269,11 @@ jobs:
           name: coverage-report
           path: snapshot/coverage/
 
-      - name: Download rendered docs
+      - name: Download MkDocs site
         uses: actions/download-artifact@v4
         with:
-          name: rendered-docs
-          path: snapshot/docs/diagrams/
+          name: mkdocs-site
+          path: snapshot/docs/
 
       - name: Download Twister results
         uses: actions/download-artifact@v4

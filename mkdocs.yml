@@ -33,6 +33,12 @@ nav:
     - Composition Model: architecture/composition-model.md
     - Integration Tests: architecture/integration-tests.md
     - Concurrency: architecture/concurrency.md
+    - Diagrams: architecture/diagrams.md
   - ADR:
     - adr/README.md
   - Backlog: backlog.md
+
+plugins:
+  - search
+  - mermaid2:
+      version: 11.12.0
