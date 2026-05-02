@@ -1,12 +1,12 @@
 # CLAUDE.md — weather-station
 
-Project context for AI coding agents. Full rationale: [`docs/adr/`](docs/adr/README.md).
+Project context for AI coding agents.
 
 ## Identity
 
 | | |
 |---|---|
-| **RTOS** | Zephyr v4.3.0 |
+| **RTOS** | Zephyr v4.4.0 |
 | **Topology** | West T2 — repo is both manifest and module |
 | **Target** | `native_sim/native/64` |
 | **Container** | devcontainer; Xvfb `:1` + x11vnc port 5900 |
@@ -21,9 +21,7 @@ west patch apply          # apply all patches in zephyr/patches.yml
 
 Binary: `/home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe`
 
-Build and test: `/build-and-test`. Display problems: `/display-reset`.
-
-Integration tests: `/run-integration-tests [marker]`. New test: `/new-integration-test`. New harness: `/new-harness`.
+Build and test: `/build-and-test`. Integration tests: `/run-integration-tests [marker]`. New test: `/new-integration-test`. New harness: `/new-harness`. New library: `/new-lib`. New sensor instance: `/add-sensor-instance`.
 
 **CRITICAL — ZEPHYR_BASE:** Always prefix `west build` and `west twister` with `ZEPHYR_BASE=/home/zephyr/workspace/zephyr`; the env default points to a non-existent path. If builds fail with a stale path, delete `CMakeCache.txt`.
 
@@ -38,9 +36,20 @@ To add a new patch: `/west-patch`.
 
 **Do NOT** edit Zephyr source directly without a patch entry — changes are lost on `west patch clean` / `west update`.
 
+## Where to find design information
+
+| Document type | Location | Purpose |
+|---|---|---|
+| **ADRs** (why) | [`docs/adr/`](docs/adr/README.md) | Architectural decisions: context, rationale, alternatives, consequences |
+| **Architecture docs** (how) | [`docs/architecture/`](docs/architecture/README.md) | System overview, event bus, composition model, concurrency, test architecture |
+| **Diagrams** (visual) | [`docs/architecture/diagrams/`](docs/architecture/diagrams/) | Component view, channel map, data flow, library deps, init sequence, HTTP flow |
+| **Backlog** | [`docs/backlog.md`](docs/backlog.md) | Deferred features, known violations, future work |
+
+Always read the relevant ADRs before implementing a feature (e.g. ADR-003 + ADR-004 before any sensor driver work).
+
 ## Architecture rules (non-negotiable)
 
-**1. One event = one physical measurement.** Temp and humidity are separate `env_sensor_data` events.
+**1. One event = one physical measurement.** Temp and humidity are separate `env_sensor_data` events. See [ADR-003](docs/adr/ADR-003-sensor-event-data-model.md).
 
 **2. `env_sensor_data` is a flat struct — no pointers, no heap.** Fields: `sensor_uid` (uint32), `type` (enum), `q31_value` (Q31 int32), `timestamp_ms` (int64). Size: 20 bytes on 32-bit, 24 bytes on 64-bit (padding before `int64_t`).
 
@@ -52,7 +61,7 @@ To add a new patch: `/west-patch`.
 
 **6. `sensor_uid` is the identity key.** `sensor_registry` maps uid → metadata. Never hardcode UIDs in consumers.
 
-**7. zbus channel ownership is strict.** `ZBUS_CHAN_DEFINE` in exactly one `.c` per channel; `ZBUS_CHAN_DECLARE` in the public header only. Channels: `sensor_trigger_chan`, `sensor_event_chan`, `config_cmd_chan`, `remote_scan_ctrl_chan`. Discovery events use `k_msgq` (not zbus) inside `remote_sensor_manager` for ordering guarantees. See [ADR-002](docs/adr/ADR-002-zbus-as-system-bus.md).
+**7. zbus channel ownership is strict.** `ZBUS_CHAN_DEFINE` in exactly one `.c` per channel; `ZBUS_CHAN_DECLARE` in the public header only. Channels: `sensor_trigger_chan`, `sensor_event_chan`, `config_cmd_chan`, `remote_scan_ctrl_chan`. Discovery events use `k_msgq` (not zbus) inside `remote_sensor_manager`. See [ADR-002](docs/adr/ADR-002-zbus-as-system-bus.md).
 
 **8. Apps configure features via Kconfig only.** No `target_link_libraries()` in app `CMakeLists.txt`. See [ADR-001](docs/adr/ADR-001-repo-and-workspace-structure.md).
 
@@ -80,27 +89,47 @@ To add a new patch: `/west-patch`.
 4. **Review** — `/review` to spawn parallel sub-agents (architecture, security, C quality, embedded, tests) reviewing the patch from different angles.
 5. **PR** — `/open-pr` to push, create PR, watch CI, and fix failures until green.
 
-## HTTP dashboard (`lib/http_dashboard`)
+## Library catalog
 
-`CONFIG_HTTP_DASHBOARD=y`. Self-initialises via `SYS_INIT` at APPLICATION 97. Endpoints and Kconfig symbols: see [`README.md`](README.md#web-dashboard).
+All libraries under `lib/` are self-contained, Kconfig-gated, and self-wire via `SYS_INIT`. They communicate through zbus channels — never by calling each other's internal functions. Public read-only APIs (`sensor_registry`, `location_registry`) may be called by any library.
 
-`POST /api/config` form fields: `trigger_interval_ms`, `sntp_server`, `action=sntp_resync`.
+### Core channels
 
-- **Config decoupling:** POST publishes `config_cmd_event` on `config_cmd_chan` — does NOT call `fake_sensors`/`sntp_sync` directly.
-- **Concurrency:** `k_spinlock` + snapshot pattern (lock → memcpy → unlock → serialize).
-- **Linker:** `http_dashboard_sections.ld` required (`ITERABLE_SECTION_ROM(http_resource_desc_dashboard_svc, ...)`).
-- **Auth (`CONFIG_HTTP_DASHBOARD_AUTH=y`):** two mechanisms — browser gets a session cookie via `POST /api/login`; API clients use `Authorization: Bearer <token>` (shell: `http_dashboard token show`). Credentials and API token persisted in settings under `dash/user`, `dash/pass`, `dash/token`. All `/api/*` and `/config` endpoints require auth when enabled. Default credentials and session count are Kconfig-configurable (`lib/http_dashboard/Kconfig`).
+| Channel | Owner | Message type |
+|---|---|---|
+| `sensor_trigger_chan` | `lib/sensor_trigger` | `sensor_trigger_event` |
+| `sensor_event_chan` | `lib/sensor_event` | `env_sensor_data` |
+| `config_cmd_chan` | `lib/config_cmd` | `config_cmd_event` |
+| `remote_scan_ctrl_chan` | `lib/remote_sensor` | `remote_scan_ctrl_event` |
 
-## Key libraries
+### Sensor layer
 
-| Library | Notes |
-|---|---|
-| `config_cmd` | Owns `config_cmd_chan`. Commands: `CONFIG_CMD_SET_TRIGGER_INTERVAL` (arg=ms), `CONFIG_CMD_SNTP_RESYNC`. |
-| `location_registry` | Runtime CRUD for named locations. `location_registry_add/remove/exists/foreach`. Settings-persisted (`loc/`). |
-| `sensor_event_log` | No public API. Self-registers via `SYS_INIT`. Enable: `CONFIG_SENSOR_EVENT_LOG=y`. |
-| `remote_sensor` | Transport vtable (`REMOTE_TRANSPORT_DEFINE()`). Needs `remote_sensor_iterables.ld`. UID helpers: `remote_sensor_uid_from_addr()`, `remote_sensor_uid_from_node_id()`. Publish: `remote_sensor_publish_data(uid, type, q31)`. |
-| `fake_remote_sensor` | Testing stub implementing `remote_transport` vtable (`REMOTE_TRANSPORT_PROTO_FAKE`). |
-| `mqtt_publisher` | No public API. Self-registers via `SYS_INIT` (priority 98). Subscribes to `sensor_event_chan`. Topic: `{gw}/{location}/{display_name}/{type}`. Settings under `mqttp/` (server, port, user, pass, gw). Shell: `mqtt_pub status/set`. Requires `CONFIG_SENSOR_REGISTRY_USER_META=y`. Use `zsock_pollfd`/`zsock_poll()`/`ZSOCK_POLLIN` — not POSIX variants. |
+| Library | Kconfig | Role |
+|---|---|---|
+| `fake_sensors` | `CONFIG_FAKE_SENSORS` | DT-driven fake drivers (temp, humidity, CO2, VOC). Subscribes trigger chan, publishes event chan. Shell: `fake_sensors list/set/trigger`. Auto-publish timer at `CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS`. |
+| `sensor_registry` | `CONFIG_SENSOR_REGISTRY` | Runtime uid → metadata map. Sensors self-register at boot. User metadata via `CONFIG_SENSOR_REGISTRY_USER_META`: `sensor_registry_set_meta/get_meta/get_display_name/get_location`. Settings-persisted. |
+| `remote_sensor` | `CONFIG_REMOTE_SENSOR` | Transport-agnostic abstraction for wireless sensors. Vtable pattern (`REMOTE_TRANSPORT_DEFINE()`), manager thread, UID derivation. Needs `remote_sensor_iterables.ld`. Shell: `remote_sensor list/scan/pair/unpair`. |
+| `fake_remote_sensor` | `CONFIG_FAKE_REMOTE_SENSOR` | Testing stub implementing `remote_transport` vtable (`REMOTE_TRANSPORT_PROTO_FAKE`). |
+
+### Services
+
+| Library | Kconfig | Role |
+|---|---|---|
+| `config_cmd` | `CONFIG_CONFIG_CMD` | Owns `config_cmd_chan`. Commands: `SET_TRIGGER_INTERVAL`, `SNTP_RESYNC`, `MQTT_SET_ENABLED`, `MQTT_SET_BROKER`, `MQTT_SET_AUTH`, `MQTT_SET_GATEWAY`. |
+| `sntp_sync` | `CONFIG_SNTP_SYNC` | Wall-clock SNTP sync at boot + periodic. Dedicated thread. Subscribes config_cmd_chan for resync requests. |
+| `location_registry` | `CONFIG_LOCATION_REGISTRY` | Runtime CRUD for named locations. `add/remove/exists/foreach`. Settings-persisted (`loc/`). Shell: `location add/remove/list`. |
+| `clock_display` | `CONFIG_CLOCK_DISPLAY` | Logs HH:MM UTC every 60s via delayable work item. |
+| `sensor_event_log` | `CONFIG_SENSOR_EVENT_LOG` | No public API. Self-registers via `SYS_INIT`. Logs every sensor event to console. |
+
+### Output / connectivity
+
+| Library | Kconfig | Role |
+|---|---|---|
+| `http_dashboard` | `CONFIG_HTTP_DASHBOARD` | Web dashboard on port 8080. Chart.js timeseries, config page, auth (session cookie + bearer token). Self-init at APPLICATION 97. POST `/api/config` publishes on `config_cmd_chan` — does NOT call other libraries directly. Spinlock + snapshot pattern for ring buffer. Linker: `http_dashboard_sections.ld`. |
+| `lvgl_display` | `CONFIG_LVGL_DISPLAY` | SDL 320×240 window. Analog clock + sensor cards. Subscribes event chan. `lvgl_display_run()` blocks on main thread (known ADR-008 violation, tracked in backlog). |
+| `mqtt_publisher` | `CONFIG_MQTT_PUBLISHER` | Subscribes event chan. Topic: `{gw}/{location}/{display_name}/{type}`. Settings under `config/mqtt/` (server, port, user, pass, gw). Passwords base64-encoded. Shell: `mqtt_pub status/set`. Use `zsock_pollfd`/`zsock_poll()`/`ZSOCK_POLLIN` — not POSIX variants. |
+| `pipe_publisher` | `CONFIG_PIPE_PUBLISHER` | Writes `env_sensor_data` as length-prefixed protobuf to POSIX FIFO. Sensor-node side for integration testing. |
+| `pipe_transport` | `CONFIG_PIPE_TRANSPORT` | Reads from POSIX FIFO, decodes protobuf, publishes to `sensor_event_chan`. Gateway side for integration testing. |
 
 ## Integration tests (`tests/integration`)
 
@@ -114,7 +143,7 @@ Pytest via Twister `harness: pytest`. Full gateway on `native_sim/native/64`. Bu
 | MQTT (port 1883) | `MqttHarness` | `mqtt_harness` (auto-skips if no broker) |
 
 - **Page Object Model:** tests call harness methods, never raw strings.
-- **Markers:** `smoke`, `shell`, `http`, `mqtt`, `e2e`.
+- **Markers:** `smoke`, `shell`, `http`, `mqtt`, `e2e`, `system`.
 - **DUT scope = session:** one boot per suite; restore state after mutations.
 - **ZEPHYR_BASE override required:** `ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister ...`
 - **MQTT broker:** `mosquitto -p 1883 -d`; tests auto-skip if none running.
@@ -141,4 +170,4 @@ Pace every request pair with at least `time.sleep(0.3)`. After triggering a back
 operation that opens a socket (SNTP resync, scan), sleep long enough to cover the
 operation's worst-case duration: `presync_delay + timeout + buffer` (1.5 s for SNTP).
 
-See [ADR-012](docs/adr/ADR-012-integration-test-architecture.md).
+See [ADR-012](docs/adr/ADR-012-integration-test-architecture.md) and [`docs/architecture/integration-tests.md`](docs/architecture/integration-tests.md).
