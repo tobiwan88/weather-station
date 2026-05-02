@@ -134,13 +134,13 @@ jobs:
           git config --global user.name "CI Bot"
 
       - if: steps.changes.outputs.docs == 'true'
-        name: Install MkDocs and Material theme
-        run: pip install mkdocs mkdocs-material
+        name: Install MkDocs, Material theme, and Mermaid plugin
+        run: pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
 
       - if: steps.changes.outputs.docs == 'true'
         name: Build MkDocs site
         run: |
-          mkdocs build
+          mkdocs build --strict
           cp -r site /tmp/mkdocs-site
 
       - if: steps.changes.outputs.docs == 'true'
