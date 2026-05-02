@@ -157,7 +157,6 @@ jobs:
         name: Deploy to GitHub Pages
         run: |
           cp -r /tmp/mkdocs-site/* .
-          cp index.html .
           git add -A
           if git diff --staged --quiet; then
             echo "No changes to commit"
