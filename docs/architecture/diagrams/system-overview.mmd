@@ -4,7 +4,7 @@ title: Weather-Station System Architecture
 graph TB
     subgraph APP["APPLICATION LAYER"]
         GW["apps/gateway\nmain.c &lt;50 lines\nprj.conf (features)"]
-        SN["apps/sensor-node\n(future)"]
+        SN["apps/sensor-node\npipe_publisher egress\nprj.conf (lighter stack)"]
     end
 
     subgraph LIBS["LIBRARY LAYER (lib/)"]
@@ -28,6 +28,8 @@ graph TB
             RS["remote_sensor\ntransport abstraction + manager"]
             FRS["fake_remote_sensor\ntesting stub"]
             MQTT["mqtt_publisher\nMQTT egress"]
+            PIPE_PUB["pipe_publisher\nFIFO protobuf writer\n(sensor-node)"]
+            PIPE_TX["pipe_transport\nFIFO protobuf reader\n(gateway)"]
         end
     end
 
@@ -59,6 +61,10 @@ graph TB
     RS -->|subscribes| STC
     FRS -->|implements vtable| RS
     MQTT -->|subscribes| SEC
+    PIPE_PUB -->|publishes| SEC
+    PIPE_PUB -->|writes FIFO| SEC
+    PIPE_TX -->|reads FIFO| SEC
+    PIPE_TX -->|publishes| SEC
 
     SEC --> ZBUS
     STC --> ZBUS

@@ -52,3 +52,7 @@ zephyr/*
 
 # Pre-commit cache
 .pre-commit-cache/
+
+# Worktrees
+.worktrees/
+site/

@@ -89,6 +89,8 @@ static void my_sensor_on_trigger(const struct zbus_channel *chan)
 }
 ```
 
+> **Note:** The current fake sensor drivers publish directly in the trigger callback without `k_work` deferral. This is acceptable because fake sensors read from memory (no blocking I2C/SPI). Real hardware drivers **must** defer to `k_work` as shown above.
+
 **Step 3 — Sample and publish:**
 ```c
 static void my_sensor_work_fn(struct k_work *w)
