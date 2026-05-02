@@ -1,0 +1,1121 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/superpowers/specs/2026-04-29-sensor-node-gateway-comm-design/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Sensor-Node → Gateway Communication: System Test Design - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sensor-node-gateway-communication-system-test-design" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sensor-Node → Gateway Communication: System Test Design
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Goal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wire-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wire Protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libpipe_publisher-sensor-node-side" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lib/pipe_publisher (sensor-node side)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libpipe_transport-gateway-side" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lib/pipe_transport (gateway side)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-harness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Harness
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#out-of-scope-first-iteration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Out of Scope (first iteration)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="sensor-node-gateway-communication-system-test-design">Sensor-Node → Gateway Communication: System Test Design</h1>
+<p><strong>Date:</strong> 2026-04-29
+<strong>Status:</strong> Approved</p>
+<h2 id="goal">Goal</h2>
+<p>Add a system-level integration test that boots both the <code>gateway</code> and <code>sensor-node</code>
+binaries and verifies end-to-end data flow between them via a POSIX named pipe (FIFO).
+The existing <code>fake_remote_sensor</code> is kept for unit/smoke tests. This test covers the
+real sensor-node data pipeline: sensor reading → protobuf encode → FIFO → gateway
+decode → <code>sensor_event_chan</code> → HTTP <code>/api/data</code>.</p>
+<h2 id="architecture">Architecture</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────┐
+│ pytest / Twister                                                         │
+│                                                                          │
+│  Twister DUT                     SensorNodeHarness                      │
+│  gateway.exe ◄────────────────── sensor-node.exe                        │
+│    pipe_transport                  pipe_publisher                        │
+│         │                               │                               │
+│         └──── FIFO /tmp/ws-node-0 ──────┘                               │
+│                                                                          │
+│  ShellHarness ──► gateway shell          (trigger, verify registry)      │
+│  SensorNodeHarness ──► sensor-node shell  (set values, trigger)         │
+│  HttpHarness ──► GET /api/data           (assert readings arrived)       │
+└─────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>New components:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Location</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>proto/sensor_message.proto</code></td>
+<td>repo root</td>
+<td>Canonical schema shared by C and Python</td>
+</tr>
+<tr>
+<td><code>lib/pipe_publisher</code></td>
+<td>sensor-node only</td>
+<td>Subscribes to <code>sensor_event_chan</code>, encodes protobuf + 2-byte LE length prefix, writes to FIFO</td>
+</tr>
+<tr>
+<td><code>lib/pipe_transport</code></td>
+<td>gateway only</td>
+<td>Implements <code>remote_transport</code> vtable; reads FIFO, decodes protobuf, calls <code>remote_sensor_publish_data()</code></td>
+</tr>
+<tr>
+<td><code>SensorNodeHarness</code></td>
+<td><code>tests/integration/pytest/harnesses/</code></td>
+<td>Spawns <code>sensor-node.exe</code>, manages shell, tears down cleanly</td>
+</tr>
+<tr>
+<td><code>test_sensor_node_gateway.py</code></td>
+<td><code>tests/integration/pytest/</code></td>
+<td>New system test file; marker: <code>system</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What does NOT change:</strong> <code>fake_remote_sensor</code>, all existing integration tests, gateway's
+<code>sensor_event_chan</code> consumers, MQTT publisher, HTTP dashboard. <code>pipe_transport</code> is one
+more entry in the <code>remote_transport</code> vtable iteration — transparent to all existing
+consumers.</p>
+<h2 id="wire-protocol">Wire Protocol</h2>
+<p><strong>Schema — <code>proto/sensor_message.proto</code>:</strong></p>
+<pre><code class="language-proto">syntax = &quot;proto3&quot;;
+
+message SensorReading {
+  uint32 sensor_uid   = 1;
+  uint32 sensor_type  = 2;   // maps to enum sensor_type values
+  int32  q31_value    = 3;   // already Q31-encoded
+  int64  timestamp_ms = 4;   // k_uptime_get() on sensor-node
+}
+</code></pre>
+<p>One message per physical measurement (rule: one event = one physical measurement).
+Fields map 1:1 to <code>env_sensor_data</code> — no conversion logic in the gateway transport.</p>
+<p><strong>Framing:</strong> 2-byte little-endian length prefix followed by hand-rolled protobuf varint
+encoding of the <code>SensorReading</code> fields. The encoding mirrors the standard protobuf
+wire format (field tag + varint value pairs) without using nanopb or any generated
+code on the C side. Max payload is bounded at compile time by <code>PAYLOAD_MAX</code> (64 bytes).</p>
+<p><strong>Encoding:</strong> <code>lib/pipe_publisher</code> contains a <code>varint_encode()</code> / <code>sensor_reading_encode()</code>
+and <code>lib/pipe_transport</code> contains a matching <code>varint_decode()</code> / <code>sensor_reading_decode()</code>.
+Both are self-contained — no external protobuf library is required in the firmware build.</p>
+<p><strong>Python side:</strong> The test harness uses the standard <code>protobuf</code> package with the
+generated <code>sensor_message_pb2</code> module (generated from the same <code>.proto</code> and committed
+to the repo) if it needs to inject or decode messages directly.</p>
+<h2 id="libpipe_publisher-sensor-node-side"><code>lib/pipe_publisher</code> (sensor-node side)</h2>
+<p><strong>Responsibility:</strong> Subscribe to <code>sensor_event_chan</code>; on each <code>env_sensor_data</code> event,
+encode as <code>SensorReading</code> protobuf and write 2-byte LE length prefix + payload to FIFO.</p>
+<ul>
+<li><strong>FIFO path:</strong> <code>CONFIG_PIPE_PUBLISHER_FIFO_PATH</code> (default <code>"/tmp/ws-node-0"</code>).</li>
+<li><strong>Open mode:</strong> <code>O_WRONLY | O_NONBLOCK</code>, opened lazily from the subscriber thread
+  (<code>ensure_open()</code>) on the first publish attempt. <code>SYS_INIT APPLICATION 94</code> only
+  registers the zbus observer; the FIFO is not opened at boot. If the gateway read end
+  is not yet open, <code>open()</code> returns <code>ENXIO</code> — the publisher retries on the next event.
+  Avoids boot-time deadlock where both sides block waiting for the other.</li>
+<li><strong>Write path:</strong> Runs in a <code>ZBUS_SUBSCRIBER_DEFINE</code> thread (not a listener) so it can
+  block briefly on <code>write()</code> without stalling the zbus fast path. Static
+  <code>uint8_t tx_buf[PAYLOAD_MAX + 2]</code> — no heap.</li>
+<li><strong>Dropped writes:</strong> <code>write()</code> with <code>O_NONBLOCK</code>; if the pipe is full or the read end
+  is gone, the event is dropped with <code>LOG_WRN</code>. No retry — acceptable for a test channel.</li>
+<li><strong>Enabled by:</strong> <code>CONFIG_PIPE_PUBLISHER=y</code>. Off by default; added to
+  <code>apps/sensor-node/prj.conf</code>.</li>
+<li><strong>Thread stack:</strong> <code>CONFIG_PIPE_PUBLISHER_THREAD_STACK_SIZE</code> (default 1024 bytes).</li>
+</ul>
+<h2 id="libpipe_transport-gateway-side"><code>lib/pipe_transport</code> (gateway side)</h2>
+<p><strong>Responsibility:</strong> Implement the <code>remote_transport</code> vtable. On <code>scan_start</code>, announce
+discovery for all configured sensor-node UIDs. Run a reader thread that reads the FIFO,
+decodes protobuf frames, and calls <code>remote_sensor_publish_data()</code>.</p>
+<ul>
+<li><strong>FIFO path:</strong> <code>CONFIG_PIPE_TRANSPORT_FIFO_PATH</code> (default <code>"/tmp/ws-node-0"</code>, must
+  match publisher). Created by the gateway at <code>SYS_INIT</code> with <code>mkfifo()</code>; <code>EEXIST</code>
+  is ignored.</li>
+<li><strong>Reader thread:</strong> <code>K_THREAD_DEFINE</code> thread opens FIFO with <code>open(O_RDONLY)</code> — this
+  blocks until the sensor-node opens the write end, so no polling loop is needed for
+  the initial connection. Then calls blocking <code>read()</code> in a loop: read 2-byte LE length
+  (looping until both bytes arrive), read payload (same loop pattern), decode with
+  <code>sensor_reading_decode()</code>, call <code>remote_sensor_publish_data()</code>. On EOF
+  (<code>read()</code> returns 0, i.e. writer closed), close fd and retry <code>open()</code>. Note: do NOT
+  use <code>zsock_poll()</code> here — the <code>zsock_*</code> constraint in CLAUDE.md applies to network
+  sockets only; FIFOs are host-OS file descriptors on <code>native_sim</code> and use POSIX I/O.</li>
+<li><strong>Discovery:</strong> Lazy — the first frame from a new sensor UID triggers a
+  <code>REMOTE_DISCOVERY_FOUND</code> event via <code>remote_sensor_announce_disc()</code>. No <code>scan_start</code>
+  involvement; capability flags: none (<code>caps = 0</code>).</li>
+<li><strong>No <code>send_trigger</code>:</strong> Pipe is unidirectional (node → gateway).</li>
+<li><strong>Protocol enum:</strong> <code>REMOTE_TRANSPORT_PROTO_PIPE = 4</code> — added after <code>THREAD = 3</code>,
+  before <code>FAKE = 15</code> in <code>remote_sensor.h</code>. Values are stored in settings and must never
+  be renumbered.</li>
+<li><strong>Enabled by:</strong> <code>CONFIG_PIPE_TRANSPORT=y</code>. Off by default; enabled via integration
+  test build overlay only — never in standard gateway <code>prj.conf</code>.</li>
+</ul>
+<h2 id="test-harness">Test Harness</h2>
+<p><strong><code>SensorNodeHarness</code></strong> (<code>tests/integration/pytest/harnesses/sensor_node_harness.py</code>):</p>
+<ul>
+<li>Spawns <code>sensor-node.exe</code> via <code>subprocess.Popen</code> using path from env var
+  <code>SENSOR_NODE_EXE</code>.</li>
+<li>Wraps the sensor-node UART with a shell interface: <code>trigger_all()</code>, <code>set_temp(uid, mdegc)</code>, etc.</li>
+<li><code>wait_for_ready()</code> polls until the shell prompt is visible.</li>
+</ul>
+<p><strong>Fixture in <code>conftest.py</code>:</strong></p>
+<pre><code class="language-python">@pytest.fixture()
+def sensor_node_harness():
+    fifo = &quot;/tmp/ws-node-0&quot;   # fixed default; both Kconfig defaults agree
+    exe = os.environ.get(&quot;SENSOR_NODE_EXE&quot;, &quot;&quot;)
+    if not exe:
+        pytest.skip(&quot;SENSOR_NODE_EXE not set&quot;)
+    harness = SensorNodeHarness(exe, fifo_path=fifo)
+    harness.start()
+    harness.wait_for_ready()
+    yield harness
+    harness.stop()
+</code></pre>
+<p><strong>System tests — <code>test_sensor_node_gateway.py</code></strong> (marker: <code>system</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>What it verifies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test_sensor_node_discovered</code></td>
+<td>After boot, gateway registers sensor-node UIDs in registry (shell <code>sensor_registry list</code>)</td>
+</tr>
+<tr>
+<td><code>test_sensor_node_reading_in_http</code></td>
+<td>Trigger sensor-node → reading appears in gateway <code>/api/data</code> within timeout</td>
+</tr>
+<tr>
+<td><code>test_sensor_node_value_set_reflected</code></td>
+<td>Set sensor-node temp via shell, trigger, assert new value in <code>/api/data</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>FIFO path agreement:</strong> Default is <code>"/tmp/ws-node-0"</code> in both <code>CONFIG_PIPE_PUBLISHER_FIFO_PATH</code>
+and <code>CONFIG_PIPE_TRANSPORT_FIFO_PATH</code>. For the first iteration this fixed path is used.
+Parallel test run isolation (using <code>tmp_path</code>) requires a Kconfig overlay mechanism and
+is deferred to a follow-up.</p>
+<p><strong><code>testcase.yaml</code> addition:</strong> New entry with <code>CONFIG_PIPE_TRANSPORT=y</code> overlay for the
+gateway build. Sensor-node is built separately; <code>SENSOR_NODE_EXE</code> points to its artifact.
+CI runs this only when both artifacts are present.</p>
+<h2 id="error-handling">Error Handling</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gateway starts before sensor-node opens FIFO write end</td>
+<td>Reader thread <code>open(O_RDONLY\|O_NONBLOCK)</code> returns <code>ENXIO</code> — retries with <code>k_sleep(K_MSEC(100))</code></td>
+</tr>
+<tr>
+<td>Sensor-node crashes mid-test</td>
+<td><code>read()</code> returns 0 (EOF) → log <code>WRN</code>, close fd, retry open loop</td>
+</tr>
+<tr>
+<td>Truncated protobuf frame</td>
+<td><code>pb_decode</code> returns false → log <code>WRN</code>, discard frame, continue</td>
+</tr>
+<tr>
+<td>FIFO full (publisher writes faster than reader reads)</td>
+<td><code>write()</code> returns <code>EAGAIN</code> → drop event, <code>LOG_WRN</code></td>
+</tr>
+<tr>
+<td><code>SENSOR_NODE_EXE</code> not set</td>
+<td><code>sensor_node_harness</code> fixture calls <code>pytest.skip(...)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="out-of-scope-first-iteration">Out of Scope (first iteration)</h2>
+<ul>
+<li>Bidirectional communication (trigger forwarding gateway→node)</li>
+<li>Multiple concurrent sensor-node processes / multiple FIFOs</li>
+<li>Real wireless transport (BLE/LoRa) — <code>pipe_transport</code> is <code>native_sim</code>-only, never
+  enabled in hardware builds</li>
+<li>Persistence across reboots (<code>CONFIG_REMOTE_SENSOR_PERSIST</code> off for pipe transport)</li>
+<li>Parallel test run FIFO isolation via <code>tmp_path</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

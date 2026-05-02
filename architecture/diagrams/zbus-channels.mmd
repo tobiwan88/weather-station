@@ -1,0 +1,101 @@
+---
+title: zbus Channel Map
+---
+graph LR
+    subgraph TRIGGERS["Trigger Sources"]
+        TMR["fake_sensors_timer\nk_timer periodic"]
+        BOOT["SYS_INIT startup\none-shot at boot"]
+        BTN["button ISR\n(future)"]
+        MQTT_CMD["MQTT command\n(future)"]
+    end
+
+    subgraph CHAN_T["sensor_trigger_chan (zbus)"]
+        ST["struct sensor_trigger_event\n{ source, target_uid }"]
+    end
+
+    subgraph SENSORS["Sensor Listeners"]
+        FT["fake_temperature\nlistener"]
+        FH["fake_humidity\nlistener"]
+        RSM["remote_sensor_manager\n(pull transports)"]
+        RD["real drivers\n(future)"]
+    end
+
+    subgraph CHAN_E["sensor_event_chan (zbus)"]
+        SE["struct env_sensor_data\n{ uid, type, q31_value, timestamp_ms }"]
+    end
+
+    subgraph CONSUMERS["Event Consumers"]
+        SEL["sensor_event_log\nLOG_INF per event"]
+        HTTPL["http_dashboard\nring buffer append"]
+        MQTTP["mqtt_publisher\nbroker egress"]
+        FLASH["flash storage\n(future)"]
+    end
+
+    subgraph CHAN_CFG["config_cmd_chan (zbus)"]
+        CC["struct config_cmd_event\n{ cmd, arg }"]
+    end
+
+    subgraph CFG_CONSUMERS["Config Consumers"]
+        FS_CFG["fake_sensors\ninterval update"]
+        SNTP_CFG["sntp_sync\nresync trigger"]
+    end
+
+    subgraph CHAN_DISC["remote discovery (k_msgq, not zbus)"]
+        RD2["remote_sensor_announce_disc()\n→ manager k_msgq"]
+    end
+
+    subgraph CHAN_SCAN["remote_scan_ctrl_chan (zbus)"]
+        SC["struct remote_scan_ctrl_event\n{ action, proto }"]
+    end
+
+    subgraph TRANSPORTS["Transport Adapters"]
+        FAKE_T["fake_remote_sensor\n(testing stub)"]
+        BLE_T["ble_sensor\n(future)"]
+        LORA_T["lora_sensor\n(future)"]
+    end
+
+    TMR -->|pub K_NO_WAIT| ST
+    BOOT -->|pub K_NO_WAIT| ST
+    BTN -->|pub K_NO_WAIT| ST
+    MQTT_CMD -->|pub K_NO_WAIT| ST
+
+    ST -->|sub| FT
+    ST -->|sub| FH
+    ST -->|sub| RSM
+    ST -->|sub| RD
+
+    FT -->|pub K_NO_WAIT| SE
+    FH -->|pub K_NO_WAIT| SE
+    RSM -->|remote_sensor_publish_data| SE
+    RD -->|pub K_NO_WAIT| SE
+
+    SE -->|sub| SEL
+    SE -->|sub| HTTPL
+    SE -->|sub| MQTTP
+    SE -->|sub| FLASH
+
+    HTTPL -->|pub config_cmd_event| CC
+    CC -->|sub| FS_CFG
+    CC -->|sub| SNTP_CFG
+    CC -->|sub| MQTT_CFG
+
+    FAKE_T -->|remote_sensor_announce_disc| RD2
+    BLE_T -->|remote_sensor_announce_disc| RD2
+    LORA_T -->|remote_sensor_announce_disc| RD2
+    RD2 -->|k_msgq| RSM
+
+    RSM -->|pub K_NO_WAIT| SC
+    SC -->|vtable scan_start/stop| FAKE_T
+    SC -->|vtable scan_start/stop| BLE_T
+    SC -->|vtable scan_start/stop| LORA_T
+
+    style CHAN_T fill:#fef9c3,stroke:#ca8a04
+    style CHAN_E fill:#fef9c3,stroke:#ca8a04
+    style CHAN_CFG fill:#fef9c3,stroke:#ca8a04
+    style CHAN_DISC fill:#fef9c3,stroke:#ca8a04
+    style CHAN_SCAN fill:#fef9c3,stroke:#ca8a04
+    style TRIGGERS fill:#dbeafe,stroke:#3b82f6
+    style SENSORS fill:#dcfce7,stroke:#16a34a
+    style CONSUMERS fill:#fce7f3,stroke:#db2777
+    style CFG_CONSUMERS fill:#fce7f3,stroke:#db2777
+    style TRANSPORTS fill:#e0e7ff,stroke:#6366f1
