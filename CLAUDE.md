@@ -21,7 +21,7 @@ west patch apply          # apply all patches in zephyr/patches.yml
 
 Binary: `/home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe`
 
-Build and test: `/build-and-test`. Integration tests: `/run-integration-tests [marker]`. New test: `/new-integration-test`. New harness: `/new-harness`. New library: `/new-lib`. New sensor instance: `/add-sensor-instance`.
+Build and test: `/build-and-test`. Integration tests: `/run-integration-tests [marker]`. New library: `/new-lib`. New sensor type: `/new-sensor-type`.
 
 **CRITICAL — ZEPHYR_BASE:** Always prefix `west build` and `west twister` with `ZEPHYR_BASE=/home/zephyr/workspace/zephyr`; the env default points to a non-existent path. If builds fail with a stale path, delete `CMakeCache.txt`.
 
@@ -45,7 +45,16 @@ To add a new patch: `/west-patch`.
 | **Diagrams** (visual) | [`docs/architecture/diagrams/`](docs/architecture/diagrams/) | Component view, channel map, data flow, library deps, init sequence, HTTP flow |
 | **Backlog** | [`docs/backlog.md`](docs/backlog.md) | Deferred features, known violations, future work |
 
-Always read the relevant ADRs before implementing a feature (e.g. ADR-003 + ADR-004 before any sensor driver work).
+Always read the relevant ADRs before implementing a feature. Quick-lookup by topic:
+
+| Feature topic | Relevant ADRs |
+|---|---|
+| New sensor driver | ADR-003 (data model), ADR-004 (trigger pattern), ADR-005 (fake sensors) |
+| New library / service | ADR-001 (structure), ADR-002 (zbus), ADR-008 (Kconfig composition) |
+| UI / display | ADR-007 (gateway+display), ADR-011 (HTTP dashboard) |
+| Connectivity (MQTT, HTTP, LoRa) | ADR-002 (zbus), ADR-006 (LoRa), ADR-013 (MQTT) |
+| Testing | ADR-012 (integration tests), ADR-009 (native_sim) |
+| Configuration / settings | ADR-008 (Kconfig), ADR-013 (MQTT configurable) |
 
 ## Architecture rules (non-negotiable)
 
@@ -85,9 +94,9 @@ Always read the relevant ADRs before implementing a feature (e.g. ADR-003 + ADR-
 
 1. **Branch first** — `git checkout master && git pull && git checkout -b <kebab-name>`. Never commit to `master`.
 2. **Smallest change → build gate** — `/build-and-test` after every change; fix failures before anything else.
-3. **Commit** — `/git-add` to stage, commit each logical unit. Use Conventional message style. Fix issues found by pre-commit.
+3. **Commit** — Stage explicit files (`git add <files>`, never `git add .`). Commit each logical unit: `type(scope): imperative summary ≤72 chars`. Types: `feat` `fix` `refactor` `test` `docs` `chore`. Scope: library or app name (e.g. `fake_sensors`, `http_dashboard`). Run `pre-commit run --all-files` last. Never skip hooks (`--no-verify`).
 4. **Review** — `/review` to spawn parallel sub-agents (architecture, security, C quality, embedded, tests) reviewing the patch from different angles.
-5. **PR** — `/open-pr` to push, create PR, watch CI, and fix failures until green.
+5. **PR** — `git push -u origin HEAD`, then `gh pr create --base master`. Title: same Conventional Commits format, ≤70 chars. CI failures: fix locally, new commit (never amend published), re-push. Never force-push.
 
 ## Library catalog
 
@@ -110,6 +119,17 @@ All libraries under `lib/` are self-contained, Kconfig-gated, and self-wire via 
 | `sensor_registry` | `CONFIG_SENSOR_REGISTRY` | Runtime uid → metadata map. Sensors self-register at boot. User metadata via `CONFIG_SENSOR_REGISTRY_USER_META`: `sensor_registry_set_meta/get_meta/get_display_name/get_location`. Settings-persisted. |
 | `remote_sensor` | `CONFIG_REMOTE_SENSOR` | Transport-agnostic abstraction for wireless sensors. Vtable pattern (`REMOTE_TRANSPORT_DEFINE()`), manager thread, UID derivation. Needs `remote_sensor_iterables.ld`. Shell: `remote_sensor list/scan/pair/unpair`. |
 | `fake_remote_sensor` | `CONFIG_FAKE_REMOTE_SENSOR` | Testing stub implementing `remote_transport` vtable (`REMOTE_TRANSPORT_PROTO_FAKE`). |
+
+**Sensor UID allocation** (for new DT nodes in `apps/<app>/boards/native_sim.overlay`):
+
+| Range | Purpose |
+|---|---|
+| `0x0001–0x000F` | Gateway-local / indoor |
+| `0x0011–0x001F` | Gateway outdoor |
+| `0x0021–0x00FF` | Remote sensor nodes |
+| `0x0101+` | Test-only instances |
+
+Use the lowest free UID in the appropriate range. Never reuse a UID across any overlay file — UIDs are the identity key for `sensor_registry`, LVGL, and MQTT.
 
 ### Services
 
@@ -147,6 +167,8 @@ Pytest via Twister `harness: pytest`. Full gateway on `native_sim/native/64`. Bu
 - **DUT scope = session:** one boot per suite; restore state after mutations.
 - **ZEPHYR_BASE override required:** `ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister ...`
 - **MQTT broker:** `mosquitto -p 1883 -d`; tests auto-skip if none running.
+- **New test file:** `tests/integration/pytest/test_<topic>.py`; use session-scoped harness fixtures, never raw DUT strings.
+- **Extend vs. create harness:** add a method to an existing harness for new shell sub-commands or HTTP endpoints; create a new harness class only for a new interaction surface (new protocol, new subsystem shell module). Files: `tests/integration/pytest/harnesses/<name>_harness.py`; register a session-scoped fixture in `conftest.py`.
 
 ### native_sim/native/64 socket constraints
 
