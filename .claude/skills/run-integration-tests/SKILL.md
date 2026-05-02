@@ -52,7 +52,7 @@ ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
 
 ## Run by marker
 
-If argument `$0` is provided (one of: `smoke`, `shell`, `http`, `mqtt`, `e2e`):
+If argument `$0` is provided (one of: `smoke`, `shell`, `http`, `mqtt`, `e2e`, `system`):
 
 ```bash
 ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
@@ -116,11 +116,12 @@ ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
 
 | Marker | Meaning |
 |--------|---------|
-| `smoke` | Quick sanity checks — run first |
-| `shell` | Tests using Zephyr shell interaction |
-| `http`  | Tests using HTTP dashboard API |
-| `mqtt`  | Tests using MQTT broker (skipped if no broker) |
-| `e2e`   | Full end-to-end data-flow tests |
+| `smoke`  | Quick sanity checks — run first |
+| `shell`  | Tests using Zephyr shell interaction |
+| `http`   | Tests using HTTP dashboard API |
+| `mqtt`   | Tests using MQTT broker (skipped if no broker) |
+| `e2e`    | Full end-to-end data-flow tests |
+| `system` | Multi-process tests (sensor-node subprocess → FIFO → gateway) |
 
 Multiple markers: `--pytest-args="-m 'smoke or http'"`
 
