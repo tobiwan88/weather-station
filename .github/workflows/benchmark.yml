@@ -5,6 +5,7 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
 
 concurrency:
   group: benchmark-${{ github.ref }}
@@ -110,3 +111,48 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           fail-on-alert: true
           summary-always: true
+
+  docs:
+    name: Build and Deploy Docs
+    runs-on: ubuntu-latest
+    steps:
+      - id: changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            docs:
+              - 'docs/**'
+              - 'mkdocs.yml'
+              - 'index.html'
+
+      - if: steps.changes.outputs.docs == 'true'
+        name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - if: steps.changes.outputs.docs == 'true'
+        name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+
+      - if: steps.changes.outputs.docs == 'true'
+        name: Install MkDocs and Material theme
+        run: pip install mkdocs mkdocs-material
+
+      - if: steps.changes.outputs.docs == 'true'
+        name: Build MkDocs site
+        run: mkdocs build
+
+      - if: steps.changes.outputs.docs == 'true'
+        name: Deploy to GitHub Pages
+        run: |
+          cp -r site/* .
+          cp index.html .
+          git add -A
+          git diff --staged --exit-code || git commit -m "docs: update GitHub Pages $(date +'%Y-%m-%d %H:%M:%S')"
+          git push
