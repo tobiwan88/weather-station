@@ -126,6 +126,9 @@ static int announce_node(struct fake_node *n)
 		return rc;
 	}
 
+	/* Allow workqueue to process before next announcement. */
+	k_sleep(K_MSEC(10));
+
 	/* Humidity discovery — different uid, same address, different type */
 	snprintf(evt.suggested_label, sizeof(evt.suggested_label), "fake-remote-%u-hum",
 		 n->node_id);
@@ -138,6 +141,8 @@ static int announce_node(struct fake_node *n)
 		return rc;
 	}
 
+	k_sleep(K_MSEC(10));
+
 	/* CO₂ discovery */
 	snprintf(evt.suggested_label, sizeof(evt.suggested_label), "fake-remote-%u-co2",
 		 n->node_id);
@@ -149,6 +154,8 @@ static int announce_node(struct fake_node *n)
 		LOG_ERR("node %u: discovery enqueue (co2) failed: %d", n->node_id, rc);
 		return rc;
 	}
+
+	k_sleep(K_MSEC(10));
 
 	/* VOC discovery */
 	snprintf(evt.suggested_label, sizeof(evt.suggested_label), "fake-remote-%u-voc",
