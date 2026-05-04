@@ -298,7 +298,8 @@ static struct k_work disc_work;
 static struct k_work scan_work;
 static struct remote_discovery_event pending_disc;
 static struct remote_scan_ctrl_event pending_scan;
-static K_MUTEX_DEFINE(pending_mutex);
+static K_MUTEX_DEFINE(disc_pending_mutex);
+static K_MUTEX_DEFINE(scan_pending_mutex);
 
 /* --------------------------------------------------------------------------
  * Discovery work handler + zbus listener
@@ -310,9 +311,9 @@ static void disc_work_handler(struct k_work *work)
 
 	ARG_UNUSED(work);
 
-	k_mutex_lock(&pending_mutex, K_FOREVER);
+	k_mutex_lock(&disc_pending_mutex, K_FOREVER);
 	evt = pending_disc;
-	k_mutex_unlock(&pending_mutex);
+	k_mutex_unlock(&disc_pending_mutex);
 	handle_discovery(&evt);
 }
 
@@ -320,10 +321,10 @@ static void discovery_cb(const struct zbus_channel *chan)
 {
 	const struct remote_discovery_event *evt = zbus_chan_const_msg(chan);
 
-	k_mutex_lock(&pending_mutex, K_FOREVER);
+	k_mutex_lock(&disc_pending_mutex, K_FOREVER);
 	pending_disc = *evt;
-	k_mutex_unlock(&pending_mutex);
-	k_work_submit_to_queue(&remote_sensor_wq, &disc_work);
+	k_mutex_unlock(&disc_pending_mutex);
+	(void)k_work_submit_to_queue(&remote_sensor_wq, &disc_work);
 }
 
 ZBUS_LISTENER_DEFINE(remote_disc_listener, discovery_cb);
@@ -338,9 +339,9 @@ static void scan_work_handler(struct k_work *work)
 
 	ARG_UNUSED(work);
 
-	k_mutex_lock(&pending_mutex, K_FOREVER);
+	k_mutex_lock(&scan_pending_mutex, K_FOREVER);
 	evt = pending_scan;
-	k_mutex_unlock(&pending_mutex);
+	k_mutex_unlock(&scan_pending_mutex);
 
 	STRUCT_SECTION_FOREACH(remote_transport, t)
 	{
@@ -368,10 +369,10 @@ static void scan_ctrl_cb(const struct zbus_channel *chan)
 {
 	const struct remote_scan_ctrl_event *evt = zbus_chan_const_msg(chan);
 
-	k_mutex_lock(&pending_mutex, K_FOREVER);
+	k_mutex_lock(&scan_pending_mutex, K_FOREVER);
 	pending_scan = *evt;
-	k_mutex_unlock(&pending_mutex);
-	k_work_submit_to_queue(&remote_sensor_wq, &scan_work);
+	k_mutex_unlock(&scan_pending_mutex);
+	(void)k_work_submit_to_queue(&remote_sensor_wq, &scan_work);
 }
 
 ZBUS_LISTENER_DEFINE(remote_scan_ctrl_listener, scan_ctrl_cb);

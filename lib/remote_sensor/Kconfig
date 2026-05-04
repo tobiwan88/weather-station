@@ -59,12 +59,12 @@ config REMOTE_SENSOR_PERSIST
 	  scanning begins. Settings key prefix: "rsen/".
 
 config REMOTE_SENSOR_THREAD_STACK_SIZE
-	int "Manager thread stack size (bytes)"
+	int "Manager workqueue stack size (bytes)"
 	default 1024
 	range 512 8192
 
 config REMOTE_SENSOR_THREAD_PRIORITY
-	int "Manager thread cooperative priority"
+	int "Manager workqueue cooperative priority"
 	default 5
 	range 0 NUM_PREEMPT_PRIORITIES
 
