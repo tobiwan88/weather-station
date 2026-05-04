@@ -427,6 +427,18 @@ static int remote_sensor_manager_init(void)
 			   K_THREAD_STACK_SIZEOF(remote_sensor_wq_stack),
 			   CONFIG_REMOTE_SENSOR_THREAD_PRIORITY, NULL);
 
+	rc = zbus_chan_add_obs(&remote_discovery_chan, &remote_disc_listener, K_NO_WAIT);
+	if (rc != 0) {
+		LOG_ERR("add obs remote_discovery_chan: %d", rc);
+		return rc;
+	}
+
+	rc = zbus_chan_add_obs(&remote_scan_ctrl_chan, &remote_scan_ctrl_listener, K_NO_WAIT);
+	if (rc != 0) {
+		LOG_ERR("add obs remote_scan_ctrl_chan: %d", rc);
+		return rc;
+	}
+
 	rc = zbus_chan_add_obs(&sensor_trigger_chan, &remote_trigger_listener, K_NO_WAIT);
 	if (rc != 0) {
 		LOG_ERR("add obs sensor_trigger_chan: %d", rc);
