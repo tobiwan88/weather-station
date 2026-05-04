@@ -8,31 +8,27 @@
       
       
       
-        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/architecture/event-bus/">
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-03-remote-sensor-discovery-zbus-design/">
       
       
-        <link rel="prev" href="../system-overview/">
-      
-      
-        <link rel="next" href="../composition-model/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Event Bus - Weather Station Documentation</title>
+        <title>Design: Move Remote Sensor Discovery to zbus + Workqueue - Weather Station Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -51,7 +47,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#event-bus-design" class="md-skip">
+        <a href="#design-move-remote-sensor-discovery-to-zbus-workqueue" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +86,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+    <a href="../../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -110,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Event Bus
+              Design: Move Remote Sensor Discovery to zbus + Workqueue
             
           </span>
         </div>
@@ -223,7 +219,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
   
@@ -240,13 +236,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../architecture/" class="md-tabs__link">
           
   
   
@@ -266,7 +260,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../adr/" class="md-tabs__link">
+        <a href="../../../adr/" class="md-tabs__link">
           
   
   
@@ -284,7 +278,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../backlog/" class="md-tabs__link">
+      <a href="../../../backlog/" class="md-tabs__link">
         
   
   
@@ -319,7 +313,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+    <a href="../../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -349,7 +343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -373,31 +367,26 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -415,7 +404,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -433,7 +422,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../../architecture/" class="md-nav__link">
         
   
   
@@ -461,7 +450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../system-overview/" class="md-nav__link">
+      <a href="../../../architecture/system-overview/" class="md-nav__link">
         
   
   
@@ -486,37 +475,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Event Bus
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../architecture/event-bus/" class="md-nav__link">
         
   
   
@@ -532,81 +494,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#channels" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Channels
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-triggerevent-split" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Trigger–Event Split
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#isr-safety" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ISR Safety
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#openclosed-in-practice" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Open/Closed in Practice
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#message-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Message Design
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -619,7 +506,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../composition-model/" class="md-nav__link">
+      <a href="../../../architecture/composition-model/" class="md-nav__link">
         
   
   
@@ -647,7 +534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../integration-tests/" class="md-nav__link">
+      <a href="../../../architecture/integration-tests/" class="md-nav__link">
         
   
   
@@ -675,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../concurrency/" class="md-nav__link">
+      <a href="../../../architecture/concurrency/" class="md-nav__link">
         
   
   
@@ -703,7 +590,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../diagrams/" class="md-nav__link">
+      <a href="../../../architecture/diagrams/" class="md-nav__link">
         
   
   
@@ -790,7 +677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../adr/" class="md-nav__link">
+      <a href="../../../adr/" class="md-nav__link">
         
   
   
@@ -825,7 +712,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../backlog/" class="md-nav__link">
+      <a href="../../../backlog/" class="md-nav__link">
         
   
   
@@ -872,10 +759,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#channels" class="md-nav__link">
+  <a href="#problem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Channels
+        Problem
       
     </span>
   </a>
@@ -883,10 +770,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-triggerevent-split" class="md-nav__link">
+  <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Trigger–Event Split
+        Solution
       
     </span>
   </a>
@@ -894,10 +781,121 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#isr-safety" class="md-nav__link">
+  <a href="#architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ISR Safety
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#new-zbus-channel-remote_discovery_chan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New zbus channel: remote_discovery_chan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remote_sensor_announce_disc-becomes-a-thin-wrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        remote_sensor_announce_disc() becomes a thin wrapper
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#listener-workqueue-dispatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listener + workqueue dispatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confirm-retry-future-transport-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confirm + retry (future, transport-layer)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Impact">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#files-changed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files changed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files-unchanged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files unchanged
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#risks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risks
       
     </span>
   </a>
@@ -905,21 +903,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#openclosed-in-practice" class="md-nav__link">
+  <a href="#testing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Open/Closed in Practice
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#message-design" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Message Design
+        Testing
       
     </span>
   </a>
@@ -946,91 +933,208 @@
   
 
 
-<h1 id="event-bus-design">Event Bus Design</h1>
-<h2 id="channels">Channels</h2>
-<p>The system uses four zbus channels, each with a single owner and a distinct role:</p>
+<h1 id="design-move-remote-sensor-discovery-to-zbus-workqueue">Design: Move Remote Sensor Discovery to zbus + Workqueue</h1>
+<p><strong>Date:</strong> 2026-05-03
+<strong>Status:</strong> Approved
+<strong>Author:</strong> opencode</p>
+<h2 id="problem">Problem</h2>
+<p>The <code>remote_sensor_manager</code> uses a dedicated thread with a 50ms timeout on <code>zbus_sub_wait()</code> solely to periodically wake up and drain a private <code>k_msgq</code> (<code>disc_msgq</code>) that carries discovery events. This dual-input polling pattern exists because discovery events were kept off zbus — zbus channels are broadcast-overwrite, so rapid successive announces (e.g., temp + humidity from the same BLE node) would collapse into a single event, losing data.</p>
+<p>In practice, discovery events arrive rarely enough that latest-wins is acceptable. The dedicated thread and 50ms polling timeout are unnecessary complexity.</p>
+<h2 id="solution">Solution</h2>
+<p>Move discovery events onto a new zbus channel, eliminate the private <code>k_msgq</code>, eliminate the dedicated thread entirely, and replace it with two zbus listeners that dispatch to work items on a small dedicated workqueue.</p>
+<h2 id="architecture">Architecture</h2>
+<h3 id="new-zbus-channel-remote_discovery_chan">New zbus channel: <code>remote_discovery_chan</code></h3>
+<pre><code>ZBUS_CHAN_DEFINE(remote_discovery_chan, struct remote_discovery_event)
+</code></pre>
+<p>Defined in <code>lib/remote_sensor/src/remote_discovery_chan.c</code>, declared in the public header. Follows ADR-002: one <code>.c</code> file per channel, <code>ZBUS_CHAN_DECLARE</code> in the header.</p>
+<h3 id="remote_sensor_announce_disc-becomes-a-thin-wrapper"><code>remote_sensor_announce_disc()</code> becomes a thin wrapper</h3>
+<p>Transports call the same API. Internally it publishes to the zbus channel instead of enqueueing to <code>k_msgq</code>:</p>
+<pre><code class="language-c">int remote_sensor_announce_disc(const struct remote_discovery_event *evt)
+{
+    return zbus_chan_pub(&amp;remote_discovery_chan, evt, K_MSEC(100));
+}
+</code></pre>
+<p>Same return semantics (0 on success, negative errno on failure). Same 100ms timeout for queue-full backpressure.</p>
+<h3 id="listener-workqueue-dispatch">Listener + workqueue dispatch</h3>
+<p>Replace the dedicated thread (<code>K_THREAD_DEFINE</code>) with two zbus listeners and a small workqueue:</p>
+<pre><code class="language-c">static K_WORK_QUEUE_DEFINE(remote_sensor_wq, 512,
+                           CONFIG_REMOTE_SENSOR_THREAD_PRIORITY, 0);
+
+static struct k_work disc_work;
+static struct k_work scan_work;
+static struct remote_discovery_event pending_disc;
+static struct remote_scan_ctrl_event pending_scan;
+static K_MUTEX_DEFINE(pending_mutex);
+</code></pre>
+<p><strong>Discovery listener:</strong></p>
+<pre><code class="language-c">static void disc_work_handler(struct k_work *work)
+{
+    struct remote_discovery_event evt;
+
+    k_mutex_lock(&amp;pending_mutex, K_FOREVER);
+    evt = pending_disc;
+    k_mutex_unlock(&amp;pending_mutex);
+    handle_discovery(&amp;evt);
+}
+
+static void discovery_cb(const struct zbus_channel *chan)
+{
+    const struct remote_discovery_event *evt = zbus_chan_const_msg(chan);
+
+    k_mutex_lock(&amp;pending_mutex, K_FOREVER);
+    pending_disc = *evt;
+    k_mutex_unlock(&amp;pending_mutex);
+    k_work_submit_to_queue(&amp;remote_sensor_wq, &amp;disc_work);
+}
+
+ZBUS_LISTENER_DEFINE(remote_disc_listener, discovery_cb);
+</code></pre>
+<p><strong>Scan control listener:</strong></p>
+<pre><code class="language-c">static void scan_work_handler(struct k_work *work)
+{
+    struct remote_scan_ctrl_event evt;
+
+    k_mutex_lock(&amp;pending_mutex, K_FOREVER);
+    evt = pending_scan;
+    k_mutex_unlock(&amp;pending_mutex);
+    // existing scan dispatch logic (STRUCT_SECTION_FOREACH)
+}
+
+static void scan_ctrl_cb(const struct zbus_channel *chan)
+{
+    const struct remote_scan_ctrl_event *evt = zbus_chan_const_msg(chan);
+
+    k_mutex_lock(&amp;pending_mutex, K_FOREVER);
+    pending_scan = *evt;
+    k_mutex_unlock(&amp;pending_mutex);
+    k_work_submit_to_queue(&amp;remote_sensor_wq, &amp;scan_work);
+}
+
+ZBUS_LISTENER_DEFINE(remote_scan_ctrl_listener, scan_ctrl_cb);
+</code></pre>
+<p><strong>SYS_INIT:</strong></p>
+<pre><code class="language-c">static int remote_sensor_manager_init(void)
+{
+    k_work_init(&amp;disc_work, disc_work_handler);
+    k_work_init(&amp;scan_work, scan_work_handler);
+    // No zbus_chan_add_obs needed — ZBUS_LISTENER_DEFINE auto-registers
+
+#if defined(CONFIG_REMOTE_SENSOR_AUTO_SCAN)
+    struct remote_scan_ctrl_event scan_all = {
+        .action = REMOTE_SCAN_START,
+        .proto = REMOTE_TRANSPORT_PROTO_UNKNOWN,
+    };
+    zbus_chan_pub(&amp;remote_scan_ctrl_chan, &amp;scan_all, K_MSEC(100));
+    LOG_INF(&quot;auto-scan started&quot;);
+#endif
+
+    LOG_INF(&quot;remote_sensor_manager: init done&quot;);
+    return 0;
+}
+</code></pre>
+<h3 id="key-properties">Key properties</h3>
+<ul>
+<li><strong>No dedicated thread.</strong> Saves stack memory (was <code>CONFIG_REMOTE_SENSOR_THREAD_STACK_SIZE</code>) and scheduler overhead.</li>
+<li><strong>Listeners run in publisher context.</strong> Must not block — they only copy to a static buffer and submit a work item.</li>
+<li><strong>Mutex protects pending buffers.</strong> Two listeners share one mutex; contention is negligible since events are rare.</li>
+<li><strong>Latest-wins is inherent.</strong> If a second discovery event arrives before the first work item runs, the pending buffer is overwritten. This is acceptable per the design constraint.</li>
+<li><strong>Workqueue stack is small.</strong> 512 bytes is sufficient — <code>handle_discovery()</code> does registry lookups, mutex locks, and settings writes, but no large stack allocations.</li>
+</ul>
+<h3 id="confirm-retry-future-transport-layer">Confirm + retry (future, transport-layer)</h3>
+<p>For wireless transports that need delivery guarantees, the confirm pattern lives in the transport adapter, not the manager:</p>
+<ol>
+<li>Transport publishes discovery on zbus and starts a retry timer (e.g., 500ms)</li>
+<li>Manager, after <code>handle_discovery()</code>, publishes an ack on a new <code>remote_discovery_ack_chan</code></li>
+<li>Transport's ack listener cancels the retry timer</li>
+<li>If timer fires before ack, transport re-publishes</li>
+</ol>
+<p>This is deferred. <code>pipe_transport</code> and <code>fake_remote_sensor</code> need no retry — they have their own "seen" tracking. Only real wireless transports (BLE, LoRa) will need this when implemented.</p>
+<h2 id="impact">Impact</h2>
+<h3 id="files-changed">Files changed</h3>
 <table>
 <thead>
 <tr>
-<th>Channel</th>
-<th>Owner</th>
-<th>Direction</th>
+<th>File</th>
+<th>Change</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>sensor_trigger_chan</code></td>
-<td><code>lib/sensor_trigger</code></td>
-<td>trigger sources → sensor drivers</td>
+<td><code>lib/remote_sensor/src/remote_discovery_chan.c</code></td>
+<td><strong>New</strong> — <code>ZBUS_CHAN_DEFINE</code> for <code>remote_discovery_chan</code></td>
 </tr>
 <tr>
-<td><code>sensor_event_chan</code></td>
-<td><code>lib/sensor_event</code></td>
-<td>sensor drivers → consumers</td>
+<td><code>lib/remote_sensor/src/remote_sensor_manager.c</code></td>
+<td>Remove <code>disc_msgq</code>, remove <code>K_THREAD_DEFINE</code>, remove <code>ZBUS_SUBSCRIBER_DEFINE</code>, remove <code>zbus_sub_wait</code> loop, add two <code>ZBUS_LISTENER_DEFINE</code> + work items + workqueue, update <code>SYS_INIT</code></td>
 </tr>
 <tr>
-<td><code>config_cmd_chan</code></td>
-<td><code>lib/config_cmd</code></td>
-<td>config producers (HTTP) → consumers (fake_sensors, sntp_sync, mqtt_publisher)</td>
+<td><code>lib/remote_sensor/include/remote_sensor/remote_sensor.h</code></td>
+<td>Add <code>ZBUS_CHAN_DECLARE(remote_discovery_chan)</code>, update <code>remote_sensor_announce_disc</code> docstring, update header doc about discovery delivery</td>
 </tr>
 <tr>
-<td><code>remote_scan_ctrl_chan</code></td>
-<td><code>lib/remote_sensor</code></td>
-<td>manager / shell → transport adapters</td>
+<td><code>lib/remote_sensor/CMakeLists.txt</code></td>
+<td>Add <code>remote_discovery_chan.c</code> to sources</td>
 </tr>
 <tr>
-<td><code>remote_discovery_chan</code></td>
-<td><code>lib/remote_sensor</code></td>
-<td>transport adapters → manager</td>
+<td><code>docs/architecture/diagrams/zbus-channels.mmd</code></td>
+<td>Add <code>remote_discovery_chan</code> to channel map</td>
+</tr>
+<tr>
+<td><code>docs/architecture/event-bus.md</code></td>
+<td>Update discovery delivery description</td>
 </tr>
 </tbody>
 </table>
-<p>Remote sensor discovery uses <code>remote_discovery_chan</code> (zbus). Transport adapters call <code>remote_sensor_announce_disc()</code> which publishes to the channel. The manager dispatches discovery events to a workqueue via a zbus listener.</p>
-<p>For the sensor-node ↔ gateway FIFO communication path, <code>pipe_publisher</code> writes length-prefixed protobuf frames to a POSIX FIFO and <code>pipe_transport</code> reads them back, publishing decoded events to <code>sensor_event_chan</code>. This path bypasses zbus entirely for cross-process communication.</p>
-<p>The core sensor pipeline uses two channels. Separating trigger from event solves the question of <strong>who decides when to sample</strong> without coupling any component:</p>
+<h3 id="files-unchanged">Files unchanged</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lib/pipe_transport/src/pipe_transport.c</code></td>
+<td>Calls <code>remote_sensor_announce_disc()</code> — API preserved</td>
+</tr>
+<tr>
+<td><code>lib/fake_remote_sensor/src/fake_remote_sensor.c</code></td>
+<td>Calls <code>remote_sensor_announce_disc()</code> — API preserved</td>
+</tr>
+<tr>
+<td><code>handle_discovery()</code> logic</td>
+<td>Auto-register, persist, mark-lost all unchanged</td>
+</tr>
+<tr>
+<td><code>remote_scan_ctrl_chan</code></td>
+<td>Unchanged</td>
+</tr>
+<tr>
+<td><code>remote_trigger_listener</code></td>
+<td>Unchanged — still a listener, still routes triggers</td>
+</tr>
+</tbody>
+</table>
+<h2 id="risks">Risks</h2>
+<ol>
+<li>
+<p><strong>Pending buffer overwrite:</strong> If two discovery events arrive before the first work item runs, the second overwrites the pending buffer. Mitigation: acceptable per "latest-wins" constraint. If this becomes a problem, switch to a small static ring buffer instead of a single-slot buffer.</p>
+</li>
+<li>
+<p><strong>Workqueue stack overflow:</strong> <code>handle_discovery()</code> calls <code>register_peer()</code> which locks a mutex, copies strings, and calls <code>sensor_registry_set_meta()</code>. 512 bytes should be sufficient, but should be verified at runtime with <code>CONFIG_THREAD_STACK_INFO=y</code>.</p>
+</li>
+<li>
+<p><strong>EEXIST epoll collision:</strong> Adding a new zbus channel does not add a new socket — zbus uses in-process messaging, not network sockets. No epoll risk.</p>
+</li>
+</ol>
+<h2 id="testing">Testing</h2>
 <ul>
-<li><code>sensor_trigger_chan</code> — <em>when</em> to sample. Any code that wants sensors to fire publishes here. Sensor drivers don't know or care who triggered them.</li>
-<li><code>sensor_event_chan</code> — <em>what was measured</em>. Any code that wants sensor readings subscribes here. Trigger sources don't know or care what consumes the data.</li>
+<li>Existing integration tests should pass unchanged (API preserved)</li>
+<li><code>fake_remote_sensor</code> scan + auto-register flow exercises the new channel</li>
+<li><code>pipe_transport</code> discovery exercises the new channel</li>
+<li>Shell <code>remote_sensor scan start</code> exercises scan_ctrl listener alongside discovery listener</li>
 </ul>
-<p><code>config_cmd_chan</code> applies the same pattern to configuration: <code>http_dashboard</code> publishes a <code>config_cmd_event</code> when the user changes settings; <code>fake_sensors</code>, <code>sntp_sync</code>, and <code>mqtt_publisher</code> subscribe independently. Neither module references the other.</p>
-<p><code>remote_scan_ctrl_chan</code> follows the same pattern for the remote sensor layer — the manager and shell exchange scan control events without direct calls to transport adapters.</p>
-<hr />
-<h2 id="the-triggerevent-split">The Trigger–Event Split</h2>
-<pre><code>trigger sources          sensor_trigger_chan       sensor drivers
-──────────────           ───────────────────       ──────────────
-timer (periodic)  ──►                        ──►  fake_temperature
-startup (once)    ──►    { source, uid }      ──►  fake_humidity
-button ISR        ──►                        ──►  remote_sensor (pull)
-                                             ──►  (future: real hw)
-
-sensor drivers           sensor_event_chan          consumers
-──────────────           ────────────────           ──────────────
-fake_temperature  ──►                        ──►  sensor_event_log
-fake_humidity     ──►    { uid, type,         ──►  http_dashboard
-remote_sensor     ──►      q31, timestamp }   ──►  mqtt_publisher
-(future: real hw) ──►                        ──►  (future: flash)
-</code></pre>
-<p><code>target_uid = 0</code> in a trigger event is a broadcast — all sensors sample. A non-zero UID targets a single sensor, enabling on-demand sampling of one sensor without disturbing others.</p>
-<p>Remote sensors (BLE, LoRa, Thread) publish on <code>sensor_event_chan</code> via <code>remote_sensor_publish_data()</code> — identical to local sensors from the perspective of all consumers.</p>
-<hr />
-<h2 id="isr-safety">ISR Safety</h2>
-<p>The fake_sensors timer callback runs in ISR context. From there it publishes to <code>sensor_trigger_chan</code> with <code>K_NO_WAIT</code>. The zbus listener callbacks that fire from this — the sensor drivers — run in the zbus thread, not the ISR, so they can do normal work. The ISR only enqueues; it does not execute sensor logic.</p>
-<p>This matters for the http_dashboard listener on <code>sensor_event_chan</code>. A timer → trigger → sensor → event chain means the dashboard's listener is ultimately triggered by a timer ISR. The listener appends to a ring buffer protected by a <code>k_spinlock</code> (not <code>k_mutex</code>) because spinlocks are the only synchronisation primitive that is safe to acquire from both thread and ISR-derived contexts.</p>
-<hr />
-<h2 id="openclosed-in-practice">Open/Closed in Practice</h2>
-<p>The principle: adding a new consumer must not require modifying existing producers.</p>
-<p>Concretely, when <code>http_dashboard</code> was added to the project, the following files were <strong>not touched</strong>: <code>fake_temperature.c</code>, <code>fake_humidity.c</code>, <code>fake_sensors_timer.c</code>, <code>apps/gateway/src/main.c</code>. The dashboard simply registered a listener on <code>sensor_event_chan</code> in its own <code>SYS_INIT</code> callback.</p>
-<p>The same was true when <code>mqtt_publisher</code> was added, and will continue to be true for the next consumer (flash logger, another display widget). The channel is the only shared contract.</p>
-<hr />
-<h2 id="message-design">Message Design</h2>
-<p><code>env_sensor_data</code> is 20 bytes on a 32-bit target. The constraints driving its size:</p>
-<ul>
-<li><strong>LoRa MTU</strong> — a LoRa packet at SF12/125 kHz has a practical payload limit of ~51 bytes. A single event frame must fit with room for a header.</li>
-<li><strong>No heap</strong> — the struct is copied by value through zbus. No pointers, no dynamic allocation.</li>
-<li><strong>Self-describing</strong> — <code>sensor_uid</code> and <code>type</code> are included in every event so any consumer can interpret the reading without external context.</li>
-<li><strong>Q31 fixed-point</strong> — avoids floating-point in ISR and zbus thread contexts. The Q31 range covers ±1.0; temperature and humidity are scaled so that 0.0–1.0 maps to 0–100 (humidity) or -40–85 °C (temperature), staying within the fixed-point range.</li>
-</ul>
-<p>A <code>BUILD_ASSERT</code> enforces <code>sizeof(env_sensor_data) &lt;= 32</code> at compile time to catch accidental growth.</p>
 
 
 
@@ -1080,10 +1184,10 @@ remote_sensor     ──►      q31, timestamp }   ──►  mqtt_publisher
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
