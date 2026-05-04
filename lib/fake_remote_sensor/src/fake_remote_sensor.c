@@ -122,7 +122,7 @@ static int announce_node(struct fake_node *n)
 	int rc = remote_sensor_announce_disc(&evt);
 
 	if (rc != 0) {
-		LOG_ERR("node %u: discovery enqueue (temp) failed: %d", n->node_id, rc);
+		LOG_ERR("node %u: discovery publish (temp) failed: %d", n->node_id, rc);
 		return rc;
 	}
 
@@ -137,7 +137,7 @@ static int announce_node(struct fake_node *n)
 
 	rc = remote_sensor_announce_disc(&evt);
 	if (rc != 0) {
-		LOG_ERR("node %u: discovery enqueue (hum) failed: %d", n->node_id, rc);
+		LOG_ERR("node %u: discovery publish (hum) failed: %d", n->node_id, rc);
 		return rc;
 	}
 
@@ -151,7 +151,7 @@ static int announce_node(struct fake_node *n)
 
 	rc = remote_sensor_announce_disc(&evt);
 	if (rc != 0) {
-		LOG_ERR("node %u: discovery enqueue (co2) failed: %d", n->node_id, rc);
+		LOG_ERR("node %u: discovery publish (co2) failed: %d", n->node_id, rc);
 		return rc;
 	}
 
@@ -165,7 +165,7 @@ static int announce_node(struct fake_node *n)
 
 	rc = remote_sensor_announce_disc(&evt);
 	if (rc != 0) {
-		LOG_ERR("node %u: discovery enqueue (voc) failed: %d", n->node_id, rc);
+		LOG_ERR("node %u: discovery publish (voc) failed: %d", n->node_id, rc);
 		return rc;
 	}
 
