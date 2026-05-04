@@ -7,10 +7,10 @@
  *
  *   Protocol adapters (lib/ble_sensor/, lib/lora_sensor/, …) implement the
  *   remote_transport vtable and declare one instance per protocol via
- *   REMOTE_TRANSPORT_DEFINE().  The remote_sensor_manager (a dedicated
- *   subscriber thread) iterates all linked-in transports, dispatches scan
- *   control commands, processes discovery events, registers discovered sensors
- *   in sensor_registry, and routes trigger events to capable transports.
+ *   REMOTE_TRANSPORT_DEFINE().  The remote_sensor_manager (a listener+workqueue
+ *   dispatch) iterates all linked-in transports, dispatches scan control
+ *   commands, processes discovery events, registers discovered sensors in
+ *   sensor_registry, and routes trigger events to capable transports.
  *
  *   Data from remote sensors reaches sensor_event_chan via
  *   remote_sensor_publish_data() — identical to local sensors from the
