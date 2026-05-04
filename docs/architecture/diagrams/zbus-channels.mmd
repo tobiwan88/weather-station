@@ -40,8 +40,8 @@ graph LR
         SNTP_CFG["sntp_sync\nresync trigger"]
     end
 
-    subgraph CHAN_DISC["remote discovery (k_msgq, not zbus)"]
-        RD2["remote_sensor_announce_disc()\n→ manager k_msgq"]
+    subgraph CHAN_DISC["remote_discovery_chan (zbus)"]
+        RD2["struct remote_discovery_event\n{ action, proto, label, addr, type, uid }"]
     end
 
     subgraph CHAN_SCAN["remote_scan_ctrl_chan (zbus)"]
@@ -82,7 +82,7 @@ graph LR
     FAKE_T -->|remote_sensor_announce_disc| RD2
     BLE_T -->|remote_sensor_announce_disc| RD2
     LORA_T -->|remote_sensor_announce_disc| RD2
-    RD2 -->|k_msgq| RSM
+    RD2 -->|listener → workqueue| RSM
 
     RSM -->|pub K_NO_WAIT| SC
     SC -->|vtable scan_start/stop| FAKE_T

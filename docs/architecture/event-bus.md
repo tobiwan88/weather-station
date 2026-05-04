@@ -10,8 +10,9 @@ The system uses four zbus channels, each with a single owner and a distinct role
 | `sensor_event_chan` | `lib/sensor_event` | sensor drivers → consumers |
 | `config_cmd_chan` | `lib/config_cmd` | config producers (HTTP) → consumers (fake_sensors, sntp_sync, mqtt_publisher) |
 | `remote_scan_ctrl_chan` | `lib/remote_sensor` | manager / shell → transport adapters |
+| `remote_discovery_chan` | `lib/remote_sensor` | transport adapters → manager |
 
-Remote sensor discovery uses a `k_msgq` (not zbus) inside `remote_sensor_manager` for ordering guarantees. Transport adapters call `remote_sensor_announce_disc()` which enqueues into the manager's private message queue.
+Remote sensor discovery uses `remote_discovery_chan` (zbus). Transport adapters call `remote_sensor_announce_disc()` which publishes to the channel. The manager dispatches discovery events to a workqueue via a zbus listener.
 
 For the sensor-node ↔ gateway FIFO communication path, `pipe_publisher` writes length-prefixed protobuf frames to a POSIX FIFO and `pipe_transport` reads them back, publishing decoded events to `sensor_event_chan`. This path bypasses zbus entirely for cross-process communication.
 
