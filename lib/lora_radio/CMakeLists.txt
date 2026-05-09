@@ -17,7 +17,6 @@ if(CONFIG_LORA_RADIO)
   zephyr_library_sources_ifdef(CONFIG_LORA_RADIO_FOTA src/lora_handler_fota.c)
   zephyr_library_sources_ifdef(CONFIG_LORA_RADIO_SHELL src/lora_shell.c)
   zephyr_library_include_directories(include)
-  zephyr_include_directories(include)
 
   zephyr_linker_sources(SECTIONS lora_radio_iterables.ld)
 
