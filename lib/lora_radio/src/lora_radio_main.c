@@ -20,14 +20,7 @@ struct lora_session *lora_session_get(uint16_t node_id);
 void lora_session_init(void);
 void lora_session_restore(void);
 
-struct lora_link_event {
-	uint16_t node_id;
-	int16_t rssi;
-	uint8_t snr;
-	uint16_t seq_num;
-	uint16_t crc_errors;
-};
-ZBUS_CHAN_DECLARE(lora_link_chan);
+#include <lora_radio/lora_chan.h>
 
 /* Forward decl for radio ops struct (defined in Task 5) */
 struct lora_radio_ops;

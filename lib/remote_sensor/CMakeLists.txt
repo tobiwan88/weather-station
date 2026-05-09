@@ -10,6 +10,7 @@ if(CONFIG_REMOTE_SENSOR)
                                src/remote_sensor_settings.c)
   zephyr_library_sources_ifdef(CONFIG_REMOTE_SENSOR_SHELL
                                src/remote_sensor_shell.c)
+  zephyr_library_sources(src/remote_peer_cmd_chan.c)
   zephyr_library_include_directories(include)
   zephyr_include_directories(include)
 
