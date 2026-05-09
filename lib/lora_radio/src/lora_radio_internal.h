@@ -11,9 +11,7 @@
 int lora_packet_decode(const uint8_t *in_buf, uint8_t in_len, const uint8_t session_key[16],
 		       struct lora_l2_header *hdr, uint8_t *payload, uint8_t *payload_len);
 
-/* Session manager — lora_session.c */
-void lora_session_init(void);
-struct lora_session *lora_session_get(uint16_t node_id);
+#include <lora_radio/lora_session.h>
 
 /* Protocol handlers — called from RX thread dispatch */
 int lora_handle_sensor_data(uint16_t src_node, const uint8_t *payload, uint8_t payload_len);

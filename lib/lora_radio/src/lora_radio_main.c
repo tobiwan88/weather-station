@@ -14,11 +14,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <lora_radio/lora_frame.h>
 #include <lora_radio/lora_radio.h>
 
-/* Forward decls for types not yet in their own headers */
-struct lora_session;
-struct lora_session *lora_session_get(uint16_t node_id);
-void lora_session_init(void);
-void lora_session_restore(void);
+#include <lora_radio/lora_session.h>
 
 #include <lora_radio/lora_chan.h>
 
