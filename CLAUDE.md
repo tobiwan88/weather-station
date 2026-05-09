@@ -53,6 +53,7 @@ Always read the relevant ADRs before implementing a feature. Quick-lookup by top
 | New library / service | ADR-001 (structure), ADR-002 (zbus), ADR-008 (Kconfig composition) |
 | UI / display | ADR-007 (gateway+display), ADR-011 (HTTP dashboard) |
 | Connectivity (MQTT, HTTP, LoRa) | ADR-002 (zbus), ADR-006 (LoRa), ADR-013 (MQTT) |
+| Firmware update / FOTA | ADR-014 (MCUboot, signing, HTTP upload, rollback) |
 | Testing | ADR-012 (integration tests), ADR-009 (native_sim) |
 | Configuration / settings | ADR-008 (Kconfig), ADR-013 (MQTT configurable) |
 
