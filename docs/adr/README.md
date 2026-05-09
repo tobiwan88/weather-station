@@ -30,6 +30,7 @@ Use these documents when:
 | [ADR-012](ADR-012-integration-test-architecture.md) | Pytest Integration Test Architecture | Accepted |
 | [ADR-013](ADR-013-mqtt-configurable.md) | MQTT Configurable | Accepted |
 | [ADR-014](ADR-014-mcuboot-fota.md) | MCUboot FOTA and Secure Firmware Update | Accepted |
+| [ADR-015](ADR-015-lora-protocol.md) | LoRa Protocol Architecture | Accepted |
 
 ---
 
