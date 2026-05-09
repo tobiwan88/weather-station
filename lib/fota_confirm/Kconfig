@@ -1,9 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
+# Placeholder — Task 6 (fota_confirm library) will overwrite this file.
 
 config FOTA_CONFIRM
-	bool "FOTA confirm transport interface (stub)"
-	help
-	  Exposes the fota_confirm_transport_api vtable header for transports
-	  that confirm firmware update completion on sensor nodes.
-	  No implementation is provided; this is a placeholder for future
-	  wireless confirmation support (LoRa, BLE). See ADR-014.
+	bool
