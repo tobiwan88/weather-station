@@ -56,3 +56,6 @@ zephyr/*
 # Worktrees
 .worktrees/
 site/
+
+# MCUboot keys (local development only)
+keys/
