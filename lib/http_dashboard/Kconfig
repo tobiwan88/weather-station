@@ -73,6 +73,7 @@ config HTTP_DASHBOARD_FOTA
 	bool "FOTA firmware upload endpoints (/api/fota/*)"
 	depends on HTTP_DASHBOARD && HTTP_DASHBOARD_AUTH
 	depends on BOOTLOADER_MCUBOOT && IMG_MANAGER && STREAM_FLASH && FLASH_MAP
+	select REBOOT
 	help
 	  Adds three auth-gated endpoints to the HTTP dashboard:
 	    POST /api/fota/upload  — stream signed image to flash slot 1
