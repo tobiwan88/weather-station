@@ -13,8 +13,8 @@ menuconfig REMOTE_SENSOR
 
 	  Defines a transport vtable (struct remote_transport) that protocol
 	  adapters implement, two zbus channels for discovery and scan control,
-	  and a subscriber thread that handles registration, persistence, and
-	  trigger routing. All existing consumers (dashboard, display, logger)
+	  and a listener+workqueue dispatch that handles registration, persistence,
+	  and trigger routing. All existing consumers (dashboard, display, logger)
 	  receive remote sensor data on the unchanged sensor_event_chan.
 
 	  Protocol adapters (CONFIG_BLE_SENSOR, CONFIG_LORA_SENSOR, etc.) each
@@ -59,12 +59,12 @@ config REMOTE_SENSOR_PERSIST
 	  scanning begins. Settings key prefix: "rsen/".
 
 config REMOTE_SENSOR_THREAD_STACK_SIZE
-	int "Manager thread stack size (bytes)"
+	int "Manager workqueue stack size (bytes)"
 	default 1024
 	range 512 8192
 
 config REMOTE_SENSOR_THREAD_PRIORITY
-	int "Manager thread cooperative priority"
+	int "Manager workqueue cooperative priority"
 	default 5
 	range 0 NUM_PREEMPT_PRIORITIES
 
