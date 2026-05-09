@@ -15,5 +15,6 @@ if [ -f "${KEY_FILE}" ]; then
 fi
 
 imgtool keygen -k "${KEY_FILE}" -t ed25519
+chmod 600 "${KEY_FILE}"
 echo "Dev key generated: ${KEY_FILE}"
 echo "This file is gitignored. Never commit it."
