@@ -37,6 +37,7 @@ static void respond_401(struct http_response_ctx *rsp)
 static struct flash_img_context fota_img_ctx;
 static atomic_t fota_in_progress = ATOMIC_INIT(0);
 static bool fota_auth_ok;
+static bool fota_write_failed;
 
 int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_status status,
 			const struct http_request_ctx *request_ctx,
@@ -49,6 +50,22 @@ int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_st
 	    status == HTTP_SERVER_TRANSACTION_COMPLETE) {
 		atomic_set(&fota_in_progress, 0);
 		fota_auth_ok = false;
+		fota_write_failed = false;
+		return 0;
+	}
+
+	if (fota_write_failed) {
+		if (status == HTTP_SERVER_REQUEST_DATA_FINAL ||
+		    status == HTTP_SERVER_TRANSACTION_ABORTED ||
+		    status == HTTP_SERVER_TRANSACTION_COMPLETE) {
+			if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
+				response_ctx->status = HTTP_500_INTERNAL_SERVER_ERROR;
+				response_ctx->headers = json_ct_hdr;
+				response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
+				response_ctx->final_chunk = true;
+			}
+			fota_write_failed = false;
+		}
 		return 0;
 	}
 
@@ -77,9 +94,14 @@ int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_st
 		if (rc != 0) {
 			LOG_ERR("flash_img_init_id failed: %d", rc);
 			atomic_set(&fota_in_progress, 0);
+			fota_auth_ok = false;
+			fota_write_failed = true;
 			if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
 				response_ctx->status = HTTP_500_INTERNAL_SERVER_ERROR;
+				response_ctx->headers = json_ct_hdr;
+				response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
 				response_ctx->final_chunk = true;
+				fota_write_failed = false;
 			}
 			return 0;
 		}
@@ -104,9 +126,13 @@ int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_st
 			LOG_ERR("flash_img_buffered_write failed: %d", rc);
 			atomic_set(&fota_in_progress, 0);
 			fota_auth_ok = false;
+			fota_write_failed = true;
 			if (last) {
 				response_ctx->status = HTTP_500_INTERNAL_SERVER_ERROR;
+				response_ctx->headers = json_ct_hdr;
+				response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
 				response_ctx->final_chunk = true;
+				fota_write_failed = false;
 			}
 			return 0;
 		}
@@ -167,6 +193,8 @@ int fota_apply_handler(struct http_client_ctx *client, enum http_transaction_sta
 	if (rc != 0) {
 		LOG_ERR("boot_request_upgrade failed: %d", rc);
 		response_ctx->status = HTTP_500_INTERNAL_SERVER_ERROR;
+		response_ctx->headers = json_ct_hdr;
+		response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
 		response_ctx->final_chunk = true;
 		return 0;
 	}
@@ -209,11 +237,22 @@ int fota_status_handler(struct http_client_ctx *client, enum http_transaction_st
 	struct mcuboot_img_header hdr0 = {0};
 	struct mcuboot_img_header hdr1 = {0};
 
-	boot_read_bank_header(FIXED_PARTITION_ID(slot0_partition), &hdr0, sizeof(hdr0));
-	boot_read_bank_header(FIXED_PARTITION_ID(slot1_partition), &hdr1, sizeof(hdr1));
+	int rc0 = boot_read_bank_header(FIXED_PARTITION_ID(slot0_partition), &hdr0, sizeof(hdr0));
+	int rc1 = boot_read_bank_header(FIXED_PARTITION_ID(slot1_partition), &hdr1, sizeof(hdr1));
+
+	if (rc0 != 0) {
+		LOG_WRN("slot0 header unreadable: %d", rc0);
+	}
+	if (rc1 != 0) {
+		LOG_WRN("slot1 header unreadable: %d", rc1);
+	}
 
 	bool confirmed = boot_is_img_confirmed();
 	int swap = mcuboot_swap_type();
+
+	if (swap < 0) {
+		LOG_WRN("mcuboot_swap_type failed: %d", swap);
+	}
 	bool pending = (swap == BOOT_SWAP_TYPE_TEST || swap == BOOT_SWAP_TYPE_REVERT);
 
 	static uint8_t status_buf[256];
@@ -231,6 +270,8 @@ int fota_status_handler(struct http_client_ctx *client, enum http_transaction_st
 
 	if (len <= 0 || (size_t)len >= sizeof(status_buf)) {
 		response_ctx->status = HTTP_500_INTERNAL_SERVER_ERROR;
+		response_ctx->headers = json_ct_hdr;
+		response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
 		response_ctx->final_chunk = true;
 		return 0;
 	}
