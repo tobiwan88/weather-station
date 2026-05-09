@@ -100,8 +100,8 @@ struct lora_rpc_resp {
 
 /* FOTA chunk */
 struct lora_fota_chunk {
-	uint8_t offset[4];
-	uint8_t data[231];
+	uint32_t offset;
+	uint8_t data[];
 } __packed;
 
 /* FOTA chunk acknowledgment */
@@ -180,7 +180,7 @@ struct lora_ack {
 #define LORA_RPC_FOTA_CANCEL 0x31
 
 /* System (0xF0-0xFF) */
-#define LORA_RPC_REBOOT 0xF0
+#define LORA_RPC_REBOOT 0xFF
 
 #ifdef __cplusplus
 }
