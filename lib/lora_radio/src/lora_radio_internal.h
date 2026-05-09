@@ -8,6 +8,9 @@
 #include <lora_radio/lora_frame.h>
 
 /* Packet framing — lora_packet.c */
+int lora_packet_encode(struct lora_l2_header *hdr, const void *payload, uint8_t payload_len,
+		       const uint8_t session_key[16], uint8_t *out_buf, uint8_t *out_len);
+
 int lora_packet_decode(const uint8_t *in_buf, uint8_t in_len, const uint8_t session_key[16],
 		       struct lora_l2_header *hdr, uint8_t *payload, uint8_t *payload_len);
 
