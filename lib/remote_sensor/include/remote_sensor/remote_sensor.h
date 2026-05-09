@@ -355,6 +355,46 @@ uint32_t remote_sensor_uid_from_addr(uint16_t prefix, const uint8_t *addr, size_
  */
 uint32_t remote_sensor_uid_from_node_id(uint16_t prefix, uint8_t node_id, enum sensor_type type);
 
+/* --------------------------------------------------------------------------
+ * Peer command channel (remote_peer_cmd_chan)
+ * -------------------------------------------------------------------------- */
+
+/** Action to perform on a peer. */
+enum remote_peer_cmd_action {
+	REMOTE_PEER_CMD_ADD,
+	REMOTE_PEER_CMD_REMOVE,
+	REMOTE_PEER_CMD_SEND_TRIGGER,
+};
+
+/**
+ * @brief Command to add, remove, or trigger a remote peer.
+ *
+ * Published on remote_peer_cmd_chan by:
+ *   - remote_sensor_manager (for ADD after discovery, REMOVE on timeout)
+ *   - Config command handler (for SEND_TRIGGER)
+ *
+ * Must be a flat, pointer-free struct (zbus rule).
+ */
+struct remote_peer_cmd_event {
+	/** Action to perform. */
+	enum remote_peer_cmd_action action;
+
+	/** Protocol this command targets. */
+	enum remote_transport_proto proto;
+
+	/** Target sensor UID (0 for ADD before registration). */
+	uint32_t target_uid;
+
+	/** Protocol-specific peer address (opaque to the manager). */
+	uint8_t peer_addr[REMOTE_SENSOR_ADDR_MAX_LEN];
+
+	/** Number of valid bytes in peer_addr. */
+	uint8_t addr_len;
+};
+
+/** zbus channel carrying remote_peer_cmd_event (defined in remote_peer_cmd_chan.c). */
+ZBUS_CHAN_DECLARE(remote_peer_cmd_chan);
+
 #ifdef __cplusplus
 }
 #endif
