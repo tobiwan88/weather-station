@@ -46,6 +46,9 @@
 #if defined(CONFIG_HTTP_DASHBOARD_AUTH)
 #	include "auth.h"
 #endif
+#if defined(CONFIG_HTTP_DASHBOARD_FOTA)
+#	include "fota.h"
+#endif
 #include "form_parse.h"
 #include "json_serialise.h"
 #include "process_post.h"
@@ -824,6 +827,33 @@ static struct http_resource_detail_dynamic api_locations_detail = {
 	.cb = api_locations_handler,
 };
 
+#if defined(CONFIG_HTTP_DASHBOARD_FOTA)
+static struct http_resource_detail_dynamic fota_upload_detail = {
+	.common =
+		{
+			.type = HTTP_RESOURCE_TYPE_DYNAMIC,
+			.bitmask_of_supported_http_methods = BIT(HTTP_POST),
+		},
+	.cb = fota_upload_handler,
+};
+static struct http_resource_detail_dynamic fota_apply_detail = {
+	.common =
+		{
+			.type = HTTP_RESOURCE_TYPE_DYNAMIC,
+			.bitmask_of_supported_http_methods = BIT(HTTP_POST),
+		},
+	.cb = fota_apply_handler,
+};
+static struct http_resource_detail_dynamic fota_status_detail = {
+	.common =
+		{
+			.type = HTTP_RESOURCE_TYPE_DYNAMIC,
+			.bitmask_of_supported_http_methods = BIT(HTTP_GET),
+		},
+	.cb = fota_status_handler,
+};
+#endif /* CONFIG_HTTP_DASHBOARD_FOTA */
+
 /* -------------------------------------------------------------------------- */
 /* HTTP service + resource registration                                         */
 /* -------------------------------------------------------------------------- */
@@ -849,6 +879,12 @@ HTTP_RESOURCE_DEFINE(api_config_resource, dashboard_svc, "/api/config", &api_con
 HTTP_RESOURCE_DEFINE(api_locations_resource, dashboard_svc, "/api/locations",
 		     &api_locations_detail);
 
+#if defined(CONFIG_HTTP_DASHBOARD_FOTA)
+HTTP_RESOURCE_DEFINE(fota_upload_resource, dashboard_svc, "/api/fota/upload", &fota_upload_detail);
+HTTP_RESOURCE_DEFINE(fota_apply_resource, dashboard_svc, "/api/fota/apply", &fota_apply_detail);
+HTTP_RESOURCE_DEFINE(fota_status_resource, dashboard_svc, "/api/fota/status", &fota_status_detail);
+#endif
+
 /* -------------------------------------------------------------------------- */
 /* SYS_INIT                                                                     */
 /* -------------------------------------------------------------------------- */
@@ -862,6 +898,10 @@ static int http_dashboard_init(void)
 		LOG_ERR("auth_init failed: %d", auth_rc);
 		return auth_rc;
 	}
+#endif
+
+#if defined(CONFIG_HTTP_DASHBOARD_FOTA)
+	fota_init();
 #endif
 
 	int rc = zbus_chan_add_obs(&sensor_event_chan, &http_dashboard_listener, K_NO_WAIT);

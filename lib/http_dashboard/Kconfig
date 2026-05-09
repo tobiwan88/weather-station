@@ -69,6 +69,17 @@ config HTTP_DASHBOARD_AUTH_SHELL
 
 endif # HTTP_DASHBOARD_AUTH
 
+config HTTP_DASHBOARD_FOTA
+	bool "FOTA firmware upload endpoints (/api/fota/*)"
+	depends on HTTP_DASHBOARD && HTTP_DASHBOARD_AUTH
+	depends on BOOTLOADER_MCUBOOT && IMG_MANAGER && STREAM_FLASH && FLASH_MAP
+	help
+	  Adds three auth-gated endpoints to the HTTP dashboard:
+	    POST /api/fota/upload  — stream signed image to flash slot 1
+	    POST /api/fota/apply   — mark slot 1 pending and schedule reboot
+	    GET  /api/fota/status  — return slot 0/1 versions and swap state
+	  Requires HTTP_DASHBOARD_AUTH — upload is always authenticated.
+
 module = HTTP_DASHBOARD
 module-str = HTTP_DASHBOARD
 source "subsys/logging/Kconfig.template.log_config"
