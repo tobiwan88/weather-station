@@ -122,9 +122,12 @@ static int announce_node(struct fake_node *n)
 	int rc = remote_sensor_announce_disc(&evt);
 
 	if (rc != 0) {
-		LOG_ERR("node %u: discovery enqueue (temp) failed: %d", n->node_id, rc);
+		LOG_ERR("node %u: discovery publish (temp) failed: %d", n->node_id, rc);
 		return rc;
 	}
+
+	/* Allow workqueue to process before next announcement. */
+	k_sleep(K_MSEC(10));
 
 	/* Humidity discovery — different uid, same address, different type */
 	snprintf(evt.suggested_label, sizeof(evt.suggested_label), "fake-remote-%u-hum",
@@ -134,9 +137,11 @@ static int announce_node(struct fake_node *n)
 
 	rc = remote_sensor_announce_disc(&evt);
 	if (rc != 0) {
-		LOG_ERR("node %u: discovery enqueue (hum) failed: %d", n->node_id, rc);
+		LOG_ERR("node %u: discovery publish (hum) failed: %d", n->node_id, rc);
 		return rc;
 	}
+
+	k_sleep(K_MSEC(10));
 
 	/* CO₂ discovery */
 	snprintf(evt.suggested_label, sizeof(evt.suggested_label), "fake-remote-%u-co2",
@@ -146,9 +151,11 @@ static int announce_node(struct fake_node *n)
 
 	rc = remote_sensor_announce_disc(&evt);
 	if (rc != 0) {
-		LOG_ERR("node %u: discovery enqueue (co2) failed: %d", n->node_id, rc);
+		LOG_ERR("node %u: discovery publish (co2) failed: %d", n->node_id, rc);
 		return rc;
 	}
+
+	k_sleep(K_MSEC(10));
 
 	/* VOC discovery */
 	snprintf(evt.suggested_label, sizeof(evt.suggested_label), "fake-remote-%u-voc",
@@ -158,7 +165,7 @@ static int announce_node(struct fake_node *n)
 
 	rc = remote_sensor_announce_disc(&evt);
 	if (rc != 0) {
-		LOG_ERR("node %u: discovery enqueue (voc) failed: %d", n->node_id, rc);
+		LOG_ERR("node %u: discovery publish (voc) failed: %d", n->node_id, rc);
 		return rc;
 	}
 

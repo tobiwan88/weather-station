@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
  * @file remote_sensor_manager.c
- * @brief Remote sensor manager: subscriber thread + trigger listener.
+ * @brief Remote sensor manager: listener+workqueue dispatch.
  *
  * Responsibilities:
  *   - On boot: subscribe to channels, optionally auto-scan all transports.
@@ -11,6 +11,9 @@
  *     sensor_registry, calls peer_add on the matching transport, persists.
  *   - Listens to sensor_trigger_chan (fast LISTENER path) → forwards triggers
  *     to capable transports.
+ *
+ * Design: zbus listeners dispatch to work items on a dedicated workqueue.
+ * No dedicated thread — the workqueue handles all deferred processing.
  */
 
 #include <string.h>
@@ -276,92 +279,103 @@ static void handle_discovery(const struct remote_discovery_event *evt)
 }
 
 /* --------------------------------------------------------------------------
- * Discovery message queue — k_msgq stores one copy per event so that rapid
- * successive announces (e.g. temp + hum from the same node) are not lost.
- * Zbus channels are broadcast-overwrite; k_msgq is fifo with copies.
+ * Discovery announce — thin wrapper publishing to zbus channel
  * -------------------------------------------------------------------------- */
-
-#define DISC_MSGQ_DEPTH 16
-K_MSGQ_DEFINE(disc_msgq, sizeof(struct remote_discovery_event), DISC_MSGQ_DEPTH, 4);
 
 int remote_sensor_announce_disc(const struct remote_discovery_event *evt)
 {
-	int rc = k_msgq_put(&disc_msgq, evt, K_MSEC(100));
-
-	if (rc != 0) {
-		LOG_WRN("disc_msgq full, dropping event uid=0x%08x", evt->suggested_uid);
-	}
-	return rc;
+	return zbus_chan_pub(&remote_discovery_chan, evt, K_MSEC(100));
 }
 
 /* --------------------------------------------------------------------------
- * zbus SUBSCRIBER thread — processes scan-control + drains discovery msgq
+ * Workqueue + work items for listener dispatch
  * -------------------------------------------------------------------------- */
 
-ZBUS_SUBSCRIBER_DEFINE(remote_sensor_sub, 8);
+K_THREAD_STACK_DEFINE(remote_sensor_wq_stack, CONFIG_REMOTE_SENSOR_THREAD_STACK_SIZE);
+static struct k_work_q remote_sensor_wq;
 
-static void remote_sensor_thread(void *a, void *b, void *c)
+static struct k_work disc_work;
+static struct k_work scan_work;
+static struct remote_discovery_event pending_disc;
+static struct remote_scan_ctrl_event pending_scan;
+static K_MUTEX_DEFINE(disc_pending_mutex);
+static K_MUTEX_DEFINE(scan_pending_mutex);
+
+/* --------------------------------------------------------------------------
+ * Discovery work handler + zbus listener
+ * -------------------------------------------------------------------------- */
+
+static void disc_work_handler(struct k_work *work)
 {
-	ARG_UNUSED(a);
-	ARG_UNUSED(b);
-	ARG_UNUSED(c);
+	struct remote_discovery_event evt;
 
-	const struct zbus_channel *chan;
+	ARG_UNUSED(work);
 
-	while (true) {
-		/* Drain all pending discovery events first (non-blocking). */
-		struct remote_discovery_event disc_evt;
+	k_mutex_lock(&disc_pending_mutex, K_FOREVER);
+	evt = pending_disc;
+	k_mutex_unlock(&disc_pending_mutex);
+	handle_discovery(&evt);
+}
 
-		while (k_msgq_get(&disc_msgq, &disc_evt, K_NO_WAIT) == 0) {
-			handle_discovery(&disc_evt);
-		}
+static void discovery_cb(const struct zbus_channel *chan)
+{
+	const struct remote_discovery_event *evt = zbus_chan_const_msg(chan);
 
-		/* Wait for next scan-control notification (or timeout to re-check msgq). */
-		int rc = zbus_sub_wait(&remote_sensor_sub, &chan, K_MSEC(50));
+	k_mutex_lock(&disc_pending_mutex, K_FOREVER);
+	pending_disc = *evt;
+	k_mutex_unlock(&disc_pending_mutex);
+	(void)k_work_submit_to_queue(&remote_sensor_wq, &disc_work);
+}
 
-		if (rc == -EAGAIN) {
-			/* Timeout — loop back to drain msgq. */
+ZBUS_LISTENER_DEFINE(remote_disc_listener, discovery_cb);
+
+/* --------------------------------------------------------------------------
+ * Scan control work handler + zbus listener
+ * -------------------------------------------------------------------------- */
+
+static void scan_work_handler(struct k_work *work)
+{
+	struct remote_scan_ctrl_event evt;
+
+	ARG_UNUSED(work);
+
+	k_mutex_lock(&scan_pending_mutex, K_FOREVER);
+	evt = pending_scan;
+	k_mutex_unlock(&scan_pending_mutex);
+
+	STRUCT_SECTION_FOREACH(remote_transport, t)
+	{
+		bool match = evt.proto == REMOTE_TRANSPORT_PROTO_UNKNOWN || t->proto == evt.proto;
+		bool can_scan = t->caps & REMOTE_TRANSPORT_CAP_SCAN;
+
+		if (!match || !can_scan) {
 			continue;
 		}
-		if (rc != 0) {
-			LOG_ERR("zbus_sub_wait: %d", rc);
-			continue;
-		}
-
-		if (chan == &remote_scan_ctrl_chan) {
-			struct remote_scan_ctrl_event evt;
-
-			if (zbus_chan_read(&remote_scan_ctrl_chan, &evt, K_NO_WAIT) != 0) {
-				continue;
+		if (evt.action == REMOTE_SCAN_START) {
+			LOG_INF("scan start: %s", t->name);
+			if (t->scan_start) {
+				t->scan_start(t);
 			}
-
-			STRUCT_SECTION_FOREACH(remote_transport, t)
-			{
-				bool match = evt.proto == REMOTE_TRANSPORT_PROTO_UNKNOWN ||
-					     t->proto == evt.proto;
-				bool can_scan = t->caps & REMOTE_TRANSPORT_CAP_SCAN;
-
-				if (!match || !can_scan) {
-					continue;
-				}
-				if (evt.action == REMOTE_SCAN_START) {
-					LOG_INF("scan start: %s", t->name);
-					if (t->scan_start) {
-						t->scan_start(t);
-					}
-				} else {
-					LOG_INF("scan stop: %s", t->name);
-					if (t->scan_stop) {
-						t->scan_stop(t);
-					}
-				}
+		} else {
+			LOG_INF("scan stop: %s", t->name);
+			if (t->scan_stop) {
+				t->scan_stop(t);
 			}
 		}
 	}
 }
 
-K_THREAD_DEFINE(remote_sensor_tid, CONFIG_REMOTE_SENSOR_THREAD_STACK_SIZE, remote_sensor_thread,
-		NULL, NULL, NULL, CONFIG_REMOTE_SENSOR_THREAD_PRIORITY, 0, 0);
+static void scan_ctrl_cb(const struct zbus_channel *chan)
+{
+	const struct remote_scan_ctrl_event *evt = zbus_chan_const_msg(chan);
+
+	k_mutex_lock(&scan_pending_mutex, K_FOREVER);
+	pending_scan = *evt;
+	k_mutex_unlock(&scan_pending_mutex);
+	(void)k_work_submit_to_queue(&remote_sensor_wq, &scan_work);
+}
+
+ZBUS_LISTENER_DEFINE(remote_scan_ctrl_listener, scan_ctrl_cb);
 
 /* --------------------------------------------------------------------------
  * zbus LISTENER — trigger routing (fast, non-blocking)
@@ -401,14 +415,26 @@ static void remote_trigger_cb(const struct zbus_channel *chan)
 ZBUS_LISTENER_DEFINE(remote_trigger_listener, remote_trigger_cb);
 
 /* --------------------------------------------------------------------------
- * SYS_INIT APPLICATION 92 — subscribe channels, kick off auto-scan
+ * SYS_INIT APPLICATION 92 — init work items, kick off auto-scan
  * -------------------------------------------------------------------------- */
 
 static int remote_sensor_manager_init(void)
 {
 	int rc;
 
-	rc = zbus_chan_add_obs(&remote_scan_ctrl_chan, &remote_sensor_sub, K_NO_WAIT);
+	k_work_init(&disc_work, disc_work_handler);
+	k_work_init(&scan_work, scan_work_handler);
+	k_work_queue_start(&remote_sensor_wq, remote_sensor_wq_stack,
+			   K_THREAD_STACK_SIZEOF(remote_sensor_wq_stack),
+			   CONFIG_REMOTE_SENSOR_THREAD_PRIORITY, NULL);
+
+	rc = zbus_chan_add_obs(&remote_discovery_chan, &remote_disc_listener, K_NO_WAIT);
+	if (rc != 0) {
+		LOG_ERR("add obs remote_discovery_chan: %d", rc);
+		return rc;
+	}
+
+	rc = zbus_chan_add_obs(&remote_scan_ctrl_chan, &remote_scan_ctrl_listener, K_NO_WAIT);
 	if (rc != 0) {
 		LOG_ERR("add obs remote_scan_ctrl_chan: %d", rc);
 		return rc;

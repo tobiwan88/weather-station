@@ -7,17 +7,17 @@
  *
  *   Protocol adapters (lib/ble_sensor/, lib/lora_sensor/, …) implement the
  *   remote_transport vtable and declare one instance per protocol via
- *   REMOTE_TRANSPORT_DEFINE().  The remote_sensor_manager (a dedicated
- *   subscriber thread) iterates all linked-in transports, dispatches scan
- *   control commands, processes discovery events, registers discovered sensors
- *   in sensor_registry, and routes trigger events to capable transports.
+ *   REMOTE_TRANSPORT_DEFINE().  The remote_sensor_manager (a listener+workqueue
+ *   dispatch) iterates all linked-in transports, dispatches scan control
+ *   commands, processes discovery events, registers discovered sensors in
+ *   sensor_registry, and routes trigger events to capable transports.
  *
  *   Data from remote sensors reaches sensor_event_chan via
  *   remote_sensor_publish_data() — identical to local sensors from the
  *   perspective of all consumers (dashboard, display, logger).
  *
  * Discovery delivery:
- *   remote_sensor_announce_disc() — k_msgq-backed helper for transports
+ *   remote_sensor_announce_disc() — zbus-backed helper for transports
  *   remote_scan_ctrl_chan         — ZBUS_CHAN_DEFINE in remote_scan_ctrl_chan.c
  *
  * UID scheme (one UID per physical-device × sensor_type pair):
@@ -243,17 +243,15 @@ struct remote_discovery_event {
 };
 
 /**
- * @brief Enqueue a discovery event for the remote_sensor_manager to process.
+ * @brief Publish a discovery event on remote_discovery_chan.
  *
- * Transport adapters MUST use this function rather than posting to any channel
- * directly.  Internally uses a k_msgq so rapid successive calls (e.g. one
- * per sensor type per node) are all delivered without overwriting each other.
+ * Transport adapters MUST use this function rather than posting to the channel
+ * directly.  Publishes on remote_discovery_chan via zbus_chan_pub().
  *
- * May be called from any thread context.  Blocks up to K_MSEC(100) if the
- * queue is full before returning -ENOMEM.
+ * May be called from any thread context.
  *
- * @param evt Discovery event to enqueue (copied by value).
- * @return 0 on success, -ENOMEM if the queue is full.
+ * @param evt Discovery event to publish (copied by value by zbus).
+ * @return 0 on success, negative errno from zbus_chan_pub() on failure.
  */
 int remote_sensor_announce_disc(const struct remote_discovery_event *evt);
 
@@ -290,6 +288,9 @@ struct remote_scan_ctrl_event {
 
 /** zbus channel carrying remote_scan_ctrl_event (defined in remote_scan_ctrl_chan.c). */
 ZBUS_CHAN_DECLARE(remote_scan_ctrl_chan);
+
+/** zbus channel carrying remote_discovery_event (defined in remote_discovery_chan.c). */
+ZBUS_CHAN_DECLARE(remote_discovery_chan);
 
 /* --------------------------------------------------------------------------
  * Public helpers called by transport adapters
