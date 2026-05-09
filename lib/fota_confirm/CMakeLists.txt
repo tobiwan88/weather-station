@@ -1,3 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
-# Placeholder — Task 6 (fota_confirm library) will overwrite this file.
+if(CONFIG_FOTA_CONFIRM)
+  zephyr_library()
+  zephyr_library_sources(src/fota_confirm.c)
+endif()

@@ -1,5 +1,28 @@
 # SPDX-License-Identifier: Apache-2.0
-# Placeholder — Task 6 (fota_confirm library) will overwrite this file.
 
-config FOTA_CONFIRM
-	bool
+menuconfig FOTA_CONFIRM
+	bool "Auto-confirm firmware image after successful boot"
+	depends on BOOTLOADER_MCUBOOT
+	help
+	  Schedules boot_write_img_confirmed() after a configurable settle
+	  delay at SYS_INIT APPLICATION priority 99 (after all other libs
+	  have initialised). Without confirmation, MCUboot treats the running
+	  image as a test image and reverts to the previous slot on the next
+	  reset.
+
+if FOTA_CONFIRM
+
+config FOTA_CONFIRM_DELAY_S
+	int "Settle delay before confirming image (seconds)"
+	default 5
+	range 1 60
+	help
+	  How long to wait after SYS_INIT APPLICATION 99 before calling
+	  boot_write_img_confirmed(). Allows HTTP dashboard, MQTT, and SNTP
+	  to bind their sockets before the image is marked permanent.
+
+module = FOTA_CONFIRM
+module-str = FOTA_CONFIRM
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # FOTA_CONFIRM
