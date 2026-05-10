@@ -76,7 +76,7 @@ int lora_radio_publish_data(uint32_t uid, enum sensor_type type, int32_t q31_val
  * @param params_len Number of valid parameter bytes.
  * @return 0 on success, negative errno on failure.
  */
-int lora_radio_rpc_send(uint8_t node_id, uint8_t cmd_id, const uint8_t *params, size_t params_len);
+int lora_radio_rpc_send(uint16_t node_id, uint8_t cmd_id, const uint8_t *params, uint8_t param_len);
 
 /**
  * @brief Derive a stable sensor UID from a LoRa node_id.

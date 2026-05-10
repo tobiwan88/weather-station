@@ -18,9 +18,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
 #include <lora_radio/lora_chan.h>
 
-/* Forward decl for radio ops struct (defined in Task 5) */
-struct lora_radio_ops;
-extern const struct lora_radio_ops *lora_radio_ops;
+#include <lora_radio/lora_radio_ops.h>
 
 /* --------------------------------------------------------------------------
  * Radio ops selection
@@ -91,18 +89,6 @@ int lora_radio_publish_data(uint32_t uid, uint8_t type, int32_t q31)
 }
 
 /* --------------------------------------------------------------------------
- * Send RPC command (stub — implemented in Task 9)
- * -------------------------------------------------------------------------- */
-int lora_radio_rpc_send(uint16_t node_id, uint8_t cmd_id, const uint8_t *params, uint8_t param_len)
-{
-	(void)node_id;
-	(void)cmd_id;
-	(void)params;
-	(void)param_len;
-	return -ENOSYS;
-}
-
-/* --------------------------------------------------------------------------
  * RX thread — main loop
  * -------------------------------------------------------------------------- */
 static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
@@ -124,7 +110,7 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 		uint8_t pkt_len = (uint8_t)ret;
 
 		memcpy(&hdr, buf, sizeof(hdr));
-		uint16_t src_node = hdr.src_node;
+		uint16_t src_node = (uint16_t)hdr.src_node[0] | ((uint16_t)hdr.src_node[1] << 8);
 		struct lora_session *s = lora_session_get(src_node);
 		const uint8_t *key = s ? s->session_key : NULL;
 
@@ -132,8 +118,8 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 		struct lora_link_event link_evt = {
 			.node_id = src_node,
 			.rssi = lora_radio_ops->rssi(),
-			.snr = lora_radio_ops->snr(),
-			.seq_num = hdr.seq_num,
+			.snr = (uint8_t)lora_radio_ops->snr(),
+			.seq_num = (uint16_t)hdr.seq_num[0] | ((uint16_t)hdr.seq_num[1] << 8),
 			.crc_errors = 0,
 		};
 		zbus_chan_pub(&lora_link_chan, &link_evt, K_NO_WAIT);
@@ -146,11 +132,11 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 		}
 
 		if (s) {
-			s->last_seq_rx = hdr.seq_num;
+			s->last_seq_rx = (uint16_t)hdr.seq_num[0] | ((uint16_t)hdr.seq_num[1] << 8);
 			s->last_rx_ms = k_uptime_get();
 		}
 
-		switch (lora_frame_type(&hdr)) {
+		switch (lora_frame_type(hdr.type_ver)) {
 		case LORA_FRAME_SENSOR_DATA:
 			lora_handle_sensor_data(src_node, payload, payload_len);
 			break;
@@ -166,8 +152,8 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 			break;
 #endif
 		default:
-			LOG_DBG("unhandled frame type 0x%x from 0x%04x", lora_frame_type(&hdr),
-				src_node);
+			LOG_DBG("unhandled frame type 0x%x from 0x%04x",
+				lora_frame_type(hdr.type_ver), src_node);
 			break;
 		}
 	}
