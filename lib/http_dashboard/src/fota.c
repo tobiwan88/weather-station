@@ -248,7 +248,7 @@ int fota_apply_handler(struct http_client_ctx *client, enum http_transaction_sta
 /* ── GET /api/fota/status ────────────────────────────────────────────────── */
 
 /* Protects status_buf against concurrent GET requests from different clients. */
-static K_SPINLOCK_DEFINE(fota_status_lock);
+static struct k_spinlock fota_status_lock;
 static uint8_t status_buf[256];
 
 int fota_status_handler(struct http_client_ctx *client, enum http_transaction_status status,
