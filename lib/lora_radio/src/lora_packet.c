@@ -42,6 +42,10 @@ int lora_packet_encode(struct lora_l2_header *hdr, const void *payload, uint8_t 
 	memcpy(out_buf + hdr_len, payload, payload_len);
 
 	if (session_key != NULL) {
+		/* Set ENCRYPTED flag BEFORE encryption so AAD matches on both sides */
+		hdr->flags |= LORA_FLAG_ENCRYPTED;
+		memcpy(out_buf, hdr, hdr_len);
+
 		psa_key_attributes_t attr = PSA_KEY_ATTRIBUTES_INIT;
 		psa_key_id_t key_id;
 		psa_set_key_usage_flags(&attr, PSA_KEY_USAGE_ENCRYPT);

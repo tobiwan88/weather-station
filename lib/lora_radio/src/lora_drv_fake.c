@@ -10,14 +10,29 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
 #include <lora_radio/lora_radio_ops.h>
 
-static K_FIFO_DEFINE(lora_fake_tx_fifo);
-static K_FIFO_DEFINE(lora_fake_rx_fifo);
+#define FAKE_PKT_POOL 16
+#define FAKE_PKT_SIZE LORA_MAX_PACKET_SF7
 
 struct fake_packet {
-	struct k_fifo _fifo;
+	void *reserved;
 	uint8_t len;
-	uint8_t data[];
+	uint8_t data[FAKE_PKT_SIZE];
 };
+
+static K_FIFO_DEFINE(lora_fake_tx_fifo);
+static K_FIFO_DEFINE(lora_fake_rx_fifo);
+static K_MEM_SLAB_DEFINE(lora_fake_pool, sizeof(struct fake_packet), FAKE_PKT_POOL, 1);
+
+static struct fake_packet *fake_alloc(void)
+{
+	struct fake_packet *pkt;
+	return k_mem_slab_alloc(&lora_fake_pool, (void **)&pkt, K_NO_WAIT) == 0 ? pkt : NULL;
+}
+
+static void fake_free(struct fake_packet *pkt)
+{
+	k_mem_slab_free(&lora_fake_pool, (void *)pkt);
+}
 
 static int fake_init(void)
 {
@@ -46,12 +61,12 @@ static int fake_set_tx_power(int8_t dbm)
 
 static int fake_tx(const uint8_t *data, uint8_t len)
 {
-	struct fake_packet *pkt = k_malloc(sizeof(*pkt) + len);
+	struct fake_packet *pkt = fake_alloc();
 	if (!pkt) {
 		return -ENOMEM;
 	}
-	pkt->len = len;
-	memcpy(pkt->data, data, len);
+	pkt->len = (len > FAKE_PKT_SIZE) ? FAKE_PKT_SIZE : len;
+	memcpy(pkt->data, data, pkt->len);
 	k_fifo_put(&lora_fake_tx_fifo, pkt);
 	LOG_DBG("fake TX: %d bytes", len);
 	return 0;
@@ -70,8 +85,8 @@ static int fake_rx(uint8_t *buf, uint8_t max_len, int32_t timeout_ms)
 	}
 	uint8_t copy = MIN(pkt->len, max_len);
 	memcpy(buf, pkt->data, copy);
-	int ret = copy;
-	k_free(pkt);
+	int ret = (int)copy;
+	fake_free(pkt);
 	return ret;
 }
 

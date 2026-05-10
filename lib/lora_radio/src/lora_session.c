@@ -82,6 +82,37 @@ uint16_t lora_session_alloc_node_id(void)
 	return 0;
 }
 
+static int lora_settings_set(const char *name, size_t len_rd, settings_read_cb read_cb,
+			     void *cb_arg)
+{
+	if (!name) {
+		return 0;
+	}
+
+	/* Parse "XXXX/key" — extract the 4-hex-digit node_id prefix */
+	uint16_t node_id;
+	int matched = sscanf(name, "%04hx/key", &node_id);
+	if (matched != 1) {
+		return 0;
+	}
+
+	if (len_rd < 16) {
+		return -EINVAL;
+	}
+
+	uint8_t key[16];
+	ssize_t ret = read_cb(cb_arg, key, sizeof(key));
+	if (ret < 16) {
+		return -EINVAL;
+	}
+
+	struct lora_session *s = lora_session_add(node_id, key);
+	if (!s) {
+		LOG_WRN("failed to restore session for node 0x%04x", node_id);
+	}
+	return 0;
+}
+
 static int lora_settings_export(int (*cb)(const char *name, const void *val, size_t len))
 {
 	char key[32];
@@ -91,7 +122,8 @@ static int lora_settings_export(int (*cb)(const char *name, const void *val, siz
 	}
 	return 0;
 }
-SETTINGS_STATIC_HANDLER_DEFINE(lora_radio, "lora", NULL, NULL, lora_settings_export, NULL);
+SETTINGS_STATIC_HANDLER_DEFINE(lora_radio, "lora", NULL, lora_settings_set, NULL,
+			       lora_settings_export);
 
 void lora_session_persist(void)
 {
