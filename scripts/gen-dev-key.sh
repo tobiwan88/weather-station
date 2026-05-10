@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: Apache-2.0
 # Generate a local ED25519 signing key for MCUboot.
 # The private key is stored in keys/ which is gitignored — never commit it.
 set -euo pipefail

@@ -37,19 +37,20 @@ static void respond_401(struct http_response_ctx *rsp)
 static struct flash_img_context fota_img_ctx;
 static atomic_t fota_in_progress = ATOMIC_INIT(0);
 static bool fota_auth_ok;
+static struct http_client_ctx *fota_authorized_client;
 static bool fota_write_failed;
 
 int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_status status,
 			const struct http_request_ctx *request_ctx,
 			struct http_response_ctx *response_ctx, void *user_data)
 {
-	ARG_UNUSED(client);
 	ARG_UNUSED(user_data);
 
 	if (status == HTTP_SERVER_TRANSACTION_ABORTED ||
 	    status == HTTP_SERVER_TRANSACTION_COMPLETE) {
 		atomic_set(&fota_in_progress, 0);
 		fota_auth_ok = false;
+		fota_authorized_client = NULL;
 		fota_write_failed = false;
 		return 0;
 	}
@@ -65,6 +66,21 @@ int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_st
 				response_ctx->final_chunk = true;
 			}
 			fota_write_failed = false;
+		}
+		return 0;
+	}
+
+	/* Reject data from any client that is not the authorized uploader. */
+	if (fota_auth_ok && client != fota_authorized_client) {
+		/* Different client injecting data into an in-progress upload — drop it. */
+		if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
+			response_ctx->status = HTTP_503_SERVICE_UNAVAILABLE;
+			response_ctx->headers = json_ct_hdr;
+			response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
+			static const char busy[] = "{\"error\":\"upload in progress\"}";
+			response_ctx->body = (const uint8_t *)busy;
+			response_ctx->body_len = sizeof(busy) - 1;
+			response_ctx->final_chunk = true;
 		}
 		return 0;
 	}
@@ -106,6 +122,7 @@ int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_st
 			return 0;
 		}
 		fota_auth_ok = true;
+		fota_authorized_client = client;
 	}
 
 	if (!fota_auth_ok) {
