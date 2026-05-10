@@ -51,7 +51,7 @@ static void lora_reboot_fn(struct k_work *work)
 {
 	(void)work;
 	LOG_INF("rebooting via RPC");
-	sys_reboot(0);
+	sys_reboot(SYS_REBOOT_COLD);
 }
 
 static int rpc_reboot(uint16_t src, uint8_t id, const uint8_t *p, uint8_t plen, uint8_t *r,
@@ -98,22 +98,28 @@ int lora_handle_rpc_cmd(uint16_t src_node, const uint8_t *payload, uint8_t paylo
 	}
 
 	uint8_t resp_data[128];
-	uint8_t resp_len;
+	uint8_t resp_len = 0;
 	int status = handler(src_node, cmd_id, params, param_len, resp_data, &resp_len);
+
+	if (status == 0 && resp_len > sizeof(resp_data)) {
+		resp_len = sizeof(resp_data);
+	}
 
 	uint8_t rpc_rsp_buf[130];
 	rpc_rsp_buf[0] = cmd_id;
 	rpc_rsp_buf[1] = (status < 0) ? (uint8_t)(-status) : 0;
-	memcpy(rpc_rsp_buf + 2, resp_data, resp_len);
+	if (resp_len > 0) {
+		memcpy(rpc_rsp_buf + 2, resp_data, resp_len);
+	}
 	uint8_t total_resp_len = resp_len + 2;
 
-	struct lora_l2_header hdr = {
-		.type_ver = (LORA_FRAME_RPC_RESP << 4) | 0x01,
-		.flags = LORA_FLAG_ENCRYPTED,
-		.src_node = 0,
-		.dst_node = src_node,
-		.seq_num = 0,
-	};
+	struct lora_l2_header hdr;
+
+	memset(&hdr, 0, sizeof(hdr));
+	hdr.type_ver = (LORA_FRAME_RPC_RESP << 4) | 0x01;
+	hdr.flags = LORA_FLAG_ENCRYPTED;
+	hdr.dst_node[0] = (uint8_t)(src_node & 0xFF);
+	hdr.dst_node[1] = (uint8_t)((src_node >> 8) & 0xFF);
 
 	struct lora_session *s = lora_session_get(src_node);
 	uint8_t tx_buf[LORA_MAX_PACKET_SF7];
@@ -139,13 +145,16 @@ int lora_radio_rpc_send(uint16_t node_id, uint8_t cmd_id, const uint8_t *params,
 		memcpy(payload + 2, params, MIN(param_len, 128));
 	}
 
-	struct lora_l2_header hdr = {
-		.type_ver = (LORA_FRAME_RPC_CMD << 4) | 0x01,
-		.flags = LORA_FLAG_ACK_REQ | LORA_FLAG_ENCRYPTED,
-		.src_node = 0,
-		.dst_node = node_id,
-		.seq_num = s->last_seq_tx++,
-	};
+	struct lora_l2_header hdr;
+
+	memset(&hdr, 0, sizeof(hdr));
+	hdr.type_ver = (LORA_FRAME_RPC_CMD << 4) | 0x01;
+	hdr.flags = LORA_FLAG_ACK_REQ | LORA_FLAG_ENCRYPTED;
+	hdr.dst_node[0] = (uint8_t)(node_id & 0xFF);
+	hdr.dst_node[1] = (uint8_t)((node_id >> 8) & 0xFF);
+	hdr.seq_num[0] = (uint8_t)(s->last_seq_tx & 0xFF);
+	hdr.seq_num[1] = (uint8_t)((s->last_seq_tx >> 8) & 0xFF);
+	s->last_seq_tx++;
 
 	uint8_t tx_buf[LORA_MAX_PACKET_SF7];
 	uint8_t tx_len;

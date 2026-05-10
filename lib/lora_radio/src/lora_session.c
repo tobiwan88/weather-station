@@ -55,8 +55,10 @@ void lora_session_remove(uint16_t node_id)
 {
 	for (uint8_t i = 0; i < session_count; i++) {
 		if (sessions[i].node_id == node_id) {
-			memmove(&sessions[i], &sessions[i + 1],
-				(session_count - i - 1) * sizeof(struct lora_session));
+			if (i < session_count - 1) {
+				memmove(&sessions[i], &sessions[i + 1],
+					(session_count - i - 1) * sizeof(struct lora_session));
+			}
 			session_count--;
 			LOG_INF("unpaired node 0x%04x", node_id);
 			return;

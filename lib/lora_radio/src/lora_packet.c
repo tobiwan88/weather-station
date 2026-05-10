@@ -59,8 +59,8 @@ int lora_packet_encode(struct lora_l2_header *hdr, const void *payload, uint8_t 
 		}
 
 		uint8_t nonce[12] = {0};
-		nonce[0] = hdr->seq_num & 0xFF;
-		nonce[1] = (hdr->seq_num >> 8) & 0xFF;
+		nonce[0] = hdr->seq_num[0];
+		nonce[1] = hdr->seq_num[1];
 
 		size_t tag_len;
 		s = psa_aead_encrypt(&key_id, PSA_ALG_GCM, nonce, sizeof(nonce), out_buf, hdr_len,
@@ -77,7 +77,7 @@ int lora_packet_encode(struct lora_l2_header *hdr, const void *payload, uint8_t 
 		memcpy(out_buf, hdr, hdr_len);
 		*out_len = hdr_len + payload_len + tag_len;
 	} else {
-		*out_len = total;
+		*out_len = hdr_len + payload_len;
 	}
 
 	uint16_t crc = crc16_ccitt(out_buf, *out_len);
@@ -126,8 +126,8 @@ int lora_packet_decode(const uint8_t *in_buf, uint8_t in_len, const uint8_t sess
 		}
 
 		uint8_t nonce[12] = {0};
-		nonce[0] = hdr->seq_num & 0xFF;
-		nonce[1] = (hdr->seq_num >> 8) & 0xFF;
+		nonce[0] = hdr->seq_num[0];
+		nonce[1] = hdr->seq_num[1];
 
 		size_t dec_len;
 		s = psa_aead_decrypt(&key_id, PSA_ALG_GCM, nonce, sizeof(nonce), in_buf, hdr_len,
