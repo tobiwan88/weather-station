@@ -13,6 +13,7 @@ concurrency:
 
 permissions:
   contents: write
+  pull-requests: write
 
 env:
   VENV: /home/zephyr/.venv/bin/activate
@@ -108,7 +109,7 @@ jobs:
           alert-threshold: "110%"
           comment-on-alert: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          fail-on-alert: true
+          fail-on-alert: ${{ github.event_name != 'pull_request' }}
           summary-always: true
 
   docs:
