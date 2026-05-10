@@ -81,21 +81,24 @@ apps/gateway/
   sysbuild/mcuboot.conf            ← MCUboot Kconfig for this app
 ```
 
-**`apps/gateway/sysbuild.conf`** (hardware targets only; excluded from native_sim via
-board-specific Kconfig guards):
+**`apps/gateway/sysbuild.conf`** (hardware targets only; excluded from native_sim because
+`west build` for `native_sim` never passes `--sysbuild`; the file is simply not processed):
 
 ```ini
 SB_CONFIG_BOOTLOADER_MCUBOOT=y
+SB_CONFIG_BOOT_SIGNATURE_TYPE_ED25519=y
+SB_CONFIG_MCUBOOT_MODE_SWAP_USING_MOVE=y
 ```
 
 **`apps/gateway/sysbuild/mcuboot.conf`**:
 
 ```ini
-CONFIG_BOOT_SIGNATURE_TYPE_ED25519=y
-CONFIG_BOOT_SWAP_USING_MOVE=y
-CONFIG_BOOT_UPGRADE_ONLY=n          # rollback allowed
+CONFIG_MCUBOOT_LOG_LEVEL_WRN=y
+CONFIG_BOOT_UPGRADE_ONLY=n
 CONFIG_BOOT_BOOTSTRAP=n
+CONFIG_BOOT_MAX_IMG_SECTORS_AUTO=n
 CONFIG_BOOT_MAX_IMG_SECTORS=256
+CONFIG_MCUBOOT_DOWNGRADE_PREVENTION=n
 ```
 
 **Build command** (hardware):
@@ -106,7 +109,7 @@ CONFIG_BOOT_MAX_IMG_SECTORS=256
 west build apps/gateway \
   -b frdm_mcxn947/mcxn947/cpu0 \
   --sysbuild \
-  -- -DCONFIG_MCUBOOT_SIGNATURE_KEY_FILE=\"keys/dev-ed25519.pem\"
+  -- "-DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=$(pwd)/keys/dev-ed25519.pem"
 ```
 
 **Output artifacts**:
@@ -219,7 +222,7 @@ POST /api/fota/apply
 {
   "slot0": { "version": "1.2.0", "confirmed": true  },
   "slot1": { "version": "1.3.0", "confirmed": false },
-  "pending_reboot": true
+  "pending": true
 }
 ```
 
