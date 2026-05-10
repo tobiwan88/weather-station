@@ -168,7 +168,11 @@ static int lora_radio_init(void)
 	lora_session_restore();
 
 	if (lora_radio_ops->init) {
-		lora_radio_ops->init();
+		int ret = lora_radio_ops->init();
+		if (ret < 0) {
+			LOG_ERR("radio driver init failed: %d", ret);
+			return ret;
+		}
 	}
 
 	k_thread_create(&lora_rx_thread_data, lora_rx_stack, CONFIG_LORA_RADIO_RX_THREAD_STACK_SIZE,

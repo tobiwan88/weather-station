@@ -41,21 +41,26 @@ int lora_handle_fota_chunk(uint16_t src_node, const uint8_t *payload, uint8_t pa
 	const uint8_t *data = payload + 4;
 	uint8_t data_len = payload_len - 4;
 	int ret = 0;
+	uint32_t expected = fota_expected_offset;
 
 	if (!fota_active) {
 		flash_img_init(&fota_ctx, FIXED_PARTITION_ID(PM_MCUBOOT_SECONDARY));
 		fota_active = true;
 		fota_expected_offset = 0;
+		expected = 0;
 	}
 
 	if (offset != fota_expected_offset) {
 		LOG_WRN("FOTA offset mismatch: expected %u, got %u", fota_expected_offset, offset);
+		ret = -EINVAL;
+		expected = fota_expected_offset;
 		goto send_ack;
 	}
 
 	ret = flash_img_buffered_write(&fota_ctx, data, data_len, false);
 	if (ret < 0) {
 		LOG_ERR("flash write failed at offset %u: %d", offset, ret);
+		expected = fota_expected_offset;
 		goto send_ack;
 	}
 	fota_expected_offset = offset + data_len;
@@ -64,12 +69,13 @@ send_ack: {
 	struct lora_fota_chunk_ack ack;
 
 	memcpy(ack.offset, &offset, sizeof(ack.offset));
+	memcpy(ack.expected_offset, &expected, sizeof(ack.expected_offset));
 	ack.status = (ret < 0) ? 1 : 0;
 
 	struct lora_l2_header hdr;
 
 	hdr.type_ver = (LORA_FRAME_FOTA_CHUNK_ACK << 4) | 0x01;
-	hdr.flags = LORA_FLAG_ENCRYPTED;
+	hdr.flags = 0;
 	hdr.src_node[0] = 0;
 	hdr.src_node[1] = 0;
 	hdr.dst_node[0] = (uint8_t)(src_node & 0xFF);

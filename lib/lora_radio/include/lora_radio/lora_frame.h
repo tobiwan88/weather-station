@@ -107,6 +107,7 @@ struct lora_fota_chunk {
 /* FOTA chunk acknowledgment */
 struct lora_fota_chunk_ack {
 	uint8_t offset[4];
+	uint8_t expected_offset[4];
 	uint8_t status;
 } __packed;
 
