@@ -900,10 +900,6 @@ static int http_dashboard_init(void)
 	}
 #endif
 
-#if defined(CONFIG_HTTP_DASHBOARD_FOTA)
-	fota_init();
-#endif
-
 	int rc = zbus_chan_add_obs(&sensor_event_chan, &http_dashboard_listener, K_NO_WAIT);
 
 	if (rc != 0) {

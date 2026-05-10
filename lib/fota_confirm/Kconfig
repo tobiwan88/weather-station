@@ -20,6 +20,9 @@ config FOTA_CONFIRM_DELAY_S
 	  How long to wait after SYS_INIT APPLICATION 99 before calling
 	  boot_write_img_confirmed(). Allows HTTP dashboard, MQTT, and SNTP
 	  to bind their sockets before the image is marked permanent.
+	  Note: boot_write_img_confirmed() calls flash_area_write() on the
+	  system work queue; keep the delay long enough that other work queue
+	  consumers (MQTT reconnect, SNTP) have completed their init writes.
 
 module = FOTA_CONFIRM
 module-str = FOTA_CONFIRM
