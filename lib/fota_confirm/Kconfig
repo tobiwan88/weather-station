@@ -2,7 +2,7 @@
 
 menuconfig FOTA_CONFIRM
 	bool "Auto-confirm firmware image after successful boot"
-	depends on BOOTLOADER_MCUBOOT
+	depends on BOOTLOADER_MCUBOOT && IMG_MANAGER
 	help
 	  Schedules boot_write_img_confirmed() after a configurable settle
 	  delay at SYS_INIT APPLICATION priority 99 (after all other libs
