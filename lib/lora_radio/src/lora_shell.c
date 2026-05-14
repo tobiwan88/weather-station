@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <zephyr/shell/shell.h>
-#include <zephyr/sys/hexdump.h>
+#include <zephyr/sys/util.h>
 
 #include <lora_radio/lora_chan.h>
 #include <lora_radio/lora_radio.h>

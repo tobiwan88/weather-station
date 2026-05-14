@@ -11,8 +11,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
 #include <lora_radio/lora_frame.h>
 #include <lora_radio/lora_radio.h>
-#include <lora_radio/lora_radio_internal.h>
-#include <lora_radio/lora_radio_ops.h>
+#include "lora_radio_internal.h"
 #include <lora_radio/lora_session.h>
 
 typedef int (*rpc_handler_t)(uint16_t src_node, uint8_t cmd_id, const uint8_t *params,
@@ -127,7 +126,7 @@ int lora_handle_rpc_cmd(uint16_t src_node, const uint8_t *payload, uint8_t paylo
 
 	lora_packet_encode(&hdr, rpc_rsp_buf, total_resp_len, s ? s->session_key : NULL, tx_buf,
 			   &tx_len);
-	lora_radio_ops->tx(tx_buf, tx_len);
+	lora_send(lora_radio_dev, tx_buf, tx_len);
 	return 0;
 }
 
@@ -163,5 +162,5 @@ int lora_radio_rpc_send(uint16_t node_id, uint8_t cmd_id, const uint8_t *params,
 	if (ret < 0) {
 		return ret;
 	}
-	return lora_radio_ops->tx(tx_buf, tx_len);
+	return lora_send(lora_radio_dev, tx_buf, tx_len);
 }
