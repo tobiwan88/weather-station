@@ -29,7 +29,7 @@ esac
 
 # Idempotent: skip if already installed at the right version
 if [ -x "${RENODE_INSTALL_DIR}/renode" ]; then
-    INSTALLED=$("${RENODE_INSTALL_DIR}/renode" --version 2>/dev/null | head -1 | awk '{print $2}' | cut -d. -f1-3 || true)
+    INSTALLED=$("${RENODE_INSTALL_DIR}/renode" --version 2>/dev/null | head -1 | awk '{print $2}' | sed 's/^v//' | cut -d. -f1-3 || true)
     if [ "$INSTALLED" = "$RENODE_VERSION" ]; then
         echo "Renode ${RENODE_VERSION} already installed at ${RENODE_INSTALL_DIR}"
         exit 0
