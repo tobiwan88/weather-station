@@ -251,3 +251,26 @@ upstream), enabling network-based Renode testing of the full gateway stack.
 - The model is contributed upstream or maintained as a project patch.
 
 ---
+
+## [RENODE-SPI-NOR] Functional SPI NOR flash model for Renode
+
+The Renode `.repl` models the MCXN947 external W25Q64 flash as bare
+`Memory.MappedMemory`, which cannot respond to SPI IP commands (JEDEC ID read,
+SFDP, erase, page program). This forces a Renode-specific Kconfig fragment that
+disables `CONFIG_FLASH_MCUX_FLEXSPI_NOR` and a DTS overlay to disable
+`ext_flash_ctrl`.
+
+**Goal:** Replace `Memory.MappedMemory` with a functional SPI NOR flash
+peripheral model so the full gateway firmware (with external flash) boots in
+Renode without workarounds.
+
+**Implementation:**
+- Check if Renode v1.16.1 has a `SPI.NORFlash` or equivalent model.
+- If yes, update `simulation/renode/frdm_mcxn947_mcxn947_cpu0.repl` to use it.
+- If no, implement or contribute one.
+- Remove `frdm_mcxn947_mcxn947_cpu0_renode.conf` and `_renode.overlay`.
+
+**Acceptance:** Gateway firmware builds without the Renode-specific workarounds
+and boots to shell in Renode, with external flash accessible via FlexSPI.
+
+---

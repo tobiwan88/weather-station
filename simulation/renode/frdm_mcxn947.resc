@@ -22,8 +22,3 @@ macro reset
     cpu0 VectorTableOffset `sysbus GetSymbolAddress "_vector_table"`
     cpu0 EnableZephyrMode
 """
-
-# Do NOT run the reset macro here — $bin may not be set yet.
-# Callers should:
-#   1. Set $bin to the ELF path:  Execute Command  \$bin=@/path/to/zephyr.elf
-#   2. Load and start:            Execute Command  runMacro \$reset; Start
