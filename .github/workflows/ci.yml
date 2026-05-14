@@ -212,10 +212,16 @@ jobs:
 
       - name: Install Renode portable
         run: |
+          ARCH=$(uname -m)
+          case "$ARCH" in
+            aarch64|arm64) ASSET="renode-1.16.1.linux-arm64-portable-dotnet.tar.gz" ;;
+            *)              ASSET="renode-1.16.1.linux-portable-dotnet.tar.gz" ;;
+          esac
+          mkdir -p /opt/renode
           curl -L --retry 3 \
-            https://github.com/renode/renode/releases/download/v1.16.1/renode-1.16.1.linux-portable-dotnet.tar.gz \
-            | tar xz -C /opt
-          echo "/opt/renode" >> $GITHUB_PATH
+            "https://github.com/renode/renode/releases/download/v1.16.1/${ASSET}" \
+            | tar xz --strip-components=1 -C /opt/renode
+          echo "/opt/renode" >> "$GITHUB_PATH"
 
       - name: Install Robot Framework
         run: pip install robotframework==6.1
