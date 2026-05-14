@@ -124,7 +124,7 @@ jobs:
               --build-dir "${GITHUB_WORKSPACE}/build/${{ matrix.app }}" \
               "${WEST_ROOT}/weather-station/apps/${{ matrix.app }}" \
               -- \
-              "-DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=${WEST_ROOT}/weather-station/keys/dev-ed25519.pem"
+              -DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=\"${WEST_ROOT}/weather-station/keys/dev-ed25519.pem\"
 
       - name: Upload binary
         uses: actions/upload-artifact@v4
@@ -203,7 +203,7 @@ jobs:
               --build-dir "${GITHUB_WORKSPACE}/build/renode" \
               "${WEST_ROOT}/weather-station/apps/gateway" \
               -- \
-              "-DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=${WEST_ROOT}/weather-station/keys/dev-ed25519.pem" \
+              -DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=\"${WEST_ROOT}/weather-station/keys/dev-ed25519.pem\" \
               -DDTC_OVERLAY_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.overlay \
               -DEXTRA_CONF_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.conf
 
