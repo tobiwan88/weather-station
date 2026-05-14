@@ -1,0 +1,29 @@
+$name?="frdm_mcxn947_mcxn947_cpu0"
+$bin?=@zephyr.elf
+$repl?=$ORIGIN/frdm_mcxn947_mcxn947_cpu0.repl
+
+using sysbus
+mach create $name
+
+machine LoadPlatformDescription $repl
+
+showAnalyzer flexcomm4lpuart4
+
+set osPanicHook
+"""
+self.ErrorLog("OS Panicked")
+"""
+
+cpu0 AddSymbolHook "z_fatal_error" $osPanicHook
+
+macro reset
+"""
+    sysbus LoadELF $bin
+    cpu0 VectorTableOffset `sysbus GetSymbolAddress "_vector_table"`
+    cpu0 EnableZephyrMode
+"""
+
+# Do NOT run the reset macro here — $bin may not be set yet.
+# Callers should:
+#   1. Set $bin to the ELF path:  Execute Command  \$bin=@/path/to/zephyr.elf
+#   2. Load and start:            Execute Command  runMacro \$reset; Start

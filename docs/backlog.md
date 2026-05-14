@@ -70,6 +70,12 @@ different scaling.
 - Unit test: register two sensors of the same type with different ranges; verify independent decode.
 
 Reference: ADR-003 §Q31 encoding, §sensor_uid contract.
+---
+
+## [DOCU-Improvement-Diagramgs] Improve the usage of diagrams in the documentation
+- make mermaid diagrams more interactive in webpage build
+- add diagrams also in the right pages as inlcude directly (build html from markdown)
+- ensure skill exists to create good diagrams
 
 ---
 
@@ -205,5 +211,43 @@ registering a health-check callback; the confirm library polls them.
   (`CONFIG_FOTA_CONFIRM_MIN_DELAY_S`) to let sockets bind before the first poll.
 
 Reference: ADR-014 §Image confirmation; ADR-008 §iterable sections pattern.
+
+---
+
+## [RENODE-CI-DOCKER] Pre-built CI Docker image with Renode
+
+The `renode` CI job downloads the portable Renode tarball each run (~30 s).
+A pre-built CI image would eliminate this delay and decouple from GitHub
+release availability.
+
+**Goal:** Create and publish `ghcr.io/tobiwan88/weather-station-ci:latest`,
+extending `zephyr_docker:arm` with Renode and Robot Framework pre-installed.
+
+**Implementation:**
+- Build a new Docker image based on `.devcontainer/Dockerfile.ci` that adds
+  the Renode portable release (ARM64 for native runner, x86_64 for CI) and
+  `robotframework==6.1`.
+- Publish to GitHub Container Registry.
+- Update `.github/workflows/ci.yml` `renode` job to use the custom image
+  instead of downloading Renode inline.
+
+**Acceptance:** Renode CI job runs without the 30 s download step. Cold build
+time drops from ~60 s to ~15 s.
+
+---
+
+## [RENODE-ENET-QOS] Renode ENET-QoS peripheral model
+
+The FRDM-MCXN947 uses `nxp,enet-qos` Ethernet, which has no Renode peripheral
+model. This blocks HTTP FOTA testing and network-dependent features (MQTT,
+HTTP dashboard, SNTP) in Renode simulation.
+
+**Goal:** Add an `enet-qos` peripheral model to Renode (or contribute to
+upstream), enabling network-based Renode testing of the full gateway stack.
+
+**Acceptance:**
+- Renode `.repl` includes a functional ENET-QoS peripheral at `0x40100000`.
+- `gateway_fota.robot` passes with HTTP FOTA test case.
+- The model is contributed upstream or maintained as a project patch.
 
 ---
