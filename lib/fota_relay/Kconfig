@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config FOTA_RELAY
+	bool "FOTA relay transport interface (stub)"
+	help
+	  Exposes the fota_relay_transport_api vtable header for transports
+	  that relay firmware updates from the gateway to sensor nodes.
+	  No implementation is provided; this is a placeholder for future
+	  wireless relay support (LoRa, BLE). See ADR-014.

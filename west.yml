@@ -22,3 +22,4 @@ manifest:
           - loramac-node
           - segger
           - nanopb
+          - mcuboot

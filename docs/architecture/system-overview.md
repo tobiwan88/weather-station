@@ -35,6 +35,10 @@ These two goals drive every structural choice in the codebase.
 └──────────────────────────────────────────────────┘
 ```
 
+```mermaid
+--8<-- "system-overview.mmd"
+```
+
 ---
 
 ## Libraries and Their Roles
@@ -58,6 +62,10 @@ These two goals drive every structural choice in the codebase.
 | `pipe_publisher` | Writes `env_sensor_data` events as length-prefixed protobuf to a POSIX FIFO (sensor-node side) |
 | `pipe_transport` | Reads from POSIX FIFO, decodes protobuf frames, publishes to `sensor_event_chan` (gateway side) |
 
+```mermaid
+--8<-- "library-deps.mmd"
+```
+
 The critical point: `http_dashboard` and `fake_sensors` do not reference each other. `http_dashboard` publishes a `config_cmd_event` on `config_cmd_chan`; `fake_sensors` subscribes independently. Neither knows the other exists.
 
 ---
@@ -75,6 +83,24 @@ The critical point: `http_dashboard` and `fake_sensors` do not reference each ot
 If two libraries need to coordinate at runtime, they do so through a channel, not a function call.
 
 **Q31 on the wire, float only at the edges.** Sensor values are stored and transmitted as Q31 fixed-point. Conversion to `float` happens only when formatting for human display (logs, HTTP JSON). This avoids floating-point in ISR contexts and keeps the wire format deterministic.
+
+---
+
+## Sensor UID Allocation
+
+`sensor_uid` is the runtime identity key used by `sensor_registry`, LVGL cards, and
+MQTT topics. UIDs are assigned at DT node definition time (in `apps/<app>/boards/native_sim.overlay`)
+and must be unique across all overlay files in the project.
+
+| Range | Purpose |
+|---|---|
+| `0x0001–0x000F` | Gateway-local / indoor sensors |
+| `0x0011–0x001F` | Gateway outdoor sensors |
+| `0x0021–0x00FF` | Remote sensor nodes (LoRa, BLE, etc.) |
+| `0x0101+` | Test-only instances |
+
+Use the lowest free UID in the appropriate range. Never reuse a UID — UIDs are
+the identity key for `sensor_registry`, LVGL display cards, and MQTT topic paths.
 
 ---
 

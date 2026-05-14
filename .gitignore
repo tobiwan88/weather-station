@@ -18,6 +18,13 @@ scripts/tests/__pycache__/
 # Editor / IDE
 .vscode/settings.json
 .idea/
+
+# Renode / Robot Framework output
+robot_output.xml
+log.html
+report.html
+snapshots/
+logs/
 *.swp
 *.swo
 *~
@@ -56,3 +63,6 @@ zephyr/*
 # Worktrees
 .worktrees/
 site/
+
+# MCUboot keys (local development only)
+keys/

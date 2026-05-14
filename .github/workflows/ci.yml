@@ -110,6 +110,22 @@ jobs:
               --build-dir "${GITHUB_WORKSPACE}/build/${{ matrix.app }}" \
               "${WEST_ROOT}/weather-station/apps/${{ matrix.app }}"
 
+      - name: Build ${{ matrix.app }} (sysbuild)
+        if: ${{ matrix.board == 'frdm_mcxn947/mcxn947/cpu0' }}
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          WEST_ROOT=$(west topdir)
+          # Generate ephemeral dev signing key for MCUboot
+          "${WEST_ROOT}/weather-station/scripts/gen-dev-key.sh"
+          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
+          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
+            west build -p always -b ${{ matrix.board }} \
+              --sysbuild \
+              --build-dir "${GITHUB_WORKSPACE}/build/${{ matrix.app }}" \
+              "${WEST_ROOT}/weather-station/apps/${{ matrix.app }}" \
+              -- \
+              -DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=\"${WEST_ROOT}/weather-station/keys/dev-ed25519.pem\"
+
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
@@ -117,7 +133,117 @@ jobs:
           path: build/${{ matrix.app }}/zephyr/zephyr.exe
           retention-days: 7
 
-  # ── 3. Test + Coverage ───────────────────────────────────────────────────────
+      - name: Upload sysbuild binaries
+        if: ${{ matrix.board == 'frdm_mcxn947/mcxn947/cpu0' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app }}-${{ matrix.board-label }}-sysbuild
+          path: |
+            build/${{ matrix.app }}/gateway/zephyr/zephyr.elf
+            build/${{ matrix.app }}/gateway/zephyr/zephyr.signed.bin
+            build/${{ matrix.app }}/mcuboot/zephyr/zephyr.elf
+          retention-days: 7
+
+  # ── 3. Renode ─────────────────────────────────────────────────────────────────
+  renode:
+    name: Renode (${{ matrix.test }})
+    runs-on: ubuntu-latest
+    needs: lint
+    container:
+      image: ghcr.io/tobiwan88/zephyr_docker:arm
+      options: --user root
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - gateway_boot
+          - gateway_fota
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Mark workspace safe for git
+        run: git config --global --add safe.directory '*'
+
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+
+      - name: Cache west modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/../zephyr
+            ${{ github.workspace }}/../modules
+          key: west-${{ hashFiles('west.yml') }}
+          restore-keys: west-
+
+      - name: West init + update
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          west init -l . 2>/dev/null || true
+          west update --narrow
+
+      - name: Apply out-of-tree patches
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          west patch apply
+
+      - name: Build gateway for Renode
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          WEST_ROOT=$(west topdir)
+          "${WEST_ROOT}/weather-station/scripts/gen-dev-key.sh"
+          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
+          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
+            west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
+              --sysbuild \
+              --build-dir "${GITHUB_WORKSPACE}/build/renode" \
+              "${WEST_ROOT}/weather-station/apps/gateway" \
+              -- \
+              -DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=\"${WEST_ROOT}/weather-station/keys/dev-ed25519.pem\" \
+              -DDTC_OVERLAY_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.overlay \
+              -DEXTRA_CONF_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.conf
+
+      - name: Install libicu and curl (Renode deps)
+        run: apt-get update -qq && apt-get install -y -qq libicu-dev curl
+
+      - name: Install Renode portable
+        run: |
+          ARCH=$(uname -m)
+          case "$ARCH" in
+            aarch64|arm64) ASSET="renode-1.16.1.linux-arm64-portable-dotnet.tar.gz" ;;
+            *)              ASSET="renode-1.16.1.linux-portable-dotnet.tar.gz" ;;
+          esac
+          mkdir -p /opt/renode
+          curl -L --retry 3 \
+            "https://github.com/renode/renode/releases/download/v1.16.1/${ASSET}" \
+            | tar xz --strip-components=1 -C /opt/renode
+          echo "/opt/renode" >> "$GITHUB_PATH"
+
+      - name: Install Robot Framework
+        run: pip install robotframework==6.1
+
+      - name: Run ${{ matrix.test }}
+        run: |
+          renode-test \
+            --show-log \
+            simulation/renode/tests/${{ matrix.test }}.robot
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: renode-${{ matrix.test }}
+          path: |
+            robot_output.xml
+            log.html
+            report.html
+          retention-days: 14
+
+  # ── 4. Test + Coverage ───────────────────────────────────────────────────────
   test-and-coverage:
     name: Test + Coverage
     runs-on: ubuntu-latest
@@ -221,7 +347,7 @@ jobs:
           reporter: java-junit
           fail-on-error: false
 
-  # ── 4. Docs (MkDocs build) ───────────────────────────────────────────────────
+  # ── 5. Docs (MkDocs build) ───────────────────────────────────────────────────
   docs:
     name: Docs (MkDocs build)
     runs-on: ubuntu-latest
@@ -231,7 +357,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install MkDocs, Material theme, and Mermaid plugin
-        run: pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
+        run: pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin mkdocs-glightbox
 
       - name: Build MkDocs site
         run: mkdocs build --strict
@@ -243,7 +369,7 @@ jobs:
           path: site/
           retention-days: 14
 
-  # ── 5. Snapshot (PR only) ────────────────────────────────────────────────────
+  # ── 6. Snapshot (PR only) ────────────────────────────────────────────────────
   snapshot:
     name: Publish PR snapshot
     runs-on: ubuntu-latest
