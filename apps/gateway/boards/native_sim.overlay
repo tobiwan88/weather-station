@@ -60,6 +60,12 @@
 		initial-value-miaq = <25000>;
 		status = "okay";
 	};
+
+	lora0: fake-lora-radio {
+		compatible = "fake,lora-radio";
+		label = "lora0";
+		status = "okay";
+	};
 };
 
 &sdl_dc {

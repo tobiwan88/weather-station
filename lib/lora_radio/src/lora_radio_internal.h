@@ -3,9 +3,14 @@
 #define LORA_RADIO_LORA_RADIO_INTERNAL_H_
 
 #include <stdint.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/lora.h>
 #include <zephyr/zbus/zbus.h>
 
 #include <lora_radio/lora_frame.h>
+
+/* Shared LoRa device handle — set in lora_radio_main.c, used by handlers */
+extern const struct device *lora_radio_dev;
 
 /* Packet framing — lora_packet.c */
 int lora_packet_encode(struct lora_l2_header *hdr, const void *payload, uint8_t payload_len,

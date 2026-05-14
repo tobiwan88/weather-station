@@ -5,9 +5,12 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
-#include <psa/crypto.h>
 #include <string.h>
 #include <zephyr/kernel.h>
+
+#ifdef CONFIG_PSA_CRYPTO
+#include <psa/crypto.h>
+#endif
 
 #include <lora_radio/lora_frame.h>
 
@@ -31,17 +34,19 @@ int lora_packet_encode(struct lora_l2_header *hdr, const void *payload, uint8_t 
 		       const uint8_t session_key[16], uint8_t *out_buf, uint8_t *out_len)
 {
 	uint8_t hdr_len = sizeof(struct lora_l2_header);
-	uint8_t total = hdr_len + payload_len + 12; /* GCM tag */
-
-	if (total > LORA_MAX_PACKET_SF7) {
-		LOG_ERR("packet too large: %d > %d", total, LORA_MAX_PACKET_SF7);
-		return -ENOSPC;
-	}
 
 	memcpy(out_buf, hdr, hdr_len);
 	memcpy(out_buf + hdr_len, payload, payload_len);
 
+#ifdef CONFIG_PSA_CRYPTO
 	if (session_key != NULL) {
+		uint8_t total = hdr_len + payload_len + 12;
+
+		if (total > LORA_MAX_PACKET_SF7) {
+			LOG_ERR("packet too large: %d > %d", total, LORA_MAX_PACKET_SF7);
+			return -ENOSPC;
+		}
+
 		/* Set ENCRYPTED flag BEFORE encryption so AAD matches on both sides */
 		hdr->flags |= LORA_FLAG_ENCRYPTED;
 		memcpy(out_buf, hdr, hdr_len);
@@ -79,6 +84,9 @@ int lora_packet_encode(struct lora_l2_header *hdr, const void *payload, uint8_t 
 	} else {
 		*out_len = hdr_len + payload_len;
 	}
+#else
+	*out_len = hdr_len + payload_len;
+#endif
 
 	uint16_t crc = crc16_ccitt(out_buf, *out_len);
 	out_buf[(*out_len)++] = crc & 0xFF;
@@ -105,6 +113,7 @@ int lora_packet_decode(const uint8_t *in_buf, uint8_t in_len, const uint8_t sess
 	uint8_t enc_len = in_len - hdr_len - 2;
 	bool encrypted = (hdr->flags & LORA_FLAG_ENCRYPTED) != 0;
 
+#ifdef CONFIG_PSA_CRYPTO
 	if (encrypted) {
 		if (session_key == NULL) {
 			LOG_WRN("encrypted frame but no key for node 0x%04x", hdr->src_node);
@@ -141,12 +150,23 @@ int lora_packet_decode(const uint8_t *in_buf, uint8_t in_len, const uint8_t sess
 		}
 		*payload_len = dec_len;
 	} else {
-		uint8_t plen = enc_len;
-		if (plen > LORA_MAX_PAYLOAD_SF7) {
+		if (enc_len > LORA_MAX_PAYLOAD_SF7) {
 			return -EINVAL;
 		}
-		memcpy(payload, in_buf + hdr_len, plen);
-		*payload_len = plen;
+		memcpy(payload, in_buf + hdr_len, enc_len);
+		*payload_len = enc_len;
 	}
+#else
+	if (encrypted) {
+		LOG_WRN("encrypted frame dropped (PSA Crypto unavailable)");
+		return -ENOTSUP;
+	}
+	if (enc_len > LORA_MAX_PAYLOAD_SF7) {
+		return -EINVAL;
+	}
+	memcpy(payload, in_buf + hdr_len, enc_len);
+	*payload_len = enc_len;
+#endif
+
 	return 0;
 }

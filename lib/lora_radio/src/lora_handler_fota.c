@@ -11,8 +11,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
 #include <lora_radio/lora_frame.h>
 #include <lora_radio/lora_radio.h>
-#include <lora_radio/lora_radio_internal.h>
-#include <lora_radio/lora_radio_ops.h>
+#include "lora_radio_internal.h"
 #include <lora_radio/lora_session.h>
 
 #if defined(CONFIG_IMG_MANAGER) && defined(CONFIG_FLASH_MAP)
@@ -88,7 +87,7 @@ send_ack: {
 	uint8_t tx_len;
 
 	lora_packet_encode(&hdr, &ack, sizeof(ack), s ? s->session_key : NULL, tx_buf, &tx_len);
-	lora_radio_ops->tx(tx_buf, tx_len);
+	lora_send(lora_radio_dev, tx_buf, tx_len);
 }
 	return 0;
 #endif

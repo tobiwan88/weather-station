@@ -6,6 +6,8 @@
 LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
 #include <sensor_event/sensor_event.h>
+#include <sensor_trigger/sensor_trigger.h>
+#include <zephyr/drivers/lora.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/zbus/zbus.h>
@@ -13,25 +15,36 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include "lora_radio_internal.h"
 #include <lora_radio/lora_frame.h>
 #include <lora_radio/lora_radio.h>
-
 #include <lora_radio/lora_session.h>
-
 #include <lora_radio/lora_chan.h>
 
-#include <lora_radio/lora_radio_ops.h>
-
 /* --------------------------------------------------------------------------
- * Radio ops selection
+ * LoRa device handle — shared with handler modules via internal header
  * -------------------------------------------------------------------------- */
-#ifdef CONFIG_LORA_RADIO_FAKE
-extern const struct lora_radio_ops lora_fake_radio_ops;
-const struct lora_radio_ops *lora_radio_ops = &lora_fake_radio_ops;
-#elif CONFIG_LORA_RADIO_DRV_SX1262
-extern const struct lora_radio_ops lora_sx1262_radio_ops;
-const struct lora_radio_ops *lora_radio_ops = &lora_sx1262_radio_ops;
-#else
-#	error "No LoRa radio driver selected (CONFIG_LORA_RADIO_FAKE or CONFIG_LORA_RADIO_DRV_SX1262)"
-#endif
+const struct device *lora_radio_dev;
+
+static int sf_to_enum(int sf)
+{
+	switch (sf) {
+	case 7:  return SF_7;
+	case 8:  return SF_8;
+	case 9:  return SF_9;
+	case 10: return SF_10;
+	case 11: return SF_11;
+	case 12: return SF_12;
+	default: return SF_10;
+	}
+}
+
+static int bw_to_enum(int bw_khz)
+{
+	switch (bw_khz) {
+	case 125: return BW_125_KHZ;
+	case 250: return BW_250_KHZ;
+	case 500: return BW_500_KHZ;
+	default:  return BW_125_KHZ;
+	}
+}
 
 /* --------------------------------------------------------------------------
  * Transport registration (iterable section metadata)
@@ -69,7 +82,7 @@ static void lora_trigger_handler(struct k_timer *timer)
 /* --------------------------------------------------------------------------
  * UID: (0x0200 << 16) | (node_id << 4) | (type & 0x0F)
  * -------------------------------------------------------------------------- */
-uint32_t lora_radio_uid_from_node_id(uint8_t node_id, uint8_t type)
+uint32_t lora_radio_uid_from_node_id(uint8_t node_id, enum sensor_type type)
 {
 	return (0x0200UL << 16) | ((uint32_t)node_id << 4) | (type & 0x0F);
 }
@@ -77,11 +90,11 @@ uint32_t lora_radio_uid_from_node_id(uint8_t node_id, uint8_t type)
 /* --------------------------------------------------------------------------
  * Publish decoded sensor data to sensor_event_chan
  * -------------------------------------------------------------------------- */
-int lora_radio_publish_data(uint32_t uid, uint8_t type, int32_t q31)
+int lora_radio_publish_data(uint32_t uid, enum sensor_type type, int32_t q31)
 {
 	struct env_sensor_data evt = {
 		.sensor_uid = uid,
-		.type = (enum sensor_type)type,
+		.type = type,
 		.q31_value = q31,
 		.timestamp_ms = k_uptime_get(),
 	};
@@ -103,7 +116,10 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 	uint8_t payload_len;
 
 	while (1) {
-		int ret = lora_radio_ops->rx(buf, sizeof(buf), K_FOREVER);
+		int16_t rssi;
+		int8_t snr;
+
+		int ret = lora_recv(lora_radio_dev, buf, sizeof(buf), K_FOREVER, &rssi, &snr);
 		if (ret < 0) {
 			continue;
 		}
@@ -117,8 +133,8 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 		/* Publish link diagnostics */
 		struct lora_link_event link_evt = {
 			.node_id = src_node,
-			.rssi = lora_radio_ops->rssi(),
-			.snr = (uint8_t)lora_radio_ops->snr(),
+			.rssi = rssi,
+			.snr = (uint8_t)snr,
 			.seq_num = (uint16_t)hdr.seq_num[0] | ((uint16_t)hdr.seq_num[1] << 8),
 			.crc_errors = 0,
 		};
@@ -164,16 +180,33 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
  * -------------------------------------------------------------------------- */
 static int lora_radio_init(void)
 {
+	lora_radio_dev = device_get_binding(CONFIG_LORA_RADIO_DEV_NAME);
+	if (!lora_radio_dev) {
+		LOG_ERR("LoRa device '%s' not found", CONFIG_LORA_RADIO_DEV_NAME);
+		return -ENODEV;
+	}
+	if (!device_is_ready(lora_radio_dev)) {
+		LOG_ERR("LoRa device '%s' not ready", CONFIG_LORA_RADIO_DEV_NAME);
+		return -ENODEV;
+	}
+
+	struct lora_modem_config cfg = {
+		.frequency = 868000000,
+		.bandwidth = bw_to_enum(CONFIG_LORA_RADIO_DEFAULT_BW),
+		.datarate = sf_to_enum(CONFIG_LORA_RADIO_DEFAULT_SF),
+		.coding_rate = CR_4_5,
+		.preamble_len = 8,
+		.tx_power = 14,
+		.tx = false,
+	};
+	int ret = lora_config(lora_radio_dev, &cfg);
+	if (ret < 0) {
+		LOG_ERR("lora_config failed: %d", ret);
+		return ret;
+	}
+
 	lora_session_init();
 	lora_session_restore();
-
-	if (lora_radio_ops->init) {
-		int ret = lora_radio_ops->init();
-		if (ret < 0) {
-			LOG_ERR("radio driver init failed: %d", ret);
-			return ret;
-		}
-	}
 
 	k_thread_create(&lora_rx_thread_data, lora_rx_stack, CONFIG_LORA_RADIO_RX_THREAD_STACK_SIZE,
 			lora_rx_thread_fn, NULL, NULL, NULL, CONFIG_LORA_RADIO_RX_THREAD_PRIORITY,

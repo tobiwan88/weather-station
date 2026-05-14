@@ -10,22 +10,19 @@ menuconfig LORA_RADIO
 	  Implements a custom L2 frame protocol with AES-128-GCM encryption,
 	  RPC commands, FOTA relay, and button-press provisioning.
 
-	  Radio drivers: SX1262 (real hardware) or fake (native_sim testing).
+	  Uses Zephyr's LoRa driver API (<zephyr/drivers/lora.h>). The radio
+	  driver can be Zephyr's built-in SX126x driver (real hardware) or a
+	  fake driver (native_sim testing). Set CONFIG_LORA_RADIO_DEV_NAME
+	  to match the device name registered by the radio driver.
 
 if LORA_RADIO
 
-config LORA_RADIO_DRV_SX1262
-	bool "SX1262 LoRa radio driver"
-	default y
+config LORA_RADIO_DEV_NAME
+	string "LoRa device name"
+	default "lora0"
 	help
-	  Enable the SX1262 radio driver for real hardware (STM32WLE5JC).
-
-config LORA_RADIO_FAKE
-	bool "Fake LoRa radio (native_sim only)"
-	depends on ARCH_POSIX
-	help
-	  Simulated LoRa radio for native_sim testing. Replaces the SX1262
-	  driver with in-process message passing.
+	  Device name used with device_get_binding() to locate the LoRa radio.
+	  Set to match the DT node label or driver name of your LoRa device.
 
 config LORA_RADIO_FOTA
 	bool "FOTA over LoRa"

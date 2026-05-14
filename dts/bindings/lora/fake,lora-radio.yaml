@@ -1,0 +1,9 @@
+description: |
+  Fake LoRa radio for native_sim and testing.
+
+  Each DT node with this compatible is instantiated as an independent
+  software LoRa radio using in-process k_fifo message passing.
+
+compatible: "fake,lora-radio"
+
+include: base.yaml

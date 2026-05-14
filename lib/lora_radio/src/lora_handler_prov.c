@@ -5,7 +5,6 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
-#include <psa/crypto.h>
 #include <string.h>
 #include <zephyr/kernel.h>
 #include <zephyr/random/random.h>
@@ -13,8 +12,10 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include "lora_radio_internal.h"
 #include <lora_radio/lora_frame.h>
 #include <lora_radio/lora_radio.h>
-#include <lora_radio/lora_radio_ops.h>
 #include <lora_radio/lora_session.h>
+
+#ifdef CONFIG_PSA_CRYPTO
+#include <psa/crypto.h>
 
 /* Development Ed25519 key pair - DO NOT USE IN PRODUCTION */
 static const uint8_t gateway_ed25519_sk[32] = {
@@ -27,10 +28,18 @@ static const uint8_t gateway_ed25519_pk[32] = {
 	0xd3, 0xc9, 0x64, 0x07, 0x3a, 0x0e, 0xe1, 0x72, 0xf3, 0xda, 0xa6,
 	0x23, 0x25, 0xaf, 0x02, 0x1a, 0x68, 0xf7, 0x07, 0x51, 0x1a,
 };
+#endif /* CONFIG_PSA_CRYPTO */
 
 int lora_handle_prov_beacon(const struct lora_l2_header *hdr, const uint8_t *payload,
 			    uint8_t payload_len)
 {
+#ifndef CONFIG_PSA_CRYPTO
+	(void)hdr;
+	(void)payload;
+	(void)payload_len;
+	LOG_WRN("provisioning requires PSA Crypto (Ed25519)");
+	return -ENOTSUP;
+#else
 	(void)hdr;
 
 	if (payload_len < 1) {
@@ -92,7 +101,16 @@ int lora_handle_prov_beacon(const struct lora_l2_header *hdr, const uint8_t *pay
 		return -EIO;
 	}
 
-	lora_radio_ops->set_modem_config(7, 500);
+	struct lora_modem_config prov_cfg = {
+		.frequency = 868000000,
+		.bandwidth = BW_500_KHZ,
+		.datarate = SF_7,
+		.coding_rate = CR_4_5,
+		.preamble_len = 8,
+		.tx_power = 14,
+		.tx = true,
+	};
+	lora_config(lora_radio_dev, &prov_cfg);
 
 	uint8_t tx_buf[LORA_MAX_PACKET_SF7];
 	uint8_t tx_len;
@@ -101,7 +119,7 @@ int lora_handle_prov_beacon(const struct lora_l2_header *hdr, const uint8_t *pay
 		return ret;
 	}
 
-	lora_radio_ops->tx(tx_buf, tx_len);
+	lora_send(lora_radio_dev, tx_buf, tx_len);
 
 	struct lora_session *sess = lora_session_add(node_id, session_key);
 	if (!sess) {
@@ -110,4 +128,5 @@ int lora_handle_prov_beacon(const struct lora_l2_header *hdr, const uint8_t *pay
 
 	LOG_INF("paired node 0x%04x (%d capabilities)", node_id, caps_count);
 	return 0;
+#endif /* CONFIG_PSA_CRYPTO */
 }
