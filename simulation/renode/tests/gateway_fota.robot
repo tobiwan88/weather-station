@@ -15,7 +15,9 @@ Kernel Version Available
     Prepare Machine         ${ELF}
     Wait For Shell Prompt
     Write Line To Uart      kernel version
-    Wait For Line On Uart   kernel version    timeout=15
+    # The command output is "Zephyr version X.Y.Z" — wait for the prompt to
+    # reappear rather than matching the echo (which has no newline until complete).
+    Wait For Prompt On Uart    uart:~$    timeout=15
 
 MCUmgr Is Active
     [Documentation]    Verify MCUmgr shell commands respond after boot.
