@@ -1,0 +1,46 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+#include <zephyr/dfu/mcuboot.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+
+LOG_MODULE_REGISTER(fota_confirm, CONFIG_FOTA_CONFIRM_LOG_LEVEL);
+
+static void confirm_work_fn(struct k_work *work)
+{
+	ARG_UNUSED(work);
+
+	if (boot_is_img_confirmed()) {
+		return;
+	}
+
+	/* boot_write_img_confirmed() writes only the MCUboot image trailer
+	 * (a few bytes — no sector erase).  It acquires the flash controller
+	 * mutex briefly (<1 ms), which serialises with any concurrent HTTP FOTA
+	 * upload chunk also using the flash controller.  This is acceptable;
+	 * CONFIG_FOTA_CONFIRM_DELAY_S should be kept long enough that a
+	 * simultaneous upload is unlikely (default 5 s is tight — prefer 30 s
+	 * in production if uploads are expected soon after boot).
+	 */
+	int rc = boot_write_img_confirmed();
+
+	if (rc == 0) {
+		LOG_INF("firmware update confirmed");
+	} else {
+		LOG_ERR("boot_write_img_confirmed failed: %d", rc);
+	}
+}
+
+static K_WORK_DELAYABLE_DEFINE(confirm_work, confirm_work_fn);
+
+static int fota_confirm_init(void)
+{
+	k_work_schedule(&confirm_work, K_SECONDS(CONFIG_FOTA_CONFIRM_DELAY_S));
+	return 0;
+}
+
+/* Priority 99 is shared with clock_display and fake_sensors_timer, but there
+ * is no ordering dependency: fota_confirm_init only schedules a delayed work
+ * item.  Do NOT introduce a dependency on another priority-99 module here.
+ */
+SYS_INIT(fota_confirm_init, APPLICATION, 99);

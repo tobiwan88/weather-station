@@ -10,6 +10,10 @@ if(CONFIG_HTTP_DASHBOARD)
   if(CONFIG_HTTP_DASHBOARD_AUTH)
     zephyr_library_sources(src/auth.c)
   endif()
+
+  if(CONFIG_HTTP_DASHBOARD_FOTA)
+    zephyr_library_sources(src/fota.c)
+  endif()
   zephyr_library_include_directories(include src)
   zephyr_include_directories(include)
 

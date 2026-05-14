@@ -21,6 +21,8 @@ west patch apply          # apply all patches in zephyr/patches.yml
 
 Binary: `/home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe`
 
+Renode simulation (hardware): `simulation/renode/` — Robot Framework tests for MCXN947 boot and FOTA. Install: `.devcontainer/install-renode.sh`.
+
 Build and test: `/build-and-test`. Integration tests: `/run-integration-tests [marker]`. New library: `/new-lib`. New sensor type: `/new-sensor-type`.
 
 **CRITICAL — ZEPHYR_BASE:** Always prefix `west build` and `west twister` with `ZEPHYR_BASE=/home/zephyr/workspace/zephyr`; the env default points to a non-existent path. If builds fail with a stale path, delete `CMakeCache.txt`.
@@ -42,7 +44,7 @@ To add a new patch: `/west-patch`.
 |---|---|---|
 | **ADRs** (why) | [`docs/adr/`](docs/adr/README.md) | Architectural decisions: context, rationale, alternatives, consequences |
 | **Architecture docs** (how) | [`docs/architecture/`](docs/architecture/README.md) | System overview, event bus, composition model, concurrency, test architecture |
-| **Diagrams** (visual) | [`docs/architecture/diagrams/`](docs/architecture/diagrams/) | Component view, channel map, data flow, library deps, init sequence, HTTP flow |
+| **Diagrams** (visual) | [`docs/architecture/diagrams/`](docs/architecture/diagrams/) | 9 `.mmd` source files (raw Mermaid); inline-embedded in arch pages via `pymdownx.snippets`. Add or update with `/new-diagram`. |
 | **Backlog** | [`docs/backlog.md`](docs/backlog.md) | Deferred features, known violations, future work |
 
 Always read the relevant ADRs before implementing a feature. Quick-lookup by topic:
@@ -52,7 +54,8 @@ Always read the relevant ADRs before implementing a feature. Quick-lookup by top
 | New sensor driver | ADR-003 (data model), ADR-004 (trigger pattern), ADR-005 (fake sensors) |
 | New library / service | ADR-001 (structure), ADR-002 (zbus), ADR-008 (Kconfig composition) |
 | UI / display | ADR-007 (gateway+display), ADR-011 (HTTP dashboard) |
-| Connectivity (MQTT, HTTP, LoRa) | ADR-002 (zbus), ADR-006 (LoRa), ADR-013 (MQTT) |
+| Connectivity (MQTT, HTTP, LoRa) | ADR-002 (zbus), ADR-006 (LoRa), ADR-013 (MQTT), ADR-015 (LoRa protocol) |
+| Firmware update / FOTA | ADR-014 (MCUboot, signing, HTTP upload, rollback) |
 | Testing | ADR-012 (integration tests), ADR-009 (native_sim) |
 | Configuration / settings | ADR-008 (Kconfig), ADR-013 (MQTT configurable) |
 
@@ -98,6 +101,8 @@ Always read the relevant ADRs before implementing a feature. Quick-lookup by top
 4. **Review** — `/review` to spawn parallel sub-agents (architecture, security, C quality, embedded, tests) reviewing the patch from different angles.
 5. **PR** — `git push -u origin HEAD`, then `gh pr create --base master`. Title: same Conventional Commits format, ≤70 chars. CI failures: fix locally, new commit (never amend published), re-push. Never force-push.
 
+**Diagrams:** add new diagrams as `.mmd` files in `docs/architecture/diagrams/`; embed in the relevant arch page with ` ```mermaid\n--8<-- "name.mmd"\n``` `; add to `diagrams.md` catalog. Do NOT add inline Mermaid code blocks directly in arch pages. Do NOT use the `mermaid2` MkDocs plugin — use `pymdownx.superfences` (already configured).
+
 ## Library catalog
 
 All libraries under `lib/` are self-contained, Kconfig-gated, and self-wire via `SYS_INIT`. They communicate through zbus channels — never by calling each other's internal functions. Public read-only APIs (`sensor_registry`, `location_registry`) may be called by any library.
@@ -140,12 +145,13 @@ Use the lowest free UID in the appropriate range. Never reuse a UID across any o
 | `location_registry` | `CONFIG_LOCATION_REGISTRY` | Runtime CRUD for named locations. `add/remove/exists/foreach`. Settings-persisted (`loc/`). Shell: `location add/remove/list`. |
 | `clock_display` | `CONFIG_CLOCK_DISPLAY` | Logs HH:MM UTC every 60s via delayable work item. |
 | `sensor_event_log` | `CONFIG_SENSOR_EVENT_LOG` | No public API. Self-registers via `SYS_INIT`. Logs every sensor event to console. |
+| `fota_confirm` | `CONFIG_FOTA_CONFIRM` | Confirms the running MCUboot image `CONFIG_FOTA_CONFIRM_DELAY_S` seconds (default 5) after `SYS_INIT APPLICATION 99`. Hardware only — `depends on BOOTLOADER_MCUBOOT`. Do NOT enable in native_sim builds. |
 
 ### Output / connectivity
 
 | Library | Kconfig | Role |
 |---|---|---|
-| `http_dashboard` | `CONFIG_HTTP_DASHBOARD` | Web dashboard on port 8080. Chart.js timeseries, config page, auth (session cookie + bearer token). Self-init at APPLICATION 97. POST `/api/config` publishes on `config_cmd_chan` — does NOT call other libraries directly. Spinlock + snapshot pattern for ring buffer. Linker: `http_dashboard_sections.ld`. |
+| `http_dashboard` | `CONFIG_HTTP_DASHBOARD` | Web dashboard on port 8080. Chart.js timeseries, config page, auth (session cookie + bearer token). Self-init at APPLICATION 97. POST `/api/config` publishes on `config_cmd_chan` — does NOT call other libraries directly. Spinlock + snapshot pattern for ring buffer. Linker: `http_dashboard_sections.ld`. FOTA routes (`/api/fota/upload\|apply\|status`) via `CONFIG_HTTP_DASHBOARD_FOTA` (hardware only). |
 | `lvgl_display` | `CONFIG_LVGL_DISPLAY` | SDL 320×240 window. Analog clock + sensor cards. Subscribes event chan. `lvgl_display_run()` blocks on main thread (known ADR-008 violation, tracked in backlog). |
 | `mqtt_publisher` | `CONFIG_MQTT_PUBLISHER` | Subscribes event chan. Topic: `{gw}/{location}/{display_name}/{type}`. Settings under `config/mqtt/` (server, port, user, pass, gw). Passwords base64-encoded. Shell: `mqtt_pub status/set`. Use `zsock_pollfd`/`zsock_poll()`/`ZSOCK_POLLIN` — not POSIX variants. |
 | `pipe_publisher` | `CONFIG_PIPE_PUBLISHER` | Writes `env_sensor_data` as length-prefixed protobuf to POSIX FIFO. Sensor-node side for integration testing. |
@@ -193,3 +199,7 @@ operation that opens a socket (SNTP resync, scan), sleep long enough to cover th
 operation's worst-case duration: `presync_delay + timeout + buffer` (1.5 s for SNTP).
 
 See [ADR-012](docs/adr/ADR-012-integration-test-architecture.md) and [`docs/architecture/integration-tests.md`](docs/architecture/integration-tests.md).
+
+## Optimized context
+Always use 'head' or 'tail' and 'grep' when running shell commands with potentially a lot of output and filter shell output for exactly what you need.
+Direct output to temporary files, to ensure a command does not need to be run a second time.

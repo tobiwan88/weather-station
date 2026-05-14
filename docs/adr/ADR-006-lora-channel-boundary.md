@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | **Deferred** |
+| **Status** | **Superseded by [ADR-015](ADR-015-lora-protocol.md)** |
 | **Date** | 2026-02-21 |
 | **Deciders** | Project founder |
 

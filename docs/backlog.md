@@ -70,6 +70,12 @@ different scaling.
 - Unit test: register two sensors of the same type with different ranges; verify independent decode.
 
 Reference: ADR-003 §Q31 encoding, §sensor_uid contract.
+---
+
+## [DOCU-Improvement-Diagramgs] Improve the usage of diagrams in the documentation
+- make mermaid diagrams more interactive in webpage build
+- add diagrams also in the right pages as inlcude directly (build html from markdown)
+- ensure skill exists to create good diagrams
 
 ---
 
@@ -122,6 +128,149 @@ Reference: ADR-003 §Serialisation, ADR-006.
 
 ---
 
-## [Remote sensor manager] Thread maybe more busy as eneded
+## [FOTA-CI-KEY] Suppress signing key from CI logs
 
-- we use zbus + timeout and drain afterwards. Normal operation we should not have to many events at once. Maybe enough just to put events on simple message que or other format?
+The CI snippet in `docs/architecture/firmware-update.md` uses
+`echo "$MCUBOOT_SIGN_KEY" > keys/dev-ed25519.pem`, which may echo the key
+value in the build log depending on the CI runner's debug settings.
+
+**Goal:** Key material never appears in CI logs.
+
+**Implementation:**
+- Replace `echo "$MCUBOOT_SIGN_KEY"` with
+  `printf '%s' "$MCUBOOT_SIGN_KEY"` (no trailing newline, no shell trace echo)
+  or write via a helper script that sets `+x` before writing.
+- Update the CI YAML snippet and the documentation in
+  `docs/architecture/firmware-update.md`.
+- Verify with `set -x` trace that no key bytes appear in stdout.
+
+Reference: ADR-014 §Key management.
+
+---
+
+## [FOTA-REMOVE-UART-MCUMGR] Remove MCUmgr UART transport; HTTP is the standard update path
+
+`apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf` currently enables
+`CONFIG_MCUMGR_TRANSPORT_UART`, `CONFIG_MCUMGR_GRP_IMG`, and
+`CONFIG_MCUMGR_GRP_OS` so that firmware can be uploaded over the shared
+`flexcomm4_lpuart4` UART. This adds code size and complexity for a transport
+that is redundant with the HTTP upload path.
+
+**Prerequisite:** Ethernet + DHCP on `frdm_mcxn947` must be stable and tested
+end-to-end so that the HTTP upload path is a reliable replacement before the
+UART fallback is removed.
+
+**Goal:** HTTP (`POST /api/fota/upload`) is the single standard update path.
+UART MCUmgr is removed. Physical recovery (bricked device) uses the NXP ROM
+ISP bootloader or JTAG re-flash — not MCUmgr.
+
+**Implementation:**
+- Remove MCUmgr Kconfig from `frdm_mcxn947_mcxn947_cpu0.conf`:
+  `CONFIG_MCUMGR`, `CONFIG_MCUMGR_TRANSPORT_UART`, `CONFIG_MCUMGR_GRP_IMG`,
+  `CONFIG_MCUMGR_GRP_OS`.
+- Keep `CONFIG_IMG_MANAGER`, `CONFIG_STREAM_FLASH`, `CONFIG_FLASH_MAP` — still
+  required by the HTTP upload handler.
+- Update ADR-014 and `docs/architecture/firmware-update.md` to document HTTP
+  as the sole transport and JTAG/ISP as the recovery path.
+- Verify `CONFIG_ZVFS_POLL_MAX` can revert to 8 without MCUmgr's extra socket.
+
+Reference: ADR-014.
+
+---
+
+## [FOTA-CONFIRM-HEALTH-CHECKS] Replace time-based confirm with iterable health-check pattern
+
+`lib/fota_confirm` currently confirms the image after a fixed settle delay
+(`CONFIG_FOTA_CONFIRM_DELAY_S`). This is a blunt instrument: any library that
+can hang silently would still allow confirmation to proceed.
+
+**Goal:** Image confirmation requires all registered health checks to return
+`ok` before `boot_write_img_confirmed()` is called. Libraries opt in by
+registering a health-check callback; the confirm library polls them.
+
+**Implementation:**
+- Define an iterable section entry:
+  ```c
+  struct fota_health_check {
+      const char *name;
+      int (*check)(void);   /* returns 0 if healthy, negative errno if not */
+  };
+  #define FOTA_HEALTH_CHECK_DEFINE(name, fn) \
+      STRUCT_SECTION_ITERABLE(fota_health_check, name) = { .name = #name, .check = fn }
+  ```
+- `fota_confirm_init` iterates `STRUCT_SECTION_START/END(fota_health_check)`;
+  if any check returns non-zero at the time of evaluation, reschedule and retry
+  (up to a `CONFIG_FOTA_CONFIRM_MAX_RETRIES` limit before giving up and letting
+  MCUboot roll back).
+- HTTP dashboard, MQTT publisher, SNTP can each register a check
+  (`http_dashboard_is_ready()`, `mqtt_is_connected()`, etc.) under
+  `CONFIG_FOTA_CONFIRM_CHECK_*` guards.
+- Expose `fota_confirm_now()` as a public API for callers that want to trigger
+  confirmation synchronously once they know the system is healthy.
+- Remove the fixed delay as the sole gate; keep a minimum floor
+  (`CONFIG_FOTA_CONFIRM_MIN_DELAY_S`) to let sockets bind before the first poll.
+
+Reference: ADR-014 §Image confirmation; ADR-008 §iterable sections pattern.
+
+---
+
+## [RENODE-CI-DOCKER] Pre-built CI Docker image with Renode
+
+The `renode` CI job downloads the portable Renode tarball each run (~30 s).
+A pre-built CI image would eliminate this delay and decouple from GitHub
+release availability.
+
+**Goal:** Create and publish `ghcr.io/tobiwan88/weather-station-ci:latest`,
+extending `zephyr_docker:arm` with Renode and Robot Framework pre-installed.
+
+**Implementation:**
+- Build a new Docker image based on `.devcontainer/Dockerfile.ci` that adds
+  the Renode portable release (ARM64 for native runner, x86_64 for CI) and
+  `robotframework==6.1`.
+- Publish to GitHub Container Registry.
+- Update `.github/workflows/ci.yml` `renode` job to use the custom image
+  instead of downloading Renode inline.
+
+**Acceptance:** Renode CI job runs without the 30 s download step. Cold build
+time drops from ~60 s to ~15 s.
+
+---
+
+## [RENODE-ENET-QOS] Renode ENET-QoS peripheral model
+
+The FRDM-MCXN947 uses `nxp,enet-qos` Ethernet, which has no Renode peripheral
+model. This blocks HTTP FOTA testing and network-dependent features (MQTT,
+HTTP dashboard, SNTP) in Renode simulation.
+
+**Goal:** Add an `enet-qos` peripheral model to Renode (or contribute to
+upstream), enabling network-based Renode testing of the full gateway stack.
+
+**Acceptance:**
+- Renode `.repl` includes a functional ENET-QoS peripheral at `0x40100000`.
+- `gateway_fota.robot` passes with HTTP FOTA test case.
+- The model is contributed upstream or maintained as a project patch.
+
+---
+
+## [RENODE-SPI-NOR] Functional SPI NOR flash model for Renode
+
+The Renode `.repl` models the MCXN947 external W25Q64 flash as bare
+`Memory.MappedMemory`, which cannot respond to SPI IP commands (JEDEC ID read,
+SFDP, erase, page program). This forces a Renode-specific Kconfig fragment that
+disables `CONFIG_FLASH_MCUX_FLEXSPI_NOR` and a DTS overlay to disable
+`ext_flash_ctrl`.
+
+**Goal:** Replace `Memory.MappedMemory` with a functional SPI NOR flash
+peripheral model so the full gateway firmware (with external flash) boots in
+Renode without workarounds.
+
+**Implementation:**
+- Check if Renode v1.16.1 has a `SPI.NORFlash` or equivalent model.
+- If yes, update `simulation/renode/frdm_mcxn947_mcxn947_cpu0.repl` to use it.
+- If no, implement or contribute one.
+- Remove `frdm_mcxn947_mcxn947_cpu0_renode.conf` and `_renode.overlay`.
+
+**Acceptance:** Gateway firmware builds without the Renode-specific workarounds
+and boots to shell in Renode, with external flash accessible via FlexSPI.
+
+---
