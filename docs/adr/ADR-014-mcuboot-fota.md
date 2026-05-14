@@ -37,9 +37,13 @@ The gateway build target for FOTA-capable firmware is `frdm_mcxn947/mcxn947/cpu0
 the application are produced together.
 
 FOTA upload is exposed over two transports:
-- **UART** — MCUmgr SMP over serial (existing DTS node `zephyr,uart-mcumgr`)
 - **HTTP** — new `/api/fota/*` endpoints in `lib/http_dashboard`, gated by existing
   session/bearer auth, streaming image data directly to flash via `flash_img` API.
+  This is the **primary, permanent** update path.
+- **UART** — MCUmgr SMP over serial (existing DTS node `zephyr,uart-mcumgr`).
+  This is a **temporary fallback** for development and recovery while Ethernet+DHCP
+  stability is not yet confirmed end-to-end. Tracked for removal in backlog
+  [FOTA-REMOVE-UART-MCUMGR].
 
 A/B slot swap uses MCUboot's **SWAP_MOVE** mode (no scratch partition required). The
 new image must call `boot_write_img_confirmed()` before the next reset to become
@@ -160,6 +164,9 @@ requiring custom implementation.
 - Private key management is the operator's responsibility; loss of the private key
   means no further authenticated updates (re-flashing MCUboot with a new key required).
 - native_sim target is not affected — MCUboot and FOTA are hardware-only features.
+- MCUmgr over UART requires `CONFIG_HEAP_MEM_POOL_SIZE=16384` on the Cortex-M33
+  build (SMP transport internals allocate from the system heap). This overhead will
+  be eliminated once the UART transport is removed (backlog: [FOTA-REMOVE-UART-MCUMGR]).
 
 ---
 

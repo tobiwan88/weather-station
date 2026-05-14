@@ -47,6 +47,20 @@ Each ADR follows this structure:
 
 ---
 
+## Quick lookup: feature topic → ADR
+
+| Feature topic | Relevant ADRs |
+|---|---|
+| New sensor driver | [ADR-003](ADR-003-sensor-event-data-model.md), [ADR-004](ADR-004-trigger-driven-sampling.md), [ADR-005](ADR-005-fake-sensor-subsystem.md) |
+| New library / service | [ADR-001](ADR-001-repo-and-workspace-structure.md), [ADR-002](ADR-002-zbus-as-system-bus.md), [ADR-008](ADR-008-kconfig-app-composition.md) |
+| UI / display | [ADR-007](ADR-007-gateway-display-combined.md), [ADR-011](ADR-011-http-dashboard.md) |
+| Connectivity (MQTT, HTTP, LoRa) | [ADR-002](ADR-002-zbus-as-system-bus.md), [ADR-006](ADR-006-lora-channel-boundary.md), [ADR-013](ADR-013-mqtt-configurable.md) |
+| Firmware update / FOTA | [ADR-014](ADR-014-mcuboot-fota.md) |
+| Testing | [ADR-012](ADR-012-integration-test-architecture.md), [ADR-009](ADR-009-native-sim-first.md) |
+| Configuration / settings | [ADR-008](ADR-008-kconfig-app-composition.md), [ADR-013](ADR-013-mqtt-configurable.md) |
+
+---
+
 ## How to use with an AI coding agent
 
 When asking Claude (or another agent) to implement a feature, include the

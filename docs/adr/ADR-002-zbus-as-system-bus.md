@@ -45,6 +45,8 @@ Use **Zephyr's zbus** as the system-wide publish/subscribe fabric.
 
 Remote sensor discovery uses a `k_msgq` (not zbus) inside `remote_sensor_manager` for ordering guarantees. See `docs/architecture/event-bus.md` for details.
 
+> **Why k_msgq here?** zbus listener callbacks run synchronously in the publisher's thread context with no buffering — a listener that blocks stalls all other listeners on that channel. `remote_sensor_manager` needs to do blocking work (peer registration, settings I/O) when a discovery event arrives. Rather than introduce a dedicated zbus subscriber thread just for this channel, the listener callback immediately enqueues the raw event into a `k_msgq` and returns; the manager's own thread dequeues and processes asynchronously. Use `k_msgq` over zbus whenever a single consumer needs to process events sequentially and the processing cannot be made non-blocking.
+
 ---
 
 ## Consequences
