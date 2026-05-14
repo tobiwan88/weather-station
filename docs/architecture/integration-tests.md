@@ -43,6 +43,10 @@ same gateway process.
 | HTTP dashboard | TCP localhost:8080 | `HttpHarness` | yes |
 | MQTT broker | TCP localhost:1883 | `MqttHarness` | no — skips if no broker |
 
+```mermaid
+--8<-- "integration-test-pipeline.mmd"
+```
+
 ### ShellHarness
 
 Wraps `twister_harness.Shell`. Sends shell commands, parses output into

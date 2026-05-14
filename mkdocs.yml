@@ -31,8 +31,10 @@ nav:
     - System Overview: architecture/system-overview.md
     - Event Bus: architecture/event-bus.md
     - Composition Model: architecture/composition-model.md
-    - Integration Tests: architecture/integration-tests.md
     - Concurrency: architecture/concurrency.md
+    - Integration Tests: architecture/integration-tests.md
+    - Firmware Update: architecture/firmware-update.md
+    - LoRa Protocol: architecture/lora-protocol.md
     - Diagrams: architecture/diagrams.md
   - ADR:
     - adr/README.md
@@ -40,5 +42,16 @@ nav:
 
 plugins:
   - search
-  - mermaid2:
-      version: 11.12.0
+  - glightbox
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.snippets:
+      base_path: ["docs/architecture/diagrams"]
+      check_paths: true
+  - admonition
+  - pymdownx.details

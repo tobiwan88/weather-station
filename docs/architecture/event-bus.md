@@ -12,6 +12,10 @@ The system uses four zbus channels, each with a single owner and a distinct role
 | `remote_scan_ctrl_chan` | `lib/remote_sensor` | manager / shell → transport adapters |
 | `remote_discovery_chan` | `lib/remote_sensor` | transport adapters → manager |
 
+```mermaid
+--8<-- "zbus-channels.mmd"
+```
+
 Remote sensor discovery uses `remote_discovery_chan` (zbus). Transport adapters call `remote_sensor_announce_disc()` which publishes to the channel. The manager dispatches discovery events to a workqueue via a zbus listener.
 
 For the sensor-node ↔ gateway FIFO communication path, `pipe_publisher` writes length-prefixed protobuf frames to a POSIX FIFO and `pipe_transport` reads them back, publishing decoded events to `sensor_event_chan`. This path bypasses zbus entirely for cross-process communication.
@@ -24,6 +28,14 @@ The core sensor pipeline uses two channels. Separating trigger from event solves
 `config_cmd_chan` applies the same pattern to configuration: `http_dashboard` publishes a `config_cmd_event` when the user changes settings; `fake_sensors`, `sntp_sync`, and `mqtt_publisher` subscribe independently. Neither module references the other.
 
 `remote_scan_ctrl_chan` follows the same pattern for the remote sensor layer — the manager and shell exchange scan control events without direct calls to transport adapters.
+
+> **Note — k_msgq inside `remote_sensor_manager`:** The manager subscribes to
+> `remote_scan_ctrl_chan` via a zbus listener, but internally bridges incoming
+> events through a `k_msgq` so the listener callback returns immediately. The
+> manager's dedicated thread then dequeues and processes events — including
+> blocking operations such as peer registration and settings I/O — without
+> stalling the zbus listener chain. This is the correct pattern when a single
+> consumer needs sequential, potentially-blocking processing of channel events.
 
 ---
 
@@ -43,6 +55,10 @@ fake_temperature  ──►                        ──►  sensor_event_log
 fake_humidity     ──►    { uid, type,         ──►  http_dashboard
 remote_sensor     ──►      q31, timestamp }   ──►  mqtt_publisher
 (future: real hw) ──►                        ──►  (future: flash)
+```
+
+```mermaid
+--8<-- "data-flow.mmd"
 ```
 
 `target_uid = 0` in a trigger event is a broadcast — all sensors sample. A non-zero UID targets a single sensor, enabling on-demand sampling of one sensor without disturbing others.
