@@ -31,4 +31,8 @@ static int fota_confirm_init(void)
 	return 0;
 }
 
+/* Priority 99 is shared with clock_display and fake_sensors_timer, but there
+ * is no ordering dependency: fota_confirm_init only schedules a delayed work
+ * item.  Do NOT introduce a dependency on another priority-99 module here.
+ */
 SYS_INIT(fota_confirm_init, APPLICATION, 99);
