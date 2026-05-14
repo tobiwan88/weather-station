@@ -148,7 +148,7 @@ jobs:
   renode:
     name: Renode (${{ matrix.test }})
     runs-on: ubuntu-latest
-    needs: build
+    needs: lint
     container:
       image: ghcr.io/tobiwan88/zephyr_docker:arm
       options: --user root
@@ -163,11 +163,49 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download gateway sysbuild artifact
-        uses: actions/download-artifact@v4
+      - name: Mark workspace safe for git
+        run: git config --global --add safe.directory '*'
+
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+
+      - name: Cache west modules
+        uses: actions/cache@v4
         with:
-          name: gateway-frdm-mcxn947-sysbuild
-          path: build/gateway/
+          path: |
+            ${{ github.workspace }}/../zephyr
+            ${{ github.workspace }}/../modules
+          key: west-${{ hashFiles('west.yml') }}
+          restore-keys: west-
+
+      - name: West init + update
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          west init -l . 2>/dev/null || true
+          west update --narrow
+
+      - name: Apply out-of-tree patches
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          west patch apply
+
+      - name: Build gateway for Renode
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          WEST_ROOT=$(west topdir)
+          ./weather-station/scripts/gen-dev-key.sh
+          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
+          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
+            west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
+              --sysbuild \
+              --build-dir "${GITHUB_WORKSPACE}/build/renode" \
+              "${WEST_ROOT}/weather-station/apps/gateway" \
+              -- \
+              "-DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=${WEST_ROOT}/weather-station/keys/dev-ed25519.pem" \
+              -DDTC_OVERLAY_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.overlay \
+              -DEXTRA_CONF_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.conf
 
       - name: Install libicu (Renode dep)
         run: apt-get update -qq && apt-get install -y -qq libicu-dev

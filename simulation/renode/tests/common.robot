@@ -8,20 +8,19 @@ Library             Process
 *** Variables ***
 ${RESC}             ${CURDIR}/../frdm_mcxn947.resc
 ${UART}             sysbus.flexcomm4lpuart4
-${UART_TIMEOUT}     30
+${UART_TIMEOUT}     60
+${ELF}              ${CURDIR}/../../../build/renode/gateway/zephyr/zephyr.elf
 
 *** Keywords ***
-Setup
-    [Documentation]    Per-suite setup: load platform and prepare terminal tester.
+Prepare Machine
+    [Documentation]    Load platform, ELF, set vector table, and start emulation.
+    [Arguments]    ${elf_path}
     Execute Command         include @${RESC}
     Create Terminal Tester  ${UART}    defaultPauseEmulation=True
     Write Char Delay        0.01
-
-Prepare Machine
-    [Documentation]    Load ELF, run reset macro, and start emulation.
-    [Arguments]    ${elf_path}
-    Execute Command         \$bin=@${elf_path}
-    Execute Command         runMacro \$reset
+    Execute Command         sysbus LoadELF @${elf_path}
+    Execute Command         cpu0 VectorTableOffset `sysbus GetSymbolAddress "_vector_table"`
+    Execute Command         cpu0 EnableZephyrMode
     Start Emulation
 
 Wait For Shell Prompt
