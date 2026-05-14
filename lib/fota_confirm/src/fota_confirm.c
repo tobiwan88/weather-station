@@ -14,6 +14,14 @@ static void confirm_work_fn(struct k_work *work)
 		return;
 	}
 
+	/* boot_write_img_confirmed() writes only the MCUboot image trailer
+	 * (a few bytes — no sector erase).  It acquires the flash controller
+	 * mutex briefly (<1 ms), which serialises with any concurrent HTTP FOTA
+	 * upload chunk also using the flash controller.  This is acceptable;
+	 * CONFIG_FOTA_CONFIRM_DELAY_S should be kept long enough that a
+	 * simultaneous upload is unlikely (default 5 s is tight — prefer 30 s
+	 * in production if uploads are expected soon after boot).
+	 */
 	int rc = boot_write_img_confirmed();
 
 	if (rc == 0) {

@@ -201,7 +201,8 @@ int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_st
 		 * CAS on fota_in_progress succeeds, which cannot happen until after
 		 * this response is fully sent by the single HTTP server thread.
 		 */
-		static uint8_t ok_buf[64];
+		/* Worst-case: {"ok":true,"bytes":4294967295} = 30 chars. */
+		static uint8_t ok_buf[32];
 
 		snprintf((char *)ok_buf, sizeof(ok_buf), "{\"ok\":true,\"bytes\":%zu}", written);
 		response_ctx->status = HTTP_200_OK;
@@ -306,12 +307,13 @@ int fota_apply_handler(struct http_client_ctx *client, enum http_transaction_sta
 
 /* ── GET /api/fota/status ────────────────────────────────────────────────── */
 
-/* Protects status_buf against concurrent GET requests from different clients.
- * k_mutex rather than k_spinlock: this handler always runs in thread context
- * (HTTP server thread) so disabling interrupts during snprintf is unnecessary.
+/* The Zephyr HTTP server is single-threaded: no two handler invocations can
+ * overlap, so status_buf needs no lock.  Size is worst-case JSON length:
+ * {"slot0":{"version":"255.255.65535+4294967295","confirmed":true},
+ *  "slot1":{"version":"255.255.65535+4294967295","confirmed":false},
+ *  "pending":true} = 148 chars; 160 gives 12 bytes headroom.
  */
-static K_MUTEX_DEFINE(fota_status_mutex);
-static uint8_t status_buf[256];
+static uint8_t status_buf[160];
 
 int fota_status_handler(struct http_client_ctx *client, enum http_transaction_status status,
 			const struct http_request_ctx *request_ctx,
@@ -356,7 +358,6 @@ int fota_status_handler(struct http_client_ctx *client, enum http_transaction_st
 	int len;
 	bool ok = false;
 
-	k_mutex_lock(&fota_status_mutex, K_FOREVER);
 	len = snprintf((char *)status_buf, sizeof(status_buf),
 		       "{"
 		       "\"slot0\":{\"version\":\"%u.%u.%u+%u\",\"confirmed\":%s},"
@@ -377,7 +378,6 @@ int fota_status_handler(struct http_client_ctx *client, enum http_transaction_st
 		response_ctx->final_chunk = true;
 		ok = true;
 	}
-	k_mutex_unlock(&fota_status_mutex);
 
 	if (!ok) {
 		response_ctx->status = HTTP_500_INTERNAL_SERVER_ERROR;
