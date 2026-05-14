@@ -207,8 +207,8 @@ jobs:
               -DDTC_OVERLAY_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.overlay \
               -DEXTRA_CONF_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.conf
 
-      - name: Install libicu (Renode dep)
-        run: apt-get update -qq && apt-get install -y -qq libicu-dev
+      - name: Install libicu and curl (Renode deps)
+        run: apt-get update -qq && apt-get install -y -qq libicu-dev curl
 
       - name: Install Renode portable
         run: |
