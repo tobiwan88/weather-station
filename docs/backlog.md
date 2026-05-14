@@ -150,6 +150,10 @@ Reference: ADR-014 §Key management.
 `flexcomm4_lpuart4` UART. This adds code size and complexity for a transport
 that is redundant with the HTTP upload path.
 
+**Prerequisite:** Ethernet + DHCP on `frdm_mcxn947` must be stable and tested
+end-to-end so that the HTTP upload path is a reliable replacement before the
+UART fallback is removed.
+
 **Goal:** HTTP (`POST /api/fota/upload`) is the single standard update path.
 UART MCUmgr is removed. Physical recovery (bricked device) uses the NXP ROM
 ISP bootloader or JTAG re-flash — not MCUmgr.
