@@ -1,0 +1,34 @@
+---
+title: FOTA Update Flow
+---
+sequenceDiagram
+    participant DEV as Developer<br/>(browser / curl)
+    participant HTTP as HTTP dashboard<br/>/api/fota/*
+    participant FLASH as flash_img<br/>(slot 1)
+    participant BOOT as MCUboot
+    participant APP as Zephyr app<br/>(new image)
+    participant CONF as fota_confirm<br/>SYS_INIT 99
+
+    DEV->>HTTP: POST /api/fota/upload<br/>(zephyr.signed.bin, octet-stream)
+    Note over HTTP: flash_img_init(slot1)<br/>stream chunks via<br/>flash_img_buffered_write()
+    HTTP->>FLASH: write image progressively
+    HTTP-->>DEV: 200 OK { sha256: "..." }
+
+    DEV->>HTTP: POST /api/fota/apply
+    HTTP->>BOOT: boot_request_upgrade(TEST)
+    Note over HTTP: k_work_schedule reboot +2 s
+    HTTP-->>DEV: 200 OK
+    Note over HTTP: reboot
+
+    Note over BOOT: Verify ED25519 signature
+    Note over BOOT: SWAP_MOVE slot1 → slot0
+    BOOT->>APP: boot new image
+
+    Note over APP: All SYS_INIT libraries init
+    APP->>CONF: SYS_INIT APPLICATION 99
+    Note over CONF: k_work_schedule confirm +5 s
+    Note over CONF: (settle: HTTP, MQTT, SNTP bind sockets)
+    CONF->>BOOT: boot_write_img_confirmed()
+    Note over CONF: LOG_INF "firmware update confirmed"
+
+    Note over BOOT,APP: If app crashes before confirm:<br/>next reset → MCUboot detects<br/>unconfirmed slot0 → SWAP_MOVE<br/>reverses → previous image restored

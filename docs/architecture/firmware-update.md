@@ -147,6 +147,12 @@ release-quality signed binary.
 
 ## MCUmgr — UART transport
 
+> **Temporary fallback.** MCUmgr UART is provided for development convenience and
+> recovery while Ethernet+DHCP stability is not yet confirmed end-to-end. Once
+> confirmed, UART MCUmgr will be removed (backlog: [FOTA-REMOVE-UART-MCUMGR]),
+> reducing code size and eliminating the 16 KB `CONFIG_HEAP_MEM_POOL_SIZE` required
+> by the SMP transport internals.
+
 UART already declared in the board DTS (`frdm_mcxn947_mcxn947_cpu0.dtsi`):
 
 ```dts
@@ -284,9 +290,17 @@ Rollback path (if not confirmed):
              → SWAP_MOVE reverses → previous firmware restored
 ```
 
+```mermaid
+--8<-- "fota-flow.mmd"
+```
+
 ---
 
 ## Sensor-node relay (stub — not implemented)
+
+**Not yet implemented.** This feature depends on the LoRa library (ADR-015) and the
+UART proxy agent for the STM32WLE5JC co-processor. See backlog items
+[FOTA-REMOVE-UART-MCUMGR] and [RENODE-PHASE2] for the related infrastructure work.
 
 The gateway will eventually relay firmware to remote sensor nodes (e.g., STM32WLE5JC
 via LoRa). The interface is defined here as a placeholder; implementation is deferred

@@ -1,0 +1,38 @@
+---
+title: Integration Test Pipeline
+---
+sequenceDiagram
+    participant TW as west twister
+    participant BUILD as CMake / west build<br/>(native_sim/native/64)
+    participant DUT as zephyr.exe<br/>(DUT process)
+    participant PY as pytest session
+    participant SHELL as ShellHarness<br/>(UART pty)
+    participant HTTP as HttpHarness<br/>(port 8080)
+
+    TW->>BUILD: build apps/gateway
+    BUILD-->>TW: zephyr.exe
+
+    TW->>DUT: launch zephyr.exe (subprocess)
+    Note over DUT: SYS_INIT chain runs<br/>HTTP server binds :8080<br/>shell pty opens
+
+    TW->>PY: invoke pytest --device-serial=<pty>
+    PY->>PY: device_ready fixture:<br/>wait for ready sentinel
+
+    Note over DUT,PY: gateway prints ready sentinel
+    DUT-->>PY: sentinel matched
+
+    loop test suite
+        PY->>SHELL: send shell command
+        SHELL->>DUT: write to pty
+        DUT-->>SHELL: shell output
+        SHELL-->>PY: parsed response
+
+        PY->>HTTP: HTTP request
+        HTTP->>DUT: TCP :8080
+        DUT-->>HTTP: HTTP response
+        HTTP-->>PY: parsed JSON / status
+    end
+
+    PY-->>TW: pytest exit code + JUnit XML
+    TW->>DUT: terminate process
+    TW-->>TW: collect results / pass-fail

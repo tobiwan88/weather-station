@@ -60,6 +60,10 @@ k_spinlock_unlock(&lock, &key)
 
 The snapshot step eliminates the need to hold the spinlock during serialisation. This is important because JSON serialisation is O(n) in the number of samples, and holding a spinlock for a variable and potentially long duration would block the ISR from appending new samples.
 
+```mermaid
+--8<-- "snapshot-pattern.mmd"
+```
+
 ---
 
 ## Initialisation Ordering and Race Conditions
@@ -71,3 +75,8 @@ The SYS_INIT priority ordering prevents two specific races:
 **Dashboard starts before registry is populated.** The HTTP dashboard initialises at priority 97. Sensor drivers register in the registry at priority 90/91. If these were reversed, the first HTTP request might see an empty sensor list even though sensors are active.
 
 The startup trigger (fired at priority 90/91 by each sensor driver's `SYS_INIT`) uses a different path: it publishes to `sensor_trigger_chan`, which dispatches back to the sensor driver's own listener synchronously in the zbus thread. The gateway listener (priority 95) and dashboard listener (priority 97) are not yet registered at that point, so they miss the startup sample — this is intentional. The startup trigger exists only to prime the sensor's internal state, not to produce a visible reading.
+
+Integration tests address the same ordering problem from the test side: the `device_ready`
+session fixture (in `tests/integration/pytest/conftest.py`) blocks until the gateway
+process prints its ready sentinel before any test sends shell commands or HTTP requests,
+ensuring no test races against incomplete initialisation.
