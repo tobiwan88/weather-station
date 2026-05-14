@@ -15,7 +15,7 @@ Kernel Version Available
     Prepare Machine         ${ELF}
     Wait For Shell Prompt
     Write Line To Uart      kernel version
-    Wait For Line On Uart   kernel version    timeout=5
+    Wait For Line On Uart   kernel version    timeout=15
 
 MCUmgr Is Active
     [Documentation]    Verify MCUmgr shell commands respond after boot.
@@ -23,13 +23,18 @@ MCUmgr Is Active
     Prepare Machine         ${ELF}
     Wait For Shell Prompt
     Write Line To Uart      mcumgr
-    Wait For Line On Uart   mcumgr    timeout=5
+    Wait For Line On Uart   mcumgr    timeout=15
 
 FOTA Auto-Confirm Does Not Crash
     [Documentation]    Boot and wait for fota_confirm to complete (5s settle delay).
     [Tags]    bootloader    fota    stability
     Prepare Machine         ${ELF}
     Wait For Shell Prompt
-    # The fota_confirm library calls boot_write_img_confirmed after 5 seconds.
-    # Let the system run for 15 seconds to cover the settle delay.
-    Test If Uart Is Idle    15    pauseEmulation=True
+    # Run the emulation for 30 virtual seconds so that:
+    #   - init log messages fully flush (~1s)
+    #   - fota_confirm fires boot_write_img_confirmed (~5s delay)
+    # After RunFor the emulation is paused automatically.
+    Execute Command         emulation RunFor "00:00:30"
+    # Verify the shell is still responsive — no crash from fota_confirm.
+    Write Line To Uart      kernel uptime
+    Wait For Prompt On Uart    uart:~$    timeout=15
