@@ -474,6 +474,7 @@ jobs:
           git checkout gh-pages
           mkdir -p "$TARGET_DIR"
           # Remove old results for this ref (overwrite, not accumulate)
+          [[ -n "$TARGET_DIR" && "$TARGET_DIR" == dev/traces/* ]] || { echo "ERROR: unsafe TARGET_DIR"; exit 1; }
           rm -rf "$TARGET_DIR"/*
           # Copy new results
           if [ -d deploy/coverage ] && [ "$(ls -A deploy/coverage 2>/dev/null)" ]; then

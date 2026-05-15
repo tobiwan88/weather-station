@@ -33,37 +33,35 @@ BUILD_ASSERT(sizeof(struct trace_record) == 8, "trace_record must be 8 bytes");
 
 struct trace_record trace_records[CONFIG_TRACE_RECORDER_BUFFER_SIZE];
 
-/* No init needed — BSS zeroed by CRT. All-zero record means end-of-data. */
-
 char trace_thread_names[CONFIG_TRACE_RECORDER_MAX_THREADS][CONFIG_THREAD_MAX_NAME_LEN];
 
 /* ── ring buffer state ───────────────────────────────────────────── */
 
-static struct k_spinlock g_trace_lock;
-uint32_t g_trace_head;                             /* next write index */
-static bool g_trace_ready;                         /* false until SYS_INIT completes */
-uint32_t g_trace_overflow;                         /* count of dropped records */
-static atomic_t g_next_thread_id = ATOMIC_INIT(1); /* 1-based; 0 = unassigned */
+struct k_spinlock trace_lock;
+uint32_t trace_head;                             /* next write index */
+static bool trace_ready;                         /* false until SYS_INIT completes */
+uint32_t trace_overflow;                         /* count of dropped records */
+static atomic_t next_thread_id = ATOMIC_INIT(1); /* 1-based; 0 = unassigned */
 
 /* ── helper: write one record ─────────────────────────────────────── */
 
 static void trace_write_record(uint8_t event_type, uint8_t event_data, uint16_t thread_id)
 {
-	k_spinlock_key_t key = k_spin_lock(&g_trace_lock);
+	k_spinlock_key_t key = k_spin_lock(&trace_lock);
 
-	struct trace_record *rec = &trace_records[g_trace_head];
+	struct trace_record *rec = &trace_records[trace_head];
 	rec->timestamp = k_cycle_get_32();
 	rec->event_type = event_type;
 	rec->event_data = event_data;
 	rec->thread_id = thread_id;
 
-	g_trace_head++;
-	if (g_trace_head >= CONFIG_TRACE_RECORDER_BUFFER_SIZE) {
-		g_trace_head = 0;
-		g_trace_overflow++;
+	trace_head++;
+	if (trace_head >= CONFIG_TRACE_RECORDER_BUFFER_SIZE) {
+		trace_head = 0;
+		trace_overflow++;
 	}
 
-	k_spin_unlock(&g_trace_lock, key);
+	k_spin_unlock(&trace_lock, key);
 }
 
 /* ── helper: get thread ID from custom_data ───────────────────────── */
@@ -81,11 +79,11 @@ static uint16_t trace_thread_id(struct k_thread *thread)
 
 void sys_trace_thread_create_user(struct k_thread *thread)
 {
-	if (!g_trace_ready) {
+	if (!trace_ready) {
 		return;
 	}
 
-	uint16_t id = (uint16_t)atomic_inc(&g_next_thread_id);
+	uint16_t id = (uint16_t)atomic_inc(&next_thread_id);
 
 	if (id >= CONFIG_TRACE_RECORDER_MAX_THREADS) {
 		LOG_WRN("too many threads (max %d); skipping trace",
@@ -106,20 +104,20 @@ void sys_trace_thread_create_user(struct k_thread *thread)
 
 void sys_trace_thread_switched_in_user(void)
 {
-	if (!g_trace_ready) {
+	if (!trace_ready) {
 		return;
 	}
 
 	struct k_thread *t = k_sched_current_thread_query();
 	uint16_t id = trace_thread_id(t);
-	uint8_t prio = (uint8_t)k_thread_priority_get(t);
+	int8_t prio = (int8_t)k_thread_priority_get(t);
 
-	trace_write_record(TRACE_EVENT_SWITCHED_IN, prio, id);
+	trace_write_record(TRACE_EVENT_SWITCHED_IN, (uint8_t)prio, id);
 }
 
 void sys_trace_thread_switched_out_user(void)
 {
-	if (!g_trace_ready) {
+	if (!trace_ready) {
 		return;
 	}
 
@@ -131,7 +129,7 @@ void sys_trace_thread_switched_out_user(void)
 
 void sys_trace_isr_enter_user(void)
 {
-	if (!g_trace_ready) {
+	if (!trace_ready) {
 		return;
 	}
 	trace_write_record(TRACE_EVENT_ISR_ENTER, 0, TRACE_THREAD_ID_UNKNOWN);
@@ -139,7 +137,7 @@ void sys_trace_isr_enter_user(void)
 
 void sys_trace_isr_exit_user(void)
 {
-	if (!g_trace_ready) {
+	if (!trace_ready) {
 		return;
 	}
 	trace_write_record(TRACE_EVENT_ISR_EXIT, 0, TRACE_THREAD_ID_UNKNOWN);
@@ -147,7 +145,7 @@ void sys_trace_isr_exit_user(void)
 
 void sys_trace_idle_user(void)
 {
-	if (!g_trace_ready) {
+	if (!trace_ready) {
 		return;
 	}
 	trace_write_record(TRACE_EVENT_IDLE_ENTER, 0, TRACE_THREAD_ID_UNKNOWN);
@@ -213,14 +211,17 @@ static void assign_existing_thread(const struct k_thread *thread, void *user_dat
 		return;
 	}
 
-	uint16_t id = (uint16_t)atomic_inc(&g_next_thread_id);
+	uint16_t id = (uint16_t)atomic_inc(&next_thread_id);
 
 	if (id >= CONFIG_TRACE_RECORDER_MAX_THREADS) {
 		LOG_WRN("too many pre-existing threads; skipping ID assignment");
 		return;
 	}
 
-	t->custom_data = (void *)(uintptr_t)id;
+	/* k_thread_custom_data_set() is a syscall for the calling thread only.
+	 * We need to set custom_data for arbitrary threads during foreach,
+	 * so direct field access is required. The const cast is intentional. */
+	((struct k_thread *)thread)->custom_data = (void *)(uintptr_t)id;
 
 	const char *name = k_thread_name_get(t);
 	if (name != NULL) {
@@ -231,10 +232,10 @@ static void assign_existing_thread(const struct k_thread *thread, void *user_dat
 
 static int trace_recorder_init(void)
 {
-	g_trace_ready = true; /* enable hooks before foreach */
 	k_thread_foreach(assign_existing_thread, NULL);
+	trace_ready = true;
 	LOG_DBG("trace_recorder: init done, %u pre-existing threads",
-		(uint32_t)atomic_get(&g_next_thread_id));
+		(uint32_t)atomic_get(&next_thread_id));
 	return 0;
 }
 SYS_INIT(trace_recorder_init, APPLICATION, 1);

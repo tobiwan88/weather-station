@@ -8,7 +8,7 @@
  * hooks to record thread context switches, ISR events, and idle events
  * to a static ring buffer for post-mortem dump via Renode.
  *
- * No public API.
+ * No public API. Symbols below are exposed for the shell sub-module only.
  */
 
 #ifndef TRACE_RECORDER_TRACE_RECORDER_H_
@@ -16,9 +16,6 @@
 
 #include <stdint.h>
 #include <zephyr/kernel.h>
-
-/* No public API — library registers itself via SYS_INIT.
- * The following symbols are exposed for the shell sub-module only. */
 
 /** Trace record format (8 bytes) — matches Renode dump layout. */
 struct trace_record {
@@ -32,10 +29,12 @@ struct trace_record {
 extern "C" {
 #endif
 
+/* Shared symbols between trace_recorder.c and trace_recorder_shell.c */
 extern struct trace_record trace_records[];
 extern char trace_thread_names[][CONFIG_THREAD_MAX_NAME_LEN];
-extern uint32_t g_trace_head;
-extern uint32_t g_trace_overflow;
+extern struct k_spinlock trace_lock;
+extern uint32_t trace_head;
+extern uint32_t trace_overflow;
 
 #ifdef __cplusplus
 }
