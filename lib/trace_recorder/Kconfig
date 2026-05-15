@@ -20,7 +20,7 @@ if TRACE_RECORDER
 config TRACE_RECORDER_BUFFER_SIZE
 	int "Number of trace records in ring buffer"
 	default 4096
-	range 256 65536
+	range 4 65536
 	help
 	  Each record is 8 bytes (timestamp + event_type + event_data
 	  + thread_id). 4096 records = 32 KB. At 1000 context switches/sec

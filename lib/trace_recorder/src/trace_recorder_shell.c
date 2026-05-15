@@ -11,7 +11,6 @@
 #include <string.h>
 #include <zephyr/kernel.h>
 #include <zephyr/shell/shell.h>
-#include <zephyr/sys/atomic.h>
 
 #include <trace_recorder/trace_recorder.h>
 
@@ -22,11 +21,10 @@ static int cmd_status(const struct shell *sh, size_t argc, char **argv)
 	ARG_UNUSED(argc);
 	ARG_UNUSED(argv);
 
-	extern struct k_spinlock g_trace_lock;
-	k_spinlock_key_t key = k_spin_lock(&g_trace_lock);
-	uint32_t head = g_trace_head;
-	uint32_t overflow = g_trace_overflow;
-	k_spin_unlock(&g_trace_lock, key);
+	k_spinlock_key_t key = k_spin_lock(&trace_lock);
+	uint32_t head = trace_head;
+	uint32_t overflow = trace_overflow;
+	k_spin_unlock(&trace_lock, key);
 
 	uint32_t capacity = CONFIG_TRACE_RECORDER_BUFFER_SIZE;
 	uint32_t valid_count = overflow ? capacity : head;
@@ -47,17 +45,11 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 	ARG_UNUSED(argc);
 	ARG_UNUSED(argv);
 
-	extern struct k_spinlock g_trace_lock;
-	k_spinlock_key_t key = k_spin_lock(&g_trace_lock);
-	uint32_t head = g_trace_head;
-	uint32_t overflow = g_trace_overflow;
+	k_spinlock_key_t key = k_spin_lock(&trace_lock);
+	uint32_t head = trace_head;
+	uint32_t overflow = trace_overflow;
 	uint32_t capacity = CONFIG_TRACE_RECORDER_BUFFER_SIZE;
 	uint32_t valid_count = overflow ? capacity : head;
-
-	/* Snapshot records under lock before printing */
-	struct trace_record snapshot[CONFIG_TRACE_RECORDER_BUFFER_SIZE];
-	memcpy(snapshot, trace_records, sizeof(snapshot));
-	k_spin_unlock(&g_trace_lock, key);
 
 	shell_print(sh, "--- TRACE DUMP BEGIN ---");
 	shell_print(sh, "records=%u capacity=%u overflow=%u", valid_count, capacity, overflow);
@@ -70,27 +62,39 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 		}
 	}
 
-	/* print records as hex (8 bytes each, 16 bytes per shell line) */
+	/* print records as hex (8 bytes each, 16 bytes per shell line).
+	 * Read one record at a time under the lock to avoid a large
+	 * stack allocation. */
 	shell_print(sh, "records_hex:");
-	const uint8_t *raw = (const uint8_t *)snapshot;
-	uint32_t total_bytes = valid_count * 8;
-	for (uint32_t i = 0; i < total_bytes; i += 16) {
-		uint32_t remain = total_bytes - i;
+	for (uint32_t i = 0; i < valid_count; i += 2) {
+		struct trace_record r0 = trace_records[i];
+		struct trace_record r1 = {0};
+		if (i + 1 < valid_count) {
+			r1 = trace_records[i + 1];
+		}
+		k_spin_unlock(&trace_lock, key);
+
+		const uint8_t *b0 = (const uint8_t *)&r0;
+		const uint8_t *b1 = (const uint8_t *)&r1;
+		uint32_t remain = (i + 1 < valid_count) ? 16 : 8;
+
 		if (remain >= 16) {
 			shell_print(sh,
 				    "%02x%02x%02x%02x%02x%02x%02x%02x"
 				    "%02x%02x%02x%02x%02x%02x%02x%02x",
-				    raw[i], raw[i + 1], raw[i + 2], raw[i + 3], raw[i + 4],
-				    raw[i + 5], raw[i + 6], raw[i + 7], raw[i + 8], raw[i + 9],
-				    raw[i + 10], raw[i + 11], raw[i + 12], raw[i + 13], raw[i + 14],
-				    raw[i + 15]);
+				    b0[0], b0[1], b0[2], b0[3], b0[4], b0[5], b0[6], b0[7], b1[0],
+				    b1[1], b1[2], b1[3], b1[4], b1[5], b1[6], b1[7]);
 		} else {
 			char buf[128];
 			int off = 0;
 			for (uint32_t j = 0; j < remain; j++) {
-				off += snprintf(buf + off, sizeof(buf) - off, "%02x", raw[i + j]);
+				off += snprintf(buf + off, sizeof(buf) - off, "%02x", b0[j]);
 			}
 			shell_print(sh, "%s", buf);
+		}
+
+		if (i + 1 < valid_count) {
+			key = k_spin_lock(&trace_lock);
 		}
 	}
 
@@ -105,13 +109,12 @@ static int cmd_clear(const struct shell *sh, size_t argc, char **argv)
 	ARG_UNUSED(argc);
 	ARG_UNUSED(argv);
 
-	extern struct k_spinlock g_trace_lock;
-	k_spinlock_key_t key = k_spin_lock(&g_trace_lock);
-	g_trace_head = 0;
-	g_trace_overflow = 0;
+	k_spinlock_key_t key = k_spin_lock(&trace_lock);
+	trace_head = 0;
+	trace_overflow = 0;
 	memset(trace_thread_names, 0,
 	       CONFIG_TRACE_RECORDER_MAX_THREADS * CONFIG_THREAD_MAX_NAME_LEN);
-	k_spin_unlock(&g_trace_lock, key);
+	k_spin_unlock(&trace_lock, key);
 
 	shell_print(sh, "Trace buffer cleared.");
 	return 0;
