@@ -23,7 +23,7 @@ Binary: `/home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr
 
 Renode simulation (hardware): `simulation/renode/` — Robot Framework tests for MCXN947 boot and FOTA. Install: `.devcontainer/install-renode.sh`.
 
-Build and test: `/build-and-test`. Integration tests: `/run-integration-tests [marker]`. New library: `/new-lib`. New sensor type: `/new-sensor-type`.
+Build and test: `/build-and-test`. Integration tests: `/run-integration-tests [marker]`. New library: `/new-lib`. New sensor type: `/new-sensor-type`. New ADR: `/adr [topic]`.
 
 **CRITICAL — ZEPHYR_BASE:** Always prefix `west build` and `west twister` with `ZEPHYR_BASE=/home/zephyr/workspace/zephyr`; the env default points to a non-existent path. If builds fail with a stale path, delete `CMakeCache.txt`.
 
@@ -44,20 +44,10 @@ To add a new patch: `/west-patch`.
 |---|---|---|
 | **ADRs** (why) | [`docs/adr/`](docs/adr/README.md) | Architectural decisions: context, rationale, alternatives, consequences |
 | **Architecture docs** (how) | [`docs/architecture/`](docs/architecture/README.md) | System overview, event bus, composition model, concurrency, test architecture |
-| **Diagrams** (visual) | [`docs/architecture/diagrams/`](docs/architecture/diagrams/) | 9 `.mmd` source files (raw Mermaid); inline-embedded in arch pages via `pymdownx.snippets`. Add or update with `/new-diagram`. |
+| **Diagrams** (visual) | [`docs/architecture/diagrams/`](docs/architecture/diagrams/) | 10 `.mmd` source files. Add or update with `/new-diagram`. |
 | **Backlog** | [`docs/backlog.md`](docs/backlog.md) | Deferred features, known violations, future work |
 
-Always read the relevant ADRs before implementing a feature. Quick-lookup by topic:
-
-| Feature topic | Relevant ADRs |
-|---|---|
-| New sensor driver | ADR-003 (data model), ADR-004 (trigger pattern), ADR-005 (fake sensors) |
-| New library / service | ADR-001 (structure), ADR-002 (zbus), ADR-008 (Kconfig composition) |
-| UI / display | ADR-007 (gateway+display), ADR-011 (HTTP dashboard) |
-| Connectivity (MQTT, HTTP, LoRa) | ADR-002 (zbus), ADR-006 (LoRa), ADR-013 (MQTT), ADR-015 (LoRa protocol) |
-| Firmware update / FOTA | ADR-014 (MCUboot, signing, HTTP upload, rollback) |
-| Testing | ADR-012 (integration tests), ADR-009 (native_sim) |
-| Configuration / settings | ADR-008 (Kconfig), ADR-013 (MQTT configurable) |
+Run `/explore-adrs` before implementing any feature — it reads the ADR index and surfaces the relevant decisions. ADRs are frozen; write a new one for new decisions (`/adr`).
 
 ## Architecture rules (non-negotiable)
 
@@ -161,20 +151,14 @@ Use the lowest free UID in the appropriate range. Never reuse a UID across any o
 
 Pytest via Twister `harness: pytest`. Full gateway on `native_sim/native/64`. Build/run commands: see [`README.md`](README.md#testing).
 
-| Surface | Harness class | Fixture |
-|---|---|---|
-| UART shell | `ShellHarness` | `shell_harness` |
-| HTTP API (port 8080) | `HttpHarness` | `http_harness` |
-| HTTP API (authenticated) | `HttpHarness` + bearer token | `authed_harness` — use for all `POST /api/config` tests when auth is enabled |
-| MQTT (port 1883) | `MqttHarness` | `mqtt_harness` (auto-skips if no broker) |
-
-- **Page Object Model:** tests call harness methods, never raw strings.
+- **Never raw strings.** Tests call harness methods (`ShellHarness`, `HttpHarness`, `MqttHarness`).
 - **Markers:** `smoke`, `shell`, `http`, `mqtt`, `e2e`, `system`.
 - **DUT scope = session:** one boot per suite; restore state after mutations.
+- **Auth tests:** use `authed_harness` fixture for all `POST /api/config` tests when `CONFIG_HTTP_DASHBOARD_AUTH=y`.
 - **ZEPHYR_BASE override required:** `ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister ...`
 - **MQTT broker:** `mosquitto -p 1883 -d`; tests auto-skip if none running.
-- **New test file:** `tests/integration/pytest/test_<topic>.py`; use session-scoped harness fixtures, never raw DUT strings.
-- **Extend vs. create harness:** add a method to an existing harness for new shell sub-commands or HTTP endpoints; create a new harness class only for a new interaction surface (new protocol, new subsystem shell module). Files: `tests/integration/pytest/harnesses/<name>_harness.py`; register a session-scoped fixture in `conftest.py`.
+- **New test file:** `tests/integration/pytest/test_<topic>.py`; session-scoped harness fixtures, never raw DUT strings.
+- **Extend vs. create harness:** add a method to an existing harness for new shell sub-commands or HTTP endpoints; create a new harness class only for a new interaction surface. Files: `tests/integration/pytest/harnesses/<name>_harness.py`; register in `conftest.py`.
 
 ### native_sim/native/64 socket constraints
 
@@ -199,7 +183,3 @@ operation that opens a socket (SNTP resync, scan), sleep long enough to cover th
 operation's worst-case duration: `presync_delay + timeout + buffer` (1.5 s for SNTP).
 
 See [ADR-012](docs/adr/ADR-012-integration-test-architecture.md) and [`docs/architecture/integration-tests.md`](docs/architecture/integration-tests.md).
-
-## Optimized context
-Always use 'head' or 'tail' and 'grep' when running shell commands with potentially a lot of output and filter shell output for exactly what you need.
-Direct output to temporary files, to ensure a command does not need to be run a second time.

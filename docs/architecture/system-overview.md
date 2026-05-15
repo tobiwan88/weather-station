@@ -1,5 +1,7 @@
 # System Overview
 
+> Design rationale: [ADR-001](../adr/ADR-001-repo-and-workspace-structure.md), [ADR-007](../adr/ADR-007-gateway-display-combined.md), [ADR-008](../adr/ADR-008-kconfig-app-composition.md), [ADR-009](../adr/ADR-009-native-sim-first.md).
+
 ## Goals
 
 The gateway is a coordinator node that aggregates sensor readings, displays them locally, exposes them over HTTP, and keeps wall-clock time via SNTP. The design prioritises two properties above all else:
@@ -101,6 +103,116 @@ and must be unique across all overlay files in the project.
 
 Use the lowest free UID in the appropriate range. Never reuse a UID — UIDs are
 the identity key for `sensor_registry`, LVGL display cards, and MQTT topic paths.
+
+---
+
+## Repository and Workspace Structure
+
+The repo uses Zephyr **T2 topology** (application-as-manifest): `weather-station` is simultaneously the west manifest repository *and* a Zephyr module. `west init -l .` points west at the local manifest; `west update` fetches Zephyr and external modules.
+
+```
+weather-station/               ← git repo root, also west manifest
+│
+├── west.yml                   ← declares Zephyr version + module allowlist
+├── zephyr/module.yml          ← registers repo as a Zephyr module
+├── CMakeLists.txt             ← module-level: add_subdirectory lib drivers
+├── Kconfig                    ← module-level: rsource sub-Kconfigs
+├── VERSION                    ← semantic version (MAJOR.MINOR.PATCHLEVEL)
+│
+├── apps/                      ← one sub-directory per firmware image
+│   ├── gateway/               ← Wi-Fi hub + LVGL display
+│   └── sensor-node/           ← LoRa TX beacon
+│
+├── lib/                       ← shared reusable libraries (west modules)
+│   ├── sensor_event/          ← env_sensor_data struct, Q31 helpers, zbus channel
+│   ├── sensor_trigger/        ← sensor_trigger_event struct, zbus channel
+│   ├── sensor_registry/       ← uid → label/location/scaling metadata
+│   ├── fake_sensors/          ← DT-instantiated fake drivers + auto-publish timer
+│   ├── sntp_sync/             ← SNTP time sync with runtime resync
+│   ├── clock_display/         ← wall-clock widget for LVGL display
+│   ├── lvgl_display/          ← LVGL display manager (sensor tiles)
+│   └── http_dashboard/        ← Chart.js timeseries + config REST API
+│
+├── include/common/            ← shared headers (zbus channel declarations,
+│                                 data structs, Q31 helpers)
+│
+├── drivers/                   ← out-of-tree Zephyr drivers (future real HW)
+├── dts/bindings/              ← custom devicetree bindings (fake,temperature…)
+├── boards/                    ← custom board definitions (future)
+│
+├── tests/                     ← twister test suites
+├── simulation/                ← Renode .resc and Robot Framework scripts
+│
+├── .devcontainer/             ← VS Code devcontainer (tobiwan88/zephyr_docker)
+└── .github/workflows/         ← CI (build + twister + Renode)
+```
+
+The `west.yml` uses a `name-allowlist` import to fetch only the Zephyr modules this project needs. Without it, west would clone every Zephyr module (~30+), most of which this project never uses.
+
+Apps never reference `lib/` via CMake paths. Instead:
+1. `zephyr/module.yml` tells Zephyr the repo root is a module.
+2. The root `CMakeLists.txt` calls `add_subdirectory(lib)`.
+3. Each `lib/*/CMakeLists.txt` calls `zephyr_library()` (conditional on Kconfig).
+4. Apps enable libraries via `prj.conf` Kconfig symbols only.
+
+---
+
+## Gateway and Display Architecture
+
+For v1, the `apps/gateway/` firmware image contains both the gateway logic (Wi-Fi, MQTT, HTTP, LoRa RX) and the display logic (LVGL, button handler). They run in the same Zephyr image on the same MCU.
+
+Even though gateway and display are in one image, they are **architecturally separate modules** communicating only via zbus. The display manager never calls MQTT functions. The MQTT publisher never calls LVGL functions.
+
+```
+                    apps/gateway (single firmware image)
+┌───────────────────────────────────────────────────────────────┐
+│                                                               │
+│  SENSOR PRODUCERS              SHARED BUS     CONSUMERS       │
+│  ─────────────────             ──────────     ─────────       │
+│                                                               │
+│  [fake_temp_indoor] ──┐                                       │
+│  [fake_hum_indoor]  ──┤                  ┌──► [display_mgr]  │
+│  [fake_temp_outdoor]──┤─► sensor_event ──┤    (LVGL thread)  │
+│  [fake_hum_outdoor] ──┤       _chan      ├──► [mqtt_manager] │
+│  [lora_rx thread]   ──┘                  └──► [flash_storage]│
+│                                               (future)        │
+│                                                               │
+│  [periodic timer] ──┐                                         │
+│  [button B3]      ──┤─► sensor_trigger_chan ──► all sensors   │
+│  [mqtt command]   ──┘                                         │
+│                                                               │
+│  Wi-Fi ──► HTTP server  (config page, port 8080)              │
+│        ──► MQTT client  (→ Mosquitto)                         │
+│                                                               │
+│  Display hardware ──► LVGL ──► display_manager subscriber     │
+│  Button B1-B4     ──► button handler ──► sensor_trigger_chan  │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+```
+
+Button responsibilities:
+
+| Button | zbus action |
+|--------|------------|
+| B1 | Previous screen (display-internal) |
+| B2 | Next screen (display-internal) |
+| B3 | Publish `sensor_trigger_event` with `TRIGGER_SOURCE_BUTTON` |
+| B4 | Settings / backlight (display-internal) |
+
+On `native_sim`, buttons are simulated by the shell: `fake_sensors trigger` is equivalent to a B3 press.
+
+### Display routing via sensor_registry
+
+The display manager never hardcodes which UID maps to which tile. It looks up `sensor_registry_lookup(uid)->location` and routes values accordingly. Adding a new room (e.g. "garage") requires adding a new tile to the LVGL layout — no change to the routing logic.
+
+### Future split path
+
+Because gateway and display communicate **only via zbus**, splitting them into separate devices requires only configuration changes — no source code changes to any library:
+
+| Phase 1 (current) | Phase 2 (future) |
+|---|---|
+| `apps/gateway/` with `DISPLAY=y LVGL=y` | `apps/gateway/` with `DISPLAY=n` + `apps/display-unit/` with `DISPLAY=y` |
+| Single build target | Two build targets, connected by UART bridge (serialised zbus events) |
 
 ---
 

@@ -1,8 +1,8 @@
 # Firmware Update Architecture
 
-This document covers the implementation detail for MCUboot-based FOTA on the
-`frdm_mcxn947` gateway. For the architectural decision and rationale see
-[ADR-014](../adr/ADR-014-mcuboot-fota.md).
+This document covers the implementation detail for MCUboot-based FOTA on the `frdm_mcxn947` gateway.
+
+> Design rationale: [ADR-014](../adr/ADR-014-mcuboot-fota.md).
 
 ---
 

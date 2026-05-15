@@ -13,15 +13,7 @@ A vibe-coded IoT weather station built on [Zephyr RTOS v4.4.0](https://zephyrpro
 
 ---
 
-## Design philosophy
-
-- **Trigger-driven, no polling** — sensors fire on demand, not on a timer
-- **zbus as communication backbone** — decoupled publishers and subscribers
-- **Flat sensor messages** — LoRa-friendly, no pointers, no heap
-- **native_sim first** — fast iteration, no hardware dependency in v1
-- **Kconfig-driven composition** — apps declare features, libraries self-wire
-
-Design rationale: [`docs/adr/`](docs/adr/README.md) · System architecture: [`docs/architecture/`](docs/architecture/README.md)
+Design rationale: [`docs/adr/`](docs/adr/README.md) · Architecture: [`docs/architecture/`](docs/architecture/README.md)
 
 ---
 

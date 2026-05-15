@@ -1,7 +1,10 @@
 # ADR-011 — HTTP Dashboard Web Interface
 
-- **Status:** Accepted
-- **Date:** 2026-03-11
+| Field | Value |
+|-------|-------|
+| **Status** | Accepted |
+| **Date** | 2026-03-11 |
+| **Deciders** | Project founder |
 
 ---
 
@@ -28,18 +31,7 @@ HTTP was chosen over the alternatives listed below because it requires no client
 
 ### 2. Endpoints
 
-| Endpoint | Purpose |
-|---|---|
-| `GET /` | Embedded Chart.js timeseries page; polls `/api/data` every second |
-| `GET /config` | Embedded HTML configuration form |
-| `GET /login` | Login page (public, no auth required) |
-| `GET /api/data` | JSON snapshot of the ring buffer (last N readings per sensor) |
-| `GET /api/config` / `POST /api/config` | Read or update runtime config: `trigger_interval_ms`, `sntp_server`, `action=sntp_resync`, sensor metadata, location management, MQTT settings |
-| `POST /api/login` | Authenticate with username/password; returns session cookie |
-| `POST /api/logout` | Invalidate current session |
-| `POST /api/change-credentials` | Update username and password (authenticated) |
-| `POST /api/token/rotate` | Rotate the API bearer token (authenticated) |
-| `GET /api/locations` | JSON list of registered locations (authenticated) |
+See the endpoints table in [`docs/architecture/http-dashboard.md`](../architecture/http-dashboard.md).
 
 The split between a human UI (`/`, `/config`) and a data API (`/api/*`) keeps the API stable even if the HTML changes.
 
@@ -53,15 +45,7 @@ zbus listener callbacks run in the publisher's context. When the publisher is a 
 
 ### 5. Snapshot pattern
 
-```
-acquire spinlock
-    memcpy ring buffer → local stack copy
-release spinlock
-
-serialize JSON from local copy   ← no lock held
-```
-
-The spinlock is held only for the copy; JSON serialisation (which may allocate or block) happens outside the lock. This keeps the critical section as short as possible.
+The spinlock is held only for a `memcpy` of the ring buffer; JSON serialisation happens outside the lock with no lock held. This keeps the critical section as short as possible. See [`docs/architecture/http-dashboard.md`](../architecture/http-dashboard.md) for the pseudocode.
 
 ### 6. HTML/JS embedded as C string literals (prototype)
 
@@ -75,13 +59,7 @@ The Chart.js page and config form are stored as C string literals inside `http_d
 
 ### 7. Iterable section in a linker fragment
 
-Zephyr's HTTP server discovers resource descriptors via a linker-collected iterable section. The library ships `http_dashboard_sections.ld` containing:
-
-```ld
-ITERABLE_SECTION_ROM(http_resource_desc_dashboard_svc, 4)
-```
-
-This file must be included in the build. Omitting it causes undefined-reference linker errors. The library's `CMakeLists.txt` adds it automatically when `CONFIG_HTTP_DASHBOARD=y`.
+Zephyr's HTTP server discovers resource descriptors via a linker-collected iterable section. The library ships `http_dashboard_sections.ld` which must be included in the build — omitting it causes undefined-reference linker errors. The library's `CMakeLists.txt` adds it automatically when `CONFIG_HTTP_DASHBOARD=y`.
 
 ### 8. Cross-subsystem coupling rule
 
@@ -139,3 +117,10 @@ This work is deferred to a future iteration (see backlog: `[HTTP-DASHBOARD] Deco
 | LVGL touchscreen config | No remote access; requires physical proximity |
 | BLE + companion app | App install required; higher pairing friction |
 | LittleFS file serving (now) | Adds filesystem dependency on `native_sim`; deferred to backlog |
+
+---
+
+## See also
+
+- Current implementation: `lib/http_dashboard/`
+- Related ADRs: [ADR-002](ADR-002-zbus-as-system-bus.md) (config_cmd_chan decoupling), [ADR-008](ADR-008-kconfig-app-composition.md) (SYS_INIT self-wiring), [ADR-009](ADR-009-native-sim-first.md) (native_sim first), [ADR-013](ADR-013-mqtt-configurable.md) (config decoupling via HTTP)

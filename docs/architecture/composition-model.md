@@ -1,5 +1,7 @@
 # Composition Model
 
+> Design rationale: [ADR-008](../adr/ADR-008-kconfig-app-composition.md).
+
 ## The Problem with Explicit Wiring
 
 In a conventional embedded application, `main.c` acts as a compositor:
@@ -90,6 +92,150 @@ Each library owns:
 Libraries are not permitted to `#include` each other's headers. They share state only through zbus channels. This is enforced by convention, not the build system — but a violation is immediately visible because it creates a circular dependency in the `depends on` graph.
 
 The two structs in `include/common/weather_messages.h` are the system's shared contract. Everything else is private to its library.
+
+---
+
+## File Templates
+
+### App CMakeLists.txt
+
+The complete contents of an app's `CMakeLists.txt` — nothing else is needed:
+
+```cmake
+cmake_minimum_required(VERSION 3.20.0)
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+project(gateway)
+target_sources(app PRIVATE src/main.c)
+```
+
+No `target_link_libraries()`. No `add_subdirectory()`. No `include_directories()`.
+
+### Library CMakeLists.txt pattern
+
+Each library in `lib/` gates its sources on its Kconfig symbol:
+
+```cmake
+# lib/fake_sensors/CMakeLists.txt
+if(CONFIG_FAKE_SENSORS)
+  zephyr_library()
+  zephyr_library_sources(
+    src/fake_temperature.c
+    src/fake_humidity.c
+    src/fake_subsystem.c
+    src/fake_shell.c
+  )
+  zephyr_library_include_directories(include)
+  zephyr_include_directories(include)  # expose to app
+endif()
+```
+
+### Full prj.conf example
+
+```ini
+# apps/gateway/prj.conf
+# ─────────────────────────────────────────────────────────────
+# Reading this file tells you everything the gateway app does.
+# No CMake files needed to understand feature composition.
+# ─────────────────────────────────────────────────────────────
+
+# Core Zephyr services
+CONFIG_ZBUS=y
+CONFIG_ZBUS_CHANNEL_NAME=y
+CONFIG_ZBUS_OBSERVER_NAME=y
+CONFIG_SHELL=y
+CONFIG_SHELL_BACKEND_SERIAL=y
+CONFIG_LOG=y
+CONFIG_LOG_DEFAULT_LEVEL=3
+
+# Sensor pipeline
+CONFIG_SENSOR_EVENT=y           # lib/sensor_event/
+CONFIG_SENSOR_TRIGGER=y         # lib/sensor_trigger/
+CONFIG_SENSOR_REGISTRY=y        # lib/sensor_registry/
+CONFIG_SENSOR_POLL_INTERVAL_S=30
+
+# Sensor backends — choose one per category per app:
+CONFIG_FAKE_SENSORS=y           # lib/fake_sensors/ (native_sim)
+# CONFIG_BME280=y               # ← swap to this for real HW
+# CONFIG_SHT4X=y                # ← or this
+
+# Radio
+CONFIG_LORA=y
+CONFIG_LORA_RADIO=y             # lib/lora_radio/
+
+# Connectivity
+CONFIG_NETWORKING=y
+CONFIG_NET_IPV4=y
+CONFIG_NET_TCP=y
+CONFIG_NET_SOCKETS=y
+CONFIG_WIFI=y
+CONFIG_NET_DHCPV4=y
+CONFIG_MQTT_LIB=y
+CONFIG_MQTT_KEEPALIVE=60
+CONFIG_HTTP_SERVER=y
+
+# Display
+CONFIG_DISPLAY=y
+CONFIG_LVGL=y
+CONFIG_LV_MEM_SIZE=8192
+CONFIG_LV_USE_LABEL=y
+CONFIG_LV_FONT_MONTSERRAT_14=y
+CONFIG_DISPLAY_MANAGER=y        # lib/display_manager/
+
+# Memory
+CONFIG_MAIN_STACK_SIZE=4096
+CONFIG_HEAP_MEM_POOL_SIZE=32768
+```
+
+### Board-specific .conf overlay
+
+Board-specific Kconfig additions live in `apps/gateway/boards/<board>.conf`. These override or extend `prj.conf` without modifying it:
+
+```ini
+# apps/gateway/boards/esp32_devkitc_wroom.conf
+# Real hardware: swap fake sensors for BME280
+CONFIG_FAKE_SENSORS=n
+CONFIG_BME280=y
+CONFIG_I2C=y
+CONFIG_SPI=y
+CONFIG_WIFI_ESP32=y
+```
+
+### Kconfig dependency chain
+
+`depends on` statements enforce correct feature ordering and catch misconfigured `prj.conf` files before any C code is compiled:
+
+```kconfig
+# lib/fake_sensors/Kconfig
+menuconfig FAKE_SENSORS
+    bool "Fake sensor drivers"
+    depends on ZBUS
+    depends on SENSOR_EVENT
+    depends on SENSOR_TRIGGER
+    depends on SHELL
+    help
+      Fake sensors for native_sim and testing.
+      NEVER enable on production hardware.
+```
+
+All library Kconfig symbols default to `n` — an app that doesn't mention a library never links it.
+
+### When app-level C code is acceptable
+
+Code may stay in `apps/*/src/` when it satisfies **both**:
+
+1. **Tightly coupled to this application's specific policy or hardware** — encodes decisions unique to this firmware image that would be rewritten from scratch for a different app.
+2. **No reuse value** — it would never make sense to enable this via Kconfig in another app.
+
+| Code | Where it belongs | Why |
+|------|-----------------|-----|
+| Startup trigger + sampling timer in `main.c` | App | Gateway policy — a sensor-node app has a completely different timing strategy |
+| `SYS_INIT` call that wires two libraries for this specific image | App | The wiring is image-specific, not reusable |
+| Display layout logic | Library (`lib/display_manager`) | Another app might use the same display |
+| Q31 encode/decode helpers | Library (`lib/sensor_event`) | Needed by every sensor driver |
+| LoRa channel config specific to this deployment | App | Deployment-specific, not a reusable abstraction |
+| Sensor event console logging | Library (`lib/sensor_event_log`) | Both gateway and sensor-node needed identical logging — duplication proved reuse value |
+
+**Rule of thumb:** if you find yourself wanting to write a Kconfig symbol for it, it belongs in a library.
 
 ---
 
