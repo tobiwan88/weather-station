@@ -98,14 +98,19 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 		k_free(snapshot);
 	} else {
 		/* k_malloc failed — fall back to per-record iteration */
-		k_spin_unlock(&trace_lock, key);
 		shell_warn(sh, "k_malloc failed, falling back to per-record dump");
 		shell_print(sh, "records_hex:");
 		for (uint32_t i = 0; i < valid_count; i++) {
 			struct trace_record rec = trace_records[i];
+			k_spin_unlock(&trace_lock, key);
+
 			const uint8_t *b = (const uint8_t *)&rec;
 			shell_print(sh, "%02x%02x%02x%02x%02x%02x%02x%02x", b[0], b[1], b[2], b[3],
 				    b[4], b[5], b[6], b[7]);
+
+			if (i + 1 < valid_count) {
+				key = k_spin_lock(&trace_lock);
+			}
 		}
 	}
 #else
