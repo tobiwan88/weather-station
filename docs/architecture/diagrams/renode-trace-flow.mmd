@@ -1,0 +1,31 @@
+---
+title: Renode Trace Pipeline
+---
+flowchart LR
+    subgraph Build
+        A[gateway source] --> B[west build<br/>+ trace_recorder Kconfig]
+        B --> C[zephyr.elf]
+    end
+
+    subgraph Renode
+        C --> D[Renode emulation<br/>frdm_mcxn947.resc]
+        D --> E[CPU EnableProfilerPerfetto]
+        D --> F[CPU LogFunctionNames]
+        D --> G[sysbus ReadMemory<br/>trace_records buffer]
+        E --> H[trace_functions.perfetto]
+        F --> H
+        G --> I[trace.bin]
+    end
+
+    subgraph Post-process
+        I --> J[parse-trace.py]
+        C --> J
+        H --> J
+        J --> K[trace_combined.json<br/>Perfetto Chrome Tracing]
+        J --> L[stdout summary<br/>runtime %, switches]
+        J --> M[trace_threads.json<br/>raw timeline]
+    end
+
+    subgraph View
+        K --> N[Perfetto UI<br/>ui.perfetto.dev]
+    end
