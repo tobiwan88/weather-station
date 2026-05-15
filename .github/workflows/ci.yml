@@ -441,21 +441,21 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: coverage-report
-          path: deploy/coverage/
+          path: /tmp/deploy/coverage/
         continue-on-error: true
 
       - name: Download Twister results
         uses: actions/download-artifact@v4
         with:
           name: twister-results
-          path: deploy/twister/
+          path: /tmp/deploy/twister/
         continue-on-error: true
 
       - name: Download Renode boot trace
         uses: actions/download-artifact@v4
         with:
           name: renode-gateway_boot
-          path: deploy/renode/
+          path: /tmp/deploy/renode/
         continue-on-error: true
 
       - name: Determine target directory on gh-pages
@@ -472,25 +472,26 @@ jobs:
           TARGET_DIR="${{ steps.dir.outputs.path }}"
           git fetch origin gh-pages
           git checkout gh-pages
+          rm -rf deploy/                # remove accidentally-committed staging dir
           mkdir -p "$TARGET_DIR"
           # Remove old results for this ref (overwrite, not accumulate)
           [[ -n "$TARGET_DIR" && "$TARGET_DIR" == dev/traces/* ]] || { echo "ERROR: unsafe TARGET_DIR"; exit 1; }
           rm -rf "$TARGET_DIR"/*
           # Copy new results
-          if [ -d deploy/coverage ] && [ "$(ls -A deploy/coverage 2>/dev/null)" ]; then
+          if [ -d /tmp/deploy/coverage ] && [ "$(ls -A /tmp/deploy/coverage 2>/dev/null)" ]; then
             mkdir -p "$TARGET_DIR/coverage"
-            cp -r deploy/coverage/* "$TARGET_DIR/coverage/"
+            cp -r /tmp/deploy/coverage/* "$TARGET_DIR/coverage/"
           fi
-          if [ -d deploy/twister ] && [ "$(ls -A deploy/twister 2>/dev/null)" ]; then
+          if [ -d /tmp/deploy/twister ] && [ "$(ls -A /tmp/deploy/twister 2>/dev/null)" ]; then
             mkdir -p "$TARGET_DIR/twister"
-            cp -r deploy/twister/* "$TARGET_DIR/twister/"
+            cp -r /tmp/deploy/twister/* "$TARGET_DIR/twister/"
           fi
-          if [ -d deploy/renode ] && [ "$(ls -A deploy/renode 2>/dev/null)" ]; then
+          if [ -d /tmp/deploy/renode ] && [ "$(ls -A /tmp/deploy/renode 2>/dev/null)" ]; then
             mkdir -p "$TARGET_DIR/renode"
-            cp -r deploy/renode/* "$TARGET_DIR/renode/"
+            cp -r /tmp/deploy/renode/* "$TARGET_DIR/renode/"
             # If trace files exist, parse and deploy Perfetto/Chrome trace
-            TRACE_BIN="deploy/renode/simulation/renode/trace.bin"
-            TRACE_ELF="deploy/renode/build/renode/gateway/zephyr/zephyr.elf"
+            TRACE_BIN="/tmp/deploy/renode/simulation/renode/trace.bin"
+            TRACE_ELF="/tmp/deploy/renode/build/renode/gateway/zephyr/zephyr.elf"
             if [ -f "$TRACE_BIN" ] && [ -f "$TRACE_ELF" ]; then
               python3 scripts/parse-trace.py \
                 --trace "$TRACE_BIN" \
