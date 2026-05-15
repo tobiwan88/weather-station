@@ -1,0 +1,112 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/**
+ * @file trace_recorder_shell.c
+ * @brief Shell commands for the trace recorder.
+ *
+ *   trace status   — buffer utilisation / overflow count
+ *   trace dump     — hex dump of records + thread name table
+ *   trace clear    — reset buffer
+ */
+
+#include <zephyr/kernel.h>
+#include <zephyr/shell/shell.h>
+#include <zephyr/sys/atomic.h>
+
+/* ── external symbols from trace_recorder.c ──────────────────────── */
+
+extern struct trace_record trace_records[];
+extern char trace_thread_names[][CONFIG_THREAD_MAX_NAME_LEN];
+extern uint32_t g_trace_head;
+extern uint32_t g_trace_overflow;
+
+/* ── trace status ─────────────────────────────────────────────────── */
+
+static int cmd_status(const struct shell *sh, size_t argc, char **argv)
+{
+	ARG_UNUSED(argc);
+	ARG_UNUSED(argv);
+
+	uint32_t head = g_trace_head;
+	uint32_t overflow = g_trace_overflow;
+	uint32_t capacity = CONFIG_TRACE_RECORDER_BUFFER_SIZE;
+
+	shell_print(sh, "Trace recorder status:");
+	shell_print(sh, "  Records:    %u / %u (%u%%)", head, capacity,
+		    capacity ? (unsigned)(head * 100ULL / capacity) : 0);
+	shell_print(sh, "  Overflow:   %u records dropped", overflow);
+	shell_print(sh, "  Each record: 8 bytes (total buffer: %u bytes)", capacity * 8);
+
+	return 0;
+}
+
+/* ── trace dump ───────────────────────────────────────────────────── */
+
+static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
+{
+	ARG_UNUSED(argc);
+	ARG_UNUSED(argv);
+
+	uint32_t head = g_trace_head;
+	uint32_t capacity = CONFIG_TRACE_RECORDER_BUFFER_SIZE;
+
+	shell_print(sh, "--- TRACE DUMP BEGIN ---");
+	shell_print(sh, "records=%u capacity=%u overflow=%u", head, capacity, g_trace_overflow);
+
+	/* print thread name table */
+	shell_print(sh, "thread_names:");
+	for (uint32_t i = 0; i < CONFIG_TRACE_RECORDER_MAX_THREADS; i++) {
+		if (trace_thread_names[i][0] != '\0') {
+			shell_print(sh, "  [%u] %s", i, trace_thread_names[i]);
+		}
+	}
+
+	/* print records as hex (8 bytes each, 16 bytes per shell line) */
+	shell_print(sh, "records_hex:");
+	const uint8_t *raw = (const uint8_t *)trace_records;
+	uint32_t total_bytes = head * 8;
+	for (uint32_t i = 0; i < total_bytes; i += 16) {
+		uint32_t remain = total_bytes - i;
+		if (remain >= 16) {
+			shell_print(sh,
+				    "%02x%02x%02x%02x%02x%02x%02x%02x"
+				    "%02x%02x%02x%02x%02x%02x%02x%02x",
+				    raw[i], raw[i + 1], raw[i + 2], raw[i + 3], raw[i + 4],
+				    raw[i + 5], raw[i + 6], raw[i + 7], raw[i + 8], raw[i + 9],
+				    raw[i + 10], raw[i + 11], raw[i + 12], raw[i + 13], raw[i + 14],
+				    raw[i + 15]);
+		} else {
+			char buf[128];
+			int off = 0;
+			for (uint32_t j = 0; j < remain; j++) {
+				off += snprintf(buf + off, sizeof(buf) - off, "%02x", raw[i + j]);
+			}
+			shell_print(sh, "%s", buf);
+		}
+	}
+
+	shell_print(sh, "--- TRACE DUMP END ---");
+	return 0;
+}
+
+/* ── trace clear ──────────────────────────────────────────────────── */
+
+static int cmd_clear(const struct shell *sh, size_t argc, char **argv)
+{
+	ARG_UNUSED(argc);
+	ARG_UNUSED(argv);
+
+	g_trace_head = 0;
+	g_trace_overflow = 0;
+
+	shell_print(sh, "Trace buffer cleared.");
+	return 0;
+}
+
+/* ── command registration ─────────────────────────────────────────── */
+
+SHELL_STATIC_SUBCMD_SET_CREATE(
+	sub_trace, SHELL_CMD(status, NULL, "Show trace buffer utilisation", cmd_status),
+	SHELL_CMD(dump, NULL, "Hex dump of trace records + thread names", cmd_dump),
+	SHELL_CMD(clear, NULL, "Reset trace buffer", cmd_clear), SHELL_SUBCMD_SET_END);
+
+SHELL_CMD_REGISTER(trace, &sub_trace, "Trace recorder controls", NULL);
