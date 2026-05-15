@@ -17,6 +17,17 @@ menuconfig LORA_RADIO
 
 if LORA_RADIO
 
+config LORA_RADIO_FAKE
+	bool "Fake LoRa driver (native_sim only)"
+	depends on BOARD_NATIVE_SIM
+	default y if BOARD_NATIVE_SIM
+	help
+	  Compile the in-process fake LoRa driver that uses kernel FIFOs for
+	  TX/RX loopback.  Requires a 'fake,lora-radio' DT node which is only
+	  present in the native_sim overlay.  Must NOT be enabled for real
+	  hardware targets — those use the Zephyr SX126x driver or another
+	  board-supplied LoRa device.
+
 config LORA_RADIO_DEV_NAME
 	string "LoRa device name"
 	default "lora0"

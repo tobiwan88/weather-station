@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config UART_LORA_BRIDGE
+	bool "UART LoRa bridge (co-MCU proxy)"
+	depends on ZBUS
+	depends on SENSOR_EVENT
+	depends on SERIAL
+	depends on UART_INTERRUPT_DRIVEN
+	help
+	  Receives env_sensor_data frames over UART from a co-MCU that manages
+	  the LoRa radio and publishes them directly to sensor_event_chan.
+
+	  Wire frame format (24 bytes per event):
+	    [0x5A][0xA5]  2-byte magic sync word
+	    [len]         1-byte payload length (always 20)
+	    [payload]     20-byte packed env_sensor_data (LE)
+	    [crc8]        1-byte CRC8-CCITT over payload
+
+	  Use instead of CONFIG_LORA_RADIO on hardware targets where a
+	  separate MCU (e.g. a LoRa node running the lora_radio firmware)
+	  handles the radio link and streams decoded readings via UART.
+
+if UART_LORA_BRIDGE
+
+config UART_LORA_BRIDGE_DEV_NAME
+	string "UART device name"
+	default "lpuart2"
+	help
+	  Zephyr device name of the UART port connected to the LoRa co-MCU.
+	  Must not conflict with the console or MCUmgr UART.
+
+config UART_LORA_BRIDGE_RX_STACK_SIZE
+	int "RX thread stack size (bytes)"
+	default 1024
+
+config UART_LORA_BRIDGE_RX_PRIORITY
+	int "RX thread priority"
+	default 7
+
+module = UART_LORA_BRIDGE
+module-str = UART_LORA_BRIDGE
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # UART_LORA_BRIDGE

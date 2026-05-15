@@ -10,8 +10,9 @@ if(CONFIG_LORA_RADIO)
     src/lora_chan.c
     src/lora_handler_data.c
     src/lora_handler_rpc.c
-    src/lora_handler_prov.c
-    src/lora_drv_fake_zephyr.c)
+    src/lora_handler_prov.c)
+  zephyr_library_sources_ifdef(CONFIG_LORA_RADIO_FAKE
+                               src/lora_drv_fake_zephyr.c)
   zephyr_library_sources_ifdef(CONFIG_LORA_RADIO_FOTA src/lora_handler_fota.c)
   zephyr_library_sources_ifdef(CONFIG_LORA_RADIO_SHELL src/lora_shell.c)
 
