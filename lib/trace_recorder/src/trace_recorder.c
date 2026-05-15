@@ -9,7 +9,6 @@
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/sys/__assert.h>
 #include <zephyr/sys/atomic.h>
 #include <zephyr/tracing/tracing_user.h>
 
@@ -17,7 +16,7 @@
 
 LOG_MODULE_REGISTER(trace_recorder, CONFIG_TRACE_RECORDER_LOG_LEVEL);
 
-/* ── trace record format (8 bytes) ───────────────────────────────── */
+/* ── trace event constants ────────────────────────────────────────── */
 
 #define TRACE_EVENT_SWITCHED_IN  0
 #define TRACE_EVENT_SWITCHED_OUT 1
@@ -28,29 +27,22 @@ LOG_MODULE_REGISTER(trace_recorder, CONFIG_TRACE_RECORDER_LOG_LEVEL);
 
 #define TRACE_THREAD_ID_UNKNOWN 0xFFFFU
 
-struct trace_record {
-	uint32_t timestamp; /* k_cycle_get_32() */
-	uint8_t event_type; /* TRACE_EVENT_* */
-	uint8_t event_data; /* priority for SWITCHED_IN, 0 otherwise */
-	uint16_t thread_id; /* assigned thread ID, or TRACE_THREAD_ID_UNKNOWN */
-};
-
 BUILD_ASSERT(sizeof(struct trace_record) == 8, "trace_record must be 8 bytes");
 
 /* ── static buffer (BSS — dumpable via Renode sysbus ReadMemory) ─── */
 
-static struct trace_record trace_records[CONFIG_TRACE_RECORDER_BUFFER_SIZE];
+struct trace_record trace_records[CONFIG_TRACE_RECORDER_BUFFER_SIZE];
 
 /* No init needed — BSS zeroed by CRT. All-zero record means end-of-data. */
 
-static char trace_thread_names[CONFIG_TRACE_RECORDER_MAX_THREADS][CONFIG_THREAD_MAX_NAME_LEN];
+char trace_thread_names[CONFIG_TRACE_RECORDER_MAX_THREADS][CONFIG_THREAD_MAX_NAME_LEN];
 
 /* ── ring buffer state ───────────────────────────────────────────── */
 
 static struct k_spinlock g_trace_lock;
-static uint32_t g_trace_head;                      /* next write index */
+uint32_t g_trace_head;                             /* next write index */
 static bool g_trace_ready;                         /* false until SYS_INIT completes */
-static uint32_t g_trace_overflow;                  /* count of dropped records */
+uint32_t g_trace_overflow;                         /* count of dropped records */
 static atomic_t g_next_thread_id = ATOMIC_INIT(1); /* 1-based; 0 = unassigned */
 
 /* ── helper: write one record ─────────────────────────────────────── */
@@ -95,10 +87,11 @@ void sys_trace_thread_create_user(struct k_thread *thread)
 
 	uint16_t id = (uint16_t)atomic_inc(&g_next_thread_id);
 
-	__ASSERT(id < CONFIG_TRACE_RECORDER_MAX_THREADS,
-		 "trace_recorder: too many threads (max %d); increase "
-		 "CONFIG_TRACE_RECORDER_MAX_THREADS",
-		 CONFIG_TRACE_RECORDER_MAX_THREADS);
+	if (id >= CONFIG_TRACE_RECORDER_MAX_THREADS) {
+		LOG_WRN("too many threads (max %d); skipping trace",
+			CONFIG_TRACE_RECORDER_MAX_THREADS);
+		return;
+	}
 
 	thread->custom_data = (void *)(uintptr_t)id;
 
@@ -237,8 +230,8 @@ static void assign_existing_thread(struct k_thread *thread, void *user_data)
 
 static int trace_recorder_init(void)
 {
+	g_trace_ready = true; /* enable hooks before foreach */
 	k_thread_foreach(assign_existing_thread, NULL);
-	g_trace_ready = true;
 	LOG_DBG("trace_recorder: init done, %u pre-existing threads",
 		(uint32_t)atomic_get(&g_next_thread_id));
 	return 0;
