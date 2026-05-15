@@ -23,110 +23,19 @@ impossible to integrate uniformly.
 Sensor sampling is **trigger-driven and decentralised**. There is no sensor
 manager module.
 
-### The trigger channel
-
 `sensor_trigger_chan` carries lightweight `sensor_trigger_event` messages.
 Any module that wants sensor data refreshed publishes a trigger. Each sensor
-driver independently subscribes and responds.
+driver independently subscribes and responds. `target_uid = 0` is a broadcast
+to all sensors; a non-zero UID targets one sensor specifically.
 
-```
-TRIGGER SOURCES              TRIGGER CHANNEL          SENSOR LISTENERS
-───────────────              ───────────────          ────────────────
+This decoupling means: trigger sources do not know which sensors exist; sensor
+drivers do not know which consumers will receive their events; consumers do not
+know which sensors or trigger sources are present. Adding any of the three never
+requires modifying the others.
 
-[Periodic timer]  ──────────►                 ──────► [fake_temp_indoor]
-                             sensor_trigger   ──────► [fake_hum_indoor]
-[Button press]    ──────────►    _chan        ──────► [fake_temp_outdoor]
-                                             ──────► [bme280 driver]  (future)
-[MQTT command]    ──────────►                ──────► [lora_rx]  (passive — ignores)
-[Startup SYS_INIT]──────────►
-
-                                                        each listener publishes
-                                                        to sensor_event_chan ↓
-
-                             sensor_event_chan ──────► [display_manager]
-                                              ──────► [mqtt_manager]
-                                              ──────► [flash_storage]
-```
-
-### Trigger event struct
-
-```c
-struct sensor_trigger_event {
-    enum trigger_source source;     /* who requested the sample */
-    uint32_t            target_uid; /* 0 = broadcast to all sensors */
-};
-```
-
-`target_uid = 0` is a broadcast. A specific UID triggers only one sensor.
-For the UID contract see ADR-003.
-
-### Sensor driver pattern
-
-Every sensor driver follows the same three steps:
-
-**Step 1 — Subscribe at init:**
-```c
-ZBUS_LISTENER_DEFINE(my_sensor_listener, my_sensor_on_trigger);
-
-static int my_sensor_init(void)
-{
-    ZBUS_CHAN_ADD_OBS(sensor_trigger_chan, my_sensor_listener, 0);
-    return 0;
-}
-SYS_INIT(my_sensor_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
-```
-
-**Step 2 — Filter and defer on trigger:**
-```c
-/* Called in publisher's thread — must not block */
-static void my_sensor_on_trigger(const struct zbus_channel *chan)
-{
-    const struct sensor_trigger_event *t = zbus_chan_const_msg(chan);
-    if (t->target_uid != 0 && t->target_uid != MY_UID) {
-        return;
-    }
-    k_work_submit(&my_sensor_work);  /* defer blocking read off this thread */
-}
-```
-
-> **Note:** The current fake sensor drivers publish directly in the trigger callback without `k_work` deferral. This is acceptable because fake sensors read from memory (no blocking I2C/SPI). Real hardware drivers **must** defer to `k_work` as shown above.
-
-**Step 3 — Sample and publish:**
-```c
-static void my_sensor_work_fn(struct k_work *w)
-{
-    int32_t raw = hw_read_milli_c();
-    struct env_sensor_data evt = {
-        .sensor_uid   = MY_UID,
-        .type         = SENSOR_TYPE_TEMPERATURE,
-        .q31_value    = temperature_c_x1000_to_q31(raw),  /* see ADR-003 */
-        .timestamp_ms = k_uptime_get(),
-    };
-    zbus_chan_pub(&sensor_event_chan, &evt, K_MSEC(100));
-}
-K_WORK_DEFINE(my_sensor_work, my_sensor_work_fn);
-```
-
-### Adding a new sensor
-
-Zero changes to any existing file:
-
-1. Write `lib/my_sensor/` following the three-step pattern above.
-2. Add to board overlay: `my_sensor@X { compatible = "...", sensor-uid = <0xNNNN>; }`.
-3. Enable in `prj.conf`: `CONFIG_MY_SENSOR=y`.
-
-### Do not
-
-- **Do not create a sensor manager.** No module may hold references to multiple sensor devices and coordinate their reads.
-- **Do not block in the trigger callback.** If the sensor read is blocking (I2C, SPI), defer it to a `k_work` item as shown above.
-- **Do not give LoRa RX a trigger listener.** Remote sensor data arrives asynchronously; `lora_rx` publishes directly to `sensor_event_chan` when a packet arrives.
-- **Do not start per-sensor timers.** The shared trigger channel is the only sampling clock — it allows coordinated reads (button press refreshes all sensors together).
-
-The periodic timer is currently implemented in `lib/fake_sensors/src/fake_sensors_timer.c`
-and configured via `CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS`. It starts automatically
-via `SYS_INIT` — no call from `main.c` is needed. When real sensor drivers replace
-fake sensors, the timer will move to `lib/sensor_trigger/` with a board-agnostic
-`CONFIG_SENSOR_POLL_INTERVAL_S`. See ADR-008 for the `main.c` rule.
+For the sensor driver implementation pattern (subscribe at init, filter and
+defer on trigger, sample and publish), and the "do not" rules, see
+[`docs/architecture/event-bus.md`](../architecture/event-bus.md).
 
 ---
 
@@ -139,7 +48,7 @@ fake sensors, the timer will move to `lib/sensor_trigger/` with a board-agnostic
 
 **Harder:**
 - There is no single place to see all active sensors at compile time. The `fake_sensors list` shell command and `sensor_registry` provide runtime introspection.
-- A broadcast trigger wakes all sensors simultaneously. Slow sensors (I2C) must use work items (enforced by the "do not block" rule above).
+- A broadcast trigger wakes all sensors simultaneously. Slow sensors (I2C) must use work items (enforced by the "do not block in the trigger callback" rule in [`docs/architecture/event-bus.md`](../architecture/event-bus.md)).
 
 ---
 
@@ -149,3 +58,11 @@ fake sensors, the timer will move to `lib/sensor_trigger/` with a board-agnostic
 |-------------|-----------------|
 | Central sensor manager (polling loop) | Tight coupling; breaks Kconfig-only composition (ADR-008); untestable; can't handle async LoRa/BLE sources uniformly |
 | Zephyr sensor trigger API (`sensor_trigger_set`) | Designed for hardware GPIO interrupts from the sensor chip itself; not suitable for software-commanded samples or cross-sensor coordination |
+
+---
+
+## See also
+
+- Current implementation: [`docs/architecture/event-bus.md`](../architecture/event-bus.md) (trigger-event split, ISR safety), [`docs/architecture/concurrency.md`](../architecture/concurrency.md) (execution contexts)
+- Key types: `lib/sensor_trigger/include/sensor_trigger/sensor_trigger.h`
+- Related ADRs: [ADR-002](ADR-002-zbus-as-system-bus.md) (zbus channels), [ADR-003](ADR-003-sensor-event-data-model.md) (event struct), [ADR-008](ADR-008-kconfig-app-composition.md) (no sensor manager rule)

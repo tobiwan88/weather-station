@@ -36,98 +36,15 @@ Requirements for the integration test layer:
 
 Use Zephyr's **`pytest-twister-harness`** plugin to delegate the test
 execution phase from Twister to pytest. Twister builds the gateway binary
-and manages the DUT lifecycle; pytest runs the actual test logic in Python.
+and manages the DUT lifecycle; pytest runs the actual test logic in Python
+via a `DeviceAdapter` that abstracts the transport (process pipes on
+native_sim, serial port on hardware). Tests interact through harness classes
+(Page Object Model) wrapping each interaction surface (UART shell, HTTP,
+MQTT). One DUT instance boots per session; all tests share it.
 
-### Test topology
-
-```
-                    Twister
-                       │
-            ┌──────────┴──────────┐
-            │ 1. Build gateway    │
-            │    (native_sim)     │
-            │ 2. Launch binary    │
-            │    (stdin/stdout)   │
-            └──────────┬──────────┘
-                       │ DeviceAdapter (process pipes)
-                       │
-            ┌──────────┴──────────┐
-            │      pytest         │
-            │                     │
-            │  ┌───────────────┐  │
-            │  │ ShellHarness  │──┼── UART (stdin/stdout)
-            │  ├───────────────┤  │
-            │  │ HttpHarness   │──┼── HTTP (localhost:8080)
-            │  ├───────────────┤  │
-            │  │ MqttHarness   │──┼── MQTT (localhost:1883)
-            │  └───────────────┘  │
-            │                     │
-            │  test_shell.py      │
-            │  test_http_api.py   │
-            │  test_sensor_flow.py│
-            │  test_config.py     │
-            └─────────────────────┘
-```
-
-### Page Object Model
-
-Tests never send raw shell strings or construct HTTP URLs. Each interaction
-surface is wrapped in a **harness class** (the embedded equivalent of a
-Page Object):
-
-| Harness | Wraps | Key methods |
-|---------|-------|-------------|
-| `ShellHarness` | `twister_harness.Shell` | `list_sensors()`, `trigger_all()`, `set_temperature()`, `get_uptime_ms()` |
-| `HttpHarness` | `requests` | `get_sensor_data()`, `wait_for_readings()`, `set_trigger_interval()` |
-| `MqttHarness` | `paho-mqtt` | `connect()`, `wait_for_messages()`, `clear()`, `topics()` |
-
-Harnesses return typed Python objects (dataclasses, dicts, ints). If a shell
-output format changes, only the harness parser needs updating — all tests
-remain stable.
-
-### Markers
-
-Tests are tagged with pytest markers for selective execution:
-
-| Marker | Purpose |
-|--------|---------|
-| `smoke` | Quick sanity (shell alive, HTTP reachable) — run first |
-| `shell` | Uses UART shell |
-| `http` | Uses HTTP dashboard API |
-| `mqtt` | Uses MQTT broker (auto-skip if unavailable) |
-| `e2e` | Full pipeline: trigger → zbus → HTTP/MQTT |
-
-### DUT lifecycle
-
-`pytest_dut_scope: session` — the gateway boots **once** per test run. All
-tests share the same process. Tests that mutate state (set sensor values,
-change trigger interval) must restore defaults before returning.
-
-### Build configuration
-
-The integration test has its own `CMakeLists.txt`, `prj.conf`, `src/main.c`,
-and board overlay under `tests/integration/`. This mirrors the gateway stack
-but disables LVGL (the display blocks stdin/stdout) and enables
-`CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y` so the `DeviceAdapter` can interact
-via process pipes.
-
-### Directory layout
-
-```
-tests/integration/
-├── testcase.yaml                      # harness: pytest, dut_scope: session
-├── CMakeLists.txt                     # standard Zephyr app
-├── prj.conf                           # gateway stack minus LVGL
-├── src/main.c                         # LOG_MODULE_REGISTER + k_sleep(K_FOREVER)
-├── boards/native_sim_native_64.overlay # 6 fake sensors, no SDL
-└── pytest/
-    ├── conftest.py                    # markers, fixture wiring
-    ├── harnesses/
-    │   ├── shell_harness.py
-    │   ├── http_harness.py
-    │   └── mqtt_harness.py
-    └── test_*.py                      # test files
-```
+For the topology diagram, harness class table, markers, DUT lifecycle rules,
+build configuration, and directory layout, see
+[`docs/architecture/integration-tests.md`](../architecture/integration-tests.md).
 
 ---
 
@@ -174,3 +91,11 @@ tests/integration/
 | Pure ztest for integration | C-based tests cannot easily interact with HTTP endpoints or MQTT brokers; test setup is verbose |
 | pytest without Twister (standalone) | Loses Twister's build orchestration, platform matrix, and JUnit reporting; manual DUT lifecycle |
 | Separate test binary per subsystem | Defeats the purpose — integration tests must boot the full stack to catch cross-subsystem bugs |
+
+---
+
+## See also
+
+- Current implementation: [`docs/architecture/integration-tests.md`](../architecture/integration-tests.md) (harness classes, file layout, conftest fixtures, NSOS constraints)
+- Current tests: `tests/integration/`
+- Related ADRs: [ADR-009](ADR-009-native-sim-first.md) (native_sim first), [ADR-010](ADR-010-ci-and-dev-environment.md) (CI pipeline)

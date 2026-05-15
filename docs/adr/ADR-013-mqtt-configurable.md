@@ -1,48 +1,57 @@
-# ADR-013. MQTT Configurable
+# ADR-013 — MQTT Configurable
 
-**Date:** 2026-04-20
-**Status:** Accepted
+| Field | Value |
+|-------|-------|
+| **Status** | Accepted |
+| **Date** | 2026-04-20 |
+| **Deciders** | Project founder |
+
+---
 
 ## Context
 
-The MQTT publisher library had hardcoded defaults and only shell-based runtime configuration. Users needed the ability to enable/disable MQTT, change broker address, and update authentication credentials at runtime via both shell and the HTTP dashboard.
+The MQTT publisher library had hardcoded defaults and only shell-based runtime configuration. Users needed the ability to enable/disable MQTT, change broker address, and update authentication credentials at runtime via both shell and the HTTP dashboard. The existing `config_cmd_chan` pattern (used by `fake_sensors` and `sntp_sync`) provided a proven decoupled approach for runtime config changes.
+
+---
 
 ## Decision
 
-MQTT runtime configuration is exposed through the decoupled `config_cmd_chan` pattern (Option A). The HTTP dashboard publishes `config_cmd_event` messages; `mqtt_publisher` independently subscribes as a consumer. Passwords are base64-encoded before storage in the settings subsystem under the shared `config/mqtt/` namespace. Disabling MQTT stops publishing, drains the queue, and disconnects; enabling triggers reconnection.
+MQTT runtime configuration is exposed through the `config_cmd_chan` pattern. The HTTP dashboard publishes `config_cmd_event` messages; `mqtt_publisher` independently subscribes as a consumer — neither module references the other. Passwords are base64-encoded before storage in the settings subsystem under the shared `config/mqtt/` namespace. Disabling MQTT stops publishing, drains the queue, and disconnects; enabling triggers reconnection. The thread remains alive on disable to avoid thread lifecycle complexity.
 
-## Rationale
+The shared `config/mqtt/` namespace (over the previous `mqttp/`) groups all runtime configuration under one subtree, consistent with other config subtrees.
 
-- **Option A (config_cmd_chan)** keeps the HTTP dashboard decoupled from MQTT internals, consistent with how `fake_sensors` and `sntp_sync` handle config changes.
-- **Shared namespace** (`config/mqtt/`) groups all runtime configuration under one subtree for consistency.
-- **Base64 encoding** provides minimal obfuscation for passwords in settings storage (flash is not encrypted). A proper secrets management approach is tracked as a backlog item.
-- **Stop-publishing-on-disable** avoids thread lifecycle complexity; the thread remains alive but drops events and sleeps in a disabled loop.
-
-## Alternatives Considered
-
-- **Option B (direct API calls from dashboard)** — rejected because it creates tight coupling between HTTP and MQTT, violating the config decoupling principle established in ADR-002.
-- **Thread abort/restart on enable/disable** — rejected as unnecessarily complex; the disabled-loop approach is simpler and avoids thread lifecycle issues.
-- **Keep `mqttp/` namespace** — rejected in favor of the shared `config/` namespace for consistency with other config subtrees.
-- **AES-encrypted password storage** — rejected as over-engineering for a demo device; deferred to a future improvement.
+---
 
 ## Consequences
 
-### Positive
+**Easier:**
 - MQTT is fully configurable via both shell and HTTP dashboard.
 - Config changes take effect immediately (reconnect on broker/auth/gateway change).
 - Decoupled architecture: dashboard doesn't know about MQTT consumers.
-- Password is not stored as plain text in settings.
+- Passwords are not stored as plain text in settings.
 
-### Negative / Trade-offs
+**Harder:**
 - Existing deployments lose MQTT settings on upgrade (namespace changed from `mqttp/` to `config/mqtt/`). No migration path.
-- Base64 encoding is not encryption — passwords are trivially recoverable.
-- The `config_cmd_event` union adds ~150 bytes to every config event (broker struct is 68 bytes, auth struct is 96 bytes).
-- Static variables in `process_post.c` for MQTT form accumulation are not thread-safe, but the HTTP server processes POSTs sequentially on native_sim.
+- The `config_cmd_event` union grows with every new config command type, adding overhead to all config messages.
 
-## Related
+**Constrained:**
+- Base64 encoding is not encryption — passwords are trivially recoverable (proper secrets management tracked as backlog item).
+- The HTTP dashboard's MQTT form accumulation is not thread-safe; this is tolerated because the HTTP server processes POSTs sequentially on native_sim.
 
-- `lib/mqtt_publisher/` — MQTT publisher library
-- `lib/config_cmd/` — config command channel
-- `lib/http_dashboard/` — HTTP dashboard
-- ADR-002 — zbus as system bus
-- ADR-008 — Kconfig app composition
+---
+
+## Alternatives considered
+
+| Alternative | Rejected because |
+|-------------|-----------------|
+| Direct API calls from dashboard to mqtt_publisher | Creates tight coupling between HTTP and MQTT, violating ADR-002 config decoupling principle |
+| Thread abort/restart on enable/disable | Unnecessarily complex; the disabled-loop approach avoids thread lifecycle issues |
+| Keep `mqttp/` namespace | Inconsistent with shared `config/` namespace used by other config subtrees |
+| AES-encrypted password storage | Over-engineering for a demo device; deferred to a future improvement |
+
+---
+
+## See also
+
+- Current implementation: `lib/mqtt_publisher/`, `lib/config_cmd/`, `lib/http_dashboard/`
+- Related ADRs: [ADR-002](ADR-002-zbus-as-system-bus.md) (zbus as system bus), [ADR-008](ADR-008-kconfig-app-composition.md) (Kconfig app composition)

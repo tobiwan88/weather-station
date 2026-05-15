@@ -130,7 +130,15 @@
       "Bash(west patch *)",
       "Bash(west list *)",
       "Bash(west help *)",
-      "Bash(gh run *)"
+      "Bash(gh run *)",
+      "Bash(export:*)",
+      "Bash(/home/zephyr/workspace/weather-station/.devcontainer/start-display.sh:*)",
+      "Bash(mkdocs serve:*)",
+      "Bash(curl:*)",
+      "Bash(pkill:*)",
+      "Bash(for f in fake-sensors native-sim ci-dev-environment http-dashboard)",
+      "Read(//home/zephyr/workspace/weather-station/docs/architecture/**)",
+      "Bash(done)"
     ]
   },
   "hooks": {

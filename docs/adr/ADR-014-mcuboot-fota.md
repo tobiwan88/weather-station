@@ -47,38 +47,20 @@ permanent. The application waits a 5-second settle delay before confirming; if i
 crashes or hangs before that call, MCUboot reverts to the previous slot on the next
 reset.
 
----
+MCUboot standalone was chosen over TF-M because the default TF-M layout restricts the
+Zephyr NS image to 128 KB RAM — insufficient for the gateway stack (HTTP, MQTT, zbus,
+shell, sensor registry require ~320 KB). Patching TF-M's SAU configuration to extend NS
+RAM is fragile across TF-M upgrades and over-engineered for a home project.
 
-## Rationale
+ED25519 was chosen over RSA for compact 64-byte signatures, fast Cortex-M33
+verification, and native `imgtool` support.
 
-### Why MCUboot without TF-M
+SWAP_MOVE was chosen because it performs the A/B exchange without a dedicated scratch
+partition, making full use of all internal flash.
 
-The `frdm_mcxn947_mcxn947_cpu0_ns` TF-M target restricts Zephyr to the non-secure
-RAM region (128 KB) defined by the default SAU layout. The gateway stack — HTTP
-dashboard, MQTT, zbus, shell, sensor registry — requires approximately 320 KB. Extending
-the NS RAM to cover additional SRAM banks (`sramg`, `sramh`) would require patching
-the TF-M platform's SAU configuration, adding significant complexity for a home project.
-
-MCUboot standalone gives the full 320 KB SRAM to the application and 984 KB flash per
-image slot (vs. 256 KB in the TF-M layout), leaving ample room for future feature growth.
-
-### Why ED25519
-
-Compact 64-byte signature. Fast verification on Cortex-M33. Natively supported by
-`imgtool` and `CONFIG_BOOT_SIGNATURE_TYPE_ED25519`. Smaller code footprint than RSA.
-
-### Why SWAP_MOVE
-
-SWAP_MOVE performs the slot exchange in-place without requiring a dedicated scratch
-partition, making full use of the 2 MB internal flash. The two 984 KB image slots leave
-no wasted space.
-
-### Why the HTTP transport is in `lib/http_dashboard`
-
-Consistent with ADR-011 and ADR-008: all gateway-facing services are exposed through
-the existing authenticated HTTP surface. Adding a new route pair keeps the update UI
-co-located with the config UI and reuses the existing session/bearer auth layer without
-introducing a second network port or service.
+HTTP transport for FOTA uploads was integrated into `lib/http_dashboard` (not a
+separate MCUmgr UDP port) to reuse the existing session/bearer auth layer and avoid
+opening a second unauthenticated port, consistent with ADR-008 and ADR-011.
 
 ---
 
@@ -143,29 +125,24 @@ requiring custom implementation.
 
 ## Consequences
 
-### Positive
-
+**Easier:**
 - Reliable updates with automatic rollback protect the device from bad firmware.
 - UART transport provides an unconditional recovery path without network access.
 - HTTP transport integrates naturally with the existing dashboard and auth layer.
 - Sysbuild produces MCUboot + signed app in one `west build` invocation.
-- 984 KB image slots leave ample room for gateway feature growth.
 - Key generation script ensures no keys are ever committed to the repo.
 
-### Negative / Constraints
+**Harder:**
+- The application must actively confirm each update; a confirm bug causes repeated rollback even on a correct image.
+- Private key management is the operator's responsibility; loss of the key means no further authenticated updates.
 
-- MCUboot adds ~80 KB to the flash layout; the application partition shrinks accordingly.
-- The application must actively confirm each update; a confirm bug causes repeated
-  rollback even on a correct image.
-- Private key management is the operator's responsibility; loss of the private key
-  means no further authenticated updates (re-flashing MCUboot with a new key required).
-- native_sim target is not affected — MCUboot and FOTA are hardware-only features.
+**Constrained:**
+- MCUboot reduces available flash per image slot; the gateway feature set must stay within the slot budget.
+- native_sim target is unaffected — MCUboot and FOTA are hardware-only features (`depends on BOOTLOADER_MCUBOOT`).
 
 ---
 
-## Related
+## See also
 
-- [ADR-008](ADR-008-kconfig-app-composition.md) — Kconfig composition model
-- [ADR-011](ADR-011-http-dashboard.md) — HTTP dashboard (transport B home)
-- [ADR-006](ADR-006-lora-channel-boundary.md) — LoRa (sensor-node relay, deferred)
-- [`docs/architecture/firmware-update.md`](../architecture/firmware-update.md) — implementation detail, flash layout, diagrams
+- Current implementation: [`docs/architecture/firmware-update.md`](../architecture/firmware-update.md) (boot chain, flash layout, key management, MCUmgr transports)
+- Related ADRs: [ADR-008](ADR-008-kconfig-app-composition.md) (Kconfig composition), [ADR-011](ADR-011-http-dashboard.md) (HTTP auth layer), [ADR-006](ADR-006-lora-channel-boundary.md) (sensor-node relay, deferred)

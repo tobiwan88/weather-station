@@ -1,8 +1,8 @@
 # LoRa Protocol Architecture
 
-This document covers the detailed architecture for the LoRa wireless
-communication subsystem. For the architectural decision and rationale see
-[ADR-015](../adr/ADR-015-lora-protocol.md).
+This document covers the detailed architecture for the LoRa wireless communication subsystem.
+
+> Design rationale: [ADR-006](../adr/ADR-006-lora-channel-boundary.md), [ADR-015](../adr/ADR-015-lora-protocol.md).
 
 ---
 
