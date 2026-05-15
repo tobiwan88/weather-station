@@ -205,7 +205,7 @@ jobs:
               -- \
               -DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=\"${WEST_ROOT}/weather-station/keys/dev-ed25519.pem\" \
               -DDTC_OVERLAY_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.overlay \
-              -DEXTRA_CONF_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.conf
+              -DEXTRA_CONF_FILE="boards/frdm_mcxn947_mcxn947_cpu0_renode.conf;boards/frdm_mcxn947_mcxn947_cpu0_trace_recorder.conf"
 
       - name: Install libicu and curl (Renode deps)
         run: apt-get update -qq && apt-get install -y -qq libicu-dev curl
@@ -241,6 +241,9 @@ jobs:
             robot_output.xml
             log.html
             report.html
+            simulation/renode/trace.bin
+            simulation/renode/trace_functions.perfetto
+            build/renode/gateway/zephyr/zephyr.elf
           retention-days: 14
 
   # ── 4. Test + Coverage ───────────────────────────────────────────────────────
@@ -413,3 +416,95 @@ jobs:
           name: pr-snapshot-${{ github.event.pull_request.number }}
           path: snapshot/
           retention-days: 30
+
+  # ── 7. Deploy results to gh-pages ──────────────────────────────────────────
+  deploy-results:
+    name: Deploy results to gh-pages
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
+      github.event_name == 'pull_request'
+    needs: [test-and-coverage, renode]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: /tmp/deploy/coverage/
+        continue-on-error: true
+
+      - name: Download Twister results
+        uses: actions/download-artifact@v4
+        with:
+          name: twister-results
+          path: /tmp/deploy/twister/
+        continue-on-error: true
+
+      - name: Download Renode boot trace
+        uses: actions/download-artifact@v4
+        with:
+          name: renode-gateway_boot
+          path: /tmp/deploy/renode/
+        continue-on-error: true
+
+      - name: Determine target directory on gh-pages
+        id: dir
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "path=dev/traces/pr-${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=dev/traces/master" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy to gh-pages
+        run: |
+          TARGET_DIR="${{ steps.dir.outputs.path }}"
+          git fetch origin gh-pages
+          git checkout gh-pages
+          rm -rf deploy/                # remove accidentally-committed staging dir
+          mkdir -p "$TARGET_DIR"
+          # Remove old results for this ref (overwrite, not accumulate)
+          [[ -n "$TARGET_DIR" && "$TARGET_DIR" == dev/traces/* ]] || { echo "ERROR: unsafe TARGET_DIR"; exit 1; }
+          rm -rf "$TARGET_DIR"/*
+          # Copy new results
+          if [ -d /tmp/deploy/coverage ] && [ "$(ls -A /tmp/deploy/coverage 2>/dev/null)" ]; then
+            mkdir -p "$TARGET_DIR/coverage"
+            cp -r /tmp/deploy/coverage/* "$TARGET_DIR/coverage/"
+          fi
+          if [ -d /tmp/deploy/twister ] && [ "$(ls -A /tmp/deploy/twister 2>/dev/null)" ]; then
+            mkdir -p "$TARGET_DIR/twister"
+            cp -r /tmp/deploy/twister/* "$TARGET_DIR/twister/"
+          fi
+          if [ -d /tmp/deploy/renode ] && [ "$(ls -A /tmp/deploy/renode 2>/dev/null)" ]; then
+            mkdir -p "$TARGET_DIR/renode"
+            cp -r /tmp/deploy/renode/* "$TARGET_DIR/renode/"
+            # If trace files exist, parse and deploy Perfetto/Chrome trace
+            TRACE_BIN="/tmp/deploy/renode/simulation/renode/trace.bin"
+            TRACE_ELF="/tmp/deploy/renode/build/renode/gateway/zephyr/zephyr.elf"
+            if [ -f "$TRACE_BIN" ] && [ -f "$TRACE_ELF" ]; then
+              python3 scripts/parse-trace.py \
+                --trace "$TRACE_BIN" \
+                --elf "$TRACE_ELF" \
+                --output "$TARGET_DIR/trace_combined.json" \
+                --summary || echo "WARNING: trace parsing failed"
+              REPO_OWNER="$(echo '${{ github.repository }}' | cut -d/ -f1)"
+              REPO_NAME="$(echo '${{ github.repository }}' | cut -d/ -f2)"
+              echo "Perfetto deep-link: https://ui.perfetto.dev/#!/?url=https://${REPO_OWNER}.github.io/${REPO_NAME}/${TARGET_DIR}/trace_combined.json"
+            fi
+          fi
+          git add .
+          git diff --staged --quiet || git commit -m "ci: deploy results to $TARGET_DIR"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

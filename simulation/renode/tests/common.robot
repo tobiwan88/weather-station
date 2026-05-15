@@ -36,3 +36,11 @@ Send Shell Command
     [Arguments]    ${cmd}
     Write Line To Uart       ${cmd}
     Wait For Line On Uart    ${cmd}    timeout=5
+
+Dump Trace
+    [Documentation]    Flush profiler, pause briefly, then dump trace buffer.
+    Execute Command    cpu0 FlushProfiler
+    Execute Command    emulation RunFor "0.01"
+    ${trace_addr}=     Execute Command    sysbus GetSymbolAddress "trace_records"
+    Execute Command    sysbus ReadMemory ${trace_addr.strip()} 32768 @${CURDIR}/../trace.bin
+    Log To Console     [TRACE] trace.bin written

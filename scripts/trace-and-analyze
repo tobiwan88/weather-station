@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+BUILD_DIR="${PROJECT_ROOT}/build/renode-trace"
+RENODE_DIR="${PROJECT_ROOT}/simulation/renode"
+ELF="${BUILD_DIR}/gateway/zephyr/zephyr.elf"
+TRACE_BIN="${RENODE_DIR}/trace.bin"
+PERFETTO_TRACE="${RENODE_DIR}/trace_functions.perfetto"
+OUTPUT="${1:-${RENODE_DIR}/trace_combined.json}"
+
+echo "=== 1. Building gateway with trace recorder ==="
+ZEPHYR_BASE=/home/zephyr/workspace/zephyr west build -p auto \
+  -b frdm_mcxn947/mcxn947/cpu0 \
+  --sysbuild \
+  --build-dir "$BUILD_DIR" \
+  apps/gateway \
+  -- \
+  -DDTC_OVERLAY_FILE="boards/frdm_mcxn947_mcxn947_cpu0_renode.overlay" \
+  -DEXTRA_CONF_FILE="boards/frdm_mcxn947_mcxn947_cpu0_renode.conf;boards/frdm_mcxn947_mcxn947_cpu0_trace_recorder.conf"
+
+echo ""
+echo "=== 2. Running Renode trace test ==="
+renode-test --show-log "${RENODE_DIR}/tests/gateway_trace.robot" || {
+  echo "WARNING: Renode test failed, but trace files may still exist."
+}
+
+echo ""
+echo "=== 3. Parsing trace ==="
+if [ -f "$TRACE_BIN" ]; then
+  python3 "${SCRIPT_DIR}/parse-trace.py" \
+    --trace "$TRACE_BIN" \
+    --elf "$ELF" \
+    --profiler "$PERFETTO_TRACE" \
+    --output "$OUTPUT" \
+    --summary
+
+  echo ""
+  echo "=== Done ==="
+  echo "Perfetto trace: $OUTPUT"
+  echo "Open in browser:  https://ui.perfetto.dev"
+  echo "  (Drag & drop trace file, or use --output trace_combined.perfetto)"
+else
+  echo "ERROR: trace.bin not found at $TRACE_BIN"
+  exit 1
+fi

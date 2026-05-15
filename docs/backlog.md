@@ -332,3 +332,28 @@ should be imported once at init and cached as a `psa_key_id_t`.
 - `psa_destroy_key()` only called on shutdown (if at all)
 
 Reference: ADR-015 §Security.
+
+---
+
+## [RENODE-TRACE-GH-PAGES] Perfetto deep-link 404 guard and retention cleanup
+
+The `deploy-results` CI job deploys `trace_combined.json` (Chrome Tracing
+format) and test reports to the `gh-pages` branch. The Perfetto UI deep-link
+pattern `ui.perfetto.dev/#!/?url=...` works for any public URL.
+
+**Known gaps:**
+- No 404 guard: if a trace file was not generated (build failure, size > 50 MB),
+  the deep-link silently fails in Perfetto UI. A health-check script or index
+  page listing available traces would improve UX.
+- No retention cleanup: old PR traces accumulate indefinitely on `gh-pages`.
+  A periodic cleanup job (e.g., remove traces for closed PRs older than 30
+  days) is needed.
+- Trace format: currently outputs Chrome Tracing JSON. Migrating to the binary
+  Perfetto proto format (.perfetto or .pb) would reduce file size for large
+  traces and enable Perfetto's full feature set (flow events, counters).
+
+**Acceptance:**
+- An index page at `<org>.github.io/weather-station/dev/traces/` lists all
+  available traces with links.
+- Old PR trace directories are removed when the PR is closed/merged.
+- Optional: binary Perfetto proto output from parse-trace.py.

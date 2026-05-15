@@ -1,0 +1,25 @@
+tests:
+  weather_station.trace_recorder:
+    platform_allow: native_sim/native/64
+    harness: ztest
+    tags: trace_recorder
+    extra_args:
+      - CONFIG_TRACING=y
+      - CONFIG_TRACING_USER=y
+      - CONFIG_TRACE_RECORDER=y
+      - CONFIG_TRACE_RECORDER_SHELL=n
+      - CONFIG_TRACE_RECORDER_MAX_THREADS=4
+      - CONFIG_TRACE_RECORDER_BUFFER_SIZE=16
+  weather_station.trace_recorder_malloc:
+    platform_allow: native_sim/native/64
+    harness: ztest
+    tags: trace_recorder
+    extra_args:
+      - CONFIG_TRACING=y
+      - CONFIG_TRACING_USER=y
+      - CONFIG_TRACE_RECORDER=y
+      - CONFIG_TRACE_RECORDER_SHELL=y
+      - CONFIG_TRACE_RECORDER_CMD_DUMP_MALLOC=y
+      - CONFIG_TRACE_RECORDER_MAX_THREADS=4
+      - CONFIG_TRACE_RECORDER_BUFFER_SIZE=16
+      - CONFIG_HEAP_MEM_POOL_SIZE=4096
