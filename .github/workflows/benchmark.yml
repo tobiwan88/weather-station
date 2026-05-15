@@ -135,9 +135,9 @@ jobs:
           mkdocs build --site-dir /tmp/docs-site
           git fetch origin gh-pages
           git checkout gh-pages
-          mkdir -p dev/docs
-          cp -r /tmp/docs-site/. dev/docs/
-          git add dev/docs
+          find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'dev' -exec rm -rf {} +
+          cp -r /tmp/docs-site/. .
+          git add .
           git diff --staged --quiet || git commit -m "docs: update $(date +%F)"
           git push origin gh-pages
         env:
