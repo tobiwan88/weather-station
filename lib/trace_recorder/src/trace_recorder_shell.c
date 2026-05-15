@@ -8,16 +8,12 @@
  *   trace clear    — reset buffer
  */
 
+#include <string.h>
 #include <zephyr/kernel.h>
 #include <zephyr/shell/shell.h>
 #include <zephyr/sys/atomic.h>
 
-/* ── external symbols from trace_recorder.c ──────────────────────── */
-
-extern struct trace_record trace_records[];
-extern char trace_thread_names[][CONFIG_THREAD_MAX_NAME_LEN];
-extern uint32_t g_trace_head;
-extern uint32_t g_trace_overflow;
+#include <trace_recorder/trace_recorder.h>
 
 /* ── trace status ─────────────────────────────────────────────────── */
 
@@ -26,8 +22,12 @@ static int cmd_status(const struct shell *sh, size_t argc, char **argv)
 	ARG_UNUSED(argc);
 	ARG_UNUSED(argv);
 
+	extern struct k_spinlock g_trace_lock;
+	k_spinlock_key_t key = k_spin_lock(&g_trace_lock);
 	uint32_t head = g_trace_head;
 	uint32_t overflow = g_trace_overflow;
+	k_spin_unlock(&g_trace_lock, key);
+
 	uint32_t capacity = CONFIG_TRACE_RECORDER_BUFFER_SIZE;
 	uint32_t valid_count = overflow ? capacity : head;
 
@@ -47,10 +47,17 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 	ARG_UNUSED(argc);
 	ARG_UNUSED(argv);
 
+	extern struct k_spinlock g_trace_lock;
+	k_spinlock_key_t key = k_spin_lock(&g_trace_lock);
 	uint32_t head = g_trace_head;
 	uint32_t overflow = g_trace_overflow;
 	uint32_t capacity = CONFIG_TRACE_RECORDER_BUFFER_SIZE;
 	uint32_t valid_count = overflow ? capacity : head;
+
+	/* Snapshot records under lock before printing */
+	struct trace_record snapshot[CONFIG_TRACE_RECORDER_BUFFER_SIZE];
+	memcpy(snapshot, trace_records, sizeof(snapshot));
+	k_spin_unlock(&g_trace_lock, key);
 
 	shell_print(sh, "--- TRACE DUMP BEGIN ---");
 	shell_print(sh, "records=%u capacity=%u overflow=%u", valid_count, capacity, overflow);
@@ -65,7 +72,7 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 
 	/* print records as hex (8 bytes each, 16 bytes per shell line) */
 	shell_print(sh, "records_hex:");
-	const uint8_t *raw = (const uint8_t *)trace_records;
+	const uint8_t *raw = (const uint8_t *)snapshot;
 	uint32_t total_bytes = valid_count * 8;
 	for (uint32_t i = 0; i < total_bytes; i += 16) {
 		uint32_t remain = total_bytes - i;
@@ -98,8 +105,12 @@ static int cmd_clear(const struct shell *sh, size_t argc, char **argv)
 	ARG_UNUSED(argc);
 	ARG_UNUSED(argv);
 
+	extern struct k_spinlock g_trace_lock;
+	k_spinlock_key_t key = k_spin_lock(&g_trace_lock);
 	g_trace_head = 0;
 	g_trace_overflow = 0;
+	memset(trace_thread_names, 0, sizeof(trace_thread_names));
+	k_spin_unlock(&g_trace_lock, key);
 
 	shell_print(sh, "Trace buffer cleared.");
 	return 0;
