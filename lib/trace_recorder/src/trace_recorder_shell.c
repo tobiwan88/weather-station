@@ -29,11 +29,12 @@ static int cmd_status(const struct shell *sh, size_t argc, char **argv)
 	uint32_t head = g_trace_head;
 	uint32_t overflow = g_trace_overflow;
 	uint32_t capacity = CONFIG_TRACE_RECORDER_BUFFER_SIZE;
+	uint32_t valid_count = overflow ? capacity : head;
 
 	shell_print(sh, "Trace recorder status:");
-	shell_print(sh, "  Records:    %u / %u (%u%%)", head, capacity,
-		    capacity ? (unsigned)(head * 100ULL / capacity) : 0);
-	shell_print(sh, "  Overflow:   %u records dropped", overflow);
+	shell_print(sh, "  Records:    %u / %u (%u%%)", valid_count, capacity,
+		    capacity ? (unsigned)(valid_count * 100ULL / capacity) : 0);
+	shell_print(sh, "  Overflow:   %u wraps", overflow);
 	shell_print(sh, "  Each record: 8 bytes (total buffer: %u bytes)", capacity * 8);
 
 	return 0;
@@ -47,10 +48,12 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 	ARG_UNUSED(argv);
 
 	uint32_t head = g_trace_head;
+	uint32_t overflow = g_trace_overflow;
 	uint32_t capacity = CONFIG_TRACE_RECORDER_BUFFER_SIZE;
+	uint32_t valid_count = overflow ? capacity : head;
 
 	shell_print(sh, "--- TRACE DUMP BEGIN ---");
-	shell_print(sh, "records=%u capacity=%u overflow=%u", head, capacity, g_trace_overflow);
+	shell_print(sh, "records=%u capacity=%u overflow=%u", valid_count, capacity, overflow);
 
 	/* print thread name table */
 	shell_print(sh, "thread_names:");
@@ -63,7 +66,7 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 	/* print records as hex (8 bytes each, 16 bytes per shell line) */
 	shell_print(sh, "records_hex:");
 	const uint8_t *raw = (const uint8_t *)trace_records;
-	uint32_t total_bytes = head * 8;
+	uint32_t total_bytes = valid_count * 8;
 	for (uint32_t i = 0; i < total_bytes; i += 16) {
 		uint32_t remain = total_bytes - i;
 		if (remain >= 16) {

@@ -59,12 +59,6 @@ static void trace_write_record(uint8_t event_type, uint8_t event_data, uint16_t 
 {
 	k_spinlock_key_t key = k_spin_lock(&g_trace_lock);
 
-	if (g_trace_head >= CONFIG_TRACE_RECORDER_BUFFER_SIZE) {
-		g_trace_overflow++;
-		k_spin_unlock(&g_trace_lock, key);
-		return;
-	}
-
 	struct trace_record *rec = &trace_records[g_trace_head];
 	rec->timestamp = k_cycle_get_32();
 	rec->event_type = event_type;
@@ -72,6 +66,11 @@ static void trace_write_record(uint8_t event_type, uint8_t event_data, uint16_t 
 	rec->thread_id = thread_id;
 
 	g_trace_head++;
+	if (g_trace_head >= CONFIG_TRACE_RECORDER_BUFFER_SIZE) {
+		g_trace_head = 0;
+		g_trace_overflow++;
+	}
+
 	k_spin_unlock(&g_trace_lock, key);
 }
 
