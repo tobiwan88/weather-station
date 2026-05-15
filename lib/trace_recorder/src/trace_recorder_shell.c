@@ -62,9 +62,54 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 		}
 	}
 
-	/* print records as hex (8 bytes each, 16 bytes per shell line).
-	 * Read one record at a time under the lock to avoid a large
-	 * stack allocation. */
+#if defined(CONFIG_TRACE_RECORDER_CMD_DUMP_MALLOC)
+	/* Heap-allocated snapshot — reduces stack usage */
+	struct trace_record *snapshot =
+		(struct trace_record *)k_malloc(valid_count * sizeof(struct trace_record));
+
+	if (snapshot != NULL) {
+		memcpy(snapshot, trace_records, valid_count * sizeof(struct trace_record));
+		k_spin_unlock(&trace_lock, key);
+
+		shell_print(sh, "records_hex:");
+		const uint8_t *raw = (const uint8_t *)snapshot;
+		uint32_t total_bytes = valid_count * 8;
+		for (uint32_t i = 0; i < total_bytes; i += 16) {
+			uint32_t remain = total_bytes - i;
+			if (remain >= 16) {
+				shell_print(sh,
+					    "%02x%02x%02x%02x%02x%02x%02x%02x"
+					    "%02x%02x%02x%02x%02x%02x%02x%02x",
+					    raw[i], raw[i + 1], raw[i + 2], raw[i + 3], raw[i + 4],
+					    raw[i + 5], raw[i + 6], raw[i + 7], raw[i + 8],
+					    raw[i + 9], raw[i + 10], raw[i + 11], raw[i + 12],
+					    raw[i + 13], raw[i + 14], raw[i + 15]);
+			} else {
+				char buf[128];
+				int off = 0;
+				for (uint32_t j = 0; j < remain; j++) {
+					off += snprintf(buf + off, sizeof(buf) - off, "%02x",
+							raw[i + j]);
+				}
+				shell_print(sh, "%s", buf);
+			}
+		}
+
+		k_free(snapshot);
+	} else {
+		/* k_malloc failed — fall back to per-record iteration */
+		k_spin_unlock(&trace_lock, key);
+		shell_warn(sh, "k_malloc failed, falling back to per-record dump");
+		shell_print(sh, "records_hex:");
+		for (uint32_t i = 0; i < valid_count; i++) {
+			struct trace_record rec = trace_records[i];
+			const uint8_t *b = (const uint8_t *)&rec;
+			shell_print(sh, "%02x%02x%02x%02x%02x%02x%02x%02x", b[0], b[1], b[2], b[3],
+				    b[4], b[5], b[6], b[7]);
+		}
+	}
+#else
+	/* Per-record iteration — no heap, minimal stack */
 	shell_print(sh, "records_hex:");
 	for (uint32_t i = 0; i < valid_count; i += 2) {
 		struct trace_record r0 = trace_records[i];
@@ -97,6 +142,7 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 			key = k_spin_lock(&trace_lock);
 		}
 	}
+#endif
 
 	shell_print(sh, "--- TRACE DUMP END ---");
 	return 0;
