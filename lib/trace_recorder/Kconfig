@@ -36,6 +36,21 @@ config TRACE_RECORDER_SHELL
 	    dump    — hex dump of buffer + thread name table
 	    clear   — reset head/tail to zero
 
+config TRACE_RECORDER_CMD_DUMP_MALLOC
+	bool "Use heap allocation for trace dump command"
+	default n
+	depends on TRACE_RECORDER_SHELL
+	depends on HEAP_MEM_POOL_SIZE > 0
+	help
+	  When enabled, the 'trace dump' shell command allocates a snapshot
+	  buffer via k_malloc instead of iterating records one at a time.
+	  This reduces shell thread stack usage at the cost of heap usage.
+
+	  Only enable for testing/debugging — not recommended for production
+	  builds where heap is constrained or unavailable.
+
+	  If k_malloc fails, falls back to per-record iteration.
+
 config TRACE_RECORDER_MAX_THREADS
 	int "Maximum number of tracked threads"
 	default 16
