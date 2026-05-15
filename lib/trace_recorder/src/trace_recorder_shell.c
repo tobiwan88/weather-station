@@ -109,7 +109,8 @@ static int cmd_clear(const struct shell *sh, size_t argc, char **argv)
 	k_spinlock_key_t key = k_spin_lock(&g_trace_lock);
 	g_trace_head = 0;
 	g_trace_overflow = 0;
-	memset(trace_thread_names, 0, sizeof(trace_thread_names));
+	memset(trace_thread_names, 0,
+	       CONFIG_TRACE_RECORDER_MAX_THREADS * CONFIG_THREAD_MAX_NAME_LEN);
 	k_spin_unlock(&g_trace_lock, key);
 
 	shell_print(sh, "Trace buffer cleared.");
