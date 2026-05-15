@@ -76,8 +76,7 @@ with no knowledge of transport origin.
 
 ---
 
-## Related
+## See also
 
-- ADR-002 — zbus as system bus
-- ADR-009 — native_sim first (LoRa is Phase 3)
-- Backlog: `[RENODE-PHASE2]`, `[SERIALIZATION]`
+- Current implementation: [`docs/architecture/lora-protocol.md`](../architecture/lora-protocol.md) (superseding design)
+- Related ADRs: [ADR-002](ADR-002-zbus-as-system-bus.md) (zbus as system bus), [ADR-009](ADR-009-native-sim-first.md) (LoRa is Phase 3), [ADR-015](ADR-015-lora-protocol.md) (superseding ADR)

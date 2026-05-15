@@ -36,14 +36,67 @@ Use these documents when:
 
 ## ADR format
 
-Each ADR follows this structure:
+Each ADR uses this canonical structure:
 
-- **Status** — Proposed / Accepted / Deprecated / Superseded
-- **Context** — The forces and constraints that drove the decision
-- **Decision** — What was decided
-- **Consequences** — What becomes easier, harder, or constrained as a result
-- **Alternatives considered** — What was rejected and why
-- **Diagrams** — Visual representation where helpful
+```markdown
+# ADR-NNN — Title
+
+| Field | Value |
+|-------|-------|
+| **Status** | Proposed / Accepted / Deprecated / Superseded by ADR-NNN |
+| **Date** | YYYY-MM-DD |
+| **Deciders** | Role or person |
+
+---
+
+## Context
+
+The forces, constraints, and problem statement that required a decision.
+(WHY is a decision needed here? No implementation details.)
+
+---
+
+## Decision
+
+What was decided. State the choice clearly.
+Do NOT include struct layouts, enum tables, or uid ranges here — reference them.
+
+---
+
+## Consequences
+
+**Easier:** ...
+**Harder:** ...
+**Constrained:** ...
+
+---
+
+## Alternatives considered
+
+| Alternative | Rejected because |
+|-------------|-----------------|
+| Option B    | ... |
+
+---
+
+## See also
+
+- Current implementation: `docs/architecture/<doc>.md`
+- Key types: `lib/<library>/include/...`
+- Related ADRs: ADR-NNN, ADR-NNN
+```
+
+### Decision threshold
+
+Write a new ADR for **architectural decisions** only: new inter-library protocol, new zbus channel, new Kconfig composition rule, new test harness, significant trade-off with long-term consequences. Skip for helper functions, naming, minor config defaults, or routine refactors.
+
+### Write-once rule
+
+ADRs are **write-once**. After Accepted, only the Status field changes. To supersede a decision, create a new ADR and set the old ADR's Status to `Superseded by ADR-NNN`. Never edit the Context, Decision, or Consequences of an Accepted ADR.
+
+### See also section
+
+Every ADR links forward to its implementation: the architecture doc that describes HOW, and the header or source file that defines the key types. This keeps ADRs short (WHY only) without becoming dead ends.
 
 ---
 

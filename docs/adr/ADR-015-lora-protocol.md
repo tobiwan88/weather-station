@@ -187,85 +187,48 @@ is through zbus.
 - Supports `fota_mode = 0x01` for cpatch delta updates (future).
 - ~52 minutes for 128 KB image at SF7/BW500; ~6.4 hours at SF7/BW125.
 
----
+A fixed 8-byte header was chosen over TLV because LoRa payloads are tiny (51–255 bytes);
+variable-length fields eat into the sensor data budget. Extensibility is preserved via
+the 4-bit type field (6 slots reserved) and 5 reserved flag bits.
 
-## Rationale
+AES-128-GCM was chosen over plaintext because SDRs capable of receiving LoRa are
+inexpensive; without encryption all sensor data and commands are readable by anyone in
+range. GCM provides confidentiality and authentication in a single algorithm. The
+STM32WLE5JC Cortex-M4 has hardware AES acceleration.
 
-### Why fixed header over TLV
+No vtable dispatch: ADR-002 requires all inter-library coordination through zbus
+channels. ADR-006's vtable approach creates direct function calls between
+`remote_sensor_manager` and transports — a violation of that rule. The revised design
+uses compile-time registration (metadata only) with all runtime interaction via zbus.
 
-LoRa payloads are tiny (51–255 bytes). A variable-length TLV header would
-consume 2+ bytes per field, quickly eating into the sensor data budget. The
-fixed 8-byte header is predictable, trivially parseable on Cortex-M4, and leaves
-maximum room for payload. Extensibility comes from the 4-bit type field (16
-slots, 6 reserved) and the flags byte (5 reserved bits).
+Button-press pairing supersedes ADR-006's "gateway pre-knows UIDs" approach, which
+required recompiling the gateway devicetree for each new sensor node. Runtime discovery
+with intentional user action is more flexible with an acceptable 30s attack window.
 
-### Why AES-128-GCM over plaintext
-
-SDRs capable of receiving LoRa are inexpensive (~$30 RTL-SDR). Without
-encryption, sensor data and commands are readable by anyone in range. AES-128-GCM
-provides both confidentiality and authentication with a single algorithm, at
-~12 bytes overhead per frame. The Cortex-M4 on STM32WLE5JC has hardware AES
-acceleration, making per-frame decryption fast.
-
-### Why no vtable dispatch
-
-ADR-002 requires all inter-library coordination through zbus channels. The
-original `remote_transport` vtable (ADR-006's approach) creates direct function
-calls between `remote_sensor_manager` and transports — a violation of this rule.
-The revised design keeps the iterable section for compile-time registration
-(metadata only) and moves all runtime operations to zbus channels. Each
-transport subscribes independently; the manager never calls a transport directly.
-
-### Why button-press pairing over pre-provisioned UIDs
-
-ADR-006 specified "gateway pre-knows remote sensor UIDs." This is inflexible:
-adding a new sensor node requires recompiling the gateway's devicetree. Button-
-press pairing allows runtime discovery with intentional user action. The 30s
-window and low TX power limit the attack surface. Pre-provisioning remains
-available as a Kconfig option for deployments that prefer it.
-
-### Why change-threshold gating
-
-Without it, a sensor node transmits at fixed intervals regardless of whether
-anything changed — wasting duty cycle and power. With per-sensor-type change
-thresholds (e.g., 0.5°C for temperature), the node only transmits when data is
-meaningfully different. The periodic publish interval provides a fallback to
-prevent silent-node syndrome, and the separate keep-alive interval covers nodes
-where all types are below thresholds for extended periods.
+Change-threshold gating avoids unnecessary transmissions (duty cycle, power) while a
+periodic fallback prevents silent-node syndrome. Per-type thresholds are more efficient
+than a single global interval.
 
 ---
 
 ## Consequences
 
-### Positive
+**Easier:**
+- Compact 5-byte sensor readings fit in LoRa's constrained payload budget.
+- Single protocol covers data, FOTA, RPC, and provisioning — one parser on the sensor node.
+- zbus-only integration preserves the "no library-to-library calls" rule (ADR-002).
+- Button-press pairing enables runtime node addition without recompiling gateway firmware.
+- AES-128-GCM protects all frames after pairing with minimal overhead.
+- Extensible: reserved frame type slots, flag bits, and command ID ranges allow future expansion.
 
-- Compact 5-byte sensor readings, 4× smaller than full `env_sensor_data`.
-- Single protocol covers data, FOTA, RPC, and provisioning — one parser.
-- zbus-only integration preserves the "no library-to-library calls" rule.
-- Button-press pairing enables runtime node addition.
-- AES-128-GCM protects all frames after pairing.
-- Extensible: 6 reserved frame types, 5 reserved flag bits, open command ID space.
-- Separation of concerns: LoRa protocol runs on dedicated STM32WLE5JC co-processor;
-  gateway remains transport-agnostic.
+**Harder:**
+- FOTA over LoRa is slow due to duty cycle limits; operators must plan update windows.
+- Session key is transmitted in plaintext during the 30s pairing window — acceptable for home deployment, not for public environments.
+- Gateway requires external SPI flash to buffer sensor-node firmware images before LoRa relay.
 
-### Negative / Constraints
-
-- **Duty cycle limits FOTA speed**: a 128 KB image takes ~52 minutes at best
-  (SF7/BW500). Operator must plan updates accordingly.
-- **No Diffie-Hellman key exchange**: session key is transmitted in plaintext
-  during the 30s pairing window. Relies on physical proximity. Acceptable for
-  home deployment; not suitable for public environments without DH upgrade.
-- **Gateway must have external SPI flash** (W25Q64) to buffer sensor-node firmware
-  images before LoRa relay.
-- **Sequence number wrap**: 16-bit seq_num wraps after 65,535 frames. At 60s
-  intervals, this is ~45 days. Sessions should be re-keyed before wrap.
-- **SF negotiation is implicit**: FOTA sessions use highest mutually-supported SF
-  determined during pairing; no dynamic rate adaptation mid-session.
-- **UART proxy is deferred**: the zbus proxy agent bridging gateway ↔ STM32WLE5JC
-  over UART is not designed here. All zbus channel contracts are defined, but the
-  forwarding transport (UART backend + shadow channels) will be addressed in a
-  separate ADR. Until then, `lib/lora_radio/` assumes local zbus channels on the
-  STM32WLE5JC.
+**Constrained:**
+- Sequence number wrap requires periodic re-keying (tracked as future improvement).
+- UART proxy agent bridging gateway ↔ STM32WLE5JC is deferred to a subsequent ADR; all zbus channel contracts are defined here but the forwarding transport is not yet implemented.
 
 ---
 
@@ -282,10 +245,7 @@ where all types are below thresholds for extended periods.
 
 ---
 
-## Related
+## See also
 
-- [ADR-002](ADR-002-zbus-as-system-bus.md) — zbus as system bus (zbus-only integration)
-- [ADR-006](ADR-006-lora-channel-boundary.md) — LoRa bounded context (superseded)
-- [ADR-014](ADR-014-mcuboot-fota.md) — MCUboot FOTA (fota_relay_transport_api)
-- [ADR-008](ADR-008-kconfig-app-composition.md) — Kconfig composition
-- [`docs/architecture/lora-protocol.md`](../architecture/lora-protocol.md) — detailed architecture
+- Current implementation: [`docs/architecture/lora-protocol.md`](../architecture/lora-protocol.md) (frame format, internal modules, provisioning flow, FOTA over LoRa)
+- Related ADRs: [ADR-002](ADR-002-zbus-as-system-bus.md) (zbus-only integration), [ADR-006](ADR-006-lora-channel-boundary.md) (bounded context, superseded), [ADR-008](ADR-008-kconfig-app-composition.md) (Kconfig composition), [ADR-014](ADR-014-mcuboot-fota.md) (MCUboot FOTA relay)

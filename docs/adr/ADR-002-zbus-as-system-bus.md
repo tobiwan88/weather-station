@@ -12,8 +12,6 @@
 
 The weather station firmware has multiple independent producers and consumers of data that must communicate without direct coupling. Without a structured communication mechanism, modules would reference each other directly, creating tight coupling, untestable code, and no clear boundary between layers.
 
-For the full rationale and channel listing, see [`docs/architecture/event-bus.md`](../architecture/event-bus.md).
-
 ---
 
 ## Decision
@@ -72,3 +70,10 @@ Remote sensor discovery uses a `k_msgq` (not zbus) inside `remote_sensor_manager
 | Zephyr message queues (`k_msgq`) | Point-to-point only; fan-out to multiple consumers requires manual multiplexing |
 | Custom callback registry | Reinvents zbus poorly; no tooling, no shell introspection |
 | MQTT internally (on-device) | Absurd overhead; designed for network transport not intra-MCU IPC |
+
+---
+
+## See also
+
+- Current implementation: [`docs/architecture/event-bus.md`](../architecture/event-bus.md) (channel map, trigger/event split, ISR safety, open/closed principle)
+- Related ADRs: [ADR-003](ADR-003-sensor-event-data-model.md) (message struct design), [ADR-004](ADR-004-trigger-driven-sampling.md) (trigger pattern), [ADR-008](ADR-008-kconfig-app-composition.md) (Kconfig composition)
