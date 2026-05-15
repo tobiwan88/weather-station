@@ -63,6 +63,7 @@ These two goals drive every structural choice in the codebase.
 | `fake_remote_sensor` | Simulated remote sensor transport adapter for testing; implements the `remote_transport` vtable |
 | `pipe_publisher` | Writes `env_sensor_data` events as length-prefixed protobuf to a POSIX FIFO (sensor-node side) |
 | `pipe_transport` | Reads from POSIX FIFO, decodes protobuf frames, publishes to `sensor_event_chan` (gateway side) |
+| `trace_recorder` | Overrides Zephyr tracing hooks to capture thread switch/ISR/idle events in a static ring buffer for Renode post-mortem dump |
 
 ```mermaid
 --8<-- "library-deps.mmd"
@@ -144,7 +145,10 @@ weather-station/               ← git repo root, also west manifest
 ├── simulation/                ← Renode .resc and Robot Framework scripts
 │
 ├── .devcontainer/             ← VS Code devcontainer (tobiwan88/zephyr_docker)
-└── .github/workflows/         ← CI (build + twister + Renode)
+├── .github/workflows/         ← CI (build + twister + Renode)
+├── scripts/
+│   ├── parse-trace.py         ← Binary trace → Perfetto JSON post-processor
+│   └── trace-and-analyze      ← One-command Renode + trace dev workflow
 ```
 
 The `west.yml` uses a `name-allowlist` import to fetch only the Zephyr modules this project needs. Without it, west would clone every Zephyr module (~30+), most of which this project never uses.

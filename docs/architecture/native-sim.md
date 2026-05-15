@@ -11,13 +11,14 @@ v1 of the project targets `native_sim` exclusively. No real hardware build targe
 ## Development progression
 
 ```
-Phase 1: native_sim  ◄── CURRENT     Phase 2: Renode            Phase 3: Real hardware
-─────────────────────                ─────────────────          ─────────────────────
-Single binary                        Two binaries in            Real MCU boards
-Full app logic                       simulated network          Full integration
-Shell interaction                    Multi-node test            Flash + debug
-Fast iteration                       Automated assertions       Production config
-                                     (see backlog [RENODE-PHASE2])
+Phase 1: native_sim  ◄── CURRENT     Phase 2: Renode  ◄── CURRENT  Phase 3: Real hardware
+─────────────────────                ──────────────────────      ─────────────────────
+Single binary                        Single-node simulation      Real MCU boards
+Full app logic                       Boot + shell + trace tests  Full integration
+Shell interaction                    Thread-level profiling      Flash + debug
+Fast iteration                       Automated assertions        Production config
+                                     (multi-node: see backlog    (hardware: see backlog
+                                      [RENODE-PHASE2])            ADR-007 trigger)
 ```
 
 ---
