@@ -9,7 +9,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <zephyr/kernel.h>
 
 #ifdef CONFIG_PSA_CRYPTO
-#include <psa/crypto.h>
+#	include <psa/crypto.h>
 #endif
 
 #include <lora_radio/lora_frame.h>

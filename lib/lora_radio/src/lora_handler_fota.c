@@ -9,9 +9,9 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <zephyr/kernel.h>
 #include <zephyr/storage/flash_map.h>
 
+#include "lora_radio_internal.h"
 #include <lora_radio/lora_frame.h>
 #include <lora_radio/lora_radio.h>
-#include "lora_radio_internal.h"
 #include <lora_radio/lora_session.h>
 
 #if defined(CONFIG_IMG_MANAGER) && defined(CONFIG_FLASH_MAP)

@@ -9,9 +9,9 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <zephyr/kernel.h>
 #include <zephyr/sys/reboot.h>
 
+#include "lora_radio_internal.h"
 #include <lora_radio/lora_frame.h>
 #include <lora_radio/lora_radio.h>
-#include "lora_radio_internal.h"
 #include <lora_radio/lora_session.h>
 
 typedef int (*rpc_handler_t)(uint16_t src_node, uint8_t cmd_id, const uint8_t *params,

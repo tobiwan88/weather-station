@@ -13,10 +13,10 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <zephyr/zbus/zbus.h>
 
 #include "lora_radio_internal.h"
+#include <lora_radio/lora_chan.h>
 #include <lora_radio/lora_frame.h>
 #include <lora_radio/lora_radio.h>
 #include <lora_radio/lora_session.h>
-#include <lora_radio/lora_chan.h>
 
 /* --------------------------------------------------------------------------
  * LoRa device handle — shared with handler modules via internal header
@@ -26,23 +26,34 @@ const struct device *lora_radio_dev;
 static int sf_to_enum(int sf)
 {
 	switch (sf) {
-	case 7:  return SF_7;
-	case 8:  return SF_8;
-	case 9:  return SF_9;
-	case 10: return SF_10;
-	case 11: return SF_11;
-	case 12: return SF_12;
-	default: return SF_10;
+	case 7:
+		return SF_7;
+	case 8:
+		return SF_8;
+	case 9:
+		return SF_9;
+	case 10:
+		return SF_10;
+	case 11:
+		return SF_11;
+	case 12:
+		return SF_12;
+	default:
+		return SF_10;
 	}
 }
 
 static int bw_to_enum(int bw_khz)
 {
 	switch (bw_khz) {
-	case 125: return BW_125_KHZ;
-	case 250: return BW_250_KHZ;
-	case 500: return BW_500_KHZ;
-	default:  return BW_125_KHZ;
+	case 125:
+		return BW_125_KHZ;
+	case 250:
+		return BW_250_KHZ;
+	case 500:
+		return BW_500_KHZ;
+	default:
+		return BW_125_KHZ;
 	}
 }
 

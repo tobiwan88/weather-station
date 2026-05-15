@@ -9,7 +9,7 @@
 LOG_MODULE_REGISTER(lora_fake, CONFIG_LORA_RADIO_LOG_LEVEL);
 
 #define FAKE_PKT_POOL 16
-#define MAX_PKT_SIZE 255
+#define MAX_PKT_SIZE  255
 
 struct fake_packet {
 	uint8_t len;
@@ -75,8 +75,8 @@ static int fake_send(const struct device *dev, uint8_t *data, uint32_t data_len)
 	return 0;
 }
 
-static int fake_recv(const struct device *dev, uint8_t *data, uint8_t size,
-		     k_timeout_t timeout, int16_t *rssi, int8_t *snr)
+static int fake_recv(const struct device *dev, uint8_t *data, uint8_t size, k_timeout_t timeout,
+		     int16_t *rssi, int8_t *snr)
 {
 	(void)dev;
 	struct fake_packet *pkt = k_fifo_get(&fake_rx_fifo, timeout);
