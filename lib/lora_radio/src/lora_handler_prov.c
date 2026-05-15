@@ -15,7 +15,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <lora_radio/lora_session.h>
 
 #ifdef CONFIG_PSA_CRYPTO
-#include <psa/crypto.h>
+#	include <psa/crypto.h>
 
 /* Development Ed25519 key pair - DO NOT USE IN PRODUCTION */
 static const uint8_t gateway_ed25519_sk[32] = {
