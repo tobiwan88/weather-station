@@ -7,7 +7,7 @@ the **assembled gateway** — that a shell trigger propagates through zbus,
 populates the HTTP ring-buffer, and arrives at the MQTT broker with the
 correct topic and payload. The test binary boots the full stack minus LVGL.
 
-Decision rationale: [ADR-012](../adr/ADR-012-integration-test-architecture.md).
+> Design rationale: [ADR-009](../adr/ADR-009-native-sim-first.md), [ADR-012](../adr/ADR-012-integration-test-architecture.md).
 
 ---
 

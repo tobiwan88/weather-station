@@ -1,0 +1,7 @@
+flowchart TD
+    A["Board overlay\nnative_sim.overlay"] -->|DT_FOREACH_STATUS_OKAY| B["fake_temperature.c\nfake_humidity.c\n..."]
+    B -->|SYS_INIT APPLICATION| C["Subscribe sensor_trigger_chan\nRegister fake_sensor_entry\nRegister sensor_registry metadata"]
+    C -->|runtime: trigger event| D["on_trigger()\nq31_encode()\nzbus_chan_pub(sensor_event_chan)"]
+    D --> E["sensor_event_log"]
+    D --> F["http_dashboard\nring buffer"]
+    D --> G["mqtt_publisher"]

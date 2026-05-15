@@ -32,97 +32,21 @@ Key constraints:
 
 Use Zephyr **T2 topology** (application-as-manifest): the `weather-station`
 repo is simultaneously the west manifest repository *and* a Zephyr module.
-
-```
-west init -l weather-station/    ← -l means "local manifest"
-west update
-```
+`west init -l .` initialises from the local manifest; `west update` fetches
+Zephyr and external modules.
 
 The repo registers itself as a Zephyr module via `zephyr/module.yml`, which
 tells the build system where to find custom boards, devicetree bindings, drivers,
 and Kconfig. All application logic lives inside the repo — Zephyr and its
 dependencies are fetched externally by west and never committed.
 
-### Directory layout
+Apps compose features via `prj.conf` Kconfig symbols only. There are no
+`target_link_libraries()` calls in app `CMakeLists.txt` and no manual include
+paths. The `name-allowlist` in `west.yml` keeps the workspace lean — only the
+modules actually needed are fetched.
 
-```
-weather-station/               ← git repo root, also west manifest
-│
-├── west.yml                   ← declares Zephyr version + module allowlist
-├── zephyr/module.yml          ← registers repo as a Zephyr module
-├── CMakeLists.txt             ← module-level: add_subdirectory lib drivers
-├── Kconfig                    ← module-level: rsource sub-Kconfigs
-├── VERSION                    ← semantic version (MAJOR.MINOR.PATCHLEVEL)
-│
-├── apps/                      ← one sub-directory per firmware image
-│   ├── gateway/               ← Wi-Fi hub + LVGL display
-│   └── sensor-node/           ← LoRa TX beacon
-│
-├── lib/                       ← shared reusable libraries (west modules)
-│   ├── sensor_event/          ← env_sensor_data struct, Q31 helpers, zbus channel
-│   ├── sensor_trigger/        ← sensor_trigger_event struct, zbus channel
-│   ├── sensor_registry/       ← uid → label/location/scaling metadata
-│   ├── fake_sensors/          ← DT-instantiated fake drivers + auto-publish timer
-│   ├── sntp_sync/             ← SNTP time sync with runtime resync
-│   ├── clock_display/         ← wall-clock widget for LVGL display
-│   ├── lvgl_display/          ← LVGL display manager (sensor tiles)
-│   └── http_dashboard/        ← Chart.js timeseries + config REST API
-│                                 (lora_radio, connectivity: future)
-│
-├── include/common/            ← shared headers (zbus channel declarations,
-│                                 data structs, Q31 helpers)
-│
-├── drivers/                   ← out-of-tree Zephyr drivers (future real HW)
-├── dts/bindings/              ← custom devicetree bindings (fake,temperature…)
-├── boards/                    ← custom board definitions (future)
-│
-├── tests/                     ← twister test suites
-├── simulation/                ← Renode .resc and Robot Framework scripts (future)
-│
-├── .devcontainer/             ← VS Code devcontainer (tobiwan88/zephyr_docker)
-└── .github/workflows/         ← CI (build + twister + Renode)
-```
-
-### West manifest strategy
-
-The `west.yml` uses a `name-allowlist` import to fetch only the Zephyr modules
-this project needs, keeping the workspace lean:
-
-```
-┌─────────────────────────────────────────────────────┐
-│                  west workspace                     │
-│                                                     │
-│  weather-station/   ← your code (manifest + module) │
-│  zephyr/            ← fetched by west               │
-│  modules/           ← fetched by west (allowlist)   │
-│    hal/nordic/                                      │
-│    hal/espressif/                                   │
-│    lvgl/                                            │
-│    loramac-node/                                    │
-│    mbedtls/                                         │
-│    …                                                │
-└─────────────────────────────────────────────────────┘
-```
-
-Without `name-allowlist`, west would clone every Zephyr module (~30+),
-most of which this project never uses.
-
-### How apps reference libraries
-
-Apps never reference `lib/` via CMake paths. Instead:
-
-1. `zephyr/module.yml` tells Zephyr the repo root is a module.
-2. The root `CMakeLists.txt` calls `add_subdirectory(lib)`.
-3. Each `lib/*/CMakeLists.txt` calls `zephyr_library()` (conditional on Kconfig).
-4. Apps enable libraries via `prj.conf` Kconfig symbols only.
-
-```
-apps/gateway/prj.conf:
-  CONFIG_FAKE_SENSORS=y   ← pulls in lib/fake_sensors/ automatically
-  CONFIG_LORA_RADIO=y     ← pulls in lib/lora_radio/ automatically
-```
-
-No `target_link_libraries()` in app `CMakeLists.txt`. No manual include paths.
+For the directory layout, west manifest strategy, and how apps reference
+libraries, see [`docs/architecture/system-overview.md`](../architecture/system-overview.md).
 
 ---
 
@@ -154,3 +78,11 @@ No `target_link_libraries()` in app `CMakeLists.txt`. No manual include paths.
 | T3 (separate manifest repo) | Extra repo to maintain; adds friction for a project that is itself open-source |
 | Monorepo with Zephyr vendored | Unacceptably large repo; diverges from upstream Zephyr making security patches painful |
 | nRF Connect SDK as base | NCS adds Nordic-specific layers not needed here; locks to Nordic hardware even for the ESP32 gateway target |
+
+---
+
+## See also
+
+- Current implementation: `west.yml`, `zephyr/module.yml`, root `CMakeLists.txt` and `Kconfig`
+- Current architecture: [`docs/architecture/system-overview.md`](../architecture/system-overview.md) (layers, library roles)
+- Related ADRs: [ADR-008](ADR-008-kconfig-app-composition.md) (Kconfig-only composition)

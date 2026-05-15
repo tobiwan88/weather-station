@@ -76,3 +76,11 @@ How Twister, the native_sim binary, and pytest interact during a test run.
 ```mermaid
 --8<-- "integration-test-pipeline.mmd"
 ```
+
+## Fake Sensor Data Flow
+
+Fake sensor lifecycle: board overlay → DT_FOREACH → SYS_INIT → trigger → publish.
+
+```mermaid
+--8<-- "fake-sensor-flow.mmd"
+```

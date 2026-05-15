@@ -11,4 +11,8 @@ Four documents cover the system architecture. Read them in order for a complete 
 | [integration-tests.md](integration-tests.md) | Pytest integration tests: harnesses, markers, data flow, session rules, HIL path |
 | [firmware-update.md](firmware-update.md) | MCUboot FOTA: flash layout, sysbuild, MCUmgr transports, HTTP upload, confirm/rollback |
 | [lora-protocol.md](lora-protocol.md) | LoRa wireless protocol: frame format, provisioning, FOTA relay, RPC, compact data |
+| [fake-sensors.md](fake-sensors.md) | Fake sensor subsystem: module structure, DT bindings, shell commands, data flow |
+| [native-sim.md](native-sim.md) | native_sim development target: what works, MQTT/LVGL/LoRa setup, CI integration |
+| [ci-dev-environment.md](ci-dev-environment.md) | Container image, devcontainer workflow, CI pipeline, code quality tools |
+| [http-dashboard.md](http-dashboard.md) | HTTP endpoints, ring-buffer snapshot, linker fragment, authentication |
 | [diagrams.md](diagrams.md) | All architecture diagrams rendered inline |

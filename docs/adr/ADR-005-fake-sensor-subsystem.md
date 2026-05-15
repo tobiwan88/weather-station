@@ -62,162 +62,12 @@ primary sensor backend for `native_sim` development.
    fake sensor subsystem via `STRUCT_SECTION_ITERABLE`. The shell commands
    enumerate all registered instances — no central list to maintain.
 
-5. **Swap to real hardware by Kconfig only:**
-   ```ini
-   # native_sim:
-   CONFIG_FAKE_SENSORS=y
-   CONFIG_BME280=n
+5. **Swap to real hardware by Kconfig only** — `CONFIG_FAKE_SENSORS=n` plus
+   `CONFIG_BME280=y` in a board `.conf`; no source code changes.
 
-   # real hardware:
-   CONFIG_FAKE_SENSORS=n
-   CONFIG_BME280=y
-   CONFIG_I2C=y
-   ```
-   No source code changes. The board overlay swaps the DT node compatible.
-
-### Module structure
-
-```
-lib/fake_sensors/
-├── CMakeLists.txt          ← conditional on CONFIG_FAKE_SENSORS
-├── Kconfig                 ← menuconfig FAKE_SENSORS + AUTO_PUBLISH_MS
-├── include/fake_sensors/
-│   └── fake_sensors.h      ← FAKE_SENSOR_REGISTER macro + entry struct
-└── src/
-    ├── fake_temperature.c  ← DT_FOREACH driver for fake,temperature nodes
-    ├── fake_humidity.c     ← DT_FOREACH driver for fake,humidity nodes
-    ├── fake_subsystem.c    ← STRUCT_SECTION_ITERABLE registry + find_by_uid
-    └── fake_shell.c        ← shell commands
-```
-
-### Devicetree binding (`dts/bindings/fake,temperature.yaml`)
-
-```yaml
-description: Fake temperature sensor for native_sim and testing
-
-compatible: "fake,temperature"
-
-properties:
-  sensor-uid:
-    type: int
-    required: true
-  location:
-    type: string
-    required: true
-  initial-value-mdegc:
-    type: int
-    default: 20000
-    description: Initial value in milli-degrees Celsius (20000 = 20.0°C)
-```
-
-### Devicetree usage (`boards/native_sim.overlay`)
-
-```dts
-/ {
-    fake_sensors {
-        compatible = "simple-bus";
-        #address-cells = <1>;
-        #size-cells = <0>;
-
-        fake_temp_indoor: fake_temperature@0 {
-            compatible = "fake,temperature";
-            reg = <0>;
-            sensor-uid = <0x0001>;
-            location = "living_room";
-            initial-value-mdegc = <21000>;
-        };
-
-        fake_hum_indoor: fake_humidity@0 {
-            compatible = "fake,humidity";
-            reg = <0>;
-            sensor-uid = <0x0002>;
-            location = "living_room";
-            initial-value-mpct = <50000>;
-        };
-    };
-};
-```
-
-### Registration macro (`include/fake_sensors/fake_sensors.h`)
-
-```c
-struct fake_sensor_entry {
-    uint32_t         uid;
-    enum sensor_type sensor_type;
-    const char      *location;
-    void            *data;               /* driver instance data */
-    int            (*publish_fn)(void *data);
-    int            (*set_fn)(void *data, int32_t raw_value);
-};
-
-/* Each driver calls this once per DT instance via DT_FOREACH */
-#define FAKE_SENSOR_REGISTER(_node_id, _data_ptr, _pub_fn, _set_fn)   \
-    STRUCT_SECTION_ITERABLE(fake_sensor_entry,                         \
-        _fake_entry_##_node_id) = {                                    \
-        .uid         = DT_PROP(_node_id, sensor_uid),                  \
-        .sensor_type = /* derived from compatible */,                  \
-        .location    = DT_PROP(_node_id, location),                    \
-        .data        = _data_ptr,                                      \
-        .publish_fn  = _pub_fn,                                        \
-        .set_fn      = _set_fn,                                        \
-    }
-```
-
-The linker collects all `STRUCT_SECTION_ITERABLE(fake_sensor_entry, ...)`
-instances into a contiguous array. `fake_sensors_find(uid)` iterates this
-array — no dynamic allocation, no hash map.
-
-### Shell interaction
-
-```
-uart:~$ fake_sensors list
-UID     TYPE         LOCATION       CURRENT
-0x0001  temperature  living_room    21.000 °C
-0x0002  humidity     living_room    50.000 %RH
-0x0011  temperature  outdoor         4.000 °C
-0x0012  humidity     outdoor        30.000 %RH
-
-uart:~$ fake_sensors temperature_set 17 -3500
-[00:00:42.001] <inf> fake_temp: uid=0x0011 → -3.500°C published
-
-uart:~$ fake_sensors humidity_set 18 92000
-[00:00:45.003] <inf> fake_hum:  uid=0x0012 → 92.000%RH published
-```
-
-Setting a value immediately publishes a `sensor_event_chan` event. The display
-updates in real time. MQTT publishes the new reading. The full data flow is
-exercised interactively.
-
-### Optional auto-publish
-
-```ini
-CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS=5000
-```
-
-When non-zero, a timer re-publishes all current fake values at the given
-interval. This simulates a continuously streaming sensor without shell
-interaction — useful for integration tests.
-
-### The full data flow (fake sensors)
-
-```
-Board overlay (native_sim.overlay)
-         │
-         ▼ (DT_FOREACH_STATUS_OKAY at compile time)
-fake_temperature.c generates one instance struct per node
-         │
-         ▼ (SYS_INIT at APPLICATION priority)
-Instance subscribes to sensor_trigger_chan
-Instance registers into fake_sensor_entry iterable section
-Instance registers metadata in sensor_registry
-         │
-         ▼ (at runtime, on trigger)
-on_trigger() → temperature_c_x1000_to_q31() → zbus_chan_pub(sensor_event_chan)
-         │
-         ▼
-[display_manager subscriber] → update Living Room tile
-[mqtt_manager subscriber]    → publish JSON to Mosquitto
-```
+For the module structure, DT binding format, STRUCT_SECTION_ITERABLE registration
+macro, shell interaction transcript, auto-publish configuration, and data flow
+diagram, see [`docs/architecture/fake-sensors.md`](../architecture/fake-sensors.md).
 
 ---
 
@@ -257,3 +107,10 @@ on_trigger() → temperature_c_x1000_to_q31() → zbus_chan_pub(sensor_event_cha
 | Conditional `#ifdef` in real drivers | Pollutes production code with simulation logic; not easily extensible; violates separation of concerns |
 | Python host-side value injection via UART | Extra tooling dependency; delays; doesn't test the actual sensor driver path |
 | No simulation — buy hardware first | Blocks development; expensive iteration; CI impossible without hardware farm |
+
+---
+
+## See also
+
+- Current implementation: `lib/fake_sensors/`, `dts/bindings/fake,temperature.yaml`
+- Related ADRs: [ADR-003](ADR-003-sensor-event-data-model.md) (event struct), [ADR-004](ADR-004-trigger-driven-sampling.md) (trigger pattern), [ADR-009](ADR-009-native-sim-first.md) (native_sim first)
