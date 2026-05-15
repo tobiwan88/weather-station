@@ -39,6 +39,7 @@ nav:
   - ADR:
     - adr/README.md
   - Backlog: backlog.md
+  - Footprint: https://tobiwan88.github.io/weather-station/dev/bench/
 
 plugins:
   - search
