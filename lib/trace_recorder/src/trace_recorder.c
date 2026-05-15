@@ -6,11 +6,11 @@
  *        buffer for post-mortem Renode memory dump.
  */
 
+#include <tracing_user.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/atomic.h>
-#include <zephyr/tracing/tracing_user.h>
 
 #include <trace_recorder/trace_recorder.h>
 
@@ -204,11 +204,12 @@ void sys_trace_sys_init_exit_user(const struct init_entry *entry, int level, int
 
 /* ── SYS_INIT: assign IDs to pre-existing threads ─────────────────── */
 
-static void assign_existing_thread(struct k_thread *thread, void *user_data)
+static void assign_existing_thread(const struct k_thread *thread, void *user_data)
 {
 	ARG_UNUSED(user_data);
+	struct k_thread *t = (struct k_thread *)thread;
 
-	if (thread->custom_data != NULL) {
+	if (t->custom_data != NULL) {
 		return;
 	}
 
@@ -219,9 +220,9 @@ static void assign_existing_thread(struct k_thread *thread, void *user_data)
 		return;
 	}
 
-	thread->custom_data = (void *)(uintptr_t)id;
+	t->custom_data = (void *)(uintptr_t)id;
 
-	const char *name = k_thread_name_get(thread);
+	const char *name = k_thread_name_get(t);
 	if (name != NULL) {
 		strncpy(trace_thread_names[id], name, CONFIG_THREAD_MAX_NAME_LEN - 1);
 		trace_thread_names[id][CONFIG_THREAD_MAX_NAME_LEN - 1] = '\0';
