@@ -21,4 +21,14 @@ macro reset
     sysbus LoadELF $bin
     cpu0 VectorTableOffset `sysbus GetSymbolAddress "_vector_table"`
     cpu0 EnableZephyrMode
+    cpu0 EnableProfilerPerfetto @${ORIGIN}/trace_functions.perfetto false
+    cpu0 LogFunctionNames true "k_ z_ work_ mqtt_ net_ zbus_ mbedtls_" true
+"""
+
+macro dump-trace
+"""
+    cpu0 FlushProfiler
+    emulation RunFor "0.01"
+    sysbus ReadMemory `sysbus GetSymbolAddress "trace_records"` 32768 @${ORIGIN}/trace.bin
+    echo "[TRACE] Dumped trace buffer (32 KB) to trace.bin"
 """
