@@ -1,0 +1,132 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig LORA_RADIO
+	bool "LoRa radio subsystem"
+	depends on ZBUS
+	depends on SENSOR_EVENT
+	depends on REMOTE_SENSOR
+	help
+	  Point-to-point LoRa communication library for wireless sensor nodes.
+	  Implements a custom L2 frame protocol with AES-128-GCM encryption,
+	  RPC commands, FOTA relay, and button-press provisioning.
+
+	  Uses Zephyr's LoRa driver API (<zephyr/drivers/lora.h>). The radio
+	  driver can be Zephyr's built-in SX126x driver (real hardware) or a
+	  fake driver (native_sim testing). Set CONFIG_LORA_RADIO_DEV_NAME
+	  to match the device name registered by the radio driver.
+
+if LORA_RADIO
+
+config LORA_RADIO_FAKE
+	bool "Fake LoRa driver (native_sim only)"
+	depends on BOARD_NATIVE_SIM
+	default y if BOARD_NATIVE_SIM
+	help
+	  Compile the in-process fake LoRa driver that uses kernel FIFOs for
+	  TX/RX loopback.  Requires a 'fake,lora-radio' DT node which is only
+	  present in the native_sim overlay.  Must NOT be enabled for real
+	  hardware targets — those use the Zephyr SX126x driver or another
+	  board-supplied LoRa device.
+
+config LORA_RADIO_DEV_NAME
+	string "LoRa device name"
+	default "lora0"
+	help
+	  Device name used with device_get_binding() to locate the LoRa radio.
+	  Set to match the DT node label or driver name of your LoRa device.
+
+config LORA_RADIO_FOTA
+	bool "FOTA over LoRa"
+	depends on IMG_MANAGER
+	depends on FLASH_MAP
+	help
+	  Relays sensor-node firmware images over LoRa using windowed ACK
+	  protocol. Sensor node stores received image in MCUboot slot 1.
+
+config LORA_RADIO_FOTA_CHUNK_SIZE
+	int "FOTA chunk size in bytes"
+	default 231
+	range 16 231
+	depends on LORA_RADIO_FOTA
+	help
+	  Maximum payload bytes per FOTA_CHUNK frame. Must fit within the
+	  LoRa packet budget at the configured spreading factor.
+
+config LORA_RADIO_FOTA_WINDOW
+	int "FOTA window size (chunks in flight)"
+	default 8
+	range 1 16
+	depends on LORA_RADIO_FOTA
+	help
+	  Number of FOTA chunks sent before waiting for cumulative ACK.
+
+config LORA_RADIO_AUTO_PUBLISH_MS
+	int "Auto-publish interval in milliseconds (0 = disabled)"
+	default 60000
+	range 0 3600000
+	help
+	  When non-zero, the gateway periodically sends sensor data to remote
+	  nodes on the LoRa link. Set to 0 for on-demand publishing only.
+
+config LORA_RADIO_RX_THREAD_STACK_SIZE
+	int "RX thread stack size (bytes)"
+	default 2048
+	help
+	  Stack size for the dedicated LoRa receive thread.
+
+config LORA_RADIO_RX_THREAD_PRIORITY
+	int "RX thread cooperative priority"
+	default 5
+	help
+	  Priority of the dedicated LoRa receive thread.
+
+config LORA_RADIO_DEFAULT_SF
+	int "Default LoRa spreading factor"
+	default 10
+	range 7 12
+	help
+	  Default spreading factor used when no per-peer override is set.
+
+config LORA_RADIO_DEFAULT_BW
+	int "Default LoRa bandwidth (kHz)"
+	default 125
+	help
+	  Default bandwidth in kHz used when no per-peer override is set.
+
+config LORA_SENSOR_PUBLISH_INTERVAL_S
+	int "Sensor node publish interval in seconds"
+	default 60
+	range 0 3600
+	help
+	  How often a sensor node should publish its readings to the gateway.
+
+config LORA_SENSOR_KEEPALIVE_S
+	int "Sensor node keep-alive interval in seconds (0 = disabled)"
+	default 0
+	range 0 86400
+	help
+	  Maximum silence interval before the sensor node sends a keep-alive.
+	  0 disables keep-alive (node only publishes when data changes).
+
+config LORA_RADIO_SESSION_MAX
+	int "Maximum number of concurrent LoRa sessions"
+	default 16
+	range 1 64
+	help
+	  Pre-allocates session slots for paired remote nodes.
+
+config LORA_RADIO_SHELL
+	bool "Shell commands for LoRa radio control"
+	default y
+	depends on SHELL
+	help
+	  Adds the "lora" shell command group:
+	    lora status          — show radio and session state
+	    lora send <node> ... — send a raw frame (debug)
+	    lora list            — list active sessions
+
+module = LORA_RADIO
+module-str = LORA_RADIO
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # LORA_RADIO
