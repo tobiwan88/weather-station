@@ -274,3 +274,61 @@ Renode without workarounds.
 and boots to shell in Renode, with external flash accessible via FlexSPI.
 
 ---
+
+## [ADR-015-LORA-RPC-RETRY] Implement RPC command retry logic
+
+ADR-015 requires ACK-based RPC delivery with up to 3 retries and SF-dependent
+timeout (5s at SF7, 30s at SF10). Currently `lora_radio_rpc_send()` sends a
+single frame with `LORA_FLAG_ACK_REQ` but has no retry loop or response listener.
+
+**Acceptance:**
+- `lora_radio_rpc_send()` blocks until RPC_RESP received or retries exhausted
+- Retry count configurable via Kconfig (default 3)
+- Timeout per retry based on spreading factor
+- One pending RPC per node (serialized)
+
+Reference: ADR-015 §Reliability model.
+
+---
+
+## [ADR-015-LORA-FOTA-WINDOW] Implement windowed FOTA chunk protocol
+
+ADR-015 requires a windowed ACK protocol with 4–16 chunks in flight, 2s retry
+timer, and 3 retries per chunk. Currently `lora_handle_fota_chunk()` processes
+one chunk at a time with a broken ACK (offset mismatch reports success).
+
+**Acceptance:**
+- Gateway sends 4–16 FOTA_CHUNK frames before waiting for ACKs
+- ACK carries written offset, expected offset, and status
+- Retry timer (2s) resends unacknowledged chunks
+- 3 retries per chunk before aborting
+
+Reference: ADR-015 §Reliability model, §FOTA over LoRa.
+
+---
+
+## [ADR-015-LORA-PERSIST] Persist session immediately after pairing
+
+After `lora_session_add()` in `lora_handle_prov_beacon()`, the session exists
+only in RAM. A reboot before the next `settings_save()` call loses the pairing.
+
+**Acceptance:**
+- `lora_session_persist()` called after successful pairing
+- Sensor node can communicate after gateway reboot without re-pairing
+
+Reference: ADR-015 §Security, §Provisioning.
+
+---
+
+## [ADR-015-LORA-ED25519-CACHE] Cache Ed25519 PSA key instead of import/destroy per beacon
+
+The gateway's Ed25519 private key is imported into PSA Crypto on every
+PROV_BEACON reception and destroyed after signing. For a static key, this
+should be imported once at init and cached as a `psa_key_id_t`.
+
+**Acceptance:**
+- Ed25519 key imported once in `lora_radio_init()` or prov handler init
+- `psa_key_id_t` cached as static variable
+- `psa_destroy_key()` only called on shutdown (if at all)
+
+Reference: ADR-015 §Security.
