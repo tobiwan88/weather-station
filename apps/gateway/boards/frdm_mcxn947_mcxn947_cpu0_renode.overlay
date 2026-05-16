@@ -1,18 +1,65 @@
 /*
  * Renode-specific DTS overlay for FRDM-MCXN947.
  *
- * Disables the external W25Q64 SPI NOR flash because the Renode .repl models
- * it as bare Memory.MappedMemory, which cannot respond to SPI IP commands.
- * The flash_mcux_flexspi_nor driver hangs in FLEXSPI_TransferBlocking().
- *
- * Internal flash (FTFE at 0x10000000) is unaffected — MCUboot slots and
- * FOTA continue to work.
+ * - Disables the real BME688 node because the Renode .repl has no
+ *   I2C peripheral model for Flexcomm2 at 0x50094800.
+ * - Adds fake sensor nodes for Renode virtual testing.
+ * - Disables the external W25Q64 SPI NOR flash because the Renode
+ *   .repl models it as bare Memory.MappedMemory.
+ * - Disables the Flexcomm5 LPUART5 node because the Renode .repl has no
+ *   UART peripheral model for Flexcomm5 at 0x500b5000.
  */
 
+/* Disable real BME688 — Renode .repl has no I2C peripheral model for Flexcomm2 */
+&bme688_indoor {
+	status = "disabled";
+};
+
+/* Disable Flexcomm5 — Renode .repl has no UART peripheral model for Flexcomm5 */
+&flexcomm5 {
+	status = "disabled";
+};
+
+&flexcomm5_lpuart5 {
+	status = "disabled";
+};
+
+/* Disable external FlexSPI NOR flash — Renode models it as bare Memory.MappedMemory */
 &ext_flash_ctrl {
 	status = "disabled";
 };
 
 &w25q64jvssiq {
 	status = "disabled";
+};
+
+/* Fake sensors for Renode virtual testing */
+/ {
+	fake_temp_indoor: fake-temp-indoor {
+		compatible = "fake,temperature";
+		sensor-uid = <0x0001>;
+		initial-value-mdegc = <21000>;
+		status = "okay";
+	};
+
+	fake_hum_indoor: fake-hum-indoor {
+		compatible = "fake,humidity";
+		sensor-uid = <0x0002>;
+		initial-value-mpct = <50000>;
+		status = "okay";
+	};
+
+	fake_co2_indoor: fake-co2-indoor {
+		compatible = "fake,co2";
+		sensor-uid = <0x0003>;
+		initial-value-mppm = <800000>;
+		status = "okay";
+	};
+
+	fake_voc_indoor: fake-voc-indoor {
+		compatible = "fake,voc";
+		sensor-uid = <0x0004>;
+		initial-value-miaq = <25000>;
+		status = "okay";
+	};
 };
