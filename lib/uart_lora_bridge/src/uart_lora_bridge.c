@@ -38,7 +38,7 @@ struct __packed uart_lora_wire {
 BUILD_ASSERT(sizeof(struct uart_lora_wire) == WIRE_PAYLOAD_LEN, "uart_lora_wire size mismatch");
 
 /* One byte at a time via ISR → msgq → thread state machine. */
-static K_MSGQ_DEFINE(uart_rx_msgq, 1U, 256U, 1U);
+K_MSGQ_DEFINE(uart_rx_msgq, 1U, 256U, 1U);
 
 static void uart_irq_cb(const struct device *dev, void *user_data)
 {

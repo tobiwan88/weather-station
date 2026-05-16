@@ -52,6 +52,7 @@ priority 80  sntp_sync              — initial SNTP query before timestamps are
 priority 90  fake_temperature       — registers in sensor_registry, subscribes trigger chan
 priority 91  fake_humidity          — same; lvgl_display also at 91 (subscribes event chan)
 priority 92  fake_co2               — same; remote_sensor_manager also at 92
+             uart_lora_sender       — co-processor: subscribes sensor_event_chan, sends UART frames
 priority 93  fake_voc               — same; fake_remote_sensor also at 93
 priority 94  remote_sensor_settings — loads persisted peer list after manager is up
 priority 95  sensor_event_log       — gateway listener subscribes to sensor_event_chan

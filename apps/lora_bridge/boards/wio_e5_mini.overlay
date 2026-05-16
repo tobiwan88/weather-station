@@ -1,0 +1,11 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+
+/*
+ * LoRa bridge overlay for lora_e5_mini.
+ * Overrides USART1 baud rate to 9600 for reliable gateway co-processor link.
+ * The upstream board already enables SubGHz SPI, RF switch (PA4/PA5), and LED (PB5).
+ */
+
+&usart1 {
+	current-speed = <9600>;
+};

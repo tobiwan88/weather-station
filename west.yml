@@ -17,6 +17,7 @@ manifest:
           - cmsis_6
           - hal_nordic
           - hal_nxp
+          - hal_stm32
           - mbedtls
           - lvgl
           - loramac-node
