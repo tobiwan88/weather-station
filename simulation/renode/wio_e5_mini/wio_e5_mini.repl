@@ -1,0 +1,88 @@
+# Wio-E5 Mini (STM32WLE5JC) Renode Platform
+# Minimal model for boot verification and UART output testing
+
+using sysbus
+
+cpu0: CPU.CortexM @ sysbus
+    cpuType: "cortex-m4"
+    nvic: nvic0
+
+nvic0: IRQControllers.NVIC @ sysbus 0xe000e000
+    -> cpu0@0
+    systickFrequency: 48000000
+
+flash: Memory.MappedMemory @ sysbus 0x08000000
+    size: 0x40000  # 256 KB
+
+sram: Memory.MappedMemory @ sysbus 0x20000000
+    size: 0x10000  # 64 KB
+
+# USART1 - gateway communication UART
+usart1: UART.STM32_UART @ sysbus 0x40013800
+    -> nvic0@36
+
+# GPIO ports
+gpioa: Gpio.STM32_GPIO @ sysbus 0x48000000
+gpiob: Gpio.STM32_GPIO @ sysbus 0x48000400
+gpioc: Gpio.STM32_GPIO @ sysbus 0x48000800
+gpioh: Gpio.STM32_GPIO @ sysbus 0x48001c00
+
+# RCC - clock control (stub with Python peripheral for register spoofing)
+rcc: Python.PythonPeripheral @ sysbus 0x58000000
+    size: 0x400
+    initable: true
+    script: '''
+if request.IsInit:
+    request.Value = 0
+# Return non-zero for clock status registers to unblock boot
+if request.Offset == 0x44:  # CR register
+    request.Value = 0x03000000  # HSI ready
+elif request.Offset == 0x48:  # CSR register
+    request.Value = 0x02000000  # LSI ready
+else:
+    request.Value = 0
+'''
+
+# EXTI - external interrupts
+exti: IRQControllers.STM32_EXTI @ sysbus 0x58000800
+    -> nvic0@6
+    -> nvic0@7
+    -> nvic0@8
+    -> nvic0@9
+    -> nvic0@10
+    -> nvic0@22
+    -> nvic0@41
+    numberOfLines: 64
+
+# Sub-GHz SPI (stub - no SX126x model in Renode yet)
+# Python peripheral to prevent crashes when lora_radio driver probes
+subghzspi: Python.PythonPeripheral @ sysbus 0x58010000
+    size: 0x400
+    initable: true
+    script: '''
+# Stub Sub-GHz SPI - returns safe values to prevent driver crashes
+if request.IsInit:
+    request.Value = 0
+# SR register - return "ready" state
+if request.Offset == 0x08:
+    request.Value = 0x00000002  # Ready flag
+else:
+    request.Value = 0
+'''
+
+# Power control stub
+pwr: Python.PythonPeripheral @ sysbus 0x58004000
+    size: 0x400
+    initable: true
+    script: "request.Value = 0"
+
+# Flash controller stub
+flash_ctrl: Python.PythonPeripheral @ sysbus 0x58004400
+    size: 0x400
+    initable: true
+    script: "request.Value = 0"
+
+# SysTick
+systick: CortexM.SysTick @ sysbus 0xe000e010
+    -> nvic0@-1
+    frequency: 48000000
