@@ -1,0 +1,28 @@
+# Wio-E5 Mini Boot Script
+# Usage: renode wio_e5_mini.resc --disable-xwt
+
+$name?="wio_e5_mini"
+$bin?=@zephyr.elf
+$repl?=$ORIGIN/wio_e5_mini.repl
+
+using sysbus
+mach create $name
+
+machine LoadPlatformDescription $repl
+
+showAnalyzer usart1
+
+set osPanicHook
+"""
+self.ErrorLog("OS Panicked")
+"""
+
+cpu0 AddSymbolHook "z_fatal_error" $osPanicHook
+
+macro reset
+"""
+    sysbus LoadELF $bin
+    cpu0 VectorTableOffset `sysbus GetSymbolAddress "_vector_table"`
+    cpu0 EnableZephyrMode
+    cpu0 LogFunctionNames true "k_ z_ uart_ lora_ zbus_ sensor_" true
+"""

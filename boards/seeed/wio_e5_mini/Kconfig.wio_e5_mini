@@ -1,0 +1,5 @@
+# Copyright (c) 2026 Seeed Studio
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_WIO_E5_MINI
+	select SOC_STM32WLE5XX
