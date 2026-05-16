@@ -1,0 +1,37 @@
+# Wio-E5 Mini + Gateway Loopback Simulation
+# RENODE-PHASE2: Two-machine simulation with UART bridge
+#
+# This script is a placeholder. The full implementation requires:
+# 1. UART-to-UART connection between Wio-E5 USART1 and gateway FC5 LPUART5
+# 2. SX126x Python peripheral for LoRa radio simulation
+# 3. Robot Framework test integration
+#
+# Usage (when implemented):
+#   renode wio_e5_mini_loopback.resc --disable-xwt
+
+$name?="wio_e5_mini_loopback"
+$gateway_bin?=@gateway.elf
+$lora_bridge_bin?=@lora_bridge.elf
+$gateway_repl?=$ORIGIN/../frdm_mcxn947_mcxn947_cpu0.repl
+$lora_bridge_repl?=$ORIGIN/wio_e5_mini.repl
+
+using sysbus
+
+# Gateway machine
+mach create "gateway"
+machine LoadPlatformDescription $gateway_repl
+
+# LoRa bridge machine
+mach create "lora_bridge"
+machine LoadPlatformDescription $lora_bridge_repl
+
+# TODO: Connect gateway FC5 LPUART5 to lora_bridge USART1
+# TODO: Connect lora_bridge USART1 to gateway FC5 LPUART5
+# Renode UART connection pattern:
+#   connector Connect uart1 usart1
+
+macro reset
+"""
+    sysbus LoadELF $gateway_bin
+    lora_bridge.sysbus LoadELF $lora_bridge_bin
+"""

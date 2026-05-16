@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config UART_LORA_SENDER
+	bool "UART LoRa sender (co-MCU TX bridge)"
+	depends on ZBUS
+	depends on SENSOR_EVENT
+	depends on SERIAL
+	help
+	  Subscribes to sensor_event_chan and forwards env_sensor_data events
+	  to the gateway over UART using a 24-byte wire frame format.
+
+	  Wire frame format (24 bytes per event):
+	    [0x5A][0xA5]  2-byte magic sync word
+	    [len]         1-byte payload length (always 20)
+	    [payload]     20-byte packed env_sensor_data (LE)
+	    [crc8]        1-byte CRC8-CCITT over payload
+
+	  Runs on the LoRa co-processor (Wio-E5 Mini) to stream decoded
+	  sensor readings to the gateway MCU.
+
+if UART_LORA_SENDER
+
+config UART_LORA_SENDER_DEV_NAME
+	string "UART device name"
+	default "usart1"
+	help
+	  Zephyr device name of the UART port connected to the gateway MCU.
+
+config UART_LORA_SENDER_THREAD_STACK_SIZE
+	int "Sender thread stack size (bytes)"
+	default 1024
+
+config UART_LORA_SENDER_THREAD_PRIORITY
+	int "Sender thread priority"
+	default 7
+
+module = UART_LORA_SENDER
+module-str = UART_LORA_SENDER
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # UART_LORA_SENDER
