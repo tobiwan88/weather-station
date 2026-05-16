@@ -275,6 +275,79 @@ and boots to shell in Renode, with external flash accessible via FlexSPI.
 
 ---
 
+## [LORA-BRIDGE-APP] Create `apps/lora_bridge` — Wio-E5 Mini LoRa co-processor firmware
+
+The gateway's LoRa radio runs on a dedicated Wio-E5 Mini (STM32WLE5JC) co-processor
+connected via UART (Flexcomm5 on the MCXN947). This app runs `lib/lora_radio/` on
+the co-processor and forwards decoded `env_sensor_data` frames to the gateway over UART.
+
+**Goal:** A Zephyr application targeting the Wio-E5 Mini that runs the full LoRa protocol
+(AES-128-GCM, Ed25519 pairing, RPC, FOTA-over-LoRa) and communicates with the gateway
+via a UART zbus proxy agent.
+
+**Prerequisites:**
+- Custom Zephyr board definition for Wio-E5 Mini (adapted from `nucleo_wl55jc`)
+- UART proxy agent for zbus channel bridging (deferred per ADR-015)
+- `lib/lora_radio/` already implements the protocol
+
+**Implementation:**
+- Create `apps/lora_bridge/` with `prj.conf`, `CMakeLists.txt`, `src/main.c`
+- Create `boards/wio_e5_mini/` with DTS, pinctrl, Kconfig
+- Board overlay: enable SubGHz SPI (SX126x), UART1 for gateway communication,
+  RF switch GPIOs (PA4=RF_CTRL1, PA5=RF_CTRL2), LED on PB5
+- Kconfig: `CONFIG_LORA_RADIO=y`, `CONFIG_LORA_RADIO_FAKE=n`,
+  `CONFIG_UART_LORA_BRIDGE=n`, sensor drivers disabled
+- UART framing: send 24-byte `env_sensor_data` wire frames to gateway
+  (same format as `lib/uart_lora_bridge/` expects: magic 0x5A 0xA5, length, payload, CRC8)
+- `src/main.c` = `LOG_MODULE_REGISTER + return 0` (ADR-008 Rule 4)
+
+**Acceptance:**
+- Builds for `wio_e5_mini` target
+- LoRa radio initializes with SX126x driver (EU868, SF10, BW125)
+- UART communication with gateway verified (loopback test)
+- Renode simulation with two Wio-E5 machines (deferred to RENODE-PHASE2)
+
+Reference: ADR-015 §Physical topology, docs/hardware/README.md §Gateway — Wio-E5 Mini.
+
+---
+
+## [OUTDOOR-SENSOR-NODE-APP] Create `apps/outdoor_sensor_node` — Wio-E5 Mini sensor node firmware
+
+The outdoor sensor node is a self-contained Zephyr device built around the Wio-E5 Mini
+(STM32WLE5JC). It reads local sensors (BME688 + SEN0460) and transmits compact 5-byte
+readings over LoRa P2P to the gateway.
+
+**Goal:** A battery-powered Zephyr application targeting the Wio-E5 Mini that reads
+environmental sensors and transmits via LoRa with ultra-low power sleep between cycles.
+
+**Prerequisites:**
+- Custom Zephyr board definition for Wio-E5 Mini (shared with `apps/lora_bridge`)
+- `lib/lora_radio/` already implements the protocol
+- I2C sensor drivers (BME680 via Zephyr upstream, SEN0460 needs custom driver)
+
+**Implementation:**
+- Create `apps/outdoor_sensor_node/` with `prj.conf`, `CMakeLists.txt`, `src/main.c`
+- Reuse `boards/wio_e5_mini/` from lora_bridge app
+- Board overlay: enable I2C2 (PA11=SDA, PA12=SCL) for sensors, SubGHz SPI for LoRa,
+  RF switch GPIOs, disable UART1 (no gateway UART needed on sensor node)
+- Kconfig: `CONFIG_LORA_RADIO=y`, `CONFIG_SENSOR=y`, `CONFIG_BME680=y`,
+  `CONFIG_FAKE_SENSORS=n`, `CONFIG_UART_LORA_BRIDGE=n`
+- SEN0460 driver: custom Zephyr sensor driver for DFRobot PM2.5 sensor (I2C addr 0x19)
+- Sensor trigger pattern: subscribe to `sensor_trigger_chan`, read sensors, publish to
+  `sensor_event_chan` (same pattern as `lib/fake_sensors/`)
+- Power management: WOR sleep mode (2.1 µA), configurable publish interval
+
+**Acceptance:**
+- Builds for `wio_e5_mini` target
+- BME688 and SEN0460 sensors read via I2C
+- LoRa data frames transmitted to gateway (SF10, BW125, EU868)
+- Power consumption: ≤5 µA average with 60s publish interval
+- End-to-end test: gateway receives sensor events on `sensor_event_chan`
+
+Reference: ADR-015 §Compact sensor data encoding, docs/hardware/README.md §Outdoor Sensor Node 1.
+
+---
+
 ## [ADR-015-LORA-RPC-RETRY] Implement RPC command retry logic
 
 ADR-015 requires ACK-based RPC delivery with up to 3 retries and SF-dependent
