@@ -17,8 +17,10 @@ manifest:
           - cmsis_6
           - hal_nordic
           - hal_nxp
+          - hal_st
           - hal_stm32
           - mbedtls
+          - tf-psa-crypto
           - lvgl
           - loramac-node
           - segger
