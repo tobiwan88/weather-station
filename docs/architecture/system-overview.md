@@ -64,6 +64,9 @@ These two goals drive every structural choice in the codebase.
 | `pipe_publisher` | Writes `env_sensor_data` events as length-prefixed protobuf to a POSIX FIFO (sensor-node side) |
 | `pipe_transport` | Reads from POSIX FIFO, decodes protobuf frames, publishes to `sensor_event_chan` (gateway side) |
 | `trace_recorder` | Overrides Zephyr tracing hooks to capture thread switch/ISR/idle events in a static ring buffer for Renode post-mortem dump |
+| `uart_lora_bridge` | Receives 24-byte wire frames from LoRa co-processor over UART, converts to `env_sensor_data`, publishes to `sensor_event_chan` (gateway side) |
+| `uart_lora_sender` | Subscribes to `sensor_event_chan`, packs events into 24-byte wire frames, sends over UART to gateway (co-processor side) |
+| `lora_radio` | LoRa bounded context: radio driver, packet framing, session management, protocol handlers; runs on STM32WLE5JC co-processor |
 
 ```mermaid
 --8<-- "library-deps.mmd"
@@ -122,7 +125,8 @@ weather-station/               ← git repo root, also west manifest
 │
 ├── apps/                      ← one sub-directory per firmware image
 │   ├── gateway/               ← Wi-Fi hub + LVGL display
-│   └── sensor-node/           ← LoRa TX beacon
+│   ├── sensor-node/           ← LoRa TX beacon
+│   └── lora_bridge/           ← Wio-E5 Mini LoRa co-processor firmware
 │
 ├── lib/                       ← shared reusable libraries (west modules)
 │   ├── sensor_event/          ← env_sensor_data struct, Q31 helpers, zbus channel
@@ -132,14 +136,18 @@ weather-station/               ← git repo root, also west manifest
 │   ├── sntp_sync/             ← SNTP time sync with runtime resync
 │   ├── clock_display/         ← wall-clock widget for LVGL display
 │   ├── lvgl_display/          ← LVGL display manager (sensor tiles)
-│   └── http_dashboard/        ← Chart.js timeseries + config REST API
+│   ├── http_dashboard/        ← Chart.js timeseries + config REST API
+│   ├── uart_lora_bridge/      ← gateway-side UART receiver (24-byte wire → zbus)
+│   ├── uart_lora_sender/      ← co-processor-side UART sender (zbus → 24-byte wire)
+│   └── lora_radio/            ← LoRa bounded context (SX126x, sessions, FOTA)
 │
 ├── include/common/            ← shared headers (zbus channel declarations,
 │                                 data structs, Q31 helpers)
 │
 ├── drivers/                   ← out-of-tree Zephyr drivers (future real HW)
 ├── dts/bindings/              ← custom devicetree bindings (fake,temperature…)
-├── boards/                    ← custom board definitions (future)
+├── boards/                    ← custom board definitions
+│   └── seeed/wio_e5_mini/     ← Wio-E5 Mini (STM32WLE5JC) board definition
 │
 ├── tests/                     ← twister test suites
 ├── simulation/                ← Renode .resc and Robot Framework scripts

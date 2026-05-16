@@ -22,29 +22,32 @@ requires a dedicated co-processor connected via UART:
 ┌──────────────────────────┐   UART    ┌──────────────────────────────┐
 │  frdm_mcxn947 (gateway)  │◄─────────►│  STM32WLE5JC (LoRa module)   │
 │                          │           │                              │
-│  All consumer libs:      │           │  lib/lora_radio/:            │
-│   sensor_event_log       │           │    Radio driver (SX1262)     │
-│   http_dashboard         │           │    Packet framing + GCM      │
-│   lvgl_display           │           │    Session manager           │
-│   mqtt_publisher         │           │    Protocol handlers         │
-│                          │           │                              │
-│  remote_sensor_manager   │  zbus     │  local zbus channels:        │
-│  sensor_registry         │  proxy    │    sensor_event_chan         │
-│                          │  agent    │    lora_link_chan            │
-│  shadow channels:        │  (future) │    remote_discovery_chan     │
-│   same zbus channels     │           │    remote_scan_ctrl_chan     │
-│   as on STM32WLE5JC      │           │    remote_peer_cmd_chan      │
+│  All consumer libs:      │           │  apps/lora_bridge/:          │
+│   sensor_event_log       │           │    lib/lora_radio/           │
+│   http_dashboard         │           │      Radio driver (SX1262)   │
+│   lvgl_display           │           │      Packet framing + GCM    │
+│   mqtt_publisher         │           │      Session manager         │
+│                          │           │      Protocol handlers       │
+│  lib/uart_lora_bridge/   │           │    lib/uart_lora_sender/     │
+│   (gateway side)         │  24-byte  │      zbus → UART TX bridge   │
+│   UART → zbus            │  wire     │                              │
+│                          │  frames   │  local zbus channels:        │
+│  remote_sensor_manager   │           │    sensor_event_chan         │
+│  sensor_registry         │           │    lora_link_chan            │
+│                          │           │    remote_discovery_chan     │
+│                          │           │    remote_scan_ctrl_chan     │
+│                          │           │    remote_peer_cmd_chan      │
 │                          │           │    lora_fota_chan             │
 └──────────────────────────┘           └──────────────────────────────┘
 ```
 
-The gateway will bridge zbus channels between the two MCUs using Zephyr's
-**zbus Proxy Agent** feature (experimental, `CONFIG_ZBUS_PROXY_AGENT`).
-Shadow channels on the gateway mirror the STM32WLE5JC's local channels; a
-proxy agent with a UART transport backend synchronizes messages across the
-UART link. The proxy/forwarding design is **deferred** — this document
-focuses on the LoRa protocol and `lib/lora_radio/` internals running on the
-STM32WLE5JC.
+The current implementation uses a **simple 24-byte wire frame protocol**
+(magic `0x5A 0xA5`, length, 20-byte packed payload, CRC8) instead of the
+zbus Proxy Agent. On the gateway side, `lib/uart_lora_bridge/` receives frames
+over UART and publishes `env_sensor_data` to `sensor_event_chan`. On the
+co-processor side, `lib/uart_lora_sender/` subscribes to `sensor_event_chan`
+and sends frames over UART. The zbus Proxy Agent design is **deferred** — see
+ADR-015 for the future proxy/forwarding design.
 
 ### Library integration (post-proxy, on-gateway perspective)
 

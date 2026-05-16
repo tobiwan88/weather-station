@@ -146,6 +146,16 @@ Use the lowest free UID in the appropriate range. Never reuse a UID across any o
 | `mqtt_publisher` | `CONFIG_MQTT_PUBLISHER` | Subscribes event chan. Topic: `{gw}/{location}/{display_name}/{type}`. Settings under `config/mqtt/` (server, port, user, pass, gw). Passwords base64-encoded. Shell: `mqtt_pub status/set`. Use `zsock_pollfd`/`zsock_poll()`/`ZSOCK_POLLIN` — not POSIX variants. |
 | `pipe_publisher` | `CONFIG_PIPE_PUBLISHER` | Writes `env_sensor_data` as length-prefixed protobuf to POSIX FIFO. Sensor-node side for integration testing. |
 | `pipe_transport` | `CONFIG_PIPE_TRANSPORT` | Reads from POSIX FIFO, decodes protobuf, publishes to `sensor_event_chan`. Gateway side for integration testing. |
+| `uart_lora_bridge` | `CONFIG_UART_LORA_BRIDGE` | Receives 24-byte wire frames from LoRa co-processor over UART, converts to `env_sensor_data`, publishes to `sensor_event_chan`. Gateway side. ISR → msgq → thread state machine. |
+| `uart_lora_sender` | `CONFIG_UART_LORA_SENDER` | Subscribes `sensor_event_chan`, packs events into 24-byte wire frames (magic 0x5A 0xA5, length, payload, CRC8), sends over UART via `uart_poll_out()`. Co-processor side. |
+
+### Apps
+
+| App | Target | Role |
+|---|---|---|
+| `apps/gateway/` | `native_sim`, `frdm_mcxn947` | Main gateway firmware: sensor aggregation, HTTP dashboard, MQTT, LVGL display, LoRa RX via UART bridge. |
+| `apps/sensor-node/` | `native_sim` | LoRa TX beacon for integration testing. |
+| `apps/lora_bridge/` | `wio_e5_mini` | Wio-E5 Mini (STM32WLE5JC) LoRa co-processor firmware. Runs `lib/lora_radio/` with real SX126x hardware, forwards decoded sensor data to gateway via UART. |
 
 ## Integration tests (`tests/integration`)
 
