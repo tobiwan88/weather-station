@@ -81,6 +81,10 @@ Reference: ADR-003 §Q31 encoding, §sensor_uid contract.
 
 ## [RENODE-PHASE2] Multi-node simulation with Renode
 
+**Status: Single-node Renode implemented (Phase 2 partial).** Single-node boot,
+shell, FOTA, and trace tests run in CI. The remaining work is multi-node
+(sensor node + gateway in two Renode machines with shared virtual radio).
+
 Once the native_sim architecture is validated end-to-end and an MCU is selected
 (ADR-007 trigger), move to Renode for multi-node integration tests with a
 virtual LoRa radio medium.
@@ -96,8 +100,8 @@ automatically in CI without physical hardware.
 
 **Acceptance:**
 - `simulation/multi_node.resc` launches both nodes with a shared virtual radio medium.
-- CI job `renode-integration` (currently disabled in pipeline) passes.
-- Robot Framework test `simulation/weather_test.robot` asserts end-to-end sensor event flow.
+- CI job `renode` includes multi-node test cases.
+- Robot Framework test asserts end-to-end sensor event flow.
 
 Reference: ADR-009 §Future phases, ADR-007.
 
