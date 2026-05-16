@@ -1,0 +1,15 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Outdoor sensor node overlay for lora_e5_mini.
+ *
+ * Adds BME688 sensor on I2C2 bus.
+ */
+
+&i2c2 {
+	bme688@76 {
+		compatible = "bosch,bme680";
+		reg = <0x76>;
+		label = "BME688";
+	};
+};
