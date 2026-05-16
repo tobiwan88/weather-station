@@ -3,6 +3,7 @@ title: SYS_INIT Boot Sequence (APPLICATION Priority)
 ---
 sequenceDiagram
     participant KERNEL as Zephyr Kernel
+    participant TRACE as trace_recorder<br/>priority 1
     participant SNTP as sntp_sync<br/>priority 80
     participant FT as fake_temperature<br/>priority 90
     participant FH as fake_humidity<br/>priority 91
@@ -19,6 +20,12 @@ sequenceDiagram
     participant TMR as fake_sensors_timer<br/>priority 99
     participant CLK as clock_display<br/>priority 99
     participant MAIN as main()
+
+    KERNEL->>TRACE: trace_recorder_init()
+    TRACE->>TRACE: k_thread_foreach(assign_existing_thread)
+    TRACE->>TRACE: override __weak tracing hooks
+    TRACE->>TRACE: trace_ready = true
+    TRACE-->>KERNEL: return 0
 
     KERNEL->>SNTP: sntp_sync_init()
     SNTP->>SNTP: initial SNTP query (blocking)

@@ -77,6 +77,14 @@ How Twister, the native_sim binary, and pytest interact during a test run.
 --8<-- "integration-test-pipeline.mmd"
 ```
 
+## Renode Trace Pipeline
+
+How the trace recorder, Renode, and parse-trace.py interact during the trace-and-analyze workflow.
+
+```mermaid
+--8<-- "renode-trace-flow.mmd"
+```
+
 ## Fake Sensor Data Flow
 
 Fake sensor lifecycle: board overlay → DT_FOREACH → SYS_INIT → trigger → publish.

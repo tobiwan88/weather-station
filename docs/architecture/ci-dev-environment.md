@@ -138,9 +138,20 @@ push / PR to master or feature branches
                    │
                    ▼
 ┌────────────────────────────────────────────────────────────┐
-│  job: renode-integration  (DISABLED — Phase 2)             │
-│  antmicro/renode-test-action                               │
-│  simulation/weather_test.robot                             │
+│  job: renode                                             │
+│  Builds gateway with Renode Kconfig + trace recorder      │
+│  Runs Robot Framework tests (boot, FOTA, trace)           │
+│  Publishes trace artifacts (trace.bin, .perfetto, ELF)    │
+│  Retention: 7 days                                        │
+└──────────────────────────┬─────────────────────────────────┘
+                           │
+                           ▼
+┌────────────────────────────────────────────────────────────┐
+│  job: deploy-results                                       │
+│  Parses trace → Perfetto JSON; deploys to gh-pages         │
+│  Deep-link: ui.perfetto.dev/#!/?url=.../traces/<ref>/...   │
+│  Also deploys test results + coverage to tests/<ref>/       │
+│  Runs on push to master and PRs only                        │
 └────────────────────────────────────────────────────────────┘
                    │
                    ▼
