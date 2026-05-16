@@ -1,0 +1,22 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Outdoor sensor node DT overlay for frdm_mcxn947 (Renode simulation).
+ * Provides fake sensors for basic shell testing.
+ */
+
+/ {
+	fake_temp: fake-temp {
+		compatible = "fake,temperature";
+		sensor-uid = <0x0101>;
+		initial-value-mdegc = <22000>;
+		status = "okay";
+	};
+
+	fake_hum: fake-humidity {
+		compatible = "fake,humidity";
+		sensor-uid = <0x0102>;
+		initial-value-mpct = <55000>;
+		status = "okay";
+	};
+};
