@@ -1,12 +1,13 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  *
- * Gateway DT overlay for frdm_mcxn947.
+ * Gateway DT overlay for frdm_mcxn947 — real hardware.
  *
- * Defines six fake sensors (simulated on hardware):
- *   - Two indoor sensors (living room): temperature + humidity
- *   - Two outdoor sensors: temperature + humidity
- *   - Indoor CO2 + VOC
+ * Sensors:
+ *   - BME688 indoor environmental sensor on Arduino I2C (T/P/H/gas)
+ *
+ * LoRa:
+ *   - Flexcomm5 LPUART5 wired to Wio-E5 Mini co-processor
  *
  * UIDs 0x0001–0x000F are reserved for gateway local sensors.
  * UIDs 0x0011–0x001F are reserved for gateway outdoor sensors.
@@ -15,46 +16,36 @@
  * No display — LVGL is disabled on this target.
  */
 
-/ {
-	fake_temp_indoor: fake-temp-indoor {
-		compatible = "fake,temperature";
-		sensor-uid = <0x0001>;
-		initial-value-mdegc = <21000>;
-		status = "okay";
+/* BME688 indoor environmental sensor on Arduino I2C (D14=SDA, D15=SCL) */
+&arduino_i2c {
+	bme688_indoor: bme688@76 {
+		compatible = "bosch,bme680";
+		reg = <0x76>;
 	};
+};
 
-	fake_hum_indoor: fake-hum-indoor {
-		compatible = "fake,humidity";
-		sensor-uid = <0x0002>;
-		initial-value-mpct = <50000>;
-		status = "okay";
+/* Flexcomm5 LPUART5 — LoRa co-processor (Wio-E5 Mini)
+ * TX: PT1_4 (FC5_P0), RX: PT1_5 (FC5_P1) */
+&pinctrl {
+	pinmux_flexcomm5_lpuart: pinmux_flexcomm5_lpuart {
+		group0 {
+			pinmux = <FC5_P0_PIO1_4>,
+				 <FC5_P1_PIO1_5>;
+			slew-rate = "fast";
+			drive-strength = "low";
+			input-enable;
+			bias-pull-up;
+		};
 	};
+};
 
-	fake_temp_outdoor: fake-temp-outdoor {
-		compatible = "fake,temperature";
-		sensor-uid = <0x0011>;
-		initial-value-mdegc = <4000>;
-		status = "okay";
-	};
+&flexcomm5 {
+	status = "okay";
+};
 
-	fake_hum_outdoor: fake-hum-outdoor {
-		compatible = "fake,humidity";
-		sensor-uid = <0x0012>;
-		initial-value-mpct = <30000>;
-		status = "okay";
-	};
-
-	fake_co2_indoor: fake-co2-indoor {
-		compatible = "fake,co2";
-		sensor-uid = <0x0003>;
-		initial-value-mppm = <800000>;
-		status = "okay";
-	};
-
-	fake_voc_indoor: fake-voc-indoor {
-		compatible = "fake,voc";
-		sensor-uid = <0x0004>;
-		initial-value-miaq = <25000>;
-		status = "okay";
-	};
+&flexcomm5_lpuart5 {
+	current-speed = <9600>;
+	pinctrl-0 = <&pinmux_flexcomm5_lpuart>;
+	pinctrl-names = "default";
+	status = "okay";
 };
