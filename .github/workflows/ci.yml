@@ -62,6 +62,9 @@ jobs:
           - app: outdoor_sensor_node
             board: native_sim/native/64
             board-label: native64
+          - app: outdoor_sensor_node
+            board: lora_e5_mini
+            board-label: lora-e5-mini
           - app: gateway
             board: frdm_mcxn947/mcxn947/cpu0
             board-label: frdm-mcxn947
@@ -134,6 +137,14 @@ jobs:
         with:
           name: ${{ matrix.app }}-${{ matrix.board-label }}
           path: build/${{ matrix.app }}/zephyr/zephyr.exe
+          retention-days: 7
+
+      - name: Upload ELF binary (ARM)
+        if: ${{ matrix.board-label != 'native64' && matrix.board != 'frdm_mcxn947/mcxn947/cpu0' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app }}-${{ matrix.board-label }}
+          path: build/${{ matrix.app }}/zephyr/zephyr.elf
           retention-days: 7
 
       - name: Upload sysbuild binaries
@@ -217,7 +228,7 @@ jobs:
           WEST_ROOT=$(west topdir)
           ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
           ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
-            west build -p always -b frdm_mcxn947/mcxn947/cpu0 \
+            west build -p always -b lora_e5_mini \
               --build-dir "${GITHUB_WORKSPACE}/build/renode/outdoor_sensor_node" \
               "${WEST_ROOT}/weather-station/apps/outdoor_sensor_node"
 
@@ -411,7 +422,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: outdoor_sensor_node-native64
-          path: snapshot/binaries/outdoor_sensor_node/
+          path: snapshot/binaries/outdoor_sensor_node/native_sim/
+
+      - name: Download outdoor-sensor-node (lora_e5_mini) binary
+        uses: actions/download-artifact@v4
+        with:
+          name: outdoor_sensor_node-lora-e5-mini
+          path: snapshot/binaries/outdoor_sensor_node/lora_e5_mini/
 
       - name: Download coverage report
         uses: actions/download-artifact@v4
