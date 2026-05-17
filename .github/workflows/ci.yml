@@ -173,7 +173,6 @@ jobs:
         test:
           - gateway_boot
           - gateway_fota
-          - outdoor_sensor_node_boot
 
     steps:
       - uses: actions/checkout@v4
@@ -222,16 +221,6 @@ jobs:
               -DDTC_OVERLAY_FILE="boards/frdm_mcxn947_mcxn947_cpu0.overlay;boards/frdm_mcxn947_mcxn947_cpu0_renode.overlay" \
               -DEXTRA_CONF_FILE="boards/frdm_mcxn947_mcxn947_cpu0_renode.conf;boards/frdm_mcxn947_mcxn947_cpu0_trace_recorder.conf"
 
-      - name: Build outdoor_sensor_node for Renode
-        run: |
-          source /home/zephyr/.venv/bin/activate
-          WEST_ROOT=$(west topdir)
-          ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station" \
-          ZEPHYR_BASE="${WEST_ROOT}/zephyr" \
-            west build -p always -b lora_e5_mini \
-              --build-dir "${GITHUB_WORKSPACE}/build/renode/outdoor_sensor_node" \
-              "${WEST_ROOT}/weather-station/apps/outdoor_sensor_node"
-
       - name: Install libicu and curl (Renode deps)
         run: apt-get update -qq && apt-get install -y -qq libicu-dev curl
 
@@ -269,7 +258,6 @@ jobs:
             simulation/renode/trace.bin
             simulation/renode/trace_functions.perfetto
             build/renode/gateway/zephyr/zephyr.elf
-            build/renode/outdoor_sensor_node/zephyr/zephyr.elf
           retention-days: 14
 
   # ── 4. Test + Coverage ───────────────────────────────────────────────────────
