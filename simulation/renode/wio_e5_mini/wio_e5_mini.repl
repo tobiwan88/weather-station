@@ -1,8 +1,6 @@
 // Wio-E5 Mini (STM32WLE5JC) Renode Platform
 // Minimal model for boot verification and UART output testing
 
-using sysbus
-
 cpu0: CPU.CortexM @ sysbus
     cpuType: "cortex-m4"
     nvic: nvic0
