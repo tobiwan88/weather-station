@@ -63,6 +63,7 @@ These two goals drive every structural choice in the codebase.
 | `fake_remote_sensor` | Simulated remote sensor transport adapter for testing; implements the `remote_transport` vtable |
 | `pipe_publisher` | Writes `env_sensor_data` events as length-prefixed protobuf to a POSIX FIFO (sensor-node side) |
 | `pipe_transport` | Reads from POSIX FIFO, decodes protobuf frames, publishes to `sensor_event_chan` (gateway side) |
+| `sensor_node_tx` | Subscribes to `sensor_event_chan`, accumulates readings in a ring buffer, transmits batched 5-byte LoRa frames on timer or force-TX command; shell: `sensor_node_tx force/enable/disable/status` |
 | `trace_recorder` | Overrides Zephyr tracing hooks to capture thread switch/ISR/idle events in a static ring buffer for Renode post-mortem dump |
 | `uart_lora_bridge` | Receives 24-byte wire frames from LoRa co-processor over UART, converts to `env_sensor_data`, publishes to `sensor_event_chan` (gateway side) |
 | `uart_lora_sender` | Subscribes to `sensor_event_chan`, packs events into 24-byte wire frames, sends over UART to gateway (co-processor side) |

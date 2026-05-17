@@ -1,11 +1,5 @@
 # Backlog
 
-## [Lora SENSOR-TX] sensor tx is tightly coupled to bosch bmq
-- remove tight coupling, plan a good architecture allowing differnt sensor
-- pm does not seem to be supported
-- change to new fetch&decode api
-
-
 ## [Lora SENSOR] Do we support RCP/FOTA coommands?
 - review and adjust
 

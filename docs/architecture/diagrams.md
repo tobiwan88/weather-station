@@ -92,3 +92,11 @@ Fake sensor lifecycle: board overlay → DT_FOREACH → SYS_INIT → trigger →
 ```mermaid
 --8<-- "fake-sensor-flow.mmd"
 ```
+
+## Sensor Node TX Data Flow
+
+Sensor event accumulation → batched LoRa transmission sequence.
+
+```mermaid
+--8<-- "sensor-node-tx-flow.mmd"
+```
