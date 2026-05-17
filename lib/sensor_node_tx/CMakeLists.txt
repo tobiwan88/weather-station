@@ -8,5 +8,9 @@ if(CONFIG_SENSOR_NODE_TX)
   zephyr_library_include_directories(include)
   zephyr_library_include_directories(
     ${ZEPHYR_CURRENT_MODULE_DIR}/lib/lora_node/include)
+  zephyr_library_include_directories(
+    ${ZEPHYR_CURRENT_MODULE_DIR}/lib/sensor_event/include)
+  zephyr_library_include_directories(
+    ${ZEPHYR_CURRENT_MODULE_DIR}/lib/config_cmd/include)
 
 endif()
