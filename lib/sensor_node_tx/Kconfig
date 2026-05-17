@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig SENSOR_NODE_TX
+	bool "Sensor node periodic TX"
+	depends on LORA_NODE
+	depends on SENSOR
+	help
+	  Periodic sensor reading and LoRa transmission for outdoor sensor nodes.
+	  Reads sensors on a configurable interval, encodes in compact 5-byte wire
+	  format, and transmits via LoRa P2P.
+
+if SENSOR_NODE_TX
+
+config SENSOR_NODE_TX_INTERVAL_S
+	int "Publish interval in seconds"
+	default 60
+	range 5 3600
+	help
+	  How often to read sensors and transmit via LoRa.
+
+config SENSOR_NODE_TX_MAX_READINGS
+	int "Maximum readings per frame"
+	default 4
+	range 1 6
+	help
+	  Maximum number of sensor readings to pack into a single LoRa frame.
+	  Limited by the LoRa payload budget at the configured spreading factor.
+
+module = SENSOR_NODE_TX
+module-str = SENSOR_NODE_TX
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # SENSOR_NODE_TX
