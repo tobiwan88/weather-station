@@ -82,5 +82,4 @@ flash_ctrl: Python.PythonPeripheral @ sysbus 0x58004400
 
 // SysTick
 systick: CortexM.SysTick @ sysbus 0xe000e010
-    -> nvic0@-1
     frequency: 48000000
