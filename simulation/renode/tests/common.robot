@@ -9,7 +9,7 @@ Library             Process
 ${RESC}             ${CURDIR}/../frdm_mcxn947.resc
 ${UART}             sysbus.flexcomm4lpuart4
 ${UART_TIMEOUT}     60
-${ELF}              ${CURDIR}/../../../build/renode/gateway/zephyr/zephyr.elf
+${ELF}              ${CURDIR}/../../../build/renode/gateway/gateway/zephyr/zephyr.elf
 ${OUTDOOR_ELF}      ${CURDIR}/../../../build/renode/outdoor_sensor_node/zephyr/zephyr.elf
 
 *** Keywords ***
