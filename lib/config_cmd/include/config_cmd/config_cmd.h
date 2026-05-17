@@ -27,6 +27,7 @@ enum config_cmd_type {
 	CONFIG_CMD_MQTT_SET_BROKER,
 	CONFIG_CMD_MQTT_SET_AUTH,
 	CONFIG_CMD_MQTT_SET_GATEWAY,
+	CONFIG_CMD_FORCE_TX,
 };
 
 struct config_cmd_mqtt_broker {
