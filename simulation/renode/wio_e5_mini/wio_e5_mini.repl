@@ -1,7 +1,5 @@
-# Wio-E5 Mini (STM32WLE5JC) Renode Platform
-# Minimal model for boot verification and UART output testing
-
-using sysbus
+// Wio-E5 Mini (STM32WLE5JC) Renode Platform
+// Minimal model for boot verification and UART output testing
 
 cpu0: CPU.CortexM @ sysbus
     cpuType: "cortex-m4"
@@ -12,50 +10,62 @@ nvic0: IRQControllers.NVIC @ sysbus 0xe000e000
     systickFrequency: 48000000
 
 flash: Memory.MappedMemory @ sysbus 0x08000000
-    size: 0x40000  # 256 KB
+    size: 0x40000  // 256 KB
 
 sram: Memory.MappedMemory @ sysbus 0x20000000
-    size: 0x10000  # 64 KB
+    size: 0x10000  // 64 KB
 
-# USART1 - gateway communication UART
-usart1: UART.STM32_UART @ sysbus 0x40013800
-    -> nvic0@36
+// USART1 - gateway communication UART
+usart1: UART.STM32F7_USART @ sysbus 0x40013800
+    frequency: 48000000
+    IRQ->nvic0@36
 
-# GPIO ports
-gpioa: Gpio.STM32_GPIO @ sysbus 0x48000000
-gpiob: Gpio.STM32_GPIO @ sysbus 0x48000400
-gpioc: Gpio.STM32_GPIO @ sysbus 0x48000800
-gpioh: Gpio.STM32_GPIO @ sysbus 0x48001c00
-
-# RCC - clock control (stub with Python peripheral for register spoofing)
-rcc: Python.PythonPeripheral @ sysbus 0x58000000
+// GPIO ports (stubbed as memory regions — Zephyr probes them but doesn't need functional GPIO for boot)
+gpioa: Memory.MappedMemory @ sysbus 0x48000000
     size: 0x400
+gpiob: Memory.MappedMemory @ sysbus 0x48000400
+    size: 0x400
+gpioc: Memory.MappedMemory @ sysbus 0x48000800
+    size: 0x400
+gpioh: Memory.MappedMemory @ sysbus 0x48001c00
+    size: 0x400
+
+// RCC - clock control (stub with Python peripheral for register spoofing)
+// STM32WL RCC register map: CR at 0x00, ICSCR at 0x04, CFGR at 0x08, etc.
+rcc: Python.PythonPeripheral @ sysbus 0x58000000
+    size: 0x800
     initable: true
     script: '''
 if request.IsInit:
     request.Value = 0
-# Return non-zero for clock status registers to unblock boot
-if request.Offset == 0x44:  # CR register
-    request.Value = 0x03000000  # HSI ready
-elif request.Offset == 0x48:  # CSR register
-    request.Value = 0x02000000  # LSI ready
+# CR register (offset 0x00) - all internal clocks ready
+if request.Offset == 0x00:
+    request.Value = 0x00030303  # MSIRDY + HSIRDY + HSERDY + CSIRDY + HSI48RDY
+# ICSCR register (offset 0x04) - MSI range
+elif request.Offset == 0x04:
+    request.Value = 0x00000000  # MSI range 0 (4 MHz)
+# CFGR register (offset 0x08) - clock configuration
+elif request.Offset == 0x08:
+    request.Value = 0x00000000  # MSI as system clock
+# AHB1ENR (offset 0x4C) - enable all AHB1 peripherals
+elif request.Offset == 0x4C:
+    request.Value = 0xFFFFFFFF
+# APB1ENR1 (offset 0x58) - enable all APB1 peripherals
+elif request.Offset == 0x58:
+    request.Value = 0xFFFFFFFF
+# APB2ENR (offset 0x60) - enable all APB2 peripherals
+elif request.Offset == 0x60:
+    request.Value = 0xFFFFFFFF
 else:
     request.Value = 0
 '''
 
-# EXTI - external interrupts
-exti: IRQControllers.STM32_EXTI @ sysbus 0x58000800
-    -> nvic0@6
-    -> nvic0@7
-    -> nvic0@8
-    -> nvic0@9
-    -> nvic0@10
-    -> nvic0@22
-    -> nvic0@41
-    numberOfLines: 64
+// EXTI - external interrupts (stubbed as memory regions)
+exti: Memory.MappedMemory @ sysbus 0x58000800
+    size: 0x400
 
-# Sub-GHz SPI (stub - no SX126x model in Renode yet)
-# Python peripheral to prevent crashes when lora_radio driver probes
+// Sub-GHz SPI (stub - no SX126x model in Renode yet)
+// Python peripheral to prevent crashes when lora_radio driver probes
 subghzspi: Python.PythonPeripheral @ sysbus 0x58010000
     size: 0x400
     initable: true
@@ -70,19 +80,24 @@ else:
     request.Value = 0
 '''
 
-# Power control stub
+// Power control stub
 pwr: Python.PythonPeripheral @ sysbus 0x58004000
     size: 0x400
     initable: true
-    script: "request.Value = 0"
+    script: '''
+if request.IsInit:
+    request.Value = 0
+# PWR_SR2 - voltage ready
+if request.Offset == 0x14:
+    request.Value = 0x00000007  # VOSF, REGLPF, REGLPS ready
+else:
+    request.Value = 0
+'''
 
-# Flash controller stub
+// Flash controller stub
 flash_ctrl: Python.PythonPeripheral @ sysbus 0x58004400
     size: 0x400
     initable: true
     script: "request.Value = 0"
 
-# SysTick
-systick: CortexM.SysTick @ sysbus 0xe000e010
-    -> nvic0@-1
-    frequency: 48000000
+// SysTick (handled by NVIC systickFrequency — no explicit peripheral needed)

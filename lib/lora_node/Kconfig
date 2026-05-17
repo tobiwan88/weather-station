@@ -1,0 +1,67 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig LORA_NODE
+	bool "LoRa sensor node TX library"
+	depends on LORA
+	depends on PSA_CRYPTO
+	help
+	  Lightweight LoRa transmit library for sensor nodes. Handles radio
+	  initialization, session key management, packet encoding (AES-128-GCM
+	  + CRC-16), and transmission.
+
+	  Used by the outdoor_sensor_node app to send compact 5-byte sensor
+	  readings to the gateway over LoRa P2P.
+
+if LORA_NODE
+
+config LORA_NODE_DEV_NAME
+	string "LoRa device name"
+	default "radio@0"
+	help
+	  Device name used with DEVICE_DT_GET_ONE() to locate the LoRa radio.
+
+config LORA_NODE_DEFAULT_SF
+	int "Default spreading factor"
+	default 10
+	range 7 12
+	help
+	  Default spreading factor for transmissions.
+
+config LORA_NODE_DEFAULT_BW
+	int "Default bandwidth (kHz)"
+	default 125
+	help
+	  Default bandwidth in kHz.
+
+config LORA_NODE_DEFAULT_FREQ
+	int "Default frequency (Hz)"
+	default 868000000
+	help
+	  Default RF frequency in Hz (EU868 band).
+
+config LORA_NODE_TX_POWER
+	int "TX power (dBm)"
+	default 14
+	range 2 22
+	help
+	  Transmit power in dBm.
+
+config LORA_NODE_SESSION_KEY
+	hex "Session key (16 bytes, for testing)"
+	default 0x0
+	help
+	  Hard-coded 16-byte session key for testing. In production, the key
+	  is provisioned via the pairing protocol and stored in NVS.
+
+config LORA_NODE_SETTINGS_KEY
+	string "Settings key for session data"
+	default "node/session"
+	help
+	  NVS settings key under which the session (node_id, session_key)
+	  is persisted.
+
+module = LORA_NODE
+module-str = LORA_NODE
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # LORA_NODE
