@@ -132,6 +132,36 @@ class ShellHarness:
         self._exec(f"fake_sensors voc_set {uid:#06x} {miaq}")
 
     # ------------------------------------------------------------------
+    # sensor_node_tx commands
+    # ------------------------------------------------------------------
+
+    def sensor_node_tx_force(self) -> str:
+        """Force an immediate TX via ``sensor_node_tx force``.
+
+        Returns the confirmation line from the shell.
+        """
+        lines = self._exec("sensor_node_tx force")
+        for line in lines:
+            if "force" in line.lower() or "transmit" in line.lower():
+                return line.strip()
+        return ""
+
+    def sensor_node_tx_enable(self) -> str:
+        """Enable sensor_node_tx via ``sensor_node_tx enable``."""
+        lines = self._exec("sensor_node_tx enable")
+        return " ".join(lines).strip()
+
+    def sensor_node_tx_disable(self) -> str:
+        """Disable sensor_node_tx via ``sensor_node_tx disable``."""
+        lines = self._exec("sensor_node_tx disable")
+        return " ".join(lines).strip()
+
+    def sensor_node_tx_status(self) -> str:
+        """Get sensor_node_tx status via ``sensor_node_tx status``."""
+        lines = self._exec("sensor_node_tx status")
+        return " ".join(lines).strip()
+
+    # ------------------------------------------------------------------
     # help
     # ------------------------------------------------------------------
 
