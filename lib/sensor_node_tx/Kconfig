@@ -3,9 +3,8 @@
 menuconfig SENSOR_NODE_TX
 	bool "Sensor Node LoRa TX"
 	depends on LORA_NODE
-	select SENSOR_EVENT
-	select CONFIG_CMD
-	default y
+	depends on SENSOR_EVENT
+	depends on CONFIG_CMD
 	help
 	  Zbus consumer that accumulates env_sensor_data events and transmits
 	  them as compact 5-byte LoRa readings on a configurable interval.
