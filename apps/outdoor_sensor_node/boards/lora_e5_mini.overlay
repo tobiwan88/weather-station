@@ -11,5 +11,6 @@
 		compatible = "bosch,bme680";
 		reg = <0x76>;
 		label = "BME688";
+		sensor-uid = <0x0011>;
 	};
 };
