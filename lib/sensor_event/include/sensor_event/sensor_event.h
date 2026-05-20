@@ -15,6 +15,7 @@
 #ifndef SENSOR_EVENT_SENSOR_EVENT_H_
 #define SENSOR_EVENT_SENSOR_EVENT_H_
 
+#include <math.h>
 #include <stdint.h>
 #include <zephyr/zbus/zbus.h>
 
@@ -24,14 +25,15 @@ extern "C" {
 
 /** Physical quantity represented by the event. */
 enum sensor_type {
-	SENSOR_TYPE_TEMPERATURE, /**< Degrees Celsius                 */
-	SENSOR_TYPE_HUMIDITY,    /**< Relative humidity, %RH          */
-	SENSOR_TYPE_PRESSURE,    /**< Atmospheric pressure, hPa       */
-	SENSOR_TYPE_CO2,         /**< CO₂ concentration, ppm          */
-	SENSOR_TYPE_VOC,         /**< VOC air quality index (0–500)   */
-	SENSOR_TYPE_LIGHT,       /**< Illuminance, lux                */
-	SENSOR_TYPE_UV_INDEX,    /**< UV index (dimensionless)        */
-	SENSOR_TYPE_BATTERY_MV,  /**< Battery voltage, millivolts     */
+	SENSOR_TYPE_TEMPERATURE,    /**< Degrees Celsius                 */
+	SENSOR_TYPE_HUMIDITY,       /**< Relative humidity, %RH          */
+	SENSOR_TYPE_PRESSURE,       /**< Atmospheric pressure, hPa       */
+	SENSOR_TYPE_CO2,            /**< CO₂ concentration, ppm          */
+	SENSOR_TYPE_VOC,            /**< VOC air quality index (0–500)   */
+	SENSOR_TYPE_LIGHT,          /**< Illuminance, lux                */
+	SENSOR_TYPE_UV_INDEX,       /**< UV index (dimensionless)        */
+	SENSOR_TYPE_BATTERY_MV,     /**< Battery voltage, millivolts     */
+	SENSOR_TYPE_GAS_RESISTANCE, /**< Gas resistance, ohms (MOX)    */
 };
 
 /**
@@ -208,6 +210,70 @@ static inline int32_t voc_iaq_to_q31(double iaq)
 static inline double q31_to_voc_iaq(int32_t q31)
 {
 	return (double)q31 / (double)INT32_MAX * 500.0;
+}
+
+/*
+ * Pressure: phys ∈ [300, 1100] hPa, span = 800 hPa
+ *   encode: q31 = (hpa - 300.0) / 800.0 * INT32_MAX
+ *   decode: hpa = (double)q31 / INT32_MAX * 800.0 + 300.0
+ */
+
+/**
+ * @brief Encode atmospheric pressure in hPa to Q31.
+ * @param hpa Pressure in hPa (range 300 .. 1100).
+ * @return Q31 encoded value.
+ */
+static inline int32_t pressure_hpa_to_q31(double hpa)
+{
+	if (hpa <= 300.0) {
+		return INT32_MIN;
+	}
+	if (hpa >= 1100.0) {
+		return INT32_MAX;
+	}
+	return (int32_t)((hpa - 300.0) / 800.0 * (double)INT32_MAX);
+}
+
+/**
+ * @brief Decode a Q31 value to atmospheric pressure in hPa.
+ * @param q31 Q31 encoded pressure.
+ * @return Pressure in hPa.
+ */
+static inline double q31_to_pressure_hpa(int32_t q31)
+{
+	return (double)q31 / (double)INT32_MAX * 800.0 + 300.0;
+}
+
+/*
+ * Gas resistance: phys ∈ [1kΩ, 10MΩ], log-scale
+ *   encode: q31 = (log10(ohms) - 3.0) / 7.0 * INT32_MAX
+ *   decode: ohms = pow(10.0, (double)q31 / INT32_MAX * 7.0 + 3.0)
+ */
+
+/**
+ * @brief Encode gas resistance in ohms to Q31 (log-scale).
+ * @param ohms Resistance in ohms (range 1000 .. 10000000).
+ * @return Q31 encoded value.
+ */
+static inline int32_t gas_resistance_ohm_to_q31(double ohms)
+{
+	if (ohms <= 1000.0) {
+		return INT32_MIN;
+	}
+	if (ohms >= 10000000.0) {
+		return INT32_MAX;
+	}
+	return (int32_t)((log10(ohms) - 3.0) / 7.0 * (double)INT32_MAX);
+}
+
+/**
+ * @brief Decode a Q31 value to gas resistance in ohms.
+ * @param q31 Q31 encoded gas resistance.
+ * @return Resistance in ohms.
+ */
+static inline double q31_to_gas_resistance_ohm(int32_t q31)
+{
+	return pow(10.0, (double)q31 / (double)INT32_MAX * 7.0 + 3.0);
 }
 
 #ifdef __cplusplus
