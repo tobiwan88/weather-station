@@ -24,4 +24,13 @@
 		initial-value-mpct = <70000>;
 		status = "okay";
 	};
+
+	fake_lora0: fake-lora-radio {
+		compatible = "fake,lora-radio";
+		status = "okay";
+	};
+
+	aliases {
+		lora0 = &fake_lora0;
+	};
 };

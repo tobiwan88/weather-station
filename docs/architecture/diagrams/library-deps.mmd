@@ -3,6 +3,7 @@ title: Library Dependency Graph
 ---
 graph TD
     APP["apps/gateway\n(application)"]
+    SN_APP["apps/sensor-node\n(application)"]
 
     SE["sensor_event\nenv_sensor_data + chan"]
     ST["sensor_trigger\ntrigger event + chan"]
@@ -18,6 +19,8 @@ graph TD
     RS["remote_sensor\ntransport abstraction"]
     FRS["fake_remote_sensor\ntesting stub"]
     MQTT["mqtt_publisher\nMQTT egress"]
+    SNTX["sensor_node_tx\nLoRa TX batcher"]
+    LORA["lora_node\nLoRa packet encoder"]
 
     ZBUS(["ZBUS\n(Zephyr)"])
     NET(["NETWORKING\n(Zephyr)"])
@@ -25,6 +28,8 @@ graph TD
     LVGLLIB(["LVGL + DISPLAY\n(Zephyr)"])
     SNTPLIB(["SNTP\n(Zephyr)"])
     SETTINGS(["SETTINGS\n(Zephyr)"])
+    LORADRV(["LORA DRIVER\n(Zephyr)"])
+    PSACRYPTO(["PSA_CRYPTO\n(Zephyr)"])
 
     APP -->|Kconfig| SE
     APP -->|Kconfig| ST
@@ -40,6 +45,13 @@ graph TD
     APP -->|Kconfig| RS
     APP -->|Kconfig| FRS
     APP -->|Kconfig| MQTT
+
+    SN_APP -->|Kconfig| FS
+    SN_APP -->|Kconfig| SE
+    SN_APP -->|Kconfig| ST
+    SN_APP -->|Kconfig| SR
+    SN_APP -->|Kconfig| SEL
+    SN_APP -->|Kconfig| SNTX
 
     FS --> SE
     FS --> ST
@@ -68,6 +80,12 @@ graph TD
 
     LOC --> SETTINGS
 
+    SNTX --> SE
+    SNTX --> CC
+    SNTX --> LORA
+    LORA --> LORADRV
+    LORA --> PSACRYPTO
+
     SE --> ZBUS
     ST --> ZBUS
     SR --> ZBUS
@@ -77,9 +95,12 @@ graph TD
     LVGL --> LVGLLIB
 
     style APP fill:#dbeafe,stroke:#3b82f6
+    style SN_APP fill:#dbeafe,stroke:#3b82f6
     style ZBUS fill:#fce7f3,stroke:#db2777
     style NET fill:#fce7f3,stroke:#db2777
     style HTTPD fill:#fce7f3,stroke:#db2777
     style LVGLLIB fill:#fce7f3,stroke:#db2777
     style SNTPLIB fill:#fce7f3,stroke:#db2777
     style SETTINGS fill:#fce7f3,stroke:#db2777
+    style LORADRV fill:#fce7f3,stroke:#db2777
+    style PSACRYPTO fill:#fce7f3,stroke:#db2777

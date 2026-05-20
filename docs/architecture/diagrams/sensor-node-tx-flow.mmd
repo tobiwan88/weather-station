@@ -1,0 +1,46 @@
+---
+title: Sensor Node TX Data Flow
+---
+flowchart LR
+    SENSORS["Fake Sensors\n(temp, hum, CO2, VOC)"]
+    TRIG["sensor_trigger_chan"]
+    EVT["sensor_event_chan\nenv_sensor_data"]
+
+    subgraph sensor_node_tx
+        LISTENER["zbus Listener\n(ADR-002: no blocking)"]
+        LOCK["k_spinlock"]
+        BUF["Ring Buffer\nenv_sensor_data[20]"]
+        WIRE["Wire Array\nlora_reading[20]\n5 bytes each"]
+        TIMER["k_work_delayable\n(CONFIG_SENSOR_NODE_TX_INTERVAL_S)"]
+        FORCE["FORCE_TX\nconfig_cmd_chan"]
+    end
+
+    LORA["lora_node\nlora_node_transmit()"]
+    AIR["((LoRa RF))"]
+
+    SENSORS -->|trigger| TRIG
+    TRIG -->|sample + publish| SENSORS
+    SENSORS -->|publish| EVT
+    EVT -->|callback| LISTENER
+    LISTENER -->|lock| LOCK
+    LOCK -->|copy| BUF
+    BUF -->|unlock| LOCK
+
+    TIMER -->|expiry| TX_PATH
+    FORCE -->|command| TX_PATH
+
+    subgraph TX_PATH[TX Path]
+        SNAP["Lock → snapshot → convert\n→ unlock → transmit"]
+    end
+
+    BUF -->|convert| WIRE
+    WIRE -->|5-byte readings| LORA
+    SNAP -->|uses| BUF
+    SNAP -->|writes| WIRE
+    SNAP -->|calls| LORA
+    LORA --> AIR
+
+    style sensor_node_tx fill:#f0fdf4,stroke:#22c55e
+    style TX_PATH fill:#fef3c7,stroke:#f59e0b
+    style SENSORS fill:#dbeafe,stroke:#3b82f6
+    style LORA fill:#ede9fe,stroke:#8b5cf6
