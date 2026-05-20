@@ -18,15 +18,12 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <sensor_registry/sensor_registry.h>
 #include <sensor_trigger/sensor_trigger.h>
 
-#define DT_COMPAT bosch, bme680
-
-#define HW_SENSOR_BROADCAST_UID 0xFFFFFFFF
+#define DT_COMPAT bosch_bme680
 
 struct bme680_state {
 	const struct device *dev;
 	uint32_t uid;
 	bool enabled;
-	bool pm_suspended;
 };
 
 static struct bme680_state bme680_state;
@@ -69,7 +66,7 @@ static void bme680_trigger_cb(const struct zbus_channel *chan)
 {
 	const struct sensor_trigger_event *trig = zbus_chan_const_msg(chan);
 
-	if (!bme680_state.enabled || bme680_state.pm_suspended) {
+	if (!bme680_state.enabled) {
 		return;
 	}
 	if (trig->target_uid != 0 && trig->target_uid != bme680_state.uid &&
@@ -117,15 +114,14 @@ int bme680_sensor_enable(void)
 		return -ENODEV;
 	}
 
-	if (IS_ENABLED(CONFIG_PM_DEVICE)) {
-		int ret = pm_device_action_run(bme680_state.dev, PM_DEVICE_ACTION_RESUME);
-		if (ret < 0 && ret != -ENOSYS) {
-			LOG_WRN("pm_device resume failed: %d", ret);
-		}
+#ifdef CONFIG_PM_DEVICE
+	int ret = pm_device_action_run(bme680_state.dev, PM_DEVICE_ACTION_RESUME);
+	if (ret < 0 && ret != -ENOSYS) {
+		LOG_WRN("pm_device resume failed: %d", ret);
 	}
+#endif
 
 	bme680_state.enabled = true;
-	bme680_state.pm_suspended = false;
 	LOG_INF("BME680 enabled (uid=0x%08x)", bme680_state.uid);
 	return 0;
 }
@@ -134,68 +130,42 @@ int bme680_sensor_disable(void)
 {
 	bme680_state.enabled = false;
 
-	if (IS_ENABLED(CONFIG_PM_DEVICE) && bme680_state.dev != NULL) {
+#ifdef CONFIG_PM_DEVICE
+	if (bme680_state.dev != NULL) {
 		int ret = pm_device_action_run(bme680_state.dev, PM_DEVICE_ACTION_SUSPEND);
 		if (ret < 0 && ret != -ENOSYS) {
 			LOG_WRN("pm_device suspend failed: %d", ret);
 		}
 	}
+#endif
 
 	LOG_INF("BME680 disabled");
 	return 0;
 }
 
-#ifdef CONFIG_PM_DEVICE
-static int bme680_pm_action(const struct device *dev, enum pm_device_action action)
-{
-	switch (action) {
-	case PM_DEVICE_ACTION_SUSPEND:
-		bme680_state.pm_suspended = true;
-		bme680_state.enabled = false;
-		return 0;
-	case PM_DEVICE_ACTION_RESUME:
-		bme680_state.pm_suspended = false;
-		return 0;
-	default:
-		return -ENOTSUP;
-	}
-}
-
-PM_DEVICE_DT_DEFINE(DT_INST(0, bosch_bme680), bme680_pm_action);
-#endif
-
-#define BME680_REGISTRY_ENTRY_DECL(node_id)                                                        \
-	static const struct sensor_registry_entry bme680_reg_##node_id = {                         \
-		.uid = DT_PROP_OR(node_id, sensor_uid, CONFIG_BME680_SENSOR_DEFAULT_UID),          \
-		.label = DT_NODE_FULL_NAME(node_id),                                               \
-		.is_remote = false,                                                                \
-	};
-
-DT_FOREACH_STATUS_OKAY(DT_COMPAT, BME680_REGISTRY_ENTRY_DECL)
-
-#define BME680_REGISTRY_REGISTER(node_id)                                                          \
-	{                                                                                          \
-		int _rc = sensor_registry_register(&bme680_reg_##node_id);                         \
-		if (_rc != 0 && _rc != -EEXIST) {                                                  \
-			LOG_ERR("registry register uid 0x%04x failed: %d",                         \
-				DT_PROP_OR(node_id, sensor_uid, CONFIG_BME680_SENSOR_DEFAULT_UID), \
-				_rc);                                                              \
-		}                                                                                  \
-	}
-
 static int bme680_sensor_init(void)
 {
-	bme680_state.dev = DEVICE_DT_GET_ANY(bosch_bme680);
+	bme680_state.dev = DEVICE_DT_GET_ANY(DT_COMPAT);
 	if (!device_is_ready(bme680_state.dev)) {
 		LOG_WRN("BME680 device not ready");
 		bme680_state.dev = NULL;
 		return 0;
 	}
 
-	DT_FOREACH_STATUS_OKAY(DT_COMPAT, BME680_REGISTRY_REGISTER)
+	bme680_state.uid = CONFIG_BME680_SENSOR_DEFAULT_UID;
 
-	bme680_state.uid =
-		DT_PROP_OR(DT_NODELABEL(DT_COMPAT), sensor_uid, CONFIG_BME680_SENSOR_DEFAULT_UID);
+	{
+		static const struct sensor_registry_entry bme680_reg = {
+			.uid = CONFIG_BME680_SENSOR_DEFAULT_UID,
+			.label = DT_NODE_FULL_NAME(DT_DRV_INST(0)),
+			.is_remote = false,
+		};
+		int _rc = sensor_registry_register(&bme680_reg);
+		if (_rc != 0 && _rc != -EEXIST) {
+			LOG_ERR("registry register uid 0x%04x failed: %d",
+				CONFIG_BME680_SENSOR_DEFAULT_UID, _rc);
+		}
+	}
 
 	int rc = zbus_chan_add_obs(&sensor_trigger_chan, &bme680_listener, K_NO_WAIT);
 	if (rc != 0) {

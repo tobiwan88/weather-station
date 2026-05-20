@@ -17,6 +17,34 @@ menuconfig FAKE_SENSORS
 
 if FAKE_SENSORS
 
+config FAKE_TEMPERATURE_UID_BASE
+	hex "Base UID for fake temperature sensors"
+	default 0x0001
+	help
+	  Starting UID for fake temperature sensor instances.
+	  Each instance gets CONFIG_FAKE_TEMPERATURE_UID_BASE + instance_index.
+
+config FAKE_HUMIDITY_UID_BASE
+	hex "Base UID for fake humidity sensors"
+	default 0x0003
+	help
+	  Starting UID for fake humidity sensor instances.
+	  Each instance gets CONFIG_FAKE_HUMIDITY_UID_BASE + instance_index.
+
+config FAKE_CO2_UID_BASE
+	hex "Base UID for fake CO2 sensors"
+	default 0x0005
+	help
+	  Starting UID for fake CO2 sensor instances.
+	  Each instance gets CONFIG_FAKE_CO2_UID_BASE + instance_index.
+
+config FAKE_VOC_UID_BASE
+	hex "Base UID for fake VOC sensors"
+	default 0x0006
+	help
+	  Starting UID for fake VOC sensor instances.
+	  Each instance gets CONFIG_FAKE_VOC_UID_BASE + instance_index.
+
 config FAKE_SENSORS_AUTO_PUBLISH_MS
 	int "Auto-publish interval in milliseconds (0 = disabled)"
 	default 0

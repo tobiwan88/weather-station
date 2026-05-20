@@ -3,13 +3,17 @@
  *
  * Gateway DT overlay for native_sim/native/64.
  *
- * Defines four fake sensors:
+ * Defines six fake sensors:
  *   - Two indoor sensors (living room): temperature + humidity
  *   - Two outdoor sensors: temperature + humidity
+ *   - One CO2 sensor
+ *   - One VOC sensor
  *
- * UIDs 0x0001–0x000F are reserved for gateway local sensors.
- * UIDs 0x0011–0x001F are reserved for gateway outdoor sensors.
- * UIDs 0x0021+ are for remote sensor nodes.
+ * Sensor UIDs are assigned at build time via Kconfig:
+ *   CONFIG_FAKE_TEMPERATURE_UID_BASE (default 0x0001)
+ *   CONFIG_FAKE_HUMIDITY_UID_BASE (default 0x0003)
+ *   CONFIG_FAKE_CO2_UID_BASE (default 0x0005)
+ *   CONFIG_FAKE_VOC_UID_BASE (default 0x0006)
  *
  * Also configures the SDL display controller for the LVGL graphical window.
  */
@@ -21,42 +25,36 @@
 
 	fake_temp_indoor: fake-temp-indoor {
 		compatible = "fake,temperature";
-		sensor-uid = <0x0001>;
 		initial-value-mdegc = <21000>;
 		status = "okay";
 	};
 
 	fake_hum_indoor: fake-hum-indoor {
 		compatible = "fake,humidity";
-		sensor-uid = <0x0002>;
 		initial-value-mpct = <50000>;
 		status = "okay";
 	};
 
 	fake_temp_outdoor: fake-temp-outdoor {
 		compatible = "fake,temperature";
-		sensor-uid = <0x0011>;
 		initial-value-mdegc = <4000>;
 		status = "okay";
 	};
 
 	fake_hum_outdoor: fake-hum-outdoor {
 		compatible = "fake,humidity";
-		sensor-uid = <0x0012>;
 		initial-value-mpct = <30000>;
 		status = "okay";
 	};
 
 	fake_co2_indoor: fake-co2-indoor {
 		compatible = "fake,co2";
-		sensor-uid = <0x0003>;
 		initial-value-mppm = <800000>;
 		status = "okay";
 	};
 
 	fake_voc_indoor: fake-voc-indoor {
 		compatible = "fake,voc";
-		sensor-uid = <0x0004>;
 		initial-value-miaq = <25000>;
 		status = "okay";
 	};

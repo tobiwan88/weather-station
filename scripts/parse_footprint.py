@@ -40,10 +40,12 @@ STACK_SYMBOLS = {"z_main_thread", "z_idle_threads", "z_interrupt_stacks"}
 
 # Weather-station libraries to track individually
 WS_LIBS = {
+    "bme680_sensor",
     "clock_display",
     "config_cmd",
     "fake_remote_sensor",
     "fake_sensors",
+    "hw_sensor_utils",
     "http_dashboard",
     "location_registry",
     "lvgl_display",
@@ -51,6 +53,7 @@ WS_LIBS = {
     "pipe_publisher",
     "pipe_transport",
     "remote_sensor",
+    "sen0460_sensor",
     "sensor_event",
     "sensor_event_log",
     "sensor_registry",

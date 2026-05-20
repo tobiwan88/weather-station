@@ -2,7 +2,7 @@ manifest:
   version: "0.13"
 
   self:
-    path: weather-station
+    path: .
 
   remotes:
     - name: zephyrproject-rtos

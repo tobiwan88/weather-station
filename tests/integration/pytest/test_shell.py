@@ -50,13 +50,13 @@ def test_zephyr_version_reported(shell_harness):
 def test_sensor_list_has_all_sensors(shell_harness):
     """``fake_sensors list`` must return the six sensors defined in the overlay.
 
-    Expected UIDs: 0x0001 (temp indoor), 0x0002 (hum indoor),
-                   0x0003 (CO2), 0x0004 (VOC),
-                   0x0011 (temp outdoor), 0x0012 (hum outdoor).
+    Expected UIDs: 0x0001 (temp indoor), 0x0002 (temp outdoor),
+                   0x0003 (hum indoor), 0x0004 (hum outdoor),
+                   0x0005 (CO2), 0x0006 (VOC).
     """
     sensors = shell_harness.list_sensors()
     uids = {s.uid for s in sensors}
-    expected = {0x0001, 0x0002, 0x0003, 0x0004, 0x0011, 0x0012}
+    expected = {0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006}
     assert expected.issubset(uids), (
         f"Missing UIDs: {expected - uids}. Found: {[hex(u) for u in uids]}"
     )
@@ -69,11 +69,11 @@ def test_sensor_kinds_are_correct(shell_harness):
     by_uid = {s.uid: s for s in sensors}
 
     assert by_uid[0x0001].kind == "temperature"
-    assert by_uid[0x0002].kind == "humidity"
-    assert by_uid[0x0003].kind == "co2"
-    assert by_uid[0x0004].kind == "voc"
-    assert by_uid[0x0011].kind == "temperature"
-    assert by_uid[0x0012].kind == "humidity"
+    assert by_uid[0x0002].kind == "temperature"
+    assert by_uid[0x0003].kind == "humidity"
+    assert by_uid[0x0004].kind == "humidity"
+    assert by_uid[0x0005].kind == "co2"
+    assert by_uid[0x0006].kind == "voc"
 
 
 @pytest.mark.shell
@@ -82,12 +82,12 @@ def test_sensor_initial_values(shell_harness):
     sensors = shell_harness.list_sensors()
     by_uid = {s.uid: s for s in sensors}
 
-    assert by_uid[0x0001].value_milli == 21000   # 21 °C
-    assert by_uid[0x0002].value_milli == 50000   # 50 %RH
-    assert by_uid[0x0003].value_milli == 800000  # 800 ppm CO2
-    assert by_uid[0x0004].value_milli == 25000   # 25 IAQ VOC
-    assert by_uid[0x0011].value_milli == 4000    # 4 °C outdoor
-    assert by_uid[0x0012].value_milli == 30000   # 30 %RH outdoor
+    assert by_uid[0x0001].value_milli == 21000   # 21 °C indoor temp
+    assert by_uid[0x0002].value_milli == 4000    # 4 °C outdoor temp
+    assert by_uid[0x0003].value_milli == 50000   # 50 %RH indoor hum
+    assert by_uid[0x0004].value_milli == 30000   # 30 %RH outdoor hum
+    assert by_uid[0x0005].value_milli == 800000  # 800 ppm CO2
+    assert by_uid[0x0006].value_milli == 25000   # 25 IAQ VOC
 
 
 @pytest.mark.shell

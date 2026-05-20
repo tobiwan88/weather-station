@@ -239,7 +239,7 @@ def test_api_data_has_all_sensor_uids(shell_harness, authed_harness):
     shell_harness.trigger_all()
     data = authed_harness.wait_for_readings(min_sensors=6)
     uids = {s["uid"] for s in data["sensors"]}
-    expected = {0x0001, 0x0002, 0x0003, 0x0004, 0x0011, 0x0012}
+    expected = {0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006}
     assert expected.issubset(uids), (
         f"Missing UIDs: {expected - uids}. Found: {[hex(u) for u in uids]}"
     )
