@@ -10,14 +10,12 @@
 / {
 	fake_temp_test: fake-temp-test {
 		compatible = "fake,temperature";
-		sensor-uid = <0x0101>;
 		initial-value-mdegc = <22000>;
 		status = "okay";
 	};
 
 	fake_hum_test: fake-hum-test {
 		compatible = "fake,humidity";
-		sensor-uid = <0x0102>;
 		initial-value-mpct = <45000>;
 		status = "okay";
 	};

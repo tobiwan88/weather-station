@@ -17,15 +17,12 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <sensor_registry/sensor_registry.h>
 #include <sensor_trigger/sensor_trigger.h>
 
-#define DT_COMPAT dfr, sen0460
-
-#define HW_SENSOR_BROADCAST_UID 0xFFFFFFFF
+#define DT_COMPAT dfr_sen0460
 
 struct sen0460_state {
 	const struct device *dev;
 	uint32_t uid;
 	bool enabled;
-	bool pm_suspended;
 };
 
 static struct sen0460_state sen0460_state;
@@ -34,7 +31,7 @@ static void sen0460_trigger_cb(const struct zbus_channel *chan)
 {
 	const struct sensor_trigger_event *trig = zbus_chan_const_msg(chan);
 
-	if (!sen0460_state.enabled || sen0460_state.pm_suspended) {
+	if (!sen0460_state.enabled) {
 		return;
 	}
 	if (trig->target_uid != 0 && trig->target_uid != sen0460_state.uid &&
@@ -54,7 +51,6 @@ int sen0460_sensor_enable(void)
 	}
 
 	sen0460_state.enabled = true;
-	sen0460_state.pm_suspended = false;
 	LOG_INF("SEN0460 enabled (uid=0x%08x)", sen0460_state.uid);
 	return 0;
 }
@@ -66,39 +62,29 @@ int sen0460_sensor_disable(void)
 	return 0;
 }
 
-#define SEN0460_REGISTRY_ENTRY_DECL(node_id)                                                       \
-	static const struct sensor_registry_entry sen0460_reg_##node_id = {                        \
-		.uid = DT_PROP_OR(node_id, sensor_uid, CONFIG_SEN0460_SENSOR_DEFAULT_UID),         \
-		.label = DT_NODE_FULL_NAME(node_id),                                               \
-		.is_remote = false,                                                                \
-	};
-
-DT_FOREACH_STATUS_OKAY(DT_COMPAT, SEN0460_REGISTRY_ENTRY_DECL)
-
-#define SEN0460_REGISTRY_REGISTER(node_id)                                                         \
-	{                                                                                          \
-		int _rc = sensor_registry_register(&sen0460_reg_##node_id);                        \
-		if (_rc != 0 && _rc != -EEXIST) {                                                  \
-			LOG_ERR("registry register uid 0x%04x failed: %d",                         \
-				DT_PROP_OR(node_id, sensor_uid,                                    \
-					   CONFIG_SEN0460_SENSOR_DEFAULT_UID),                     \
-				_rc);                                                              \
-		}                                                                                  \
-	}
-
 static int sen0460_sensor_init(void)
 {
-	sen0460_state.dev = DEVICE_DT_GET_ANY(dfr_sen0460);
+	sen0460_state.dev = DEVICE_DT_GET_ANY(DT_COMPAT);
 	if (!device_is_ready(sen0460_state.dev)) {
 		LOG_WRN("SEN0460 device not ready (stub driver)");
 		sen0460_state.dev = NULL;
 		return 0;
 	}
 
-	DT_FOREACH_STATUS_OKAY(DT_COMPAT, SEN0460_REGISTRY_REGISTER)
+	sen0460_state.uid = CONFIG_SEN0460_SENSOR_DEFAULT_UID;
 
-	sen0460_state.uid =
-		DT_PROP_OR(DT_NODELABEL(DT_COMPAT), sensor_uid, CONFIG_SEN0460_SENSOR_DEFAULT_UID);
+	{
+		static const struct sensor_registry_entry sen0460_reg = {
+			.uid = CONFIG_SEN0460_SENSOR_DEFAULT_UID,
+			.label = DT_NODE_FULL_NAME(DT_DRV_INST(0)),
+			.is_remote = false,
+		};
+		int _rc = sensor_registry_register(&sen0460_reg);
+		if (_rc != 0 && _rc != -EEXIST) {
+			LOG_ERR("registry register uid 0x%04x failed: %d",
+				CONFIG_SEN0460_SENSOR_DEFAULT_UID, _rc);
+		}
+	}
 
 	int rc = zbus_chan_add_obs(&sensor_trigger_chan, &sen0460_listener, K_NO_WAIT);
 	if (rc != 0) {

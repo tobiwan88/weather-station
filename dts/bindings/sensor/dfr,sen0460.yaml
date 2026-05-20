@@ -9,8 +9,3 @@ description: |
 compatible: "dfr,sen0460"
 
 include: [sensor-device.yaml, i2c-device.yaml]
-
-properties:
-  sensor-uid:
-    type: int
-    description: Unique sensor identifier for the weather-station system.

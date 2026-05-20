@@ -79,7 +79,7 @@ class ShellHarness:
         """Parse ``fake_sensors list`` output into SensorEntry objects.
 
         Example row:
-            0x0001  temperature   living room           21000 mdeg C
+            0x0001  temperature   fake-temp-indoor      21000 mdeg C
         """
         lines = self._exec("fake_sensors list")
         sensors: list[SensorEntry] = []

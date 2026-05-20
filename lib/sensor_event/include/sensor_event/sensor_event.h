@@ -47,11 +47,14 @@ enum sensor_type {
  * sizeof on 32-bit: 20 bytes.
  */
 struct env_sensor_data {
-	uint32_t sensor_uid;   /**< DT-assigned unique sensor identifier   */
+	uint32_t sensor_uid;   /**< Unique sensor identifier (Kconfig-assigned) */
 	enum sensor_type type; /**< Physical quantity (enum is 32-bit)     */
 	int32_t q31_value;     /**< Q31 fixed-point encoded measurement    */
 	int64_t timestamp_ms;  /**< k_uptime_get() at sample time, ms      */
 };
+
+/** Broadcast UID — all hardware sensors respond to this trigger. */
+#define HW_SENSOR_BROADCAST_UID 0xFFFFFFFFU
 
 /** zbus channel carrying env_sensor_data events (defined in sensor_event.c). */
 ZBUS_CHAN_DECLARE(sensor_event_chan);
