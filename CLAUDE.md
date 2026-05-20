@@ -142,10 +142,12 @@ Use the lowest free UID in the appropriate range. Never reuse a UID across any o
 | Library | Kconfig | Role |
 |---|---|---|
 | `http_dashboard` | `CONFIG_HTTP_DASHBOARD` | Web dashboard on port 8080. Chart.js timeseries, config page, auth (session cookie + bearer token). Self-init at APPLICATION 97. POST `/api/config` publishes on `config_cmd_chan` — does NOT call other libraries directly. Spinlock + snapshot pattern for ring buffer. Linker: `http_dashboard_sections.ld`. FOTA routes (`/api/fota/upload\|apply\|status`) via `CONFIG_HTTP_DASHBOARD_FOTA` (hardware only). |
+| `lora_node` | `CONFIG_LORA_NODE` | LoRa TX for sensor-node apps. Packet encoding (L2 header + AES-GCM + CRC-16). Public API: `lora_node_init()`, `lora_node_transmit(readings, count)`, `lora_node_get_id()`, `lora_node_save_session()`. Depends on PSA_CRYPTO. |
 | `lvgl_display` | `CONFIG_LVGL_DISPLAY` | SDL 320×240 window. Analog clock + sensor cards. Subscribes event chan. `lvgl_display_run()` blocks on main thread (known ADR-008 violation, tracked in backlog). |
 | `mqtt_publisher` | `CONFIG_MQTT_PUBLISHER` | Subscribes event chan. Topic: `{gw}/{location}/{display_name}/{type}`. Settings under `config/mqtt/` (server, port, user, pass, gw). Passwords base64-encoded. Shell: `mqtt_pub status/set`. Use `zsock_pollfd`/`zsock_poll()`/`ZSOCK_POLLIN` — not POSIX variants. |
 | `pipe_publisher` | `CONFIG_PIPE_PUBLISHER` | Writes `env_sensor_data` as length-prefixed protobuf to POSIX FIFO. Sensor-node side for integration testing. |
 | `pipe_transport` | `CONFIG_PIPE_TRANSPORT` | Reads from POSIX FIFO, decodes protobuf, publishes to `sensor_event_chan`. Gateway side for integration testing. |
+| `sensor_node_tx` | `CONFIG_SENSOR_NODE_TX` | Subscribes `sensor_event_chan`, accumulates readings in ring buffer, transmits batched 5-byte LoRa frames on timer or force-TX command. Shell: `sensor_node_tx force/enable/disable/status`. PM-ready: `enable()`/`disable()` lifecycle. |
 | `uart_lora_bridge` | `CONFIG_UART_LORA_BRIDGE` | Receives 24-byte wire frames from LoRa co-processor over UART, converts to `env_sensor_data`, publishes to `sensor_event_chan`. Gateway side. ISR → msgq → thread state machine. |
 | `uart_lora_sender` | `CONFIG_UART_LORA_SENDER` | Subscribes `sensor_event_chan`, packs events into 24-byte wire frames (magic 0x5A 0xA5, length, payload, CRC8), sends over UART via `uart_poll_out()`. Co-processor side. |
 
