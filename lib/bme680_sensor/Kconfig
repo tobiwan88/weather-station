@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig BME680_SENSOR
+	bool "BME680 hardware sensor"
+	depends on SENSOR
+	depends on SENSOR_EVENT
+	depends on SENSOR_TRIGGER
+	select HW_SENSOR_UTILS
+	help
+	  Driver for Bosch BME680/BME688 environmental sensor using
+	  Zephyr's sensor API. Subscribes to sensor_trigger_chan,
+	  reads temperature/humidity/pressure/gas resistance, and
+	  publishes env_sensor_data events.
+
+if BME680_SENSOR
+
+config BME680_SENSOR_DEFAULT_UID
+	hex "Default sensor UID if not specified in DT"
+	default 0x0011
+	help
+	  Fallback UID used when the DT node does not have a sensor-uid property.
+
+config BME680_SENSOR_ODR_MS
+	int "BME680 sampling interval (ms)"
+	default 1000
+	range 100 60000
+	help
+	  Duty cycle control; higher interval = lower average current.
+
+config BME680_SENSOR_HEATER_PROFILE
+	string "BME680 heater profile (temperature/duration pairs)"
+	default ""
+	help
+	  BME680 MOX gas sensor requires heater; profile string passed at
+	  enable time. Empty = default. Future: load from settings.
+
+config BME680_SENSOR_FORCED_MODE
+	bool "Use forced mode (power down between samples)"
+	default y
+	help
+	  When enabled, sensor powers down between samples (lowest power).
+	  When disabled, runs in normal mode (higher power, faster response).
+
+config BME680_SENSOR_LOG_LEVEL
+	int "Log level"
+	default 3
+
+module = BME680_SENSOR
+module-str = bme680_sensor
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # BME680_SENSOR
