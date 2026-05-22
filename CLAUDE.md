@@ -85,7 +85,7 @@ Run `/explore-adrs` before implementing any feature — it reads the ADR index a
 
 ## Agent workflow (non-negotiable)
 
-1. **Branch first** — `git checkout master && git pull && git checkout -b <kebab-name>`. Never commit to `master`.
+1. **Branch first** — `git checkout master && git pull && git checkout -b <kebab-name>`. Never commit to `master`. This applies to **all** commits — design specs, documentation, config changes, and code alike. No exceptions.
 2. **Smallest change → build gate** — `/build-and-test` after every change; fix failures before anything else.
 3. **Commit** — Stage explicit files (`git add <files>`, never `git add .`). Commit each logical unit: `type(scope): imperative summary ≤72 chars`. Types: `feat` `fix` `refactor` `test` `docs` `chore`. Scope: library or app name (e.g. `fake_sensors`, `http_dashboard`). Run `pre-commit run --all-files` last. Never skip hooks (`--no-verify`).
 4. **Review** — `/review` to spawn parallel sub-agents (architecture, security, C quality, embedded, tests) reviewing the patch from different angles.
