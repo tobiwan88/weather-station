@@ -1,0 +1,1606 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-22-sen0460-functional-driver-design/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>SEN0460 Functional Driver Design - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sen0460-functional-driver-design" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SEN0460 Functional Driver Design
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Footprint
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Footprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Goals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#non-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Non-Goals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sen0460-i2c-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SEN0460 I2C Protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#library-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Library Layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-split-bme680-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer Split (BME680 Pattern)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-flow-readdecode-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Flow (Read/Decode Pipeline)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#new-enum-sensor_type-entries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New enum sensor_type Entries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zephyr-sensor-channel-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zephyr Sensor Channel Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#power-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Power Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#settle-sequence-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Settle-Sequence Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power-state-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power State Machine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactions-with-enabledisable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interactions with enable/disable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#battery-budget" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Battery Budget
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kconfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-compliance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR Compliance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-plan-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Plan Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="sen0460-functional-driver-design">SEN0460 Functional Driver Design</h1>
+<p><strong>Date:</strong> 2026-05-22
+<strong>Status:</strong> Draft
+<strong>Author:</strong> AI Assistant</p>
+<h2 id="problem">Problem</h2>
+<p>The SEN0460 PM2.5 sensor library (<code>lib/sen0460_sensor</code>) is a stub that proves the
+hardware sensor architecture but returns <code>-ENOSYS</code> on read. The outdoor sensor node
+needs functional PM1.0/PM2.5/PM10 readings from this sensor over I2C, integrated
+into the trigger-driven pipeline, with low-power management for battery operation.</p>
+<h2 id="goals">Goals</h2>
+<ol>
+<li>Implement a Zephyr sensor driver using the <strong>read/decode API</strong> (<code>sensor_submit_t</code> +
+   <code>sensor_decoder_api</code>) — the new upstreamable Zephyr sensor model</li>
+<li>Wire the driver into the weather-station zbus wrapper (trigger → read + decode → publish)</li>
+<li>PM1.0, PM2.5, PM10 standard concentration readings (µg/m³) only — health-relevant subset</li>
+<li>Aggressive power management: wake → 10s settle → read → sleep, triggered every 5 minutes</li>
+<li>Follow the BME680 pattern: driver layer (upstreamable) + wrapper layer (weather-station integration)</li>
+<li>No change to <code>main.c</code> — self-wired via <code>SYS_INIT</code></li>
+</ol>
+<h2 id="non-goals">Non-Goals</h2>
+<ul>
+<li>Particle count registers (0x11–0x1B) — deferred</li>
+<li>Atmospheric concentration variants (0x0B–0x0F) — deferred</li>
+<li>Runtime override of settle delay or sample interval via <code>config_cmd_chan</code> — deferred</li>
+<li>Upstreaming the driver to Zephyr proper — this is the "first living in our library" step</li>
+<li>Changing existing <code>sensor_event_chan</code> or <code>env_sensor_data</code> structure</li>
+</ul>
+<h2 id="sen0460-i2c-protocol">SEN0460 I2C Protocol</h2>
+<p><strong>I2C address:</strong> <code>0x19</code></p>
+<table>
+<thead>
+<tr>
+<th>Register</th>
+<th>R/W</th>
+<th>Size</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x01</code></td>
+<td>W</td>
+<td>1B</td>
+<td>Power control: <code>0x01</code> = low-power, <code>0x02</code> = awake</td>
+</tr>
+<tr>
+<td><code>0x05</code></td>
+<td>R</td>
+<td>2B</td>
+<td>PM1.0 standard concentration (µg/m³, big-endian <code>uint16_t</code>)</td>
+</tr>
+<tr>
+<td><code>0x07</code></td>
+<td>R</td>
+<td>2B</td>
+<td>PM2.5 standard concentration (µg/m³, big-endian <code>uint16_t</code>)</td>
+</tr>
+<tr>
+<td><code>0x09</code></td>
+<td>R</td>
+<td>2B</td>
+<td>PM10 standard concentration (µg/m³, big-endian <code>uint16_t</code>)</td>
+</tr>
+<tr>
+<td><code>0x1D</code></td>
+<td>R</td>
+<td>1B</td>
+<td>Firmware version</td>
+</tr>
+</tbody>
+</table>
+<p>Registers <code>0x05</code>–<code>0x0A</code> form a contiguous 6-byte block (three 2-byte <code>uint16_t</code> values)
+that can be read in a single I2C burst.</p>
+<p><strong>Key characteristics:</strong>
+- Sensor self-samples continuously (internal fan + laser run autonomously at ~1Hz)
+- No "start conversion" register — registers always return the latest cached reading
+- <code>begin()</code> detection via I2C ACK on address
+- Device detection via <code>i2c_is_ready_dt()</code> at init
+- Comprehensive response time ≤10s — fan + laser need up to 10s to stabilize after wake
+- Active current ~100mA, standby ≤2mA</p>
+<h2 id="architecture">Architecture</h2>
+<h3 id="library-layout">Library Layout</h3>
+<div class="highlight"><pre><span></span><code>lib/sen0460_sensor/
+├── CMakeLists.txt              # Updated: adds I2C + RTIO deps
+├── Kconfig                      # Updated: settle time, sample interval, RTIO
+├── include/sen0460_sensor/
+│   └── sen0460_sensor.h        # Public API: enable/disable (unchanged)
+└── src/
+    ├── sen0460_driver.c        # NEW: Zephyr sensor driver (read/decode API)
+    └── sen0460_sensor.c        # MODIFIED: zbus wrapper → functional reads
+</code></pre></div>
+<h3 id="layer-split-bme680-pattern">Layer Split (BME680 Pattern)</h3>
+<p><strong>Layer 1 — <code>sen0460_driver.c</code> (upstreamable):</strong>
+- Implements <code>sensor_submit_t</code> — non-blocking RTIO submit for I2C reads into caller-provided buffer
+- Implements <code>sensor_decoder_api</code> — stateless decode functions:
+  - <code>.decode</code>: unpacks 6 raw bytes → 3× <code>q31_t</code> values (one per PM channel)
+  - <code>.get_frame_count</code>: always returns 1 (single-frame sensor, no FIFO)
+  - <code>.has_trigger</code>: returns false (no trigger info in the data stream)
+- Implements <code>sensor_attr_set_t</code> for power suspend/resume
+- I2C communication via Zephyr I2C API (<code>i2c_burst_read_dt</code>, <code>i2c_burst_write_dt</code>)
+- Registers via <code>SENSOR_DEVICE_DT_INST_DEFINE</code>
+- <strong>RTIO fallback:</strong> When <code>CONFIG_RTIO=n</code>, <code>sensor_submit_t</code> uses a <code>k_work</code> to perform
+  the blocking I2C read and complete the RTIO SQE manually
+- No knowledge of zbus, <code>sensor_type</code>, or weather-station concepts
+- Decoder outputs Zephyr-standard <code>q31_t</code> values: 0 → 0 µg/m³, <code>INT32_MAX</code> → 1000 µg/m³</p>
+<p><strong>Layer 2 — <code>sen0460_sensor.c</code> (weather-station wrapper):</strong>
+- Gets the device via <code>DEVICE_DT_GET_ANY(dfr_sen0460)</code>
+- Subscribes to <code>sensor_trigger_chan</code> via <code>ZBUS_LISTENER_DEFINE</code>
+- Creates a polling I/O device via <code>SENSOR_DT_READ_IODEV</code> for the three PM channels
+- Allocates an <code>RTIO_DEFINE</code> context for the read
+- Trigger callback: wakes sensor → starts settle timer → defers to <code>k_work_delayable</code>
+- Settle work: <code>sensor_read()</code> (blocking on iodev) → <code>decoder-&gt;decode()</code> per channel → populate <code>env_sensor_data</code> → <code>zbus_chan_pub()</code>
+- Manages the settle-delay work item and power state machine
+- Registers with <code>sensor_registry</code> (label <code>"sen0460"</code>, UID <code>0x0021</code>)</p>
+<p><strong>Upstream path:</strong> <code>sen0460_driver.c</code> moves to <code>zephyr/drivers/sensor/sen0460/</code> +
+a DT binding in <code>zephyr/dts/bindings/sensor/dfr,sen0460.yaml</code>. The wrapper stays in
+this repo with only a Kconfig dependency change.</p>
+<h3 id="data-flow-readdecode-pipeline">Data Flow (Read/Decode Pipeline)</h3>
+<div class="highlight"><pre><span></span><code>[Timer trigger, 5min] → sensor_trigger_chan → [sen0460 zbus listener]
+    → attr_set(PM_RESUME) → write 0x02 to reg 0x01
+    → submit k_work_delayable(CONFIG_SEN0460_SENSOR_SETTLE_MS=10000)
+
+[After settle delay]:
+    → sensor_read(sen0460_iodev, &amp;rtio_ctx, buf, 6)   // blocking polling read
+    → rtio_cqe_consume_block(&amp;rtio_ctx)                // wait for I2C completion
+    → decoder-&gt;decode(buf, {PM_1_0, 0}, &amp;fit, 1, &amp;q31_data[0])
+    → decoder-&gt;decode(buf, {PM_2_5, 0}, &amp;fit, 1, &amp;q31_data[1])
+    → decoder-&gt;decode(buf, {PM_10, 0},  &amp;fit, 1, &amp;q31_data[2])
+    → For each q31_data[i]:
+        env_sensor_data = {
+            .sensor_uid   = state.uid,
+            .type         = chan_to_sensor_type(q31_data[i].header.channel),
+            .q31_value    = q31_data[i].q31,   // q31_t is int32_t, same as our field
+            .timestamp_ms = k_uptime_get(),
+        }
+        zbus_chan_pub(&amp;sensor_event_chan, &amp;evt, K_NO_WAIT)
+    → attr_set(PM_SUSPEND) → write 0x01 to reg 0x01
+</code></pre></div>
+<p><strong>Note:</strong> The Zephyr decoder's q31 encoding (0→0, 1000→INT32_MAX) matches our project's
+PM Q31 convention, so no rescaling is needed between <code>decoder-&gt;decode()</code> output and
+<code>env_sensor_data.q31_value</code>.</p>
+<h2 id="data-model">Data Model</h2>
+<h3 id="new-enum-sensor_type-entries">New <code>enum sensor_type</code> Entries</h3>
+<p>In <code>lib/sensor_event/include/sensor_event/sensor_event.h</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Entry</th>
+<th>Physical Range</th>
+<th>Q31 Mapping</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SENSOR_TYPE_PM1_0</code></td>
+<td>0–1000 µg/m³</td>
+<td><code>pm_ugm3_to_q31(phys)</code>: <code>(phys / 1000.0) * INT32_MAX</code></td>
+</tr>
+<tr>
+<td><code>SENSOR_TYPE_PM2_5</code></td>
+<td>0–1000 µg/m³</td>
+<td>Same Q31 helper</td>
+</tr>
+<tr>
+<td><code>SENSOR_TYPE_PM10</code></td>
+<td>0–1000 µg/m³</td>
+<td>Same Q31 helper</td>
+</tr>
+</tbody>
+</table>
+<p>All three share one <code>pm_ugm3_to_q31()</code> / <code>q31_to_pm_ugm3()</code> pair — same physical unit
+and range. The <strong>encode</strong> helper (<code>pm_ugm3_to_q31</code>) is used by fake sensors and future
+drivers. The <strong>decode</strong> helper (<code>q31_to_pm_ugm3</code>) is used by display/MQTT consumers.</p>
+<p>The SEN0460 wrapper does <strong>not</strong> call <code>pm_ugm3_to_q31()</code> — it takes the <code>q31_t</code> value
+directly from the Zephyr decoder output (which already encodes to the same range).</p>
+<h3 id="zephyr-sensor-channel-mapping">Zephyr Sensor Channel Mapping</h3>
+<p>In <code>sen0460_driver.c</code> (decoder implementation):</p>
+<table>
+<thead>
+<tr>
+<th>Zephyr <code>sensor_channel</code></th>
+<th>Register</th>
+<th>Bytes in buffer</th>
+<th>Q31 output range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SENSOR_CHAN_PM_1_0</code></td>
+<td>0x05</td>
+<td>buf[0..1]</td>
+<td>0–INT32_MAX (0–1000 µg/m³)</td>
+</tr>
+<tr>
+<td><code>SENSOR_CHAN_PM_2_5</code></td>
+<td>0x07</td>
+<td>buf[2..3]</td>
+<td>0–INT32_MAX (0–1000 µg/m³)</td>
+</tr>
+<tr>
+<td><code>SENSOR_CHAN_PM_10</code></td>
+<td>0x09</td>
+<td>buf[4..5]</td>
+<td>0–INT32_MAX (0–1000 µg/m³)</td>
+</tr>
+</tbody>
+</table>
+<p>The driver's <code>sensor_submit_t</code> reads all 6 bytes in one I2C burst (registers 0x05–0x0A).
+The decoder extracts the subset for the requested channel.</p>
+<h2 id="power-management">Power Management</h2>
+<h3 id="settle-sequence-flow">Settle-Sequence Flow</h3>
+<p>The trigger-driven model requires a timed settle-then-read sequence since the sensor
+needs ~10s for fan + laser stabilization after wake:</p>
+<div class="highlight"><pre><span></span><code>Timer trigger (every 5 min) → sensor_trigger_chan → sen0460_trigger_cb
+  → awakes sensor via attr_set(PM_RESUME) [I2C write 0x02 to 0x01]
+  → submits k_work_delayable with CONFIG_SEN0460_SENSOR_SETTLE_MS delay
+  → returns immediately (non-blocking callback per ADR-004)
+
+After settle delay:
+  sen0460_sample_work_fn:
+    → sensor_read() → decoder-&gt;decode() × 3 → populate + publish env_sensor_data × 3
+    → suspends sensor via attr_set(PM_SUSPEND) [I2C write 0x01 to 0x01]
+</code></pre></div>
+<h3 id="power-state-machine">Power State Machine</h3>
+<div class="highlight"><pre><span></span><code>SUSPENDED ←── init, disable(), after each sample cycle
+    │
+    ▼ trigger arrives (only if enabled)
+AWAKENING ←── attr_set(PM_RESUME) + settle timer started
+    │
+    ▼ settle timer fires
+SAMPLING ←── sensor_read + decoder.decode + publish
+    │
+    ▼ publish complete
+SUSPENDED ←── attr_set(PM_SUSPEND)
+</code></pre></div>
+<h3 id="interactions-with-enabledisable">Interactions with enable/disable</h3>
+<ul>
+<li><code>sen0460_sensor_enable()</code>: sets <code>enabled = true</code>, wakes the sensor (so it's ready when trigger arrives)</li>
+<li><code>sen0460_sensor_disable()</code>: cancels any pending settle timer, suspends sensor, sets <code>enabled = false</code></li>
+<li>Trigger while disabled: silent drop (existing behavior)</li>
+<li>Trigger while already awakening/sampling: ignored (prevent double-fire)</li>
+<li><code>attr_set(PM_SUSPEND/RESUME)</code> calls gated by <code>#ifdef CONFIG_PM_DEVICE</code> with <code>-ENOSYS</code> tolerance</li>
+</ul>
+<h3 id="battery-budget">Battery Budget</h3>
+<p>At 5-minute intervals with 10s settle + ~2s active read:</p>
+<ul>
+<li>12s @ 100mA + 288s @ 2mA = 1776 mAs per 300s cycle</li>
+<li>Average current: ~5.9mA</li>
+<li>2000mAh battery: ~14 days</li>
+</ul>
+<p>Future optimization: reduce settle time via Kconfig after field testing of actual stabilization.</p>
+<h2 id="kconfig">Kconfig</h2>
+<div class="highlight"><pre><span></span><code><span class="k">menuconfig</span><span class="w"> </span>SEN0460_SENSOR
+<span class="w">    </span><span class="nb">bool</span><span class="w"> </span><span class="s2">"SEN0460 PM2.5 sensor (read/decode API)"</span>
+<span class="w">    </span><span class="k">depends on</span><span class="w"> </span>SENSOR
+<span class="w">    </span><span class="k">depends on</span><span class="w"> </span>SENSOR_EVENT
+<span class="w">    </span><span class="k">depends on</span><span class="w"> </span>SENSOR_TRIGGER
+<span class="w">    </span><span class="k">depends on</span><span class="w"> </span>I2C
+<span class="w">    </span><span class="k">select</span><span class="w"> </span>RTIO
+<span class="w">    </span><span class="k">select</span><span class="w"> </span>HW_SENSOR_UTILS
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>Driver<span class="w"> </span>for<span class="w"> </span>DFRobot<span class="w"> </span>SEN0460<span class="w"> </span>PM2.5<span class="w"> </span>air<span class="w"> </span>quality<span class="w"> </span>sensor<span class="w"> </span><span class="p">(</span>I2C).
+<span class="w">      </span>Uses<span class="w"> </span>Zephyr's<span class="w"> </span>read/decode<span class="w"> </span>sensor<span class="w"> </span>API<span class="w"> </span><span class="p">(</span>sensor_submit_t<span class="w"> </span>+<span class="w"> </span>sensor_decoder_api).
+<span class="w">      </span>Measures<span class="w"> </span>PM1.0,<span class="w"> </span>PM2.5,<span class="w"> </span>PM10<span class="w"> </span>standard<span class="w"> </span>concentration.
+<span class="w">      </span>Subscribes<span class="w"> </span>to<span class="w"> </span>sensor_trigger_chan<span class="w"> </span>and<span class="w"> </span>publishes<span class="w"> </span>env_sensor_data<span class="w"> </span>events.
+
+<span class="k">if</span><span class="w"> </span>SEN0460_SENSOR
+
+<span class="k">config</span><span class="w"> </span>SEN0460_SENSOR_DEFAULT_UID
+<span class="w">    </span><span class="nb">hex</span><span class="w"> </span><span class="s2">"Default sensor UID"</span>
+<span class="w">    </span><span class="k">default</span><span class="w"> </span><span class="mi">0</span>x0021
+
+<span class="k">config</span><span class="w"> </span>SEN0460_SENSOR_SETTLE_MS
+<span class="w">    </span><span class="nb">int</span><span class="w"> </span><span class="s2">"Settle delay after wake (ms)"</span>
+<span class="w">    </span><span class="k">default</span><span class="w"> </span><span class="mi">10000</span>
+<span class="w">    </span><span class="k">range</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">30000</span>
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>Delay<span class="w"> </span>between<span class="w"> </span>waking<span class="w"> </span>the<span class="w"> </span>sensor<span class="w"> </span>and<span class="w"> </span>reading.<span class="w"> </span>The<span class="w"> </span>internal<span class="w"> </span>laser
+<span class="w">      </span>and<span class="w"> </span>fan<span class="w"> </span>need<span class="w"> </span>time<span class="w"> </span>to<span class="w"> </span>stabilize<span class="w"> </span>for<span class="w"> </span>accurate<span class="w"> </span>PM<span class="w"> </span>readings.
+
+<span class="k">config</span><span class="w"> </span>SEN0460_SENSOR_SAMPLE_INTERVAL_SEC
+<span class="w">    </span><span class="nb">int</span><span class="w"> </span><span class="s2">"Sample interval (seconds)"</span>
+<span class="w">    </span><span class="k">default</span><span class="w"> </span><span class="mi">300</span>
+<span class="w">    </span><span class="k">range</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="mi">3600</span>
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>Interval<span class="w"> </span>between<span class="w"> </span>measurement<span class="w"> </span>cycles.<span class="w"> </span>Used<span class="w"> </span>by<span class="w"> </span>the<span class="w"> </span>trigger<span class="w"> </span><span class="k">source</span>
+<span class="w">      </span><span class="p">(</span>sensor_trigger)<span class="w"> </span>to<span class="w"> </span>configure<span class="w"> </span>the<span class="w"> </span>timer<span class="w"> </span>period.<span class="w"> </span>Set<span class="w"> </span>at<span class="w"> </span>compile-time;
+<span class="w">      </span>runtime<span class="w"> </span>override<span class="w"> </span>via<span class="w"> </span>config_cmd_chan<span class="w"> </span>is<span class="w"> </span>deferred.
+
+<span class="k">config</span><span class="w"> </span>SEN0460_SENSOR_LOG_LEVEL
+<span class="w">    </span><span class="nb">int</span><span class="w"> </span><span class="s2">"Log level"</span>
+<span class="w">    </span><span class="k">default</span><span class="w"> </span><span class="mi">3</span>
+
+module<span class="w"> </span><span class="o">=</span><span class="w"> </span>SEN0460_SENSOR
+module-str<span class="w"> </span><span class="o">=</span><span class="w"> </span>sen0460_sensor
+<span class="k">source</span><span class="w"> </span><span class="s2">"subsys/logging/Kconfig.template.log_config"</span>
+
+<span class="k">endif</span><span class="w"> </span><span class="c1"># SEN0460_SENSOR</span>
+</code></pre></div>
+<h2 id="error-handling">Error Handling</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No SEN0460 DT node / HW absent</td>
+<td>Init logs warning, returns 0, driver stays inactive</td>
+</tr>
+<tr>
+<td><code>i2c_is_ready_dt()</code> fails at init</td>
+<td>Same graceful degradation</td>
+</tr>
+<tr>
+<td><code>sensor_submit</code> fails (I2C NACK)</td>
+<td>Complete RTIO SQE with error code; wrapper logs error, skips cycle</td>
+</tr>
+<tr>
+<td><code>sensor_read()</code> returns error</td>
+<td><code>LOG_ERR</code>, skip this cycle, try again next trigger</td>
+</tr>
+<tr>
+<td><code>decoder-&gt;decode()</code> called with unsupported channel</td>
+<td>Return <code>-ENOTSUP</code></td>
+</tr>
+<tr>
+<td><code>zbus_chan_pub()</code> fails</td>
+<td><code>LOG_WRN</code>, continue with next channel</td>
+</tr>
+<tr>
+<td>Trigger during settle/awake</td>
+<td>Silent drop (prevent double-fire)</td>
+</tr>
+<tr>
+<td><code>CONFIG_PM_DEVICE=n</code></td>
+<td><code>attr_set(PM_SUSPEND/RESUME)</code> returns <code>-ENOSYS</code>, ignored with warning</td>
+</tr>
+</tbody>
+</table>
+<h2 id="test-strategy">Test Strategy</h2>
+<ol>
+<li><strong>native_sim build</strong> with <code>CONFIG_SEN0460_SENSOR=y</code> + <code>CONFIG_RTIO=y</code> + DT overlay —
+   verify compilation and init</li>
+<li><strong>Integration test</strong> (pytest, smoke marker): trigger via shell, verify PM2.5
+   <code>env_sensor_data</code> appears in event log</li>
+<li><strong>Sensor registry test:</strong> <code>sensor_registry list</code> shows <code>sen0460</code> with UID <code>0x0021</code></li>
+<li><strong>Power cycle test:</strong> enable → trigger → verify settle delay → verify suspend → disable</li>
+<li><strong>PM-disabled build:</strong> verify enable/disable still works without <code>CONFIG_PM_DEVICE</code></li>
+<li><strong>Error path test:</strong> trigger without DT node → graceful warning, no crash</li>
+<li><strong>Decoder unit test:</strong> feed raw 6-byte buffer, verify decode outputs correct q31 values</li>
+</ol>
+<p>App integration is in <code>apps/outdoor_sensor_node/</code> only — no changes to <code>apps/gateway/</code>.</p>
+<h2 id="adr-compliance">ADR Compliance</h2>
+<table>
+<thead>
+<tr>
+<th>ADR</th>
+<th>Verdict</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADR-002 (zbus as system bus)</td>
+<td>Compliant</td>
+<td><code>ZBUS_LISTENER_DEFINE</code> in wrapper <code>.c</code></td>
+</tr>
+<tr>
+<td>ADR-003 (sensor event data model)</td>
+<td>Compliant</td>
+<td>One event per measurement; flat struct; Q31 encoding</td>
+</tr>
+<tr>
+<td>ADR-004 (trigger-driven sampling)</td>
+<td>Compliant</td>
+<td>Subscribe <code>sensor_trigger_chan</code>; settle deferred to <code>k_work_delayable</code>; no blocking in callback</td>
+</tr>
+<tr>
+<td>ADR-005 (fake sensor subsystem)</td>
+<td>Compliant</td>
+<td>Hardware driver coexists; swapped via Kconfig</td>
+</tr>
+<tr>
+<td>ADR-008 (Kconfig app composition)</td>
+<td>Compliant</td>
+<td>Self-wired via <code>SYS_INIT</code>; no <code>target_link_libraries()</code> changes in app CMake</td>
+</tr>
+</tbody>
+</table>
+<h2 id="implementation-plan-summary">Implementation Plan Summary</h2>
+<ol>
+<li>Add <code>SENSOR_TYPE_PM1_0</code>, <code>SENSOR_TYPE_PM2_5</code>, <code>SENSOR_TYPE_PM10</code> to <code>enum sensor_type</code></li>
+<li><code>pm_ugm3_to_q31()</code>/<code>q31_to_pm_ugm3()</code> helpers to <code>sensor_event.h</code></li>
+<li>Create <code>lib/sen0460_sensor/src/sen0460_driver.c</code> — Zephyr sensor driver implementing
+   <code>sensor_submit_t</code> + <code>sensor_decoder_api</code> + <code>sensor_attr_set_t</code></li>
+<li>Rewrite <code>lib/sen0460_sensor/src/sen0460_sensor.c</code> — functional trigger callback,
+   settle work item, <code>sensor_read()</code> + <code>decoder-&gt;decode()</code> publish pipeline</li>
+<li>Update <code>lib/sen0460_sensor/Kconfig</code> — add <code>select RTIO</code>, settle time, sample interval</li>
+<li>Update <code>lib/sen0460_sensor/CMakeLists.txt</code> — add <code>sen0460_driver.c</code>, I2C + RTIO includes</li>
+<li>Add DT overlay for <code>dfr,sen0460</code> in <code>apps/outdoor_sensor_node/</code></li>
+<li>Add integration tests (smoke marker)</li>
+<li>Update CLAUDE.md catalog entry (remove "stub" qualification)</li>
+<li>Remove <code>[HW-SENSOR]</code> entry from <code>docs/backlog.md</code></li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../javascripts/mermaid-zoom.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
