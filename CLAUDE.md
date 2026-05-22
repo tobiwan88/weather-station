@@ -59,7 +59,7 @@ Run `/explore-adrs` before implementing any feature — it reads the ADR index a
 
 **4. `main.c` = `LOG_MODULE_REGISTER` + `return 0` only.** All logic lives in libraries, self-wired via `SYS_INIT`. Zephyr keeps running after `main()` returns. See [ADR-008](docs/adr/ADR-008-kconfig-app-composition.md).
 
-**5. Fake sensors are production-quality drivers**, not stubs. Instantiated via `DT_FOREACH_STATUS_OKAY`. See [ADR-005](docs/adr/ADR-005-fake-sensor-subsystem.md).
+**5. Fake sensors are production-quality drivers**, not stubs. Instantiated via `LISTIFY` + `DT_INST` from DT nodes. UIDs assigned via Kconfig bases. See [ADR-005](docs/adr/ADR-005-fake-sensor-subsystem.md).
 
 **6. `sensor_uid` is the identity key.** `sensor_registry` maps uid → metadata. Never hardcode UIDs in consumers.
 
@@ -110,21 +110,28 @@ All libraries under `lib/` are self-contained, Kconfig-gated, and self-wire via 
 
 | Library | Kconfig | Role |
 |---|---|---|
-| `fake_sensors` | `CONFIG_FAKE_SENSORS` | DT-driven fake drivers (temp, humidity, CO2, VOC). Subscribes trigger chan, publishes event chan. Shell: `fake_sensors list/set/trigger`. Auto-publish timer at `CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS`. |
+| `fake_sensors` | `CONFIG_FAKE_SENSORS` | DT-driven fake drivers (temp, humidity, CO2, VOC). Subscribes trigger chan, publishes event chan. Shell: `fake_sensors list/set/trigger`. Auto-publish timer at `CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS`. UIDs assigned via Kconfig: `CONFIG_FAKE_TEMPERATURE_UID_BASE`, `CONFIG_FAKE_HUMIDITY_UID_BASE`, etc. |
 | `sensor_registry` | `CONFIG_SENSOR_REGISTRY` | Runtime uid → metadata map. Sensors self-register at boot. User metadata via `CONFIG_SENSOR_REGISTRY_USER_META`: `sensor_registry_set_meta/get_meta/get_display_name/get_location`. Settings-persisted. |
 | `remote_sensor` | `CONFIG_REMOTE_SENSOR` | Transport-agnostic abstraction for wireless sensors. Vtable pattern (`REMOTE_TRANSPORT_DEFINE()`), manager thread, UID derivation. Needs `remote_sensor_iterables.ld`. Shell: `remote_sensor list/scan/pair/unpair`. |
 | `fake_remote_sensor` | `CONFIG_FAKE_REMOTE_SENSOR` | Testing stub implementing `remote_transport` vtable (`REMOTE_TRANSPORT_PROTO_FAKE`). |
+| `hw_sensor_utils` | `CONFIG_HW_SENSOR_UTILS` | Shared `hw_sensor_publish()` helper for hardware sensor drivers. No state, no SYS_INIT — pure utility. |
+| `bme680_sensor` | `CONFIG_BME680_SENSOR` | BME680/BME688 hardware driver. Subscribes trigger chan, reads T/H/P/gas via Zephyr sensor API, publishes event chan. `pm_device` integration, power optimization Kconfig hooks (ODR, heater profile, forced mode). Public API: `bme680_sensor_enable()/disable()`. |
+| `sen0460_sensor` | `CONFIG_SEN0460_SENSOR` | SEN0460 PM2.5 stub (DT binding, Kconfig, skeleton). Returns `-ENOSYS` on read — proves architecture. Functional driver deferred. |
 
-**Sensor UID allocation** (for new DT nodes in `apps/<app>/boards/native_sim.overlay`):
+**Sensor UID allocation** (assigned via Kconfig, not DT):
 
-| Range | Purpose |
-|---|---|
-| `0x0001–0x000F` | Gateway-local / indoor |
-| `0x0011–0x001F` | Gateway outdoor |
-| `0x0021–0x00FF` | Remote sensor nodes |
-| `0x0101+` | Test-only instances |
+| Type | Kconfig | Default | Instance range |
+|---|---|---|---|
+| Temperature | `CONFIG_FAKE_TEMPERATURE_UID_BASE` | `0x0001` | `BASE + {0..N-1}` |
+| Humidity | `CONFIG_FAKE_HUMIDITY_UID_BASE` | `0x0003` | `BASE + {0..N-1}` |
+| CO2 | `CONFIG_FAKE_CO2_UID_BASE` | `0x0005` | `BASE + {0..N-1}` |
+| VOC | `CONFIG_FAKE_VOC_UID_BASE` | `0x0006` | `BASE + {0..N-1}` |
+| BME680 | `CONFIG_BME680_SENSOR_DEFAULT_UID` | `0x0011` | single instance |
+| SEN0460 | `CONFIG_SEN0460_SENSOR_DEFAULT_UID` | `0x0021` | single instance |
+| Broadcast | `HW_SENSOR_BROADCAST_UID` | `0xFFFFFFFF` | constant |
 
-Use the lowest free UID in the appropriate range. Never reuse a UID across any overlay file — UIDs are the identity key for `sensor_registry`, LVGL, and MQTT.
+Override per-app in `prj.conf` (e.g. `CONFIG_FAKE_TEMPERATURE_UID_BASE=0x0021` for sensor-node).
+Location semantics come from `sensor_registry` metadata, not UID ranges.
 
 ### Services
 
@@ -157,6 +164,7 @@ Use the lowest free UID in the appropriate range. Never reuse a UID across any o
 |---|---|---|
 | `apps/gateway/` | `native_sim`, `frdm_mcxn947` | Main gateway firmware: sensor aggregation, HTTP dashboard, MQTT, LVGL display, LoRa RX via UART bridge. |
 | `apps/sensor-node/` | `native_sim` | LoRa TX beacon for integration testing. |
+| `apps/outdoor_sensor_node/` | `lora_e5_mini` | Outdoor sensor node: BME688 sensor via I2C, LoRa TX, PM sleep between cycles. |
 | `apps/lora_bridge/` | `wio_e5_mini` | Wio-E5 Mini (STM32WLE5JC) LoRa co-processor firmware. Runs `lib/lora_radio/` with real SX126x hardware, forwards decoded sensor data to gateway via UART. |
 
 ## Integration tests (`tests/integration`)

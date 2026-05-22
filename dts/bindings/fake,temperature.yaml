@@ -8,14 +8,6 @@ description: |
 compatible: "fake,temperature"
 
 properties:
-  sensor-uid:
-    type: int
-    required: true
-    description: |
-      Unique sensor identifier assigned at design time. Must be unique
-      across the entire system (both local and remote nodes). Used as
-      the identity key in sensor_registry and in env_sensor_data events.
-
   initial-value-mdegc:
     type: int
     required: true

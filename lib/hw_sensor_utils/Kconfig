@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config HW_SENSOR_UTILS
+	bool "Hardware sensor utilities"
+	depends on SENSOR_EVENT
+	help
+	  Shared utility functions for hardware sensor drivers.
+	  Provides hw_sensor_publish() for building and publishing
+	  env_sensor_data events.
