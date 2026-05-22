@@ -1,14 +1,5 @@
 # Backlog
 
-## [HW-SENSOR] SEN0460 functional driver
-
-The SEN0460 PM2.5 sensor library (`lib/sen0460_sensor`) is a stub that proves
-the architecture. A functional driver needs:
-- I2C communication protocol implementation
-- PM2.5 data decoding
-- Integration with `hw_sensor_publish()` and `sensor_event_chan`
-- DT binding already exists at `dts/bindings/sensor/dfr,sen0460.yaml`
-
 ## [Lora SENSOR] Do we support RCP/FOTA coommands?
 - review and adjust
 

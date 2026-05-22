@@ -3,7 +3,7 @@
  *
  * Outdoor sensor node overlay for lora_e5_mini.
  *
- * Adds BME688 sensor on I2C2 bus.
+ * Adds BME688 sensor and SEN0460 PM2.5 sensor on I2C2 bus.
  */
 
 &i2c2 {
@@ -11,5 +11,11 @@
 		compatible = "bosch,bme680";
 		reg = <0x76>;
 		label = "BME688";
+	};
+
+	sen0460@19 {
+		compatible = "dfr,sen0460";
+		reg = <0x19>;
+		label = "SEN0460";
 	};
 };
