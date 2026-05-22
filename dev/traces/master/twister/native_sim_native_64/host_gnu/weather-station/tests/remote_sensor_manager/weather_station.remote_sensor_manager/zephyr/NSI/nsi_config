@@ -1,0 +1,14 @@
+NSI_NATIVE=1
+NSI_AR:=/usr/bin/ar
+NSI_BUILD_OPTIONS:=-m64 -Werror -fprofile-arcs -ftest-coverage -fno-inline
+NSI_BUILD_PATH:=/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/remote_sensor_manager/weather_station.remote_sensor_manager/zephyr/NSI
+NSI_CC:= /usr/bin/gcc
+NSI_OBJCOPY:=/usr/bin/objcopy
+NSI_EMBEDDED_CPU_SW:=/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/remote_sensor_manager/weather_station.remote_sensor_manager/zephyr/zephyr.elf 
+NSI_EXE:=/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/remote_sensor_manager/weather_station.remote_sensor_manager/zephyr/zephyr.exe
+NSI_EXTRA_SRCS:=
+NSI_LINK_OPTIONS:=-m64 -lgcov -T /__w/weather-station/zephyr/boards/native/common/natsim_linker_script.ld
+NSI_EXTRA_LIBS:=
+NSI_PATH:=/__w/weather-station/zephyr/scripts/native_simulator/
+NSI_N_CPUS:=1
+NSI_LOCALIZE_OPTIONS:=--localize-symbol=CONFIG_* 

@@ -1,0 +1,59 @@
+*** Booting Zephyr OS build 37cce8aca56f ***
+[00:00:00.000,000] <inf> remote_sensor: remote_sensor_manager: init done
+Running TESTSUITE remote_sensor_uid_suite
+===================================================================
+START - test_uid_from_addr_different_addrs_differ
+ PASS - test_uid_from_addr_different_addrs_differ in 0.000 seconds
+===================================================================
+START - test_uid_from_addr_different_types_differ
+ PASS - test_uid_from_addr_different_types_differ in 0.000 seconds
+===================================================================
+START - test_uid_from_addr_prefix_bits
+ PASS - test_uid_from_addr_prefix_bits in 0.000 seconds
+===================================================================
+START - test_uid_from_addr_stable
+ PASS - test_uid_from_addr_stable in 0.000 seconds
+===================================================================
+START - test_uid_from_addr_type_slot_bits
+ PASS - test_uid_from_addr_type_slot_bits in 0.000 seconds
+===================================================================
+START - test_uid_from_node_id_deterministic
+ PASS - test_uid_from_node_id_deterministic in 0.000 seconds
+===================================================================
+START - test_uid_from_node_id_different_nodes_differ
+ PASS - test_uid_from_node_id_different_nodes_differ in 0.000 seconds
+===================================================================
+START - test_uid_from_node_id_different_types_differ
+ PASS - test_uid_from_node_id_different_types_differ in 0.000 seconds
+===================================================================
+START - test_uid_from_node_id_node_bits
+ PASS - test_uid_from_node_id_node_bits in 0.000 seconds
+===================================================================
+START - test_uid_from_node_id_prefix_bits
+ PASS - test_uid_from_node_id_prefix_bits in 0.000 seconds
+===================================================================
+START - test_uid_no_cross_protocol_collision
+ PASS - test_uid_no_cross_protocol_collision in 0.000 seconds
+===================================================================
+TESTSUITE remote_sensor_uid_suite succeeded
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE PASS - 100.00% [remote_sensor_uid_suite]: pass = 11, fail = 0, skip = 0, total = 11 duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_from_addr_different_addrs_differ] duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_from_addr_different_types_differ] duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_from_addr_prefix_bits] duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_from_addr_stable] duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_from_addr_type_slot_bits] duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_from_node_id_deterministic] duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_from_node_id_different_nodes_differ] duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_from_node_id_different_types_differ] duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_from_node_id_node_bits] duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_from_node_id_prefix_bits] duration = 0.000 seconds
+ - PASS - [remote_sensor_uid_suite.test_uid_no_cross_protocol_collision] duration = 0.000 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+RunID: 55e6999a49544cda5b95947e550f8f89
+PROJECT EXECUTION SUCCESSFUL

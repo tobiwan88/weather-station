@@ -1,0 +1,2074 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineSystem.cmake:200 (message)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      The target system is: Generic - 4.4.0 - posix
+      The host system is: Linux - 6.17.0-1013-azure - x86_64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      
+      The C compiler identification is GNU, found in:
+        /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/3.31.6/CompilerIdC/a.out
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      1
+      gcc: fatal error: cannot execute ‘cc1plus’: posix_spawnp: No such file or directory
+      compilation terminated.
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags: -c 
+      
+      The output was:
+      1
+      gcc: fatal error: cannot execute ‘cc1plus’: posix_spawnp: No such file or directory
+      compilation terminated.
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags: --c++ 
+      
+      The output was:
+      1
+      gcc: error: unrecognized command-line option ‘--c++’
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags: --ec++ 
+      
+      The output was:
+      1
+      gcc: error: unrecognized command-line option ‘--ec++’; did you mean ‘-Weffc++’?
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+      
+      The output was:
+      1
+      gcc: warning: ‘-mcpu=’ is deprecated; use ‘-mtune=’ or ‘-march=’ instead
+      gcc: error: unrecognized command-line option ‘--target=arm-arm-none-eabi’
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags: -c;-I__does_not_exist__ 
+      
+      The output was:
+      1
+      gcc: fatal error: cannot execute ‘cc1plus’: posix_spawnp: No such file or directory
+      compilation terminated.
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      1
+      gcc: fatal error: cannot execute ‘cc1plus’: posix_spawnp: No such file or directory
+      compilation terminated.
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags: -c 
+      
+      The output was:
+      1
+      gcc: fatal error: cannot execute ‘cc1plus’: posix_spawnp: No such file or directory
+      compilation terminated.
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags: --c++ 
+      
+      The output was:
+      1
+      gcc: error: unrecognized command-line option ‘--c++’
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags: --ec++ 
+      
+      The output was:
+      1
+      gcc: error: unrecognized command-line option ‘--ec++’; did you mean ‘-Weffc++’?
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+      
+      The output was:
+      1
+      gcc: warning: ‘-mcpu=’ is deprecated; use ‘-mtune=’ or ‘-march=’ instead
+      gcc: error: unrecognized command-line option ‘--target=arm-arm-none-eabi’
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /usr/bin/gcc 
+      Build flags: 
+      Id flags: -c;-I__does_not_exist__ 
+      
+      The output was:
+      1
+      gcc: fatal error: cannot execute ‘cc1plus’: posix_spawnp: No such file or directory
+      compilation terminated.
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:1250 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:86 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+      gcc: fatal error: no input files
+      compilation terminated.
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:1250 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:86 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:129 (project)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+      gcc: fatal error: no input files
+      compilation terminated.
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:1237 (message)"
+      - "/usr/share/cmake-3.31/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:135 (enable_language)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    message: |
+      Checking whether the ASM compiler is GNU using "--version" matched "(GNU assembler)|(GCC)|(Free Software Foundation)":
+      gcc (Debian 14.2.0-19) 14.2.0
+      Copyright (C) 2024 Free Software Foundation, Inc.
+      This is free software; see the source for copying conditions.  There is NO
+      warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:145 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-dZlt79"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-dZlt79"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-dZlt79'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_7e50d
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd  -fuse-ld=bfd -o CMakeFiles/cmTC_7e50d.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-dZlt79/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_7e50d.dir/src.c.obj -o cmTC_7e50d   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:37 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-3qR3sA"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-3qR3sA"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wall_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-3qR3sA'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_b58bc
+        [1/2] /usr/bin/gcc -Dcheck_Wall_C__fuse_ld_bfd  -fuse-ld=bfd   -Wall -o CMakeFiles/cmTC_b58bc.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-3qR3sA/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_b58bc.dir/src.c.obj -o cmTC_b58bc   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:37 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-fYyHUv"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-fYyHUv"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wformat__Wformat_security_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-fYyHUv'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_7507c
+        [1/2] /usr/bin/gcc -Dcheck_Wformat__Wformat_security_C__fuse_ld_bfd  -fuse-ld=bfd   -Wformat -Wformat-security -o CMakeFiles/cmTC_7507c.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-fYyHUv/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_7507c.dir/src.c.obj -o cmTC_7507c   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:37 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-kmvSWk"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-kmvSWk"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wformat__Wformat_zero_length_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-kmvSWk'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_557c6
+        [1/2] /usr/bin/gcc -Dcheck_Wformat__Wformat_zero_length_C__fuse_ld_bfd  -fuse-ld=bfd   -Wformat -Wformat-zero-length -o CMakeFiles/cmTC_557c6.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-kmvSWk/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_557c6.dir/src.c.obj -o cmTC_557c6   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:44 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-YqmCnw"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-YqmCnw"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wdouble_promotion_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-YqmCnw'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_f6a3f
+        [1/2] /usr/bin/gcc -Dcheck_Wdouble_promotion_C__fuse_ld_bfd  -fuse-ld=bfd   -Wdouble-promotion -o CMakeFiles/cmTC_f6a3f.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-YqmCnw/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_f6a3f.dir/src.c.obj -o cmTC_f6a3f   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:46 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-uoLkqH"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-uoLkqH"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wpointer_sign_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-uoLkqH'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_b8197
+        [1/2] /usr/bin/gcc -Dcheck_Wpointer_sign_C__fuse_ld_bfd  -fuse-ld=bfd   -Wpointer-sign -o CMakeFiles/cmTC_b8197.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-uoLkqH/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_b8197.dir/src.c.obj -o cmTC_b8197   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:49 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-L8Nnju"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-L8Nnju"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wpointer_arith_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-L8Nnju'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_80deb
+        [1/2] /usr/bin/gcc -Dcheck_Wpointer_arith_C__fuse_ld_bfd  -fuse-ld=bfd   -Wpointer-arith -o CMakeFiles/cmTC_80deb.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-L8Nnju/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_80deb.dir/src.c.obj -o cmTC_80deb   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:51 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-rkvbhJ"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-rkvbhJ"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wmisleading_indentation_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-rkvbhJ'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_30b3e
+        [1/2] /usr/bin/gcc -Dcheck_Wmisleading_indentation_C__fuse_ld_bfd  -fuse-ld=bfd   -Wmisleading-indentation -o CMakeFiles/cmTC_30b3e.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-rkvbhJ/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_30b3e.dir/src.c.obj -o cmTC_30b3e   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:54 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-mB6Uc5"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-mB6Uc5"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wexpansion_to_defined_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-mB6Uc5'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_a660b
+        [1/2] /usr/bin/gcc -Dcheck_Wexpansion_to_defined_C__fuse_ld_bfd  -fuse-ld=bfd   -Wexpansion-to-defined -o CMakeFiles/cmTC_a660b.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-mB6Uc5/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_a660b.dir/src.c.obj -o cmTC_a660b   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:64 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-c6Eozl"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-c6Eozl"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wlogical_op_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-c6Eozl'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_fd90d
+        [1/2] /usr/bin/gcc -Dcheck_Wlogical_op_C__fuse_ld_bfd  -fuse-ld=bfd   -Wlogical-op -o CMakeFiles/cmTC_fd90d.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-c6Eozl/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_fd90d.dir/src.c.obj -o cmTC_fd90d   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:64 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-IaU0Hw"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-IaU0Hw"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wmissing_field_initializers_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-IaU0Hw'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_dca3f
+        [1/2] /usr/bin/gcc -Dcheck_Wmissing_field_initializers_C__fuse_ld_bfd  -fuse-ld=bfd   -Wmissing-field-initializers -o CMakeFiles/cmTC_dca3f.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-IaU0Hw/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_dca3f.dir/src.c.obj -o cmTC_dca3f   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:80 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0vu5ju"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0vu5ju"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wpacked_bitfield_compat_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0vu5ju'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_4b17f
+        [1/2] /usr/bin/gcc -Dcheck_Wpacked_bitfield_compat_C__fuse_ld_bfd  -fuse-ld=bfd   -Wpacked-bitfield-compat -o CMakeFiles/cmTC_4b17f.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0vu5ju/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_4b17f.dir/src.c.obj -o cmTC_4b17f   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:80 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-z3fI8p"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-z3fI8p"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wvla_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-z3fI8p'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_2fbaf
+        [1/2] /usr/bin/gcc -Dcheck_Wvla_C__fuse_ld_bfd  -fuse-ld=bfd   -Wvla -o CMakeFiles/cmTC_2fbaf.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-z3fI8p/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_2fbaf.dir/src.c.obj -o cmTC_2fbaf   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:99 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-vyy3S4"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-vyy3S4"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Wunused_but_set_variable_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-vyy3S4'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_2c26b
+        [1/2] /usr/bin/gcc -Dcheck_Wunused_but_set_variable_C__fuse_ld_bfd  -fuse-ld=bfd   -Wunused-but-set-variable -o CMakeFiles/cmTC_2c26b.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-vyy3S4/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_2c26b.dir/src.c.obj -o cmTC_2c26b   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:101 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-aFiXPS"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-aFiXPS"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_Werror_implicit_int_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-aFiXPS'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_2bb94
+        [1/2] /usr/bin/gcc -Dcheck_Werror_implicit_int_C__fuse_ld_bfd  -fuse-ld=bfd   -Werror=implicit-int -o CMakeFiles/cmTC_2bb94.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-aFiXPS/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_2bb94.dir/src.c.obj -o cmTC_2bb94   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:193 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Fs3Osb"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Fs3Osb"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_mstack_protector_guard_global_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Fs3Osb'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_2ea90
+        [1/2] /usr/bin/gcc -Dcheck_mstack_protector_guard_global_C__fuse_ld_bfd  -fuse-ld=bfd   -mstack-protector-guard=global -o CMakeFiles/cmTC_2ea90.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Fs3Osb/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_2ea90.dir/src.c.obj -o cmTC_2ea90   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:210 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-ptu2k2"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-ptu2k2"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fsanitize_undefined_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-ptu2k2'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_09e7e
+        [1/2] /usr/bin/gcc -Dcheck_fsanitize_undefined_C__fuse_ld_bfd  -fuse-ld=bfd   -fsanitize=undefined -o CMakeFiles/cmTC_09e7e.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-ptu2k2/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_09e7e.dir/src.c.obj -o cmTC_09e7e   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:211 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-l44HEK"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-l44HEK"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fsanitize_undefined_trap_on_error_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-l44HEK'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_b0433
+        [1/2] /usr/bin/gcc -Dcheck_fsanitize_undefined_trap_on_error_C__fuse_ld_bfd  -fuse-ld=bfd   -fsanitize-undefined-trap-on-error -o CMakeFiles/cmTC_b0433.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-l44HEK/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_b0433.dir/src.c.obj -o cmTC_b0433   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:215 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-bENGpG"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-bENGpG"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fno_freestanding_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-bENGpG'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_8b68e
+        [1/2] /usr/bin/gcc -Dcheck_fno_freestanding_C__fuse_ld_bfd  -fuse-ld=bfd   -fno-freestanding -o CMakeFiles/cmTC_8b68e.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-bENGpG/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_8b68e.dir/src.c.obj -o cmTC_8b68e   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:218 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0rwcdu"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0rwcdu"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_ffreestanding_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0rwcdu'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_0ceb3
+        [1/2] /usr/bin/gcc -Dcheck_ffreestanding_C__fuse_ld_bfd  -fuse-ld=bfd   -ffreestanding -o CMakeFiles/cmTC_0ceb3.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0rwcdu/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_0ceb3.dir/src.c.obj -o cmTC_0ceb3   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:234 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-etHPpD"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-etHPpD"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_gdwarf_4_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-etHPpD'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_d1b6e
+        [1/2] /usr/bin/gcc -Dcheck_gdwarf_4_C__fuse_ld_bfd  -fuse-ld=bfd   -gdwarf-4 -o CMakeFiles/cmTC_d1b6e.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-etHPpD/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_d1b6e.dir/src.c.obj -o cmTC_d1b6e   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2690 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/compiler/gcc/compiler_flags.cmake:253 (check_set_compiler_property)"
+      - "/__w/weather-station/zephyr/cmake/compiler/host-gcc/compiler_flags.cmake:3 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:42 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-B9Kidn"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-B9Kidn"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fdiagnostics_color_always_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-B9Kidn'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_bd7fd
+        [1/2] /usr/bin/gcc -Dcheck_fdiagnostics_color_always_C__fuse_ld_bfd  -fuse-ld=bfd   -fdiagnostics-color=always -o CMakeFiles/cmTC_bd7fd.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-B9Kidn/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_bd7fd.dir/src.c.obj -o cmTC_bd7fd   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:5 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-FLtJ4G"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-FLtJ4G"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl___gc_sections"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-FLtJ4G'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_c7fd9
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl___gc_sections  -fuse-ld=bfd -Wl,--gc-sections -o CMakeFiles/cmTC_c7fd9.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-FLtJ4G/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,--gc-sections  CMakeFiles/cmTC_c7fd9.dir/src.c.obj -o cmTC_c7fd9   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:5 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-RugdUO"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-RugdUO"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl___build_id_none"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-RugdUO'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_f75b3
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl___build_id_none  -fuse-ld=bfd -Wl,--build-id=none -o CMakeFiles/cmTC_f75b3.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-RugdUO/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,--build-id=none  CMakeFiles/cmTC_f75b3.dir/src.c.obj -o cmTC_f75b3   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:10 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-QZPEyy"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-QZPEyy"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__nostdlib"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-QZPEyy'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_b45f0
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__nostdlib  -fuse-ld=bfd -nostdlib -o CMakeFiles/cmTC_b45f0.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-QZPEyy/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -nostdlib  CMakeFiles/cmTC_b45f0.dir/src.c.obj -o cmTC_b45f0   && :
+        /usr/bin/ld.bfd: warning: cannot find entry symbol _start; defaulting to 0000000000001000
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:10 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-zfwOvH"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-zfwOvH"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__static"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-zfwOvH'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_73785
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__static  -fuse-ld=bfd -static -o CMakeFiles/cmTC_73785.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-zfwOvH/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -static  CMakeFiles/cmTC_73785.dir/src.c.obj -o cmTC_73785   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:10 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-bcwcDn"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-bcwcDn"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__znoexecstack"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-bcwcDn'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_4a7d7
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__znoexecstack  -fuse-ld=bfd -znoexecstack -o CMakeFiles/cmTC_4a7d7.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-bcwcDn/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -znoexecstack  CMakeFiles/cmTC_4a7d7.dir/src.c.obj -o cmTC_4a7d7   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:10 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Vnnolm"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Vnnolm"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl__X"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Vnnolm'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_f421c
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl__X  -fuse-ld=bfd -Wl,-X -o CMakeFiles/cmTC_f421c.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Vnnolm/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,-X  CMakeFiles/cmTC_f421c.dir/src.c.obj -o cmTC_f421c   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:10 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-KgGIK5"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-KgGIK5"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl__N"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-KgGIK5'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_2a291
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl__N  -fuse-ld=bfd -Wl,-N -o CMakeFiles/cmTC_2a291.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-KgGIK5/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,-N  CMakeFiles/cmTC_2a291.dir/src.c.obj -o cmTC_2a291   && :
+        FAILED: cmTC_2a291 
+        : && /usr/bin/gcc -fuse-ld=bfd -Wl,-N  CMakeFiles/cmTC_2a291.dir/src.c.obj -o cmTC_2a291   && :
+        /usr/bin/ld.bfd: cannot find -lgcc_s: No such file or directory
+        /usr/bin/ld.bfd: have you installed the static version of the gcc_s library ?
+        /usr/bin/ld.bfd: cannot find -lgcc_s: No such file or directory
+        /usr/bin/ld.bfd: have you installed the static version of the gcc_s library ?
+        collect2: error: ld returned 1 exit status
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:18 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-pi9XuS"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-pi9XuS"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl___orphan_handling_warn"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-pi9XuS'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_15a17
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl___orphan_handling_warn  -fuse-ld=bfd -Wl,--orphan-handling=warn -o CMakeFiles/cmTC_15a17.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-pi9XuS/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,--orphan-handling=warn  CMakeFiles/cmTC_15a17.dir/src.c.obj -o cmTC_15a17   && :
+        /usr/bin/ld.bfd: warning: orphan section `.note.gnu.property' from `/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o' being placed in section `.note.gnu.property'
+        /usr/bin/ld.bfd: warning: orphan section `.rela.fini_array' from `/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o' being placed in section `.rela.dyn'
+        /usr/bin/ld.bfd: warning: orphan section `.rela.init_array' from `/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o' being placed in section `.rela.dyn'
+        /usr/bin/ld.bfd: warning: orphan section `.tm_clone_table' from `/usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o' being placed in section `.tm_clone_table'
+        /usr/bin/ld.bfd: warning: orphan section `.tm_clone_table' from `/usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o' being placed in section `.tm_clone_table'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:22 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-tu7TBK"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-tu7TBK"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl___orphan_handling_error"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-tu7TBK'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_37572
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl___orphan_handling_error  -fuse-ld=bfd -Wl,--orphan-handling=error -o CMakeFiles/cmTC_37572.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-tu7TBK/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,--orphan-handling=error  CMakeFiles/cmTC_37572.dir/src.c.obj -o cmTC_37572   && :
+        FAILED: cmTC_37572 
+        : && /usr/bin/gcc -fuse-ld=bfd -Wl,--orphan-handling=error  CMakeFiles/cmTC_37572.dir/src.c.obj -o cmTC_37572   && :
+        /usr/bin/ld.bfd: error: unplaced orphan section `.note.gnu.property' from `/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o'
+        /usr/bin/ld.bfd: error: unplaced orphan section `.rela.fini_array' from `/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o'
+        /usr/bin/ld.bfd: error: unplaced orphan section `.rela.init_array' from `/usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/Scrt1.o'
+        /usr/bin/ld.bfd: error: unplaced orphan section `.tm_clone_table' from `/usr/lib/gcc/x86_64-linux-gnu/14/crtbeginS.o'
+        /usr/bin/ld.bfd: error: unplaced orphan section `.tm_clone_table' from `/usr/lib/gcc/x86_64-linux-gnu/14/crtendS.o'
+        collect2: error: ld returned 1 exit status
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:28 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-XNcYjk"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-XNcYjk"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl___print_memory_usage"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-XNcYjk'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_2ad86
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl___print_memory_usage  -fuse-ld=bfd -Wl,--print-memory-usage -o CMakeFiles/cmTC_2ad86.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-XNcYjk/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,--print-memory-usage  CMakeFiles/cmTC_2ad86.dir/src.c.obj -o cmTC_2ad86   && :
+        Memory region         Used Size  Region Size  %age Used
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:30 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-MOr9Cv"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-MOr9Cv"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__fsanitize_undefined"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-MOr9Cv'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_29eca
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__fsanitize_undefined  -fuse-ld=bfd -fsanitize=undefined -o CMakeFiles/cmTC_29eca.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-MOr9Cv/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -fsanitize=undefined  CMakeFiles/cmTC_29eca.dir/src.c.obj -o cmTC_29eca   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:31 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-qVHtzO"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-qVHtzO"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__fsanitize_undefined_trap_on_error"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-qVHtzO'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_97cf4
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__fsanitize_undefined_trap_on_error  -fuse-ld=bfd -fsanitize-undefined-trap-on-error -o CMakeFiles/cmTC_97cf4.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-qVHtzO/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -fsanitize-undefined-trap-on-error  CMakeFiles/cmTC_97cf4.dir/src.c.obj -o cmTC_97cf4   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:49 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-gJ8brH"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-gJ8brH"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl___no_relax"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-gJ8brH'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_6648b
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl___no_relax  -fuse-ld=bfd -Wl,--no-relax -o CMakeFiles/cmTC_6648b.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-gJ8brH/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,--no-relax  CMakeFiles/cmTC_6648b.dir/src.c.obj -o cmTC_6648b   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:51 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-HeRHbt"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-HeRHbt"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl___sort_common_descending"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-HeRHbt'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_abd9c
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl___sort_common_descending  -fuse-ld=bfd -Wl,--sort-common=descending -o CMakeFiles/cmTC_abd9c.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-HeRHbt/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,--sort-common=descending  CMakeFiles/cmTC_abd9c.dir/src.c.obj -o cmTC_abd9c   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:51 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-TbbI6t"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-TbbI6t"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl___sort_section_alignment"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-TbbI6t'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_9cff8
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl___sort_section_alignment  -fuse-ld=bfd -Wl,--sort-section=alignment -o CMakeFiles/cmTC_9cff8.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-TbbI6t/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,--sort-section=alignment  CMakeFiles/cmTC_9cff8.dir/src.c.obj -o cmTC_9cff8   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2604 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/gcc/linker_flags.cmake:10 (check_set_linker_property)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/host-gcc/linker_flags.cmake:2 (include)"
+      - "/__w/weather-station/zephyr/cmake/linker/ld/linker_flags.cmake:61 (include)"
+      - "/__w/weather-station/zephyr/cmake/target_toolchain_flags.cmake:43 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/kernel.cmake:153 (include)"
+      - "/__w/weather-station/zephyr/cmake/modules/zephyr_default.cmake:138 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:66 (include)"
+      - "/__w/weather-station/zephyr/share/zephyr-package/cmake/ZephyrConfig.cmake:92 (include_boilerplate)"
+      - "CMakeLists.txt:5 (find_package)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0CPyIe"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0CPyIe"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__pg"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0CPyIe'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_f382f
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__pg  -fuse-ld=bfd -pg -o CMakeFiles/cmTC_f382f.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-0CPyIe/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -pg  CMakeFiles/cmTC_f382f.dir/src.c.obj -o cmTC_f382f   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2482 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:165 (target_ld_options)"
+      - "/__w/weather-station/zephyr/CMakeLists.txt:446 (zephyr_ld_options)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-kNOM2d"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-kNOM2d"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-kNOM2d'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_23097
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__fuse_ld_bfd  -fuse-ld=bfd -fuse-ld=bfd -o CMakeFiles/cmTC_23097.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-kNOM2d/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -fuse-ld=bfd  CMakeFiles/cmTC_23097.dir/src.c.obj -o cmTC_23097   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2460 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2436 (target_cc_option_fallback)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:156 (target_cc_option)"
+      - "/__w/weather-station/zephyr/CMakeLists.txt:577 (zephyr_cc_option)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-lgkfCU"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-lgkfCU"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fno_asynchronous_unwind_tables_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-lgkfCU'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_2e686
+        [1/2] /usr/bin/gcc -Dcheck_fno_asynchronous_unwind_tables_C__fuse_ld_bfd  -fuse-ld=bfd   -fno-asynchronous-unwind-tables -o CMakeFiles/cmTC_2e686.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-lgkfCU/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_2e686.dir/src.c.obj -o cmTC_2e686   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2460 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2436 (target_cc_option_fallback)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:156 (target_cc_option)"
+      - "/__w/weather-station/zephyr/CMakeLists.txt:605 (zephyr_cc_option)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-taMen8"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-taMen8"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fno_reorder_functions_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-taMen8'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_64c6c
+        [1/2] /usr/bin/gcc -Dcheck_fno_reorder_functions_C__fuse_ld_bfd  -fuse-ld=bfd   -fno-reorder-functions -o CMakeFiles/cmTC_64c6c.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-taMen8/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_64c6c.dir/src.c.obj -o cmTC_64c6c   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2460 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2436 (target_cc_option_fallback)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:156 (target_cc_option)"
+      - "/__w/weather-station/zephyr/CMakeLists.txt:612 (zephyr_cc_option)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-S42E0X"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-S42E0X"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check__param_min_pagesize_0_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-S42E0X'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_cff42
+        [1/2] /usr/bin/gcc -Dcheck__param_min_pagesize_0_C__fuse_ld_bfd  -fuse-ld=bfd   --param=min-pagesize=0 -o CMakeFiles/cmTC_cff42.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-S42E0X/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_cff42.dir/src.c.obj -o cmTC_cff42   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2460 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2436 (target_cc_option_fallback)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:156 (target_cc_option)"
+      - "/__w/weather-station/zephyr/CMakeLists.txt:615 (zephyr_cc_option)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-BfUwxl"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-BfUwxl"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fno_defer_pop_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-BfUwxl'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_199be
+        [1/2] /usr/bin/gcc -Dcheck_fno_defer_pop_C__fuse_ld_bfd  -fuse-ld=bfd   -fno-defer-pop -o CMakeFiles/cmTC_199be.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-BfUwxl/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_199be.dir/src.c.obj -o cmTC_199be   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2460 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2436 (target_cc_option_fallback)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:156 (target_cc_option)"
+      - "/__w/weather-station/zephyr/CMakeLists.txt:634 (zephyr_cc_option)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-lPOIrN"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-lPOIrN"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fmacro_prefix_map____w_weather_station_weather_station_tests_integration_CMAKE_SOURCE_DIR_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-lPOIrN'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_5de07
+        [1/2] /usr/bin/gcc -Dcheck_fmacro_prefix_map____w_weather_station_weather_station_tests_integration_CMAKE_SOURCE_DIR_C__fuse_ld_bfd  -fuse-ld=bfd   -fmacro-prefix-map=/__w/weather-station/weather-station/tests/integration=CMAKE_SOURCE_DIR -o CMakeFiles/cmTC_5de07.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-lPOIrN/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_5de07.dir/src.c.obj -o cmTC_5de07   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2460 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2436 (target_cc_option_fallback)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:156 (target_cc_option)"
+      - "/__w/weather-station/zephyr/CMakeLists.txt:635 (zephyr_cc_option)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-sjFMJ4"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-sjFMJ4"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fmacro_prefix_map____w_weather_station_zephyr_ZEPHYR_BASE_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-sjFMJ4'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_dd223
+        [1/2] /usr/bin/gcc -Dcheck_fmacro_prefix_map____w_weather_station_zephyr_ZEPHYR_BASE_C__fuse_ld_bfd  -fuse-ld=bfd   -fmacro-prefix-map=/__w/weather-station/zephyr=ZEPHYR_BASE -o CMakeFiles/cmTC_dd223.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-sjFMJ4/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_dd223.dir/src.c.obj -o cmTC_dd223   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2460 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2436 (target_cc_option_fallback)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:156 (target_cc_option)"
+      - "/__w/weather-station/zephyr/CMakeLists.txt:637 (zephyr_cc_option)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-dzsHIY"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-dzsHIY"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fmacro_prefix_map____w_weather_station_WEST_TOPDIR_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-dzsHIY'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_071bf
+        [1/2] /usr/bin/gcc -Dcheck_fmacro_prefix_map____w_weather_station_WEST_TOPDIR_C__fuse_ld_bfd  -fuse-ld=bfd   -fmacro-prefix-map=/__w/weather-station=WEST_TOPDIR -o CMakeFiles/cmTC_071bf.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-dzsHIY/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_071bf.dir/src.c.obj -o cmTC_071bf   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2460 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2436 (target_cc_option_fallback)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:156 (target_cc_option)"
+      - "/__w/weather-station/zephyr/arch/common/CMakeLists.txt:43 (zephyr_cc_option)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-ZZj6g7"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-ZZj6g7"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_ffunction_sections_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-ZZj6g7'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_0f480
+        [1/2] /usr/bin/gcc -Dcheck_ffunction_sections_C__fuse_ld_bfd  -fuse-ld=bfd   -ffunction-sections -o CMakeFiles/cmTC_0f480.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-ZZj6g7/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_0f480.dir/src.c.obj -o cmTC_0f480   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2460 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2436 (target_cc_option_fallback)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:156 (target_cc_option)"
+      - "/__w/weather-station/zephyr/arch/common/CMakeLists.txt:43 (zephyr_cc_option)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-7HKoXS"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-7HKoXS"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_fdata_sections_C__fuse_ld_bfd"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-7HKoXS'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_8375f
+        [1/2] /usr/bin/gcc -Dcheck_fdata_sections_C__fuse_ld_bfd  -fuse-ld=bfd   -fdata-sections -o CMakeFiles/cmTC_8375f.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-7HKoXS/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd  CMakeFiles/cmTC_8375f.dir/src.c.obj -o cmTC_8375f   && :
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/usr/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake:18 (cmake_check_source_compiles)"
+      - "/usr/share/cmake-3.31/Modules/CheckCCompilerFlag.cmake:56 (cmake_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2421 (check_c_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:1199 (check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:2482 (zephyr_check_compiler_flag)"
+      - "/__w/weather-station/zephyr/cmake/modules/extensions.cmake:165 (target_ld_options)"
+      - "/__w/weather-station/zephyr/arch/posix/CMakeLists.txt:76 (zephyr_ld_options)"
+    directories:
+      source: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Cnj051"
+      binary: "/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Cnj051"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "/__w/weather-station/zephyr/cmake/modules"
+    buildResult:
+      variable: "check_C__fuse_ld_bfd__Wl___unresolved_symbols_ignore_all"
+      cached: true
+      stdout: |
+        Change Dir: '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Cnj051'
+        
+        Run Build Command(s): /usr/bin/ninja -v cmTC_05d05
+        [1/2] /usr/bin/gcc -Dcheck_C__fuse_ld_bfd__Wl___unresolved_symbols_ignore_all  -fuse-ld=bfd -Wl,--unresolved-symbols=ignore-all -o CMakeFiles/cmTC_05d05.dir/src.c.obj -c /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/integration/weather_station.integration/CMakeFiles/CMakeScratch/TryCompile-Cnj051/src.c
+        [2/2] : && /usr/bin/gcc -fuse-ld=bfd -Wl,--unresolved-symbols=ignore-all  CMakeFiles/cmTC_05d05.dir/src.c.obj -o cmTC_05d05   && :
+        
+      exitCode: 0
+...

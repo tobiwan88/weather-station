@@ -1,0 +1,39 @@
+config ZEPHYR_WEATHER_STATION_MODULE
+   bool
+   default y
+config ZEPHYR_CMSIS_6_MODULE
+   bool
+   default y
+config ZEPHYR_HAL_NORDIC_MODULE
+   bool
+   default y
+config ZEPHYR_HAL_NXP_MODULE
+   bool
+   default y
+config ZEPHYR_HAL_ST_MODULE
+   bool
+   default y
+config ZEPHYR_HAL_STM32_MODULE
+   bool
+   default y
+config ZEPHYR_LORAMAC_NODE_MODULE
+   bool
+   default y
+config ZEPHYR_LVGL_MODULE
+   bool
+   default y
+config ZEPHYR_MBEDTLS_MODULE
+   bool
+   default y
+config ZEPHYR_MCUBOOT_MODULE
+   bool
+   default y
+config ZEPHYR_NANOPB_MODULE
+   bool
+   default y
+config ZEPHYR_SEGGER_MODULE
+   bool
+   default y
+config ZEPHYR_TF_PSA_CRYPTO_MODULE
+   bool
+   default y

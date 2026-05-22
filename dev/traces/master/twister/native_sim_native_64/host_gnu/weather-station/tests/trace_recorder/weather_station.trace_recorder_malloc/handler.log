@@ -1,0 +1,43 @@
+*** Booting Zephyr OS build 37cce8aca56f ***
+Running TESTSUITE trace_recorder_suite
+===================================================================
+START - test_idle_event
+ PASS - test_idle_event in 0.000 seconds
+===================================================================
+START - test_initial_state
+[00:00:00.000,000] <wrn> trace_recorder: too many threads (max 4); skipping trace
+ PASS - test_initial_state in 0.000 seconds
+===================================================================
+START - test_isr_events
+[00:00:00.000,000] <wrn> trace_recorder: too many threads (max 4); skipping trace
+ PASS - test_isr_events in 0.000 seconds
+===================================================================
+START - test_record_size
+[00:00:00.000,000] <wrn> trace_recorder: too many threads (max 4); skipping trace
+ PASS - test_record_size in 0.000 seconds
+===================================================================
+START - test_ring_buffer_wrap
+[00:00:00.000,000] <wrn> trace_recorder: too many threads (max 4); skipping trace
+ PASS - test_ring_buffer_wrap in 0.000 seconds
+===================================================================
+START - test_switched_in_priority
+[00:00:00.000,000] <wrn> trace_recorder: too many threads (max 4); skipping trace
+ PASS - test_switched_in_priority in 0.000 seconds
+===================================================================
+TESTSUITE trace_recorder_suite succeeded
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE PASS - 100.00% [trace_recorder_suite]: pass = 6, fail = 0, skip = 0, total = 6 duration = 0.000 seconds
+ - PASS - [trace_recorder_suite.test_idle_event] duration = 0.000 seconds
+ - PASS - [trace_recorder_suite.test_initial_state] duration = 0.000 seconds
+ - PASS - [trace_recorder_suite.test_isr_events] duration = 0.000 seconds
+ - PASS - [trace_recorder_suite.test_record_size] duration = 0.000 seconds
+ - PASS - [trace_recorder_suite.test_ring_buffer_wrap] duration = 0.000 seconds
+ - PASS - [trace_recorder_suite.test_switched_in_priority] duration = 0.000 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+RunID: af88e616fb9570b711e7f628af30b688
+PROJECT EXECUTION SUCCESSFUL
