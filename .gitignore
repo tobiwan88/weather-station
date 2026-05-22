@@ -1,0 +1,5 @@
+# CI staging / temp files
+deploy/
+
+# GitHub workflows (should never be on gh-pages)
+.github/
