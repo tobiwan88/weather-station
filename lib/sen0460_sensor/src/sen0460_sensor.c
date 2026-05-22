@@ -10,6 +10,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
+#include <zephyr/zbus/zbus.h>
 
 #include <hw_sensor_utils/hw_sensor_publish.h>
 #include <sen0460_sensor/sen0460_sensor.h>
@@ -76,7 +77,7 @@ static int sen0460_sensor_init(void)
 	{
 		static const struct sensor_registry_entry sen0460_reg = {
 			.uid = CONFIG_SEN0460_SENSOR_DEFAULT_UID,
-			.label = DT_NODE_FULL_NAME(DT_DRV_INST(0)),
+			.label = "sen0460",
 			.is_remote = false,
 		};
 		int _rc = sensor_registry_register(&sen0460_reg);

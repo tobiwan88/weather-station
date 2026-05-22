@@ -11,6 +11,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/pm/device.h>
+#include <zephyr/zbus/zbus.h>
 
 #include <bme680_sensor/bme680_sensor.h>
 #include <hw_sensor_utils/hw_sensor_publish.h>
@@ -157,7 +158,7 @@ static int bme680_sensor_init(void)
 	{
 		static const struct sensor_registry_entry bme680_reg = {
 			.uid = CONFIG_BME680_SENSOR_DEFAULT_UID,
-			.label = DT_NODE_FULL_NAME(DT_DRV_INST(0)),
+			.label = "bme680",
 			.is_remote = false,
 		};
 		int _rc = sensor_registry_register(&bme680_reg);
