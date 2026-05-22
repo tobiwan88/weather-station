@@ -1,0 +1,1679 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/backlog/">
+      
+      
+        <link rel="prev" href="../adr/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Backlog - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#backlog" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Backlog
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Footprint
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#hw-sensor-sen0460-functional-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [HW-SENSOR] SEN0460 functional driver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lora-sensor-do-we-support-rcpfota-coommands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [Lora SENSOR] Do we support RCP/FOTA coommands?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-008-rule4-move-lvgl_display_run-out-of-gatewaymainc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-008-RULE4] Move lvgl_display_run() out of gateway/main.c
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-010-devcontainer-align-devcontainer-and-ci-on-single-approved-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-010-DEVCONTAINER] Align devcontainer and CI on single approved image
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-registry-scaling-extend-sensor_registry-with-per-uid-scaling-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [SENSOR-REGISTRY-SCALING] Extend sensor_registry with per-UID scaling metadata
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference-adr-003-q31-encoding-sensor_uid-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference: ADR-003 §Q31 encoding, §sensor_uid contract.
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docu-improvement-diagramgs-improve-the-usage-of-diagrams-in-the-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [DOCU-Improvement-Diagramgs] Improve the usage of diagrams in the documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-phase2-multi-node-simulation-with-renode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [RENODE-PHASE2] Multi-node simulation with Renode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fota-ci-key-suppress-signing-key-from-ci-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [FOTA-CI-KEY] Suppress signing key from CI logs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fota-remove-uart-mcumgr-remove-mcumgr-uart-transport-http-is-the-standard-update-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [FOTA-REMOVE-UART-MCUMGR] Remove MCUmgr UART transport; HTTP is the standard update path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fota-confirm-health-checks-replace-time-based-confirm-with-iterable-health-check-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [FOTA-CONFIRM-HEALTH-CHECKS] Replace time-based confirm with iterable health-check pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-ci-docker-pre-built-ci-docker-image-with-renode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [RENODE-CI-DOCKER] Pre-built CI Docker image with Renode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-enet-qos-renode-enet-qos-peripheral-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [RENODE-ENET-QOS] Renode ENET-QoS peripheral model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-spi-nor-functional-spi-nor-flash-model-for-renode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [RENODE-SPI-NOR] Functional SPI NOR flash model for Renode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-015-lora-rpc-retry-implement-rpc-command-retry-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-015-LORA-RPC-RETRY] Implement RPC command retry logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-015-lora-fota-window-implement-windowed-fota-chunk-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-015-LORA-FOTA-WINDOW] Implement windowed FOTA chunk protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-015-lora-persist-persist-session-immediately-after-pairing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-015-LORA-PERSIST] Persist session immediately after pairing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-015-lora-ed25519-cache-cache-ed25519-psa-key-instead-of-importdestroy-per-beacon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-015-LORA-ED25519-CACHE] Cache Ed25519 PSA key instead of import/destroy per beacon
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-trace-gh-pages-perfetto-deep-link-404-guard-and-retention-cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [RENODE-TRACE-GH-PAGES] Perfetto deep-link 404 guard and retention cleanup
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Footprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#hw-sensor-sen0460-functional-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [HW-SENSOR] SEN0460 functional driver
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lora-sensor-do-we-support-rcpfota-coommands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [Lora SENSOR] Do we support RCP/FOTA coommands?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-008-rule4-move-lvgl_display_run-out-of-gatewaymainc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-008-RULE4] Move lvgl_display_run() out of gateway/main.c
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-010-devcontainer-align-devcontainer-and-ci-on-single-approved-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-010-DEVCONTAINER] Align devcontainer and CI on single approved image
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-registry-scaling-extend-sensor_registry-with-per-uid-scaling-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [SENSOR-REGISTRY-SCALING] Extend sensor_registry with per-UID scaling metadata
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference-adr-003-q31-encoding-sensor_uid-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference: ADR-003 §Q31 encoding, §sensor_uid contract.
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docu-improvement-diagramgs-improve-the-usage-of-diagrams-in-the-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [DOCU-Improvement-Diagramgs] Improve the usage of diagrams in the documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-phase2-multi-node-simulation-with-renode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [RENODE-PHASE2] Multi-node simulation with Renode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fota-ci-key-suppress-signing-key-from-ci-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [FOTA-CI-KEY] Suppress signing key from CI logs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fota-remove-uart-mcumgr-remove-mcumgr-uart-transport-http-is-the-standard-update-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [FOTA-REMOVE-UART-MCUMGR] Remove MCUmgr UART transport; HTTP is the standard update path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fota-confirm-health-checks-replace-time-based-confirm-with-iterable-health-check-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [FOTA-CONFIRM-HEALTH-CHECKS] Replace time-based confirm with iterable health-check pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-ci-docker-pre-built-ci-docker-image-with-renode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [RENODE-CI-DOCKER] Pre-built CI Docker image with Renode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-enet-qos-renode-enet-qos-peripheral-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [RENODE-ENET-QOS] Renode ENET-QoS peripheral model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-spi-nor-functional-spi-nor-flash-model-for-renode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [RENODE-SPI-NOR] Functional SPI NOR flash model for Renode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-015-lora-rpc-retry-implement-rpc-command-retry-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-015-LORA-RPC-RETRY] Implement RPC command retry logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-015-lora-fota-window-implement-windowed-fota-chunk-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-015-LORA-FOTA-WINDOW] Implement windowed FOTA chunk protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-015-lora-persist-persist-session-immediately-after-pairing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-015-LORA-PERSIST] Persist session immediately after pairing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-015-lora-ed25519-cache-cache-ed25519-psa-key-instead-of-importdestroy-per-beacon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [ADR-015-LORA-ED25519-CACHE] Cache Ed25519 PSA key instead of import/destroy per beacon
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-trace-gh-pages-perfetto-deep-link-404-guard-and-retention-cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        [RENODE-TRACE-GH-PAGES] Perfetto deep-link 404 guard and retention cleanup
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="backlog">Backlog</h1>
+<h2 id="hw-sensor-sen0460-functional-driver">[HW-SENSOR] SEN0460 functional driver</h2>
+<p>The SEN0460 PM2.5 sensor library (<code>lib/sen0460_sensor</code>) is a stub that proves
+the architecture. A functional driver needs:
+- I2C communication protocol implementation
+- PM2.5 data decoding
+- Integration with <code>hw_sensor_publish()</code> and <code>sensor_event_chan</code>
+- DT binding already exists at <code>dts/bindings/sensor/dfr,sen0460.yaml</code></p>
+<h2 id="lora-sensor-do-we-support-rcpfota-coommands">[Lora SENSOR] Do we support RCP/FOTA coommands?</h2>
+<ul>
+<li>review and adjust</li>
+</ul>
+<h2 id="adr-008-rule4-move-lvgl_display_run-out-of-gatewaymainc">[ADR-008-RULE4] Move lvgl_display_run() out of gateway/main.c</h2>
+<p><code>apps/gateway/src/main.c</code> violates ADR-008 Rule 4 by calling <code>lvgl_display_run()</code>
+(a blocking SDL timer loop) under <code>#if CONFIG_LVGL_DISPLAY</code>. On Linux (devcontainer /
+CI target) SDL2 works fine from any thread, so the "must run on main thread" constraint
+does not apply.</p>
+<p><strong>Goal:</strong> <code>main.c</code> becomes <code>LOG_MODULE_REGISTER + return 0</code>, conforming to Rule 4.</p>
+<p><strong>Implementation:</strong>
+- In <code>lib/lvgl_display/src/lvgl_display.c</code>: rename <code>lvgl_display_run()</code> to a static
+  thread entry <code>lvgl_thread_fn()</code>; call <code>create_ui()</code> + <code>display_blanking_off()</code> at
+  thread start, then loop <code>lv_timer_handler()</code> with <code>k_msleep()</code>.
+- Start the thread from <code>lvgl_display_init()</code> (already runs via <code>SYS_INIT APPLICATION 91</code>).
+  Use <code>K_THREAD_DEFINE</code> with a new <code>CONFIG_LVGL_DISPLAY_STACK_SIZE</code> Kconfig (default 8192).
+- Remove <code>lvgl_display_run()</code> declaration from
+  <code>lib/lvgl_display/include/lvgl_display/lvgl_display.h</code>.
+- Simplify <code>apps/gateway/src/main.c</code> to remove the <code>#if CONFIG_LVGL_DISPLAY</code> block.</p>
+<p><strong>Acceptance:</strong> <code>/build-and-test</code> passes; LVGL window opens on native_sim; <code>main.c</code>
+contains only <code>LOG_MODULE_REGISTER</code> + <code>return 0</code>.</p>
+<hr>
+<h2 id="adr-010-devcontainer-align-devcontainer-and-ci-on-single-approved-image">[ADR-010-DEVCONTAINER] Align devcontainer and CI on single approved image</h2>
+<p><strong>Status: BLOCKED</strong> — remote container build currently does not work.</p>
+<p><code>devcontainer.json</code> uses a local <code>Dockerfile</code> with <code>FROM dev:latest</code> instead
+of pulling <code>ghcr.io/tobiwan88/zephyr_docker:latest</code> directly. This diverges
+from the ADR-010 requirement that local and CI use the same image.</p>
+<p><strong>Goal:</strong> Decide between:
+- <strong>Option A (remote image):</strong> <code>devcontainer.json</code> references
+  <code>ghcr.io/tobiwan88/zephyr_docker:latest</code> directly — no local Dockerfile.
+  Requires the remote image build to be working.
+- <strong>Option B (local build):</strong> Keep the local <code>Dockerfile</code> but base it on the
+  approved image (<code>FROM ghcr.io/tobiwan88/zephyr_docker:latest</code>) and update
+  ADR-010 to document the local-build approach.</p>
+<p>Additional CI gaps to fix alongside:
+- Add <code>zephyr-checkpatch-diff</code> hook to <code>.pre-commit-config.yaml</code>.
+- Add <code>ci-success</code> aggregator job to block PR merge on failure.</p>
+<p>Reference: ADR-010.</p>
+<hr>
+<h2 id="sensor-registry-scaling-extend-sensor_registry-with-per-uid-scaling-metadata">[SENSOR-REGISTRY-SCALING] Extend sensor_registry with per-UID scaling metadata</h2>
+<p><code>sensor_registry</code> currently maps UID → label/location. It needs to also carry
+the Q31 physical range (<code>range_min</code>, <code>range_max</code>) for each sensor variant so
+that consumers can decode Q31 values without assuming a fixed global formula.</p>
+<p><strong>Goal:</strong> <code>sensor_registry_get_scaling(uid)</code> returns the correct decode
+parameters for any sensor, regardless of its physical range variant.
+Example: an industrial temperature sensor covering −200 °C to +500 °C uses
+the same <code>SENSOR_TYPE_TEMPERATURE</code> enum as an indoor sensor, but registers
+different scaling.</p>
+<p><strong>Acceptance:</strong>
+- <code>sensor_scaling_t</code> struct with <code>range_min</code>, <code>range_max</code> (double).
+- <code>sensor_registry_register()</code> accepts a <code>sensor_scaling_t</code> parameter.
+- <code>sensor_registry_get_scaling(uid)</code> returns the registered scaling.
+- <code>q31_to_physical(q31, range_min, range_max)</code> replaces type-specific decode helpers in display/MQTT code.
+- Fake sensors register their default scaling at <code>SYS_INIT</code> time.
+- Unit test: register two sensors of the same type with different ranges; verify independent decode.</p>
+<h2 id="reference-adr-003-q31-encoding-sensor_uid-contract">Reference: ADR-003 §Q31 encoding, §sensor_uid contract.</h2>
+<h2 id="docu-improvement-diagramgs-improve-the-usage-of-diagrams-in-the-documentation">[DOCU-Improvement-Diagramgs] Improve the usage of diagrams in the documentation</h2>
+<ul>
+<li>make mermaid diagrams more interactive in webpage build</li>
+<li>add diagrams also in the right pages as inlcude directly (build html from markdown)</li>
+<li>ensure skill exists to create good diagrams</li>
+</ul>
+<hr>
+<h2 id="renode-phase2-multi-node-simulation-with-renode">[RENODE-PHASE2] Multi-node simulation with Renode</h2>
+<p><strong>Status: Single-node Renode implemented (Phase 2 partial).</strong> Single-node boot,
+shell, FOTA, and trace tests run in CI. The remaining work is multi-node
+(sensor node + gateway in two Renode machines with shared virtual radio).</p>
+<p>Once the native_sim architecture is validated end-to-end and an MCU is selected
+(ADR-007 trigger), move to Renode for multi-node integration tests with a
+virtual LoRa radio medium.</p>
+<p><strong>Goal:</strong> sensor node and gateway run as two separate Renode machines connected
+via a simulated wireless medium. End-to-end LoRa packet exchange tested
+automatically in CI without physical hardware.</p>
+<p><strong>Prerequisites:</strong>
+- MCU selection confirmed (ADR-007)
+- <code>lib/lora_radio</code> native_sim stub replaced with a Renode platform description
+- Board definitions written for the chosen MCU</p>
+<p><strong>Acceptance:</strong>
+- <code>simulation/multi_node.resc</code> launches both nodes with a shared virtual radio medium.
+- CI job <code>renode</code> includes multi-node test cases.
+- Robot Framework test asserts end-to-end sensor event flow.</p>
+<p>Reference: ADR-009 §Future phases, ADR-007.</p>
+<hr>
+<h2 id="fota-ci-key-suppress-signing-key-from-ci-logs">[FOTA-CI-KEY] Suppress signing key from CI logs</h2>
+<p>The CI snippet in <code>docs/architecture/firmware-update.md</code> uses
+<code>echo "$MCUBOOT_SIGN_KEY" &gt; keys/dev-ed25519.pem</code>, which may echo the key
+value in the build log depending on the CI runner's debug settings.</p>
+<p><strong>Goal:</strong> Key material never appears in CI logs.</p>
+<p><strong>Implementation:</strong>
+- Replace <code>echo "$MCUBOOT_SIGN_KEY"</code> with
+  <code>printf '%s' "$MCUBOOT_SIGN_KEY"</code> (no trailing newline, no shell trace echo)
+  or write via a helper script that sets <code>+x</code> before writing.
+- Update the CI YAML snippet and the documentation in
+  <code>docs/architecture/firmware-update.md</code>.
+- Verify with <code>set -x</code> trace that no key bytes appear in stdout.</p>
+<p>Reference: ADR-014 §Key management.</p>
+<hr>
+<h2 id="fota-remove-uart-mcumgr-remove-mcumgr-uart-transport-http-is-the-standard-update-path">[FOTA-REMOVE-UART-MCUMGR] Remove MCUmgr UART transport; HTTP is the standard update path</h2>
+<p><code>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf</code> currently enables
+<code>CONFIG_MCUMGR_TRANSPORT_UART</code>, <code>CONFIG_MCUMGR_GRP_IMG</code>, and
+<code>CONFIG_MCUMGR_GRP_OS</code> so that firmware can be uploaded over the shared
+<code>flexcomm4_lpuart4</code> UART. This adds code size and complexity for a transport
+that is redundant with the HTTP upload path.</p>
+<p><strong>Prerequisite:</strong> Ethernet + DHCP on <code>frdm_mcxn947</code> must be stable and tested
+end-to-end so that the HTTP upload path is a reliable replacement before the
+UART fallback is removed.</p>
+<p><strong>Goal:</strong> HTTP (<code>POST /api/fota/upload</code>) is the single standard update path.
+UART MCUmgr is removed. Physical recovery (bricked device) uses the NXP ROM
+ISP bootloader or JTAG re-flash — not MCUmgr.</p>
+<p><strong>Implementation:</strong>
+- Remove MCUmgr Kconfig from <code>frdm_mcxn947_mcxn947_cpu0.conf</code>:
+  <code>CONFIG_MCUMGR</code>, <code>CONFIG_MCUMGR_TRANSPORT_UART</code>, <code>CONFIG_MCUMGR_GRP_IMG</code>,
+  <code>CONFIG_MCUMGR_GRP_OS</code>.
+- Keep <code>CONFIG_IMG_MANAGER</code>, <code>CONFIG_STREAM_FLASH</code>, <code>CONFIG_FLASH_MAP</code> — still
+  required by the HTTP upload handler.
+- Update ADR-014 and <code>docs/architecture/firmware-update.md</code> to document HTTP
+  as the sole transport and JTAG/ISP as the recovery path.
+- Verify <code>CONFIG_ZVFS_POLL_MAX</code> can revert to 8 without MCUmgr's extra socket.</p>
+<p>Reference: ADR-014.</p>
+<hr>
+<h2 id="fota-confirm-health-checks-replace-time-based-confirm-with-iterable-health-check-pattern">[FOTA-CONFIRM-HEALTH-CHECKS] Replace time-based confirm with iterable health-check pattern</h2>
+<p><code>lib/fota_confirm</code> currently confirms the image after a fixed settle delay
+(<code>CONFIG_FOTA_CONFIRM_DELAY_S</code>). This is a blunt instrument: any library that
+can hang silently would still allow confirmation to proceed.</p>
+<p><strong>Goal:</strong> Image confirmation requires all registered health checks to return
+<code>ok</code> before <code>boot_write_img_confirmed()</code> is called. Libraries opt in by
+registering a health-check callback; the confirm library polls them.</p>
+<p><strong>Implementation:</strong>
+- Define an iterable section entry:
+  </p><div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">fota_health_check</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">check</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span><span class="w">   </span><span class="cm">/* returns 0 if healthy, negative errno if not */</span>
+<span class="p">};</span>
+<span class="cp">#define FOTA_HEALTH_CHECK_DEFINE(name, fn) \</span>
+<span class="cp">    STRUCT_SECTION_ITERABLE(fota_health_check, name) = { .name = #name, .check = fn }</span>
+</code></pre></div>
+- <code>fota_confirm_init</code> iterates <code>STRUCT_SECTION_START/END(fota_health_check)</code>;
+  if any check returns non-zero at the time of evaluation, reschedule and retry
+  (up to a <code>CONFIG_FOTA_CONFIRM_MAX_RETRIES</code> limit before giving up and letting
+  MCUboot roll back).
+- HTTP dashboard, MQTT publisher, SNTP can each register a check
+  (<code>http_dashboard_is_ready()</code>, <code>mqtt_is_connected()</code>, etc.) under
+  <code>CONFIG_FOTA_CONFIRM_CHECK_*</code> guards.
+- Expose <code>fota_confirm_now()</code> as a public API for callers that want to trigger
+  confirmation synchronously once they know the system is healthy.
+- Remove the fixed delay as the sole gate; keep a minimum floor
+  (<code>CONFIG_FOTA_CONFIRM_MIN_DELAY_S</code>) to let sockets bind before the first poll.<p></p>
+<p>Reference: ADR-014 §Image confirmation; ADR-008 §iterable sections pattern.</p>
+<hr>
+<h2 id="renode-ci-docker-pre-built-ci-docker-image-with-renode">[RENODE-CI-DOCKER] Pre-built CI Docker image with Renode</h2>
+<p>The <code>renode</code> CI job downloads the portable Renode tarball each run (~30 s).
+A pre-built CI image would eliminate this delay and decouple from GitHub
+release availability.</p>
+<p><strong>Goal:</strong> Create and publish <code>ghcr.io/tobiwan88/weather-station-ci:latest</code>,
+extending <code>zephyr_docker:arm</code> with Renode and Robot Framework pre-installed.</p>
+<p><strong>Implementation:</strong>
+- Build a new Docker image based on <code>.devcontainer/Dockerfile.ci</code> that adds
+  the Renode portable release (ARM64 for native runner, x86_64 for CI) and
+  <code>robotframework==6.1</code>.
+- Publish to GitHub Container Registry.
+- Update <code>.github/workflows/ci.yml</code> <code>renode</code> job to use the custom image
+  instead of downloading Renode inline.</p>
+<p><strong>Acceptance:</strong> Renode CI job runs without the 30 s download step. Cold build
+time drops from ~60 s to ~15 s.</p>
+<hr>
+<h2 id="renode-enet-qos-renode-enet-qos-peripheral-model">[RENODE-ENET-QOS] Renode ENET-QoS peripheral model</h2>
+<p>The FRDM-MCXN947 uses <code>nxp,enet-qos</code> Ethernet, which has no Renode peripheral
+model. This blocks HTTP FOTA testing and network-dependent features (MQTT,
+HTTP dashboard, SNTP) in Renode simulation.</p>
+<p><strong>Goal:</strong> Add an <code>enet-qos</code> peripheral model to Renode (or contribute to
+upstream), enabling network-based Renode testing of the full gateway stack.</p>
+<p><strong>Acceptance:</strong>
+- Renode <code>.repl</code> includes a functional ENET-QoS peripheral at <code>0x40100000</code>.
+- <code>gateway_fota.robot</code> passes with HTTP FOTA test case.
+- The model is contributed upstream or maintained as a project patch.</p>
+<hr>
+<h2 id="renode-spi-nor-functional-spi-nor-flash-model-for-renode">[RENODE-SPI-NOR] Functional SPI NOR flash model for Renode</h2>
+<p>The Renode <code>.repl</code> models the MCXN947 external W25Q64 flash as bare
+<code>Memory.MappedMemory</code>, which cannot respond to SPI IP commands (JEDEC ID read,
+SFDP, erase, page program). This forces a Renode-specific Kconfig fragment that
+disables <code>CONFIG_FLASH_MCUX_FLEXSPI_NOR</code> and a DTS overlay to disable
+<code>ext_flash_ctrl</code>.</p>
+<p><strong>Goal:</strong> Replace <code>Memory.MappedMemory</code> with a functional SPI NOR flash
+peripheral model so the full gateway firmware (with external flash) boots in
+Renode without workarounds.</p>
+<p><strong>Implementation:</strong>
+- Check if Renode v1.16.1 has a <code>SPI.NORFlash</code> or equivalent model.
+- If yes, update <code>simulation/renode/frdm_mcxn947_mcxn947_cpu0.repl</code> to use it.
+- If no, implement or contribute one.
+- Remove <code>frdm_mcxn947_mcxn947_cpu0_renode.conf</code> and <code>_renode.overlay</code>.</p>
+<p><strong>Acceptance:</strong> Gateway firmware builds without the Renode-specific workarounds
+and boots to shell in Renode, with external flash accessible via FlexSPI.</p>
+<hr>
+<h2 id="adr-015-lora-rpc-retry-implement-rpc-command-retry-logic">[ADR-015-LORA-RPC-RETRY] Implement RPC command retry logic</h2>
+<p>ADR-015 requires ACK-based RPC delivery with up to 3 retries and SF-dependent
+timeout (5s at SF7, 30s at SF10). Currently <code>lora_radio_rpc_send()</code> sends a
+single frame with <code>LORA_FLAG_ACK_REQ</code> but has no retry loop or response listener.</p>
+<p><strong>Acceptance:</strong>
+- <code>lora_radio_rpc_send()</code> blocks until RPC_RESP received or retries exhausted
+- Retry count configurable via Kconfig (default 3)
+- Timeout per retry based on spreading factor
+- One pending RPC per node (serialized)</p>
+<p>Reference: ADR-015 §Reliability model.</p>
+<hr>
+<h2 id="adr-015-lora-fota-window-implement-windowed-fota-chunk-protocol">[ADR-015-LORA-FOTA-WINDOW] Implement windowed FOTA chunk protocol</h2>
+<p>ADR-015 requires a windowed ACK protocol with 4–16 chunks in flight, 2s retry
+timer, and 3 retries per chunk. Currently <code>lora_handle_fota_chunk()</code> processes
+one chunk at a time with a broken ACK (offset mismatch reports success).</p>
+<p><strong>Acceptance:</strong>
+- Gateway sends 4–16 FOTA_CHUNK frames before waiting for ACKs
+- ACK carries written offset, expected offset, and status
+- Retry timer (2s) resends unacknowledged chunks
+- 3 retries per chunk before aborting</p>
+<p>Reference: ADR-015 §Reliability model, §FOTA over LoRa.</p>
+<hr>
+<h2 id="adr-015-lora-persist-persist-session-immediately-after-pairing">[ADR-015-LORA-PERSIST] Persist session immediately after pairing</h2>
+<p>After <code>lora_session_add()</code> in <code>lora_handle_prov_beacon()</code>, the session exists
+only in RAM. A reboot before the next <code>settings_save()</code> call loses the pairing.</p>
+<p><strong>Acceptance:</strong>
+- <code>lora_session_persist()</code> called after successful pairing
+- Sensor node can communicate after gateway reboot without re-pairing</p>
+<p>Reference: ADR-015 §Security, §Provisioning.</p>
+<hr>
+<h2 id="adr-015-lora-ed25519-cache-cache-ed25519-psa-key-instead-of-importdestroy-per-beacon">[ADR-015-LORA-ED25519-CACHE] Cache Ed25519 PSA key instead of import/destroy per beacon</h2>
+<p>The gateway's Ed25519 private key is imported into PSA Crypto on every
+PROV_BEACON reception and destroyed after signing. For a static key, this
+should be imported once at init and cached as a <code>psa_key_id_t</code>.</p>
+<p><strong>Acceptance:</strong>
+- Ed25519 key imported once in <code>lora_radio_init()</code> or prov handler init
+- <code>psa_key_id_t</code> cached as static variable
+- <code>psa_destroy_key()</code> only called on shutdown (if at all)</p>
+<p>Reference: ADR-015 §Security.</p>
+<hr>
+<h2 id="renode-trace-gh-pages-perfetto-deep-link-404-guard-and-retention-cleanup">[RENODE-TRACE-GH-PAGES] Perfetto deep-link 404 guard and retention cleanup</h2>
+<p>The <code>deploy-results</code> CI job deploys <code>trace_combined.json</code> (Chrome Tracing
+format) and test reports to the <code>gh-pages</code> branch. The Perfetto UI deep-link
+pattern <code>ui.perfetto.dev/#!/?url=...</code> works for any public URL.</p>
+<p><strong>Known gaps:</strong>
+- No 404 guard: if a trace file was not generated (build failure, size &gt; 50 MB),
+  the deep-link silently fails in Perfetto UI. A health-check script or index
+  page listing available traces would improve UX.
+- No retention cleanup: old PR traces accumulate indefinitely on <code>gh-pages</code>.
+  A periodic cleanup job (e.g., remove traces for closed PRs older than 30
+  days) is needed.
+- Trace format: currently outputs Chrome Tracing JSON. Migrating to the binary
+  Perfetto proto format (.perfetto or .pb) would reduce file size for large
+  traces and enable Perfetto's full feature set (flow events, counters).</p>
+<p><strong>Acceptance:</strong>
+- An index page at <code>&lt;org&gt;.github.io/weather-station/dev/traces/</code> lists all
+  available traces with links.
+- Old PR trace directories are removed when the PR is closed/merged.
+- Optional: binary Perfetto proto output from parse-trace.py.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mermaid-zoom.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

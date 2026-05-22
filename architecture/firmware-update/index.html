@@ -1,0 +1,1743 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/architecture/firmware-update/">
+      
+      
+        <link rel="prev" href="../integration-tests/">
+      
+      
+        <link rel="next" href="../lora-protocol/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Firmware Update - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#firmware-update-architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Firmware Update
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Footprint
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#boot-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boot chain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flash-partition-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flash partition layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ram-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RAM layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sysbuild-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sysbuild configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key management
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mcumgr-uart-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCUmgr — UART transport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mcumgr-http-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCUmgr — HTTP transport
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MCUmgr — HTTP transport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#upload-handler-streaming-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload handler — streaming write
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply handler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status response
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#image-confirmation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image confirmation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#end-to-end-update-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        End-to-end update flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-node-relay-stub-not-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor-node relay (stub — not implemented)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kconfig-additions-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kconfig additions summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-hardening-out-of-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future hardening (out of scope)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Footprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#boot-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boot chain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flash-partition-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flash partition layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ram-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RAM layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sysbuild-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sysbuild configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key management
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mcumgr-uart-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCUmgr — UART transport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mcumgr-http-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCUmgr — HTTP transport
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MCUmgr — HTTP transport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#upload-handler-streaming-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload handler — streaming write
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply handler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status response
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#image-confirmation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Image confirmation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#end-to-end-update-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        End-to-end update flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-node-relay-stub-not-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor-node relay (stub — not implemented)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kconfig-additions-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kconfig additions summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-hardening-out-of-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future hardening (out of scope)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="firmware-update-architecture">Firmware Update Architecture</h1>
+<p>This document covers the implementation detail for MCUboot-based FOTA on the <code>frdm_mcxn947</code> gateway.</p>
+<blockquote>
+<p>Design rationale: <a href="../../adr/ADR-014-mcuboot-fota/">ADR-014</a>.</p>
+</blockquote>
+<hr>
+<h2 id="boot-chain">Boot chain</h2>
+<div class="highlight"><pre><span></span><code>┌──────────────────────────────────────────────────────────────┐
+│ NXP ROM Bootloader  (immutable, always present)              │
+│   Loads MCUboot from flash 0x00000000                        │
+└───────────────────────┬──────────────────────────────────────┘
+                        │
+┌───────────────────────▼──────────────────────────────────────┐
+│ MCUboot  (80 KB, 0x00000000)                                 │
+│   1. Checks slot 1 for a pending image                       │
+│   2. Verifies ED25519 signature                              │
+│   3. If valid pending: SWAP_MOVE slot 1 → slot 0            │
+│   4. Boots slot 0                                            │
+└───────────────────────┬──────────────────────────────────────┘
+                        │
+┌───────────────────────▼──────────────────────────────────────┐
+│ Zephyr gateway application  (slot 0, up to 984 KB)           │
+│   All libs self-wire via SYS_INIT.                           │
+│   MCUmgr provides UART + HTTP FOTA transports.               │
+│   SYS_INIT APPLICATION 99: confirm image after 5 s settle.  │
+└──────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<hr>
+<h2 id="flash-partition-layout">Flash partition layout</h2>
+<p>Internal flash: 2 MB total. All sectors are 8 KB; all partition boundaries are
+8 KB-aligned.</p>
+<div class="highlight"><pre><span></span><code>0x00000000 ┌────────────────────────────┐
+           │  MCUboot                   │  80 KB   label: mcuboot
+0x00014000 ├────────────────────────────┤
+           │  Slot 0 — active image     │  984 KB  label: image-0
+0x0010A000 ├────────────────────────────┤
+           │  Slot 1 — update candidate │  984 KB  label: image-1
+0x00200000 └────────────────────────────┘  (end of 2 MB internal flash)
+
+External W25Q64 SPI flash (8 MB):
+0x90000000 ┌────────────────────────────┐
+           │  storage_partition          │  8 MB   Zephyr settings / NVS
+0x90800000 └────────────────────────────┘
+</code></pre></div>
+<p>No scratch partition. SWAP_MOVE performs the A/B exchange using free sectors at
+the top of each slot.</p>
+<hr>
+<h2 id="ram-layout">RAM layout</h2>
+<p>Target: <code>frdm_mcxn947/mcxn947/cpu0</code> (standard variant, no TrustZone split).</p>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th>Address</th>
+<th>Size</th>
+<th>Owner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sram0</code></td>
+<td><code>0x20000000</code></td>
+<td>320 KB</td>
+<td>Zephyr application</td>
+</tr>
+<tr>
+<td><code>sramg</code></td>
+<td><code>0x20050000</code></td>
+<td>64 KB</td>
+<td>CPU1 (reserved, do not use)</td>
+</tr>
+<tr>
+<td><code>sramh</code></td>
+<td><code>0x20060000</code></td>
+<td>32 KB</td>
+<td>CPU1 (reserved, do not use)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="sysbuild-configuration">Sysbuild configuration</h2>
+<p>Zephyr sysbuild builds MCUboot and the gateway app together in one invocation.</p>
+<p>New files required:</p>
+<div class="highlight"><pre><span></span><code>apps/gateway/
+  sysbuild.conf                    ← enables MCUboot for hardware builds
+  sysbuild/mcuboot.conf            ← MCUboot Kconfig for this app
+</code></pre></div>
+<p><strong><code>apps/gateway/sysbuild.conf</code></strong> (hardware targets only; excluded from native_sim because
+<code>west build</code> for <code>native_sim</code> never passes <code>--sysbuild</code>; the file is simply not processed):</p>
+<div class="highlight"><pre><span></span><code><span class="na">SB_CONFIG_BOOTLOADER_MCUBOOT</span><span class="o">=</span><span class="s">y</span>
+<span class="na">SB_CONFIG_BOOT_SIGNATURE_TYPE_ED25519</span><span class="o">=</span><span class="s">y</span>
+<span class="na">SB_CONFIG_MCUBOOT_MODE_SWAP_USING_MOVE</span><span class="o">=</span><span class="s">y</span>
+</code></pre></div>
+<p><strong><code>apps/gateway/sysbuild/mcuboot.conf</code></strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="na">CONFIG_MCUBOOT_LOG_LEVEL_WRN</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_BOOT_UPGRADE_ONLY</span><span class="o">=</span><span class="s">n</span>
+<span class="na">CONFIG_BOOT_BOOTSTRAP</span><span class="o">=</span><span class="s">n</span>
+<span class="na">CONFIG_BOOT_MAX_IMG_SECTORS_AUTO</span><span class="o">=</span><span class="s">n</span>
+<span class="na">CONFIG_BOOT_MAX_IMG_SECTORS</span><span class="o">=</span><span class="s">256</span>
+<span class="na">CONFIG_MCUBOOT_DOWNGRADE_PREVENTION</span><span class="o">=</span><span class="s">n</span>
+</code></pre></div>
+<p><strong>Build command</strong> (hardware):</p>
+<div class="highlight"><pre><span></span><code>./scripts/gen-dev-key.sh<span class="w">   </span><span class="c1"># first time only</span>
+
+west<span class="w"> </span>build<span class="w"> </span>apps/gateway<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-b<span class="w"> </span>frdm_mcxn947/mcxn947/cpu0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sysbuild<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--<span class="w"> </span><span class="s2">"-DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/keys/dev-ed25519.pem"</span>
+</code></pre></div>
+<p><strong>Output artifacts</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>build/mcuboot/zephyr/zephyr.hex</code></td>
+<td>Flash once at device provisioning</td>
+</tr>
+<tr>
+<td><code>build/gateway/zephyr/zephyr.signed.bin</code></td>
+<td>FOTA payload for all subsequent updates</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="key-management">Key management</h2>
+<div class="highlight"><pre><span></span><code>scripts/gen-dev-key.sh   ← committed; generates the key, never the key itself
+keys/                    ← .gitignore'd; all key material lives here
+  dev-ed25519.pem        ← generated locally, never committed
+</code></pre></div>
+<p>CI behaviour when <code>MCUBOOT_SIGN_KEY</code> secret is not set:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">"</span><span class="nv">$MCUBOOT_SIGN_KEY</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span>./scripts/gen-dev-key.sh<span class="w">        </span><span class="c1"># ephemeral key, discarded after run</span>
+<span class="k">else</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$MCUBOOT_SIGN_KEY</span><span class="s2">"</span><span class="w"> </span>&gt;<span class="w"> </span>keys/dev-ed25519.pem
+<span class="k">fi</span>
+</code></pre></div>
+<p>A CI run without the secret verifies the build compiles and produces a signed binary;
+the resulting artifact is not deployable. A CI run with the secret produces a
+release-quality signed binary.</p>
+<hr>
+<h2 id="mcumgr-uart-transport">MCUmgr — UART transport</h2>
+<blockquote>
+<p><strong>Temporary fallback.</strong> MCUmgr UART is provided for development convenience and
+recovery while Ethernet+DHCP stability is not yet confirmed end-to-end. Once
+confirmed, UART MCUmgr will be removed (backlog: [FOTA-REMOVE-UART-MCUMGR]),
+reducing code size and eliminating the 16 KB <code>CONFIG_HEAP_MEM_POOL_SIZE</code> required
+by the SMP transport internals.</p>
+</blockquote>
+<p>UART already declared in the board DTS (<code>frdm_mcxn947_mcxn947_cpu0.dtsi</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="nf">chosen</span><span class="cm"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">zephyr</span><span class="p">,</span><span class="n">uart-mcumgr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">flexcomm4_lpuart4</span><span class="p">;</span><span class="w">  </span><span class="cm">/* same as console/shell */</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>Kconfig additions to <code>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="na">CONFIG_MCUMGR</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_MCUMGR_TRANSPORT_UART</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_MCUMGR_GRP_IMG</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_MCUMGR_GRP_OS</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_IMG_MANAGER</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_STREAM_FLASH</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_FLASH_MAP</span><span class="o">=</span><span class="s">y</span>
+</code></pre></div>
+<p>MCUmgr SMP and the shell share <code>flexcomm4_lpuart4</code>. They are distinguished by the
+SMP frame start sequence (<code>0x06 0x09</code>) — no conflict.</p>
+<p>Developer workflow (UART path):</p>
+<div class="highlight"><pre><span></span><code>mcumgr<span class="w"> </span>--conntype<span class="w"> </span>serial<span class="w"> </span>--connstring<span class="w"> </span>/dev/ttyACM0,baud<span class="o">=</span><span class="m">115200</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>image<span class="w"> </span>upload<span class="w"> </span>build/gateway/zephyr/zephyr.signed.bin
+mcumgr<span class="w"> </span>--conntype<span class="w"> </span>serial<span class="w"> </span>--connstring<span class="w"> </span>/dev/ttyACM0,baud<span class="o">=</span><span class="m">115200</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>image<span class="w"> </span><span class="nb">test</span><span class="w"> </span>&lt;hash&gt;
+mcumgr<span class="w"> </span>--conntype<span class="w"> </span>serial<span class="w"> </span>--connstring<span class="w"> </span>/dev/ttyACM0,baud<span class="o">=</span><span class="m">115200</span><span class="w"> </span>reset
+</code></pre></div>
+<hr>
+<h2 id="mcumgr-http-transport">MCUmgr — HTTP transport</h2>
+<p>Three new routes added to <code>lib/http_dashboard</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fota/upload</code></td>
+<td>session or bearer</td>
+<td>Stream image to flash slot 1</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/fota/apply</code></td>
+<td>session or bearer</td>
+<td>Mark slot 1 pending + reboot</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/fota/status</code></td>
+<td>session or bearer</td>
+<td>Return slot versions and state</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upload-handler-streaming-write">Upload handler — streaming write</h3>
+<p>The handler never buffers the full image in RAM. It uses <code>flash_img_buffered_write()</code>
+with a 4 KB write buffer to stream the HTTP body directly to slot 1:</p>
+<div class="highlight"><pre><span></span><code>HTTP POST /api/fota/upload  (Content-Type: application/octet-stream)
+  → flash_img_init(&amp;ctx, slot1_id)
+  → for each received chunk:
+       flash_img_buffered_write(&amp;ctx, chunk, len, last)
+  → on completion: return 200 + SHA256 hash of written image
+</code></pre></div>
+<p><code>CONFIG_IMG_ERASE_PROGRESSIVELY=y</code> erases sectors just-in-time during streaming so
+no separate erase step is needed before upload.</p>
+<h3 id="apply-handler">Apply handler</h3>
+<div class="highlight"><pre><span></span><code>POST /api/fota/apply
+  → boot_request_upgrade(BOOT_UPGRADE_TEST)
+  → k_work_schedule(&amp;reboot_work, K_MSEC(2000))   ← allows HTTP response to flush
+</code></pre></div>
+<h3 id="status-response">Status response</h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"slot0"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.2.0"</span><span class="p">,</span><span class="w"> </span><span class="nt">"confirmed"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"slot1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.3.0"</span><span class="p">,</span><span class="w"> </span><span class="nt">"confirmed"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"pending"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div>
+<hr>
+<h2 id="image-confirmation">Image confirmation</h2>
+<p>Registered via <code>SYS_INIT(fota_confirm_init, APPLICATION, 99)</code> — after all other
+libraries have initialised.</p>
+<div class="highlight"><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">confirm_work_fn</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_work</span><span class="w"> </span><span class="o">*</span><span class="n">work</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="cm">/* Basic health: if we reached here, core services are up */</span>
+<span class="w">    </span><span class="n">boot_write_img_confirmed</span><span class="p">();</span>
+<span class="w">    </span><span class="n">LOG_INF</span><span class="p">(</span><span class="s">"firmware update confirmed"</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">static</span><span class="w"> </span><span class="n">K_WORK_DELAYABLE_DEFINE</span><span class="p">(</span><span class="n">confirm_work</span><span class="p">,</span><span class="w"> </span><span class="n">confirm_work_fn</span><span class="p">);</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">fota_confirm_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">k_work_schedule</span><span class="p">(</span><span class="o">&amp;</span><span class="n">confirm_work</span><span class="p">,</span><span class="w"> </span><span class="n">K_SECONDS</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">SYS_INIT</span><span class="p">(</span><span class="n">fota_confirm_init</span><span class="p">,</span><span class="w"> </span><span class="n">APPLICATION</span><span class="p">,</span><span class="w"> </span><span class="mi">99</span><span class="p">);</span>
+</code></pre></div>
+<p>The 5-second delay ensures the HTTP dashboard, MQTT, and SNTP have had time to
+bind their sockets. A binary that crashes or hangs before <code>boot_write_img_confirmed()</code>
+is called will not be confirmed; MCUboot will revert to slot 0 on the next reset.</p>
+<hr>
+<h2 id="end-to-end-update-flow">End-to-end update flow</h2>
+<div class="highlight"><pre><span></span><code>┌─────────────┐   POST /api/fota/upload        ┌───────────────────┐
+│  Developer  │ ──────────────────────────────► │  HTTP dashboard   │
+│  browser /  │                                 │  lib/http_dashboard│
+│  curl       │   POST /api/fota/apply          │                   │
+│             │ ──────────────────────────────► │  boot_request_    │
+└─────────────┘                                 │  upgrade(TEST)    │
+                                                └────────┬──────────┘
+                                                         │ reboot
+                                                ┌────────▼──────────┐
+                                                │     MCUboot       │
+                                                │  verify ED25519   │
+                                                │  SWAP_MOVE        │
+                                                └────────┬──────────┘
+                                                         │ boot slot 0
+                                                ┌────────▼──────────┐
+                                                │  Zephyr (new)     │
+                                                │  5 s settle       │
+                                                │  confirmed ✓      │
+                                                └───────────────────┘
+
+Rollback path (if not confirmed):
+  next reset → MCUboot detects unconfirmed slot 0
+             → SWAP_MOVE reverses → previous firmware restored
+</code></pre></div>
+<pre class="mermaid"><code>---
+title: FOTA Update Flow
+---
+sequenceDiagram
+    participant DEV as Developer&lt;br/&gt;(browser / curl)
+    participant HTTP as HTTP dashboard&lt;br/&gt;/api/fota/*
+    participant FLASH as flash_img&lt;br/&gt;(slot 1)
+    participant BOOT as MCUboot
+    participant APP as Zephyr app&lt;br/&gt;(new image)
+    participant CONF as fota_confirm&lt;br/&gt;SYS_INIT 99
+
+    DEV-&gt;&gt;HTTP: POST /api/fota/upload&lt;br/&gt;(zephyr.signed.bin, octet-stream)
+    Note over HTTP: flash_img_init(slot1)&lt;br/&gt;stream chunks via&lt;br/&gt;flash_img_buffered_write()
+    HTTP-&gt;&gt;FLASH: write image progressively
+    HTTP--&gt;&gt;DEV: 200 OK { sha256: "..." }
+
+    DEV-&gt;&gt;HTTP: POST /api/fota/apply
+    HTTP-&gt;&gt;BOOT: boot_request_upgrade(TEST)
+    Note over HTTP: k_work_schedule reboot +2 s
+    HTTP--&gt;&gt;DEV: 200 OK
+    Note over HTTP: reboot
+
+    Note over BOOT: Verify ED25519 signature
+    Note over BOOT: SWAP_MOVE slot1 → slot0
+    BOOT-&gt;&gt;APP: boot new image
+
+    Note over APP: All SYS_INIT libraries init
+    APP-&gt;&gt;CONF: SYS_INIT APPLICATION 99
+    Note over CONF: k_work_schedule confirm +5 s
+    Note over CONF: (settle: HTTP, MQTT, SNTP bind sockets)
+    CONF-&gt;&gt;BOOT: boot_write_img_confirmed()
+    Note over CONF: LOG_INF "firmware update confirmed"
+
+    Note over BOOT,APP: If app crashes before confirm:&lt;br/&gt;next reset → MCUboot detects&lt;br/&gt;unconfirmed slot0 → SWAP_MOVE&lt;br/&gt;reverses → previous image restored
+</code></pre>
+<hr>
+<h2 id="sensor-node-relay-stub-not-implemented">Sensor-node relay (stub — not implemented)</h2>
+<p><strong>Not yet implemented.</strong> This feature depends on the LoRa library (ADR-015) and the
+UART proxy agent for the STM32WLE5JC co-processor. See backlog items
+[FOTA-REMOVE-UART-MCUMGR] and [RENODE-PHASE2] for the related infrastructure work.</p>
+<p>The gateway will eventually relay firmware to remote sensor nodes (e.g., STM32WLE5JC
+via LoRa). The interface is defined here as a placeholder; implementation is deferred
+to a future ADR (depends on ADR-006 LoRa implementation).</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/**</span>
+<span class="cm"> * Transport vtable for gateway-to-sensor-node firmware relay.</span>
+<span class="cm"> * Implement one instance per wireless transport (LoRa, BLE, …).</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">fota_relay_transport_api</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/**</span>
+<span class="cm">     * Upload a firmware chunk to a target sensor node.</span>
+<span class="cm">     * Caller chunks the image; transport handles fragmentation.</span>
+<span class="cm">     */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">upload</span><span class="p">)(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">target_uid</span><span class="p">,</span>
+<span class="w">                  </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">,</span>
+<span class="w">                  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">last</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/** Query the running firmware version on a target node. */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">get_version</span><span class="p">)(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">target_uid</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>Key design constraints for the LoRa relay (to be resolved in the future ADR):</p>
+<ul>
+<li>STM32WLE5JC (Cortex-M4, no TrustZone) → MCUboot + ED25519, software keys only</li>
+<li>LoRa EU868 duty cycle (~1%) limits throughput; a 128 KB image takes hours</li>
+<li>Image must be stored on the gateway's external W25Q64 SPI flash during relay</li>
+<li>Chunking, ACK, and retry protocol are out of scope here</li>
+</ul>
+<hr>
+<h2 id="kconfig-additions-summary">Kconfig additions summary</h2>
+<p><code>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf</code> additions:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># MCUmgr + image management</span>
+<span class="na">CONFIG_MCUMGR</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_MCUMGR_TRANSPORT_UART</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_MCUMGR_GRP_IMG</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_MCUMGR_GRP_OS</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_IMG_MANAGER</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_STREAM_FLASH</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_FLASH_MAP</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_IMG_ERASE_PROGRESSIVELY</span><span class="o">=</span><span class="s">y</span>
+
+<span class="c1"># Increase poll slots for MCUmgr + HTTP coexistence</span>
+<span class="na">CONFIG_ZVFS_POLL_MAX</span><span class="o">=</span><span class="s">12</span>
+</code></pre></div>
+<p><code>prj.conf</code> is <strong>not modified</strong> — MCUmgr is hardware-only and must not affect the
+<code>native_sim</code> build.</p>
+<hr>
+<h2 id="future-hardening-out-of-scope">Future hardening (out of scope)</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>What it requires</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Anti-rollback NV counter</td>
+<td><code>CONFIG_BOOT_ROLLBACK_PROT=y</code> + OTP/NV counter driver</td>
+</tr>
+<tr>
+<td>Hardware key isolation</td>
+<td>Migrate to TF-M + ITS; revisit RAM layout with custom SAU config</td>
+</tr>
+<tr>
+<td>Encrypted image slots</td>
+<td>MCUboot image encryption (<code>CONFIG_BOOT_ENCRYPT_IMAGE</code>)</td>
+</tr>
+<tr>
+<td>CRA compliance</td>
+<td>All three items above + attestation + vulnerability disclosure process</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mermaid-zoom.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

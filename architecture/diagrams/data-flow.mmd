@@ -1,0 +1,40 @@
+---
+title: Sensor Data Flow (Event-Driven)
+---
+sequenceDiagram
+    participant TMR as fake_sensors_timer<br/>(k_timer ISR)
+    participant TRIG as sensor_trigger_chan<br/>(zbus)
+    participant FTEMP as fake_temperature<br/>(zbus listener)
+    participant FHUM as fake_humidity<br/>(zbus listener)
+    participant EVCHAN as sensor_event_chan<br/>(zbus)
+    participant GW as gateway listener<br/>(LOG_INF)
+    participant DASH as http_dashboard<br/>(ring buffer)
+    participant BROWSER as Browser<br/>GET /api/data
+
+    Note over TMR: Every AUTO_PUBLISH_MS
+    TMR->>TRIG: pub sensor_trigger_event<br/>{ source=TIMER, target_uid=0 }
+
+    Note over TRIG,FHUM: zbus dispatches to all listeners
+    TRIG->>FTEMP: listener callback
+    FTEMP->>FTEMP: read milli-°C → Q31 encode
+    FTEMP->>EVCHAN: pub env_sensor_data<br/>{ uid, TEMPERATURE, q31, ts }
+
+    TRIG->>FHUM: listener callback
+    FHUM->>FHUM: read milli-%RH → Q31 encode
+    FHUM->>EVCHAN: pub env_sensor_data<br/>{ uid, HUMIDITY, q31, ts }
+
+    Note over EVCHAN,DASH: zbus dispatches to all subscribers
+    EVCHAN->>GW: listener callback → LOG_INF
+    EVCHAN->>DASH: listener callback
+
+    Note over DASH: acquire k_spinlock
+    DASH->>DASH: append (ts, q31) to ring buffer
+    Note over DASH: release k_spinlock
+
+    Note over BROWSER,DASH: Later — HTTP GET /api/data
+    BROWSER->>DASH: HTTP GET /api/data
+    Note over DASH: acquire k_spinlock
+    DASH->>DASH: memcpy snapshot
+    Note over DASH: release k_spinlock
+    DASH->>DASH: serialize snapshot → JSON<br/>(no lock held)
+    DASH-->>BROWSER: 200 OK { sensors: [...] }

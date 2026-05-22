@@ -1,0 +1,2385 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/hardware/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Hardware - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#hardware" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hardware
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Footprint
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Footprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#system-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System Topology
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-frdm-mcxn947" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway — FRDM-MCXN947
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway — FRDM-MCXN947">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#connectivity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connectivity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expansion-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expansion Headers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flexcomm-assignments-gateway-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flexcomm Assignments (Gateway Build)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-ili9341-24-tft-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway — ILI9341 2.4" TFT Display
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway — ILI9341 2.4&quot; TFT Display">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pin-mapping-ili9341-to-mcxn947-arduino-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Mapping — ILI9341 to MCXN947 Arduino Header
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#touch-panel-optional-xpt2046" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Touch Panel (Optional, XPT2046)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ili9341-initialization-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ILI9341 Initialization Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-bme688-indoor-environmental-sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway — BME688 Indoor Environmental Sensor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway — BME688 Indoor Environmental Sensor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pin-mapping-bme688-to-mcxn947-arduino-i2c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Mapping — BME688 to MCXN947 Arduino I2C
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gas-sensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gas Sensing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-wio-e5-mini-lora-co-processor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway — Wio-E5 Mini LoRa Co-Processor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway — Wio-E5 Mini LoRa Co-Processor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pin-mapping-wio-e5-mini-to-mcxn947" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Mapping — Wio-E5 Mini to MCXN947
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wio-e5-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wio-E5 Firmware
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outdoor-sensor-node-1-wio-e5-mini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Sensor Node 1 — Wio-E5 Mini
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Outdoor Sensor Node 1 — Wio-E5 Mini">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Firmware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outdoor-sensor-node-1-bme688-outdoor-environmental-sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Sensor Node 1 — BME688 Outdoor Environmental Sensor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Outdoor Sensor Node 1 — BME688 Outdoor Environmental Sensor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pin-mapping-bme688-qt-to-wio-e5-mini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Mapping — BME688 QT to Wio-E5 Mini
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outdoor-enclosure-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Enclosure Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outdoor-sensor-node-1-sen0460-pm25-particulate-sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Sensor Node 1 — SEN0460 PM2.5 Particulate Sensor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Outdoor Sensor Node 1 — SEN0460 PM2.5 Particulate Sensor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pin-mapping-sen0460-to-wio-e5-mini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Mapping — SEN0460 to Wio-E5 Mini
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i2c-bus-details-outdoor-sensor-node-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I2C Bus Details — Outdoor Sensor Node 1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outdoor-enclosure-notes_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Enclosure Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pin-conflict-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Conflict Resolution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zephyr-board-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zephyr Board Support
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Zephyr Board Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gateway-frdm_mcxn947mcxn947cpu0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway: frdm_mcxn947/mcxn947/cpu0
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lora-co-processor-wio-e5-mini-nucleo_wl55jc-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LoRa Co-Processor (Wio-E5 Mini): nucleo_wl55jc based
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outdoor-sensor-node-1-wio-e5-mini_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Sensor Node 1 (Wio-E5 Mini)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bill-of-materials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bill of Materials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="hardware">Hardware</h1>
+<p>This document describes the physical hardware for the Weather Station project — the gateway and outdoor sensor nodes — including specifications, pin mappings, and wiring references.</p>
+<h2 id="system-topology">System Topology</h2>
+<div class="highlight"><pre><span></span><code>                         ┌──────────────────────────────────────┐
+                         │  Gateway (FRDM-MCXN947)               │
+                         │                                      │
+                         │  ┌──────────┐  ┌──────────────────┐  │
+                         │  │ ILI9341  │  │ BME688 (indoor)  │  │
+┌─────────┐              │  │ 2.4" TFT │  │ T/H/P/VOC        │  │
+│  Web    │◄── HTTP ─────┤  │ SPI      │  │ I2C 0x76         │  │
+│ Browser │              │  └──────────┘  └──────────────────┘  │
+└─────────┘              │                                      │
+                         │  ┌──────────────────────────────────┐ │
+┌─────────┐              │  │ Wio-E5 Mini (LoRa co-processor)  │ │
+│  MQTT   │◄── MQTT ─────┤  │ STM32WLE5JC                     │ │
+│ Broker  │              │  │ UART → Flexcomm5                │ │
+└─────────┘              │  │ LoRa P2P                        │ │
+                         │  └────────────┬─────────────────────┘ │
+                         └───────────────┼───────────────────────┘
+                                         │   ~ LoRa P2P ~
+                                         │   EU868 / SF10-BW125
+                       ┌─────────────────┼───────────────────────┐
+                       │ Outdoor Sensor Node 1 (Wio-E5 Mini)     │
+                       │                                         │
+                       │  ┌──────────────────┐  ┌─────────────┐  │
+                       │  │ BME688 (outdoor) │  │ SEN0460     │  │
+                       │  │ T/H/P/VOC        │  │ PM1.0/2.5/10│  │
+                       │  │ I2C 0x76         │  │ I2C 0x19    │  │
+                       │  └──────────────────┘  └─────────────┘  │
+                       └─────────────────────────────────────────┘
+</code></pre></div>
+<p>The topology follows <a href="../adr/ADR-015-lora-protocol/">ADR-015</a>: the gateway uses a dedicated STM32WLE5JC LoRa co-processor connected via UART. The outdoor sensor node is a self-contained Zephyr device that reads sensors and transmits compact 5-byte readings over LoRa P2P. The gateway and display are combined in a single firmware image per <a href="../adr/ADR-007-gateway-display-combined/">ADR-007</a>.</p>
+<hr>
+<h2 id="gateway-frdm-mcxn947">Gateway — FRDM-MCXN947</h2>
+<p><strong>NXP FRDM-MCXN947 development board</strong> — the main gateway MCU.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SoC</strong></td>
+<td>NXP MCXN947 (dual ARM Cortex-M33)</td>
+</tr>
+<tr>
+<td><strong>CPU frequency</strong></td>
+<td>150 MHz per core</td>
+</tr>
+<tr>
+<td><strong>On-chip flash</strong></td>
+<td>2 MB (dual-bank, MCUboot-compatible)</td>
+</tr>
+<tr>
+<td><strong>On-chip SRAM</strong></td>
+<td>512 KB</td>
+</tr>
+<tr>
+<td><strong>External flash</strong></td>
+<td>8 MB W25Q64JV (QSPI NOR)</td>
+</tr>
+<tr>
+<td><strong>External RAM</strong></td>
+<td>None (on-chip only)</td>
+</tr>
+<tr>
+<td><strong>Hardware crypto</strong></td>
+<td>EdgeLock Secure Subsystem, TRNG, AES</td>
+</tr>
+<tr>
+<td><strong>Coproc accelerators</strong></td>
+<td>NPU, PowerQuad DSP</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>~$25 USD</td>
+</tr>
+</tbody>
+</table>
+<h3 id="connectivity">Connectivity</h3>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ethernet</strong></td>
+<td>On-board RJ45 with PHY, ENET-QOS MAC, IEEE 1588 PTP</td>
+</tr>
+<tr>
+<td><strong>USB</strong></td>
+<td>Dual Type-C (HS USB + FS OTG)</td>
+</tr>
+<tr>
+<td><strong>Debug</strong></td>
+<td>On-board MCU-Link (CMSIS-DAP v2) via USB Micro-B; 10-pin SWD header</td>
+</tr>
+<tr>
+<td><strong>Serial</strong></td>
+<td>Virtual COM port via MCU-Link USB</td>
+</tr>
+<tr>
+<td><strong>microSD</strong></td>
+<td>On-board slot (USDHC controller)</td>
+</tr>
+<tr>
+<td><strong>CAN-FD</strong></td>
+<td>On-board transceiver</td>
+</tr>
+</tbody>
+</table>
+<h3 id="expansion-headers">Expansion Headers</h3>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>Interface</th>
+<th>Used For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arduino Uno R3</td>
+<td>SPI, I2C, UART, GPIO, ADC</td>
+<td>ILI9341 display, BME688 indoor sensor, Wio-E5 reset</td>
+</tr>
+<tr>
+<td>FlexIO LCD</td>
+<td>16-bit 8080 parallel</td>
+<td><em>(not used — SPI display via Arduino instead)</em></td>
+</tr>
+<tr>
+<td>mikroBUS</td>
+<td>SPI, I2C, UART</td>
+<td><em>(available for future expansion)</em></td>
+</tr>
+<tr>
+<td>FRDM expansion</td>
+<td>Extra GPIO</td>
+<td><em>(available)</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="flexcomm-assignments-gateway-build">Flexcomm Assignments (Gateway Build)</h3>
+<table>
+<thead>
+<tr>
+<th>Flexcomm</th>
+<th>Mode</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FC1</td>
+<td>LPSPI1</td>
+<td>ILI9341 display (Arduino SPI: D10–D13)</td>
+</tr>
+<tr>
+<td>FC2</td>
+<td>LPI2C2</td>
+<td>BME688 (Arduino I2C: D14–D15)</td>
+</tr>
+<tr>
+<td>FC5</td>
+<td>LPUART5</td>
+<td>Wio-E5 co-processor UART (PT1_4/PT1_5)</td>
+</tr>
+<tr>
+<td>FC4</td>
+<td>LPUART4</td>
+<td>Console/shell UART</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="gateway-ili9341-24-tft-display">Gateway — ILI9341 2.4" TFT Display</h2>
+<p><strong>2.4" SPI TFT LCD module</strong> with ILI9341 display driver.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>320 × 240 pixels (QVGA)</td>
+</tr>
+<tr>
+<td><strong>Color depth</strong></td>
+<td>65K colors (RGB 5-6-5)</td>
+</tr>
+<tr>
+<td><strong>Display driver</strong></td>
+<td>ILITEK ILI9341</td>
+</tr>
+<tr>
+<td><strong>Interface</strong></td>
+<td>4-wire SPI</td>
+</tr>
+<tr>
+<td><strong>Touch</strong></td>
+<td>Optional resistive (XPT2046, separate SPI)</td>
+</tr>
+<tr>
+<td><strong>Backlight</strong></td>
+<td>4× white LED, PWM-dimmable</td>
+</tr>
+<tr>
+<td><strong>Module supply</strong></td>
+<td>3.3V–5V (onboard LDO)</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>~$8 USD</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pin-mapping-ili9341-to-mcxn947-arduino-header">Pin Mapping — ILI9341 to MCXN947 Arduino Header</h3>
+<table>
+<thead>
+<tr>
+<th>ILI9341 Pin</th>
+<th>Signal</th>
+<th>Arduino Pin</th>
+<th>MCXN947 Port.Pin</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>VCC</td>
+<td>3.3V</td>
+<td>—</td>
+<td>Power</td>
+</tr>
+<tr>
+<td>2</td>
+<td>GND</td>
+<td>GND</td>
+<td>—</td>
+<td>Ground</td>
+</tr>
+<tr>
+<td>3</td>
+<td>CS</td>
+<td><strong>D8</strong></td>
+<td>PT0_28</td>
+<td>SPI chip select (GPIO)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>RESET</td>
+<td><strong>D4</strong></td>
+<td>PT0_30</td>
+<td>Hardware reset</td>
+</tr>
+<tr>
+<td>5</td>
+<td>DC (RS)</td>
+<td><strong>D7</strong></td>
+<td>PT0_31</td>
+<td>Data/command select</td>
+</tr>
+<tr>
+<td>6</td>
+<td>SDI (MOSI)</td>
+<td><strong>D11</strong></td>
+<td>PT0_24</td>
+<td>SPI1 MOSI (FC1_P0)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>SCK</td>
+<td><strong>D13</strong></td>
+<td>PT0_25</td>
+<td>SPI1 SCK (FC1_P1)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>LED</td>
+<td><strong>D5</strong></td>
+<td>PT1_21</td>
+<td>PWM backlight (SCT0_OUT9)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>SDO (MISO)</td>
+<td><strong>D12</strong></td>
+<td>PT0_26</td>
+<td>SPI1 MISO (FC1_P2) — read-only, optional</td>
+</tr>
+</tbody>
+</table>
+<h3 id="touch-panel-optional-xpt2046">Touch Panel (Optional, XPT2046)</h3>
+<table>
+<thead>
+<tr>
+<th>Touch Pin</th>
+<th>Arduino Pin</th>
+<th>MCXN947 Pin</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T_CLK</td>
+<td>D13</td>
+<td>PT0_25</td>
+<td>Shares SPI SCK</td>
+</tr>
+<tr>
+<td>T_CS</td>
+<td>D9</td>
+<td>PT0_10</td>
+<td>Touch chip select (⚠ shares with red LED)</td>
+</tr>
+<tr>
+<td>T_DIN</td>
+<td>D11</td>
+<td>PT0_24</td>
+<td>Shares SPI MOSI</td>
+</tr>
+<tr>
+<td>T_DO</td>
+<td>D12</td>
+<td>PT0_26</td>
+<td>Shares SPI MISO</td>
+</tr>
+<tr>
+<td>T_IRQ</td>
+<td>D3</td>
+<td>PT1_23</td>
+<td>Touch interrupt</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ili9341-initialization-notes">ILI9341 Initialization Notes</h3>
+<p>Minimal SPI init sequence: hardware reset (≥1 ms low → high, wait ≥120 ms), software reset (0x01), power control (0xC0–0xC8), memory access control (0x36), pixel format 16-bit (0x3A=0x55), sleep out (0x11 + 120 ms), display ON (0x29). Zephyr's <code>zephyr,ili9341</code> display driver handles this, but LVGL will manage the framebuffer in software since the ILI9341's internal GRAM is only 172,800 bytes — exact match for 320×240×18-bit.</p>
+<hr>
+<h2 id="gateway-bme688-indoor-environmental-sensor">Gateway — BME688 Indoor Environmental Sensor</h2>
+<p><strong>Adafruit BME688 QT</strong> (Product ID 5046) — temperature, humidity, pressure, and gas/VOC sensor on a STEMMA QT breakout.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sensor chip</strong></td>
+<td>Bosch BME688</td>
+</tr>
+<tr>
+<td><strong>Measures</strong></td>
+<td>Temperature, relative humidity, barometric pressure, gas resistance (VOC/IAQ)</td>
+</tr>
+<tr>
+<td><strong>Temperature range</strong></td>
+<td>−40 to +85 °C, ±1.0 °C accuracy</td>
+</tr>
+<tr>
+<td><strong>Humidity range</strong></td>
+<td>0–100 %RH, ±3 %RH accuracy</td>
+</tr>
+<tr>
+<td><strong>Pressure range</strong></td>
+<td>300–1100 hPa, ±1 hPa accuracy</td>
+</tr>
+<tr>
+<td><strong>Gas sensor</strong></td>
+<td>Heated MOX, detects VOCs, ethanol, CO, H₂, H₂S</td>
+</tr>
+<tr>
+<td><strong>Interface</strong></td>
+<td>I2C (STEMMA QT / Qwiic, JST SH 4-pin) + SPI breakout pads</td>
+</tr>
+<tr>
+<td><strong>I2C addresses</strong></td>
+<td>0x76 (SDO low, default), 0x77 (SDO high)</td>
+</tr>
+<tr>
+<td><strong>Supply voltage</strong></td>
+<td>3–5V (onboard 3.3V LDO + level shifting)</td>
+</tr>
+<tr>
+<td><strong>Board dimensions</strong></td>
+<td>25.5 × 17.6 mm</td>
+</tr>
+<tr>
+<td><strong>Gas scan current</strong></td>
+<td>3.9 mA (standard), 90 µA (ULP mode)</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>~$20 USD</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pin-mapping-bme688-to-mcxn947-arduino-i2c">Pin Mapping — BME688 to MCXN947 Arduino I2C</h3>
+<table>
+<thead>
+<tr>
+<th>BME688 QT</th>
+<th>Arduino Pin</th>
+<th>MCXN947 Pin</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VCC (red)</td>
+<td>3.3V</td>
+<td>—</td>
+<td>Power</td>
+</tr>
+<tr>
+<td>GND (black)</td>
+<td>GND</td>
+<td>—</td>
+<td>Ground</td>
+</tr>
+<tr>
+<td>SCL (yellow)</td>
+<td><strong>D15 (SCL)</strong></td>
+<td>PT4_1</td>
+<td>I2C2 SCL (FC2_P1)</td>
+</tr>
+<tr>
+<td>SDA (blue)</td>
+<td><strong>D14 (SDA)</strong></td>
+<td>PT4_0</td>
+<td>I2C2 SDA (FC2_P0)</td>
+</tr>
+</tbody>
+</table>
+<p>Default I2C address 0x76 (SDO pulled to GND via onboard 10K resistor). Leave the SDO breakout pad unconnected.</p>
+<h3 id="gas-sensing">Gas Sensing</h3>
+<p>The BME688's MOX sensor produces a single gas resistance value per scan. Raw values require trend comparison or BSEC library processing to derive IAQ index, bVOC ppm, and CO₂ equivalent ppm. The BME AI-Studio desktop tool can train gas classification models (e.g. "coffee", "spoiled food") and export configuration strings for on-device classification. BSEC integration is deferred — the initial implementation reads raw T/P/H/gas resistance via <a href="https://github.com/BoschSensortec/BME68x-Sensor-API">BME68x-Sensor-API</a>.</p>
+<p>Zephyr upstream provides <code>CONFIG_BME680</code> which covers BME688 in compatibility mode (T/P/H/gas resistance).</p>
+<hr>
+<h2 id="gateway-wio-e5-mini-lora-co-processor">Gateway — Wio-E5 Mini LoRa Co-Processor</h2>
+<p><strong>Seeed Studio Wio-E5 Mini</strong> (STM32WLE5JC) — dedicated LoRa radio co-processor, running custom Zephyr firmware with <code>lib/lora_radio/</code>. Role defined in <a href="../adr/ADR-015-lora-protocol/">ADR-015</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MCU</strong></td>
+<td>STM32WLE5JC (ARM Cortex-M4 @ 48 MHz)</td>
+</tr>
+<tr>
+<td><strong>Flash / SRAM</strong></td>
+<td>256 KB / 64 KB</td>
+</tr>
+<tr>
+<td><strong>LoRa radio</strong></td>
+<td>Integrated Semtech SX126x (licensed IP block)</td>
+</tr>
+<tr>
+<td><strong>Frequency bands</strong></td>
+<td>EU868, US915, AS923, AU915, KR920, IN865, RU864</td>
+</tr>
+<tr>
+<td><strong>TX power</strong></td>
+<td>+22 dBm max (high-power PA)</td>
+</tr>
+<tr>
+<td><strong>RX sensitivity</strong></td>
+<td>−148 dBm (SF12, 10.4 kHz BW, chip-level)</td>
+</tr>
+<tr>
+<td><strong>Link budget</strong></td>
+<td>158 dB</td>
+</tr>
+<tr>
+<td><strong>LoRaWAN</strong></td>
+<td>Class A / B / C, MAC 1.0.2 (factory AT firmware; superseded by custom firmware)</td>
+</tr>
+<tr>
+<td><strong>P2P modes</strong></td>
+<td>LoRa, (G)FSK, (G)MSK, BPSK</td>
+</tr>
+<tr>
+<td><strong>Active TX current</strong></td>
+<td>87 mA @ 20 dBm; 111 mA @ 22 dBm</td>
+</tr>
+<tr>
+<td><strong>Active RX current</strong></td>
+<td>4.82 mA</td>
+</tr>
+<tr>
+<td><strong>Sleep (WOR)</strong></td>
+<td>2.1 µA</td>
+</tr>
+<tr>
+<td><strong>Hardware crypto</strong></td>
+<td>AES 256-bit, TRNG, PKA</td>
+</tr>
+<tr>
+<td><strong>Antenna</strong></td>
+<td>IPEX/u.FL connector; SMA-K with included antenna</td>
+</tr>
+<tr>
+<td><strong>Module dimensions</strong></td>
+<td>50 × 23 mm (dev board)</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>~$15 USD</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pin-mapping-wio-e5-mini-to-mcxn947">Pin Mapping — Wio-E5 Mini to MCXN947</h3>
+<table>
+<thead>
+<tr>
+<th>Wio-E5 Pin</th>
+<th>Signal</th>
+<th>MCXN947 Pin</th>
+<th>Flexcomm</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.3V</td>
+<td>Power</td>
+<td>3.3V</td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td>GND</td>
+<td>Ground</td>
+<td>GND</td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td>TX (PB6)</td>
+<td>UART TX →</td>
+<td><strong>PT1_5</strong></td>
+<td>FC5_P1 (RX)</td>
+<td>LPUART5, 9600 baud</td>
+</tr>
+<tr>
+<td>RX (PB7)</td>
+<td>UART RX ←</td>
+<td><strong>PT1_4</strong></td>
+<td>FC5_P0 (TX)</td>
+<td>LPUART5, 9600 baud</td>
+</tr>
+<tr>
+<td>NRST</td>
+<td>Reset</td>
+<td><strong>D2 (PT0_29)</strong></td>
+<td>—</td>
+<td>GPIO output, active low</td>
+</tr>
+</tbody>
+</table>
+<p>Flexcomm5 (LPUART5) is chosen because:
+- Its pins (PT1_4–PT1_7) are not routed to the Arduino header and are otherwise unused on the FRDM-MCXN947
+- Flexcomm0 is unavailable (SWD debug pins PT0_0/PT0_1)
+- Flexcomm9 pins conflict with the microSD slot (PT2_2–PT2_5)</p>
+<h3 id="wio-e5-firmware">Wio-E5 Firmware</h3>
+<p>The factory AT command firmware (LoRaWAN Class A/B/C, 9600 baud) is <strong>replaced</strong> with custom Zephyr firmware built from the same <code>apps/</code> tree. The custom firmware runs <code>lib/lora_radio/</code> with local zbus channels. Communication between the MCXN947 gateway and the Wio-E5 co-processor uses a UART zbus proxy agent (deferred per ADR-015 — initial implementation may use a simpler framed protocol over UART).</p>
+<p>Programming: SWD via ST-LINK/V2. The factory firmware has RDP Level 1 read protection — a full flash mass erase is required before flashing custom firmware. The factory AT firmware cannot be restored after erasing.</p>
+<p><strong>Wio-E5 Mini GPIO re-mappings vs NUCLEO-WL55JC</strong> (important for custom firmware):</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>NUCLEO-WL55JC</th>
+<th>Wio-E5 Mini</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF_CTRL1</td>
+<td>PC4</td>
+<td>PA4</td>
+</tr>
+<tr>
+<td>RF_CTRL2</td>
+<td>PC5</td>
+<td>PA5</td>
+</tr>
+<tr>
+<td>USART (AT)</td>
+<td>USART2 (PA2/PA3)</td>
+<td>USART1 (PB6/PB7)</td>
+</tr>
+<tr>
+<td>LED</td>
+<td>PB9</td>
+<td>PB5</td>
+</tr>
+<tr>
+<td>BOOT</td>
+<td>PA0</td>
+<td>PB13</td>
+</tr>
+</tbody>
+</table>
+<p>RF switch control for high-power TX: PA4=0, PA5=1. Only RFO_HP supported — no low-power TX path.</p>
+<hr>
+<h2 id="outdoor-sensor-node-1-wio-e5-mini">Outdoor Sensor Node 1 — Wio-E5 Mini</h2>
+<p>The outdoor sensor node is a self-contained Zephyr device built around the Wio-E5 Mini module. It reads local sensors, encodes readings in the compact 5-byte wire format defined in <a href="../adr/ADR-015-lora-protocol/">ADR-015</a>, and transmits them over LoRa P2P to the gateway.</p>
+<p><strong>MCU and radio:</strong> same Wio-E5 Mini module as the gateway co-processor (see specs above).</p>
+<h3 id="firmware">Firmware</h3>
+<p>The sensor node runs custom Zephyr firmware as a separate Zephyr application. The build target is based on the <code>nucleo_wl55jc</code> board definition, adapted via an overlay to match the Wio-E5 Mini pinout (different UART, RF control GPIOs, and LED mappings — see table above).</p>
+<p>Key firmware responsibilities:
+- Read BME688 (T/H/P/gas resistance) and SEN0460 (PM1.0/PM2.5/PM10) via I2C
+- Encode readings in compact 5-byte wire format (1B sensor_type + 4B q31_value)
+- Transmit via <code>lib/lora_radio/</code> using the protocol defined in ADR-015
+- Sleep in WOR mode (2.1 µA) between measurement cycles
+- Respond to trigger commands and RPC from gateway
+- Support button-press pairing (Ed25519 + AES-128-GCM session key exchange)</p>
+<h3 id="power">Power</h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Current</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sleep (WOR)</td>
+<td>2.1 µA</td>
+<td>LoRa wake-on-radio</td>
+</tr>
+<tr>
+<td>Stop2 + RTC</td>
+<td>1.07 µA</td>
+<td>No LoRa RX</td>
+</tr>
+<tr>
+<td>Standby + RTC</td>
+<td>360 nA</td>
+<td></td>
+</tr>
+<tr>
+<td>Active RX</td>
+<td>4.82 mA</td>
+<td>LoRa receive</td>
+</tr>
+<tr>
+<td>Active TX (20 dBm)</td>
+<td>87 mA</td>
+<td>LoRa transmit</td>
+</tr>
+<tr>
+<td>Active TX (22 dBm)</td>
+<td>111 mA</td>
+<td>Max power</td>
+</tr>
+<tr>
+<td>BME688 (1 Hz T+H+P)</td>
+<td>3.7 µA</td>
+<td></td>
+</tr>
+<tr>
+<td>BME688 (standard gas)</td>
+<td>3.9 mA</td>
+<td>During active scan</td>
+</tr>
+<tr>
+<td>SEN0460 (active)</td>
+<td>~100 mA</td>
+<td>During measurement</td>
+</tr>
+<tr>
+<td>SEN0460 (standby)</td>
+<td>≤2 mA</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Battery life estimate</strong> (2000 mAh LiPo, 60s interval, T+H+P + PM2.5):</p>
+<p>A measurement cycle: wake (1 ms) → BME688 read (~10 ms @ 3.7 µA) → SEN0460 warm-up + read (~2 s @ 100 mA) → LoRa TX (~200 ms @ 87 mA) → sleep (~57.8 s @ 2.1 µA).
+Approximate average current: ~3.4 mA → <strong>~24 days</strong> on a single 2000 mAh battery.
+With solar charging (e.g., 2W panel), indefinite operation is achievable.</p>
+<p><strong>Programming:</strong> SWD via ST-LINK/V2 (external debug probe pads on the Wio-E5 Mini).</p>
+<p><strong>Certification:</strong> FCC, CE, IC, TELEC certified — ready for outdoor deployment.</p>
+<hr>
+<h2 id="outdoor-sensor-node-1-bme688-outdoor-environmental-sensor">Outdoor Sensor Node 1 — BME688 Outdoor Environmental Sensor</h2>
+<p>Same Adafruit BME688 QT board as the gateway indoor sensor. Provides outdoor temperature, humidity, pressure, and gas resistance. Connected via I2C on the Wio-E5 Mini's I2C2 bus at address 0x76.</p>
+<h3 id="pin-mapping-bme688-qt-to-wio-e5-mini">Pin Mapping — BME688 QT to Wio-E5 Mini</h3>
+<table>
+<thead>
+<tr>
+<th>BME688 QT</th>
+<th>Wio-E5 Mini Pin</th>
+<th>GPIO</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VCC (red)</td>
+<td>3.3V</td>
+<td>—</td>
+<td>Power</td>
+</tr>
+<tr>
+<td>GND (black)</td>
+<td>GND</td>
+<td>—</td>
+<td>Ground</td>
+</tr>
+<tr>
+<td>SCL (yellow)</td>
+<td>SCL</td>
+<td>PA12</td>
+<td>I2C2 SCL</td>
+</tr>
+<tr>
+<td>SDA (blue)</td>
+<td>SDA</td>
+<td>PA11</td>
+<td>I2C2 SDA</td>
+</tr>
+</tbody>
+</table>
+<h3 id="outdoor-enclosure-notes">Outdoor Enclosure Notes</h3>
+<p>The BME688 sensor die has an exposed metal lid — it <strong>must</strong> be housed in a weatherproof enclosure with ventilation for accurate environmental readings. Recommended: a Stevenson screen or louvered radiation shield to prevent direct solar heating from skewing temperature readings. A small fan or passive airflow design improves gas sensor response.</p>
+<hr>
+<h2 id="outdoor-sensor-node-1-sen0460-pm25-particulate-sensor">Outdoor Sensor Node 1 — SEN0460 PM2.5 Particulate Sensor</h2>
+<p><strong>DFRobot Gravity SEN0460</strong> — PM2.5/PM1.0/PM10 laser particle sensor.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sensor type</strong></td>
+<td>Laser scattering</td>
+</tr>
+<tr>
+<td><strong>Measures</strong></td>
+<td>PM1.0, PM2.5, PM10 mass concentration (µg/m³) + particle counts per 0.1L</td>
+</tr>
+<tr>
+<td><strong>Particle size range</strong></td>
+<td>0.3–10 µm</td>
+</tr>
+<tr>
+<td><strong>Counting efficiency</strong></td>
+<td>50% @ 0.3 µm, 98% @ ≥0.5 µm</td>
+</tr>
+<tr>
+<td><strong>PM2.5 range</strong></td>
+<td>0–500 µg/m³ (effective), ≥1000 µg/m³ (max)</td>
+</tr>
+<tr>
+<td><strong>PM2.5 resolution</strong></td>
+<td>1 µg/m³</td>
+</tr>
+<tr>
+<td><strong>PM2.5 accuracy</strong></td>
+<td>±10 µg/m³ (0–100), ±10% (100–500)</td>
+</tr>
+<tr>
+<td><strong>Response time</strong></td>
+<td>&lt;1s single reading, ≤10s comprehensive</td>
+</tr>
+<tr>
+<td><strong>Operating temp</strong></td>
+<td>−10 to +60 °C</td>
+</tr>
+<tr>
+<td><strong>Operating humidity</strong></td>
+<td>0–95% RH (non-condensing)</td>
+</tr>
+<tr>
+<td><strong>Interface</strong></td>
+<td>I2C (Gravity 4-pin PH2.0)</td>
+</tr>
+<tr>
+<td><strong>I2C address</strong></td>
+<td>0x19</td>
+</tr>
+<tr>
+<td><strong>Supply voltage</strong></td>
+<td>3.3V–5.0V</td>
+</tr>
+<tr>
+<td><strong>Active current</strong></td>
+<td>~100 mA</td>
+</tr>
+<tr>
+<td><strong>Standby current</strong></td>
+<td>≤2 mA</td>
+</tr>
+<tr>
+<td><strong>MTBF</strong></td>
+<td>≥5 years</td>
+</tr>
+<tr>
+<td><strong>Dimensions</strong></td>
+<td>72 × 40 × 14 mm</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>~$40 USD</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pin-mapping-sen0460-to-wio-e5-mini">Pin Mapping — SEN0460 to Wio-E5 Mini</h3>
+<table>
+<thead>
+<tr>
+<th>SEN0460 (Gravity)</th>
+<th>Wio-E5 Mini Pin</th>
+<th>GPIO</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VCC (red)</td>
+<td>3.3V</td>
+<td>—</td>
+<td>Power (3.3V sufficient)</td>
+</tr>
+<tr>
+<td>GND (black)</td>
+<td>GND</td>
+<td>—</td>
+<td>Ground</td>
+</tr>
+<tr>
+<td>SCL (yellow)</td>
+<td>SCL</td>
+<td>PA12</td>
+<td>I2C2 SCL (shared with BME688)</td>
+</tr>
+<tr>
+<td>SDA (blue)</td>
+<td>SDA</td>
+<td>PA11</td>
+<td>I2C2 SDA (shared with BME688)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="i2c-bus-details-outdoor-sensor-node-1">I2C Bus Details — Outdoor Sensor Node 1</h3>
+<p>Both BME688 (0x76) and SEN0460 (0x19) share the same I2C2 bus (PA11=SDA, PA12=SCL). No address conflict. The DFRobot library requires calling <code>begin()</code> after power-on to initialize the sensor — the Zephyr driver must handle this initialization sequence.</p>
+<h3 id="outdoor-enclosure-notes_1">Outdoor Enclosure Notes</h3>
+<p>The SEN0460 requires exposure to ambient air via an intake vent. The laser scattering chamber must be protected from rain and insects but remain open to airflow. Periodic cleaning of the optical chamber may be needed in dusty environments. The sensor has an internal fan — ensure the enclosure provides adequate airflow.</p>
+<hr>
+<h2 id="pin-conflict-resolution">Pin Conflict Resolution</h2>
+<p>Several MCXN947 Arduino header pins are shared with on-board peripherals. The gateway board overlay (<code>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.overlay</code>) must disable conflicting nodes:</p>
+<table>
+<thead>
+<tr>
+<th>Arduino Pin</th>
+<th>MCXN947 Pin</th>
+<th>Conflicts With</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D6</td>
+<td>PT1_2</td>
+<td>Blue LED (<code>&amp;blue_led</code> / <code>led_2</code>)</td>
+<td><code>status = "disabled"</code> if used</td>
+</tr>
+<tr>
+<td>D9</td>
+<td>PT0_10</td>
+<td>Red LED (<code>&amp;red_led</code> / <code>led_3</code>)</td>
+<td><code>status = "disabled"</code> if touch CS used</td>
+</tr>
+<tr>
+<td>D10</td>
+<td>PT0_27</td>
+<td>Green LED (<code>&amp;green_led</code> / <code>led_0</code>)</td>
+<td><code>status = "disabled"</code> if D10 used as GPIO</td>
+</tr>
+<tr>
+<td>A5</td>
+<td>PT0_23</td>
+<td>User button SW2 (<code>&amp;user_button_2</code>)</td>
+<td><code>status = "disabled"</code> if A5 used as GPIO</td>
+</tr>
+</tbody>
+</table>
+<p>The chosen ILI9341 pin mapping avoids D6, D9, and D10 (CS on D8, DC on D7, RST on D4). D10–D13 are used for their hardware SPI function, where the LED conflict with D10 is acceptable since D10 operates as a hardware chip select for LPSPI1.</p>
+<hr>
+<h2 id="zephyr-board-support">Zephyr Board Support</h2>
+<h3 id="gateway-frdm_mcxn947mcxn947cpu0">Gateway: <code>frdm_mcxn947/mcxn947/cpu0</code></h3>
+<p>Fully supported in upstream Zephyr. Key device tree files:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Board DTS</td>
+<td><code>zephyr/boards/nxp/frdm_mcxn947/frdm_mcxn947_mcxn947_cpu0.dts</code></td>
+</tr>
+<tr>
+<td>Pin control</td>
+<td><code>zephyr/boards/nxp/frdm_mcxn947/frdm_mcxn947-pinctrl.dtsi</code></td>
+</tr>
+<tr>
+<td>Arduino header</td>
+<td>Defined in <code>frdm_mcxn947.dtsi</code> (compatible <code>arduino-header-r3</code>)</td>
+</tr>
+<tr>
+<td>Pinmux macros</td>
+<td><code>hal/nxp/dts/nxp/mcx/MCXN947VDF-pinctrl.h</code></td>
+</tr>
+</tbody>
+</table>
+<p>Build command:
+</p><div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>build<span class="w"> </span>-b<span class="w"> </span>frdm_mcxn947/mcxn947/cpu0<span class="w"> </span>apps/gateway
+</code></pre></div><p></p>
+<h3 id="lora-co-processor-wio-e5-mini-nucleo_wl55jc-based">LoRa Co-Processor (Wio-E5 Mini): <code>nucleo_wl55jc</code> based</h3>
+<p>No dedicated board definition exists for the Wio-E5 Mini. The closest upstream board is <code>nucleo_wl55jc</code> (same STM32WL55JC SoC). A custom board definition or overlay adapts the pinout for the Wio-E5 Mini's GPIO re-mappings (see table above).</p>
+<p>Key device tree files for reference:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Board DTS</td>
+<td><code>zephyr/boards/st/nucleo_wl55jc/nucleo_wl55jc.dts</code></td>
+</tr>
+<tr>
+<td>Arduino header</td>
+<td><code>zephyr/boards/st/nucleo_wl55jc/arduino_r3_connector.dtsi</code></td>
+</tr>
+<tr>
+<td>SoC DTSI</td>
+<td><code>zephyr/dts/arm/st/wl/stm32wl55Xc.dtsi</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="outdoor-sensor-node-1-wio-e5-mini_1">Outdoor Sensor Node 1 (Wio-E5 Mini)</h3>
+<p>Same board support situation as the co-processor. Uses the same <code>nucleo_wl55jc</code> base adapted for Wio-E5 Mini pinout.</p>
+<hr>
+<h2 id="bill-of-materials">Bill of Materials</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Qty</th>
+<th>Unit Cost</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NXP FRDM-MCXN947</td>
+<td>1</td>
+<td>$25</td>
+<td>$25</td>
+</tr>
+<tr>
+<td>ILI9341 2.4" TFT (SPI)</td>
+<td>1</td>
+<td>$8</td>
+<td>$8</td>
+</tr>
+<tr>
+<td>Adafruit BME688 QT</td>
+<td>2</td>
+<td>$20</td>
+<td>$40</td>
+</tr>
+<tr>
+<td>Seeed Wio-E5 Mini (EU868)</td>
+<td>2</td>
+<td>$15</td>
+<td>$30</td>
+</tr>
+<tr>
+<td>DFRobot SEN0460 PM2.5</td>
+<td>1</td>
+<td>$40</td>
+<td>$40</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td></td>
+<td><strong>~$143</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Additional: antennae (included with Wio-E5), STEMMA QT / Qwiic cables (Adafruit 4214 or equiv), prototyping wires, outdoor enclosure, battery + solar panel (outdoor node).</p>
+<hr>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="https://www.nxp.com/design/design-center/development-boards-and-designs/FRDM-MCXN947">NXP FRDM-MCXN947</a> — official product page</li>
+<li><a href="https://cdn-shop.adafruit.com/datasheets/ILI9341.pdf">ILI9341 Datasheet</a> — ILITEK display controller</li>
+<li><a href="https://www.adafruit.com/product/5046">Adafruit BME688 QT</a> — breakout board</li>
+<li><a href="https://www.bosch-sensortec.com/products/environmental-sensors/gas-sensors/bme688/">Bosch BME688 Datasheet</a> — sensor specifications</li>
+<li><a href="https://github.com/BoschSensortec/BME68x-Sensor-API">BME68x Sensor API</a> — open-source driver (BSD-3)</li>
+<li><a href="https://wiki.seeedstudio.com/LoRa_E5_mini/">Seeed Wio-E5 Mini</a> — module wiki</li>
+<li><a href="https://www.st.com/en/microcontrollers-microprocessors/stm32wle5jc.html">STM32WLE5JC Datasheet</a> — STM32WL series</li>
+<li><a href="https://wiki.dfrobot.com/SKU_SEN0460_Gravity_PM2.5_Air_Quality_Sensor">DFRobot SEN0460</a> — PM2.5 sensor wiki</li>
+<li><a href="../adr/ADR-006-lora-channel-boundary/">ADR-006</a> — LoRa bounded context (superseded)</li>
+<li><a href="../adr/ADR-007-gateway-display-combined/">ADR-007</a> — combined gateway + display</li>
+<li><a href="../adr/ADR-015-lora-protocol/">ADR-015</a> — LoRa protocol architecture (superseding)</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mermaid-zoom.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

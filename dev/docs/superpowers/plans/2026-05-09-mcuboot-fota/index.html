@@ -1,0 +1,2024 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-09-mcuboot-fota/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>MCUboot FOTA Implementation Plan - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#mcuboot-fota-implementation-plan" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              MCUboot FOTA Implementation Plan
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#file-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File map
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-1-key-generation-script-and-gitignore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 1: Key generation script and .gitignore
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-2-sysbuild-configuration-for-mcuboot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2: Sysbuild configuration for MCUboot
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-3-mcumgr-kconfig-additions-to-hardware-board-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 3: MCUmgr Kconfig additions to hardware board config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-4-fota-relay-stub-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 4: FOTA relay stub header
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-5-http-fota-kconfig-handlers-and-resource-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 5: HTTP FOTA Kconfig, handlers, and resource registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-6-image-confirmation-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 6: Image confirmation library
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-7-enable-fota-on-hardware-and-final-build-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 7: Enable FOTA on hardware and final build verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-review-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Self-review notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="mcuboot-fota-implementation-plan">MCUboot FOTA Implementation Plan</h1>
+<blockquote>
+<p><strong>For agentic workers:</strong> REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (<code>- [ ]</code>) syntax for tracking.</p>
+</blockquote>
+<p><strong>Goal:</strong> Add MCUboot-based firmware update to the <code>frdm_mcxn947</code> gateway — UART via MCUmgr SMP and HTTP upload via the dashboard — with ED25519 image signing, A/B swap, and automatic rollback.</p>
+<p><strong>Architecture:</strong> MCUboot is added as a sysbuild bootloader alongside the gateway app. Key material never enters the repo — a local script generates a dev key in a gitignored directory. Three new HTTP endpoints stream image data directly to flash (no full-image RAM buffer) and trigger MCUboot's test/confirm lifecycle. A <code>fota_confirm</code> library auto-confirms a good boot after a 5-second settle delay. A stub <code>fota_relay</code> header reserves the interface for future wireless relay.</p>
+<p><strong>Tech Stack:</strong> Zephyr 4.4 sysbuild, MCUboot, <code>imgtool</code> (part of MCUboot west module), Zephyr <code>flash_img</code> API, <code>zephyr/dfu/mcuboot.h</code>, Zephyr HTTP server dynamic handlers.</p>
+<hr>
+<h2 id="file-map">File map</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Path</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create</td>
+<td><code>scripts/gen-dev-key.sh</code></td>
+<td>Generate <code>keys/dev-ed25519.pem</code> if absent</td>
+</tr>
+<tr>
+<td>Modify</td>
+<td><code>.gitignore</code></td>
+<td>Exclude <code>keys/</code> directory</td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>apps/gateway/sysbuild.conf</code></td>
+<td>Enable MCUboot + ED25519 for hw builds</td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>apps/gateway/sysbuild/mcuboot.conf</code></td>
+<td>MCUboot Kconfig (swap mode, log level)</td>
+</tr>
+<tr>
+<td>Modify</td>
+<td><code>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf</code></td>
+<td>MCUmgr Kconfig + enable FOTA + confirm libs</td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>lib/fota_relay/include/fota_relay/fota_relay.h</code></td>
+<td>Stub vtable — future relay transport interface</td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>lib/fota_relay/CMakeLists.txt</code></td>
+<td>Header-only lib</td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>lib/fota_relay/Kconfig</code></td>
+<td><code>CONFIG_FOTA_RELAY</code></td>
+</tr>
+<tr>
+<td>Modify</td>
+<td><code>lib/http_dashboard/Kconfig</code></td>
+<td>Add <code>CONFIG_HTTP_DASHBOARD_FOTA</code></td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>lib/http_dashboard/src/fota.h</code></td>
+<td>Internal header — handler function declarations</td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>lib/http_dashboard/src/fota.c</code></td>
+<td>Upload / apply / status handlers + flash_img streaming</td>
+</tr>
+<tr>
+<td>Modify</td>
+<td><code>lib/http_dashboard/CMakeLists.txt</code></td>
+<td>Compile <code>fota.c</code> when <code>CONFIG_HTTP_DASHBOARD_FOTA</code></td>
+</tr>
+<tr>
+<td>Modify</td>
+<td><code>lib/http_dashboard/src/http_dashboard.c</code></td>
+<td>Register 3 FOTA resources + call <code>fota_init()</code></td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>lib/fota_confirm/Kconfig</code></td>
+<td><code>CONFIG_FOTA_CONFIRM</code> + <code>CONFIG_FOTA_CONFIRM_DELAY_S</code></td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>lib/fota_confirm/CMakeLists.txt</code></td>
+<td><code>zephyr_library()</code> for <code>fota_confirm.c</code></td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>lib/fota_confirm/src/fota_confirm.c</code></td>
+<td><code>SYS_INIT APPLICATION 99</code> — auto-confirm after settle</td>
+</tr>
+<tr>
+<td>Modify</td>
+<td><code>CMakeLists.txt</code></td>
+<td><code>add_subdirectory_ifdef</code> for <code>fota_relay</code> + <code>fota_confirm</code></td>
+</tr>
+<tr>
+<td>Modify</td>
+<td><code>lib/Kconfig</code></td>
+<td><code>rsource</code> for <code>fota_relay</code> + <code>fota_confirm</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="task-1-key-generation-script-and-gitignore">Task 1: Key generation script and .gitignore</h2>
+<p><strong>Files:</strong>
+- Create: <code>scripts/gen-dev-key.sh</code>
+- Modify: <code>.gitignore</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Add <code>keys/</code> to .gitignore</strong></li>
+</ul>
+<p>Read the current <code>.gitignore</code> first, then append:</p>
+<div class="highlight"><pre><span></span><code>keys/
+</code></pre></div>
+<p>Run:
+</p><div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">"keys/"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/home/zephyr/workspace/weather-station/.gitignore
+</code></pre></div><p></p>
+<ul>
+<li>[ ] <strong>Step 2: Create <code>scripts/gen-dev-key.sh</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/zephyr/workspace/weather-station/scripts
+</code></pre></div>
+<p>Write <code>scripts/gen-dev-key.sh</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env bash</span>
+<span class="c1"># Generate a local ED25519 signing key for MCUboot.</span>
+<span class="c1"># The private key is stored in keys/ which is gitignored — never commit it.</span>
+<span class="nb">set</span><span class="w"> </span>-euo<span class="w"> </span>pipefail
+
+<span class="nv">SCRIPT_DIR</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>dirname<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BASH_SOURCE</span><span class="p">[0]</span><span class="si">}</span><span class="s2">"</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">pwd</span><span class="k">)</span><span class="s2">"</span>
+<span class="nv">REPO_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">SCRIPT_DIR</span><span class="si">}</span><span class="s2">/.."</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">pwd</span><span class="k">)</span><span class="s2">"</span>
+<span class="nv">KEY_FILE</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">REPO_ROOT</span><span class="si">}</span><span class="s2">/keys/dev-ed25519.pem"</span>
+
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">REPO_ROOT</span><span class="si">}</span><span class="s2">/keys"</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">KEY_FILE</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Key already exists at </span><span class="si">${</span><span class="nv">KEY_FILE</span><span class="si">}</span><span class="s2"> — skipping generation."</span>
+<span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">0</span>
+<span class="k">fi</span>
+
+imgtool<span class="w"> </span>keygen<span class="w"> </span>-k<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">KEY_FILE</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>-t<span class="w"> </span>ed25519
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Dev key generated: </span><span class="si">${</span><span class="nv">KEY_FILE</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"This file is gitignored. Never commit it."</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Make script executable</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>chmod<span class="w"> </span>+x<span class="w"> </span>/home/zephyr/workspace/weather-station/scripts/gen-dev-key.sh
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Verify the script runs and produces a key</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+./scripts/gen-dev-key.sh
+</code></pre></div>
+<p>Expected output:
+</p><div class="highlight"><pre><span></span><code>Dev key generated: /home/zephyr/workspace/weather-station/keys/dev-ed25519.pem
+</code></pre></div><p></p>
+<p>Run again — must be idempotent:
+</p><div class="highlight"><pre><span></span><code>./scripts/gen-dev-key.sh
+</code></pre></div><p></p>
+<p>Expected output:
+</p><div class="highlight"><pre><span></span><code>Key already exists at .../keys/dev-ed25519.pem — skipping generation.
+</code></pre></div><p></p>
+<ul>
+<li>[ ] <strong>Step 5: Verify key is gitignored</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+git<span class="w"> </span>status<span class="w"> </span>keys/
+</code></pre></div>
+<p>Expected: <code>keys/</code> does not appear as an untracked file (it is ignored).</p>
+<ul>
+<li>[ ] <strong>Step 6: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+git<span class="w"> </span>add<span class="w"> </span>scripts/gen-dev-key.sh<span class="w"> </span>.gitignore
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"chore(fota): add key generation script and gitignore keys directory"</span>
+</code></pre></div>
+<hr>
+<h2 id="task-2-sysbuild-configuration-for-mcuboot">Task 2: Sysbuild configuration for MCUboot</h2>
+<p><strong>Files:</strong>
+- Create: <code>apps/gateway/sysbuild.conf</code>
+- Create: <code>apps/gateway/sysbuild/mcuboot.conf</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Create the sysbuild directory</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/zephyr/workspace/weather-station/apps/gateway/sysbuild
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Create <code>apps/gateway/sysbuild.conf</code></strong></li>
+</ul>
+<p>This file activates MCUboot for all hardware builds of the gateway app. It is loaded by sysbuild before board-specific fragments.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># apps/gateway/sysbuild.conf</span>
+<span class="c1"># Enable MCUboot bootloader. Key file and build details are in sysbuild/mcuboot.conf.</span>
+<span class="c1"># Sign type is set here; key path is passed at build time via</span>
+<span class="c1">#   -DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=&lt;absolute-path&gt;</span>
+<span class="na">SB_CONFIG_BOOTLOADER_MCUBOOT</span><span class="o">=</span><span class="s">y</span>
+<span class="na">SB_CONFIG_BOOT_SIGNATURE_TYPE_ED25519</span><span class="o">=</span><span class="s">y</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Create <code>apps/gateway/sysbuild/mcuboot.conf</code></strong></li>
+</ul>
+<p>MCUboot Kconfig that applies only to the MCUboot image (not the gateway app image).</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># apps/gateway/sysbuild/mcuboot.conf</span>
+<span class="na">CONFIG_MCUBOOT_LOG_LEVEL_WRN</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_BOOT_SWAP_USING_MOVE</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_BOOT_UPGRADE_ONLY</span><span class="o">=</span><span class="s">n</span>
+<span class="na">CONFIG_BOOT_BOOTSTRAP</span><span class="o">=</span><span class="s">n</span>
+<span class="na">CONFIG_BOOT_MAX_IMG_SECTORS</span><span class="o">=</span><span class="s">256</span>
+<span class="na">CONFIG_MCUBOOT_DOWNGRADE_PREVENTION</span><span class="o">=</span><span class="s">n</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Verify native_sim build is unaffected</strong></li>
+</ul>
+<p>Native_sim uses <code>west build</code> without <code>--sysbuild</code>, so <code>sysbuild.conf</code> is ignored.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+/build-and-test
+</code></pre></div>
+<p>Expected: all tests pass, no new errors.</p>
+<ul>
+<li>[ ] <strong>Step 5: Verify sysbuild CMake configure succeeds for hardware</strong></li>
+</ul>
+<p>This only runs CMake configuration (no flashing required). The key file defaults to MCUboot's bundled test key when not specified; this is acceptable for a build-only check.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span><span class="se">\</span>
+west<span class="w"> </span>build<span class="w"> </span>apps/gateway<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-b<span class="w"> </span>frdm_mcxn947/mcxn947/cpu0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sysbuild<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cmake-only<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>build/frdm_mcuboot_check
+</code></pre></div>
+<p>Expected: CMake configures without error. MCUboot and gateway images are both listed in sysbuild output.</p>
+<ul>
+<li>[ ] <strong>Step 6: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+git<span class="w"> </span>add<span class="w"> </span>apps/gateway/sysbuild.conf<span class="w"> </span>apps/gateway/sysbuild/mcuboot.conf
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(fota): add sysbuild config for MCUboot on frdm_mcxn947"</span>
+</code></pre></div>
+<hr>
+<h2 id="task-3-mcumgr-kconfig-additions-to-hardware-board-config">Task 3: MCUmgr Kconfig additions to hardware board config</h2>
+<p><strong>Files:</strong>
+- Modify: <code>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Append MCUmgr and image management Kconfig</strong></li>
+</ul>
+<p>Add to the end of <code>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># ---------------------------------------------------------------</span>
+<span class="c1"># MCUmgr — SMP protocol over UART for firmware update</span>
+<span class="c1"># ---------------------------------------------------------------</span>
+<span class="na">CONFIG_BOOTLOADER_MCUBOOT</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_MCUMGR</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_MCUMGR_TRANSPORT_UART</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_MCUMGR_GRP_IMG</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_MCUMGR_GRP_OS</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_IMG_MANAGER</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_STREAM_FLASH</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_FLASH</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_FLASH_MAP</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_IMG_ERASE_PROGRESSIVELY</span><span class="o">=</span><span class="s">y</span>
+
+<span class="c1"># MCUmgr + HTTP server share the epoll fd — increase poll slots</span>
+<span class="na">CONFIG_ZVFS_POLL_MAX</span><span class="o">=</span><span class="s">12</span>
+
+<span class="c1"># MCUmgr SMP requires ZCBOR and CRC</span>
+<span class="na">CONFIG_ZCBOR</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_CRC</span><span class="o">=</span><span class="s">y</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Verify native_sim build still passes</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>/build-and-test
+</code></pre></div>
+<p>Expected: all tests pass (none of these Kconfig symbols affect native_sim).</p>
+<ul>
+<li>[ ] <strong>Step 3: Verify hardware build compiles</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span><span class="se">\</span>
+west<span class="w"> </span>build<span class="w"> </span>apps/gateway<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-b<span class="w"> </span>frdm_mcxn947/mcxn947/cpu0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sysbuild<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>build/frdm_mcuboot_check
+</code></pre></div>
+<p>Expected: both MCUboot and gateway images compile without error.</p>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+git<span class="w"> </span>add<span class="w"> </span>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(fota): add MCUmgr Kconfig to frdm_mcxn947 board config"</span>
+</code></pre></div>
+<hr>
+<h2 id="task-4-fota-relay-stub-header">Task 4: FOTA relay stub header</h2>
+<p><strong>Files:</strong>
+- Create: <code>lib/fota_relay/include/fota_relay/fota_relay.h</code>
+- Create: <code>lib/fota_relay/CMakeLists.txt</code>
+- Create: <code>lib/fota_relay/Kconfig</code>
+- Modify: <code>CMakeLists.txt</code>
+- Modify: <code>lib/Kconfig</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Create directory structure</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/zephyr/workspace/weather-station/lib/fota_relay/include/fota_relay
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Create <code>lib/fota_relay/include/fota_relay/fota_relay.h</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* SPDX-License-Identifier: Apache-2.0 */</span>
+<span class="cp">#pragma once</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stddef.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdint.h&gt;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * @brief Transport vtable for gateway-to-sensor-node firmware relay.</span>
+<span class="cm"> *</span>
+<span class="cm"> * Implement one instance per wireless transport (LoRa, BLE, …) using</span>
+<span class="cm"> * this interface. Implementation is deferred — see ADR-014.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @note The gateway calls upload() in chunks; the transport is responsible</span>
+<span class="cm"> *       for fragmentation, duty-cycle management, and ACK/retry.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">fota_relay_transport_api</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/**</span>
+<span class="cm">     * @brief Upload a firmware chunk to a target sensor node.</span>
+<span class="cm">     *</span>
+<span class="cm">     * @param target_uid  Sensor UID of the node to update.</span>
+<span class="cm">     * @param data        Pointer to image chunk (may be NULL when len==0).</span>
+<span class="cm">     * @param len         Length of this chunk in bytes.</span>
+<span class="cm">     * @param offset      Byte offset of this chunk in the full image.</span>
+<span class="cm">     * @param last        True if this is the final chunk.</span>
+<span class="cm">     * @return 0 on success, negative errno on failure.</span>
+<span class="cm">     */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">upload</span><span class="p">)(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">target_uid</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">,</span>
+<span class="w">              </span><span class="kt">size_t</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">last</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/**</span>
+<span class="cm">     * @brief Query the running firmware version on a target sensor node.</span>
+<span class="cm">     *</span>
+<span class="cm">     * @param target_uid  Sensor UID of the node to query.</span>
+<span class="cm">     * @param buf         Output buffer for version string (e.g. "1.2.3+0").</span>
+<span class="cm">     * @param len         Size of buf including NUL terminator.</span>
+<span class="cm">     * @return 0 on success, negative errno on failure.</span>
+<span class="cm">     */</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">get_version</span><span class="p">)(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">target_uid</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Create <code>lib/fota_relay/CMakeLists.txt</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">CONFIG_FOTA_RELAY</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">zephyr_include_directories</span><span class="p">(</span><span class="s">include</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Create <code>lib/fota_relay/Kconfig</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="k">config</span><span class="w"> </span>FOTA_RELAY
+<span class="w">    </span><span class="nb">bool</span><span class="w"> </span><span class="s2">"FOTA relay transport interface (stub)"</span>
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>Exposes<span class="w"> </span>the<span class="w"> </span>fota_relay_transport_api<span class="w"> </span>vtable<span class="w"> </span>header<span class="w"> </span>for<span class="w"> </span>transports
+<span class="w">      </span>that<span class="w"> </span>relay<span class="w"> </span>firmware<span class="w"> </span>updates<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>gateway<span class="w"> </span>to<span class="w"> </span>sensor<span class="w"> </span>nodes.
+<span class="w">      </span>No<span class="w"> </span>implementation<span class="w"> </span>is<span class="w"> </span>provided;<span class="w"> </span>this<span class="w"> </span>is<span class="w"> </span>a<span class="w"> </span>placeholder<span class="w"> </span>for<span class="w"> </span>future
+<span class="w">      </span>wireless<span class="w"> </span>relay<span class="w"> </span>support<span class="w"> </span><span class="p">(</span>LoRa,<span class="w"> </span>BLE).<span class="w"> </span>See<span class="w"> </span>ADR-014.
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 5: Register in root <code>CMakeLists.txt</code></strong></li>
+</ul>
+<p>Add after the last <code>add_subdirectory_ifdef</code> line in <code>CMakeLists.txt</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">add_subdirectory_ifdef</span><span class="p">(</span><span class="s">CONFIG_FOTA_RELAY</span><span class="w"> </span><span class="s">lib/fota_relay</span><span class="p">)</span>
+<span class="nb">add_subdirectory_ifdef</span><span class="p">(</span><span class="s">CONFIG_FOTA_CONFIRM</span><span class="w"> </span><span class="s">lib/fota_confirm</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 6: Register in <code>lib/Kconfig</code></strong></li>
+</ul>
+<p>Add at the end of <code>lib/Kconfig</code>:</p>
+<div class="highlight"><pre><span></span><code>rsource<span class="w"> </span><span class="s2">"fota_relay/Kconfig"</span>
+rsource<span class="w"> </span><span class="s2">"fota_confirm/Kconfig"</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 7: Verify native_sim build still passes</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>/build-and-test
+</code></pre></div>
+<p>Expected: tests pass (no code compiled yet — CONFIG_FOTA_RELAY is off).</p>
+<ul>
+<li>[ ] <strong>Step 8: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+git<span class="w"> </span>add<span class="w"> </span>lib/fota_relay/<span class="w"> </span>CMakeLists.txt<span class="w"> </span>lib/Kconfig
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(fota): add fota_relay stub vtable header and lib scaffold"</span>
+</code></pre></div>
+<hr>
+<h2 id="task-5-http-fota-kconfig-handlers-and-resource-registration">Task 5: HTTP FOTA Kconfig, handlers, and resource registration</h2>
+<p><strong>Files:</strong>
+- Modify: <code>lib/http_dashboard/Kconfig</code>
+- Create: <code>lib/http_dashboard/src/fota.h</code>
+- Create: <code>lib/http_dashboard/src/fota.c</code>
+- Modify: <code>lib/http_dashboard/CMakeLists.txt</code>
+- Modify: <code>lib/http_dashboard/src/http_dashboard.c</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Add <code>CONFIG_HTTP_DASHBOARD_FOTA</code> to <code>lib/http_dashboard/Kconfig</code></strong></li>
+</ul>
+<p>Add before the closing <code>endif # HTTP_DASHBOARD</code> line:</p>
+<div class="highlight"><pre><span></span><code><span class="k">config</span><span class="w"> </span>HTTP_DASHBOARD_FOTA
+<span class="w">    </span><span class="nb">bool</span><span class="w"> </span><span class="s2">"FOTA firmware upload endpoints (/api/fota/*)"</span>
+<span class="w">    </span><span class="k">depends on</span><span class="w"> </span>HTTP_DASHBOARD<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>HTTP_DASHBOARD_AUTH
+<span class="w">    </span><span class="k">depends on</span><span class="w"> </span>BOOTLOADER_MCUBOOT<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>IMG_MANAGER<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>STREAM_FLASH<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>FLASH_MAP
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>Adds<span class="w"> </span>three<span class="w"> </span>auth-gated<span class="w"> </span>endpoints<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>HTTP<span class="w"> </span>dashboard:
+<span class="w">        </span>POST<span class="w"> </span>/api/fota/upload<span class="w">  </span>—<span class="w"> </span>stream<span class="w"> </span>signed<span class="w"> </span>image<span class="w"> </span>to<span class="w"> </span>flash<span class="w"> </span>slot<span class="w"> </span><span class="mi">1</span>
+<span class="w">        </span>POST<span class="w"> </span>/api/fota/apply<span class="w">   </span>—<span class="w"> </span>mark<span class="w"> </span>slot<span class="w"> </span><span class="mi">1</span><span class="w"> </span>pending<span class="w"> </span>and<span class="w"> </span>schedule<span class="w"> </span>reboot
+<span class="w">        </span>GET<span class="w">  </span>/api/fota/status<span class="w">  </span>—<span class="w"> </span>return<span class="w"> </span>slot<span class="w"> </span><span class="mi">0</span>/1<span class="w"> </span>versions<span class="w"> </span>and<span class="w"> </span>swap<span class="w"> </span>state
+<span class="w">      </span>Requires<span class="w"> </span>HTTP_DASHBOARD_AUTH<span class="w"> </span>—<span class="w"> </span>upload<span class="w"> </span>is<span class="w"> </span>always<span class="w"> </span>authenticated.
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Create <code>lib/http_dashboard/src/fota.h</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* SPDX-License-Identifier: Apache-2.0 */</span>
+<span class="cp">#pragma once</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/net/http/server.h&gt;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Initialise the FOTA subsystem (registers the delayed reboot work item).</span>
+<span class="cm"> * Called from http_dashboard_init().</span>
+<span class="cm"> */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">fota_init</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">fota_upload_handler</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">http_client_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">client</span><span class="p">,</span>
+<span class="w">            </span><span class="k">enum</span><span class="w"> </span><span class="n">http_transaction_status</span><span class="w"> </span><span class="n">status</span><span class="p">,</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_request_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">request_ctx</span><span class="p">,</span>
+<span class="w">            </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_response_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">response_ctx</span><span class="p">,</span>
+<span class="w">            </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">user_data</span><span class="p">);</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">fota_apply_handler</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">http_client_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">client</span><span class="p">,</span>
+<span class="w">               </span><span class="k">enum</span><span class="w"> </span><span class="n">http_transaction_status</span><span class="w"> </span><span class="n">status</span><span class="p">,</span>
+<span class="w">               </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_request_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">request_ctx</span><span class="p">,</span>
+<span class="w">               </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_response_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">response_ctx</span><span class="p">,</span>
+<span class="w">               </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">user_data</span><span class="p">);</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">fota_status_handler</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">http_client_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">client</span><span class="p">,</span>
+<span class="w">            </span><span class="k">enum</span><span class="w"> </span><span class="n">http_transaction_status</span><span class="w"> </span><span class="n">status</span><span class="p">,</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_request_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">request_ctx</span><span class="p">,</span>
+<span class="w">            </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_response_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">response_ctx</span><span class="p">,</span>
+<span class="w">            </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">user_data</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Create <code>lib/http_dashboard/src/fota.c</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* SPDX-License-Identifier: Apache-2.0 */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/kernel.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/logging/log.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/sys/reboot.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/dfu/flash_img.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/dfu/mcuboot.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/storage/flash_map.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/net/http/server.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"auth.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"fota.h"</span>
+
+<span class="n">LOG_MODULE_DECLARE</span><span class="p">(</span><span class="n">http_dashboard</span><span class="p">,</span><span class="w"> </span><span class="n">CONFIG_HTTP_DASHBOARD_LOG_LEVEL</span><span class="p">);</span>
+
+<span class="cm">/* ── shared response headers ─────────────────────────────────────────────── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_header</span><span class="w"> </span><span class="n">json_ct_hdr</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Content-Type"</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"application/json"</span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">unauth_body</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"{</span><span class="se">\"</span><span class="s">error</span><span class="se">\"</span><span class="s">:</span><span class="se">\"</span><span class="s">unauthorized</span><span class="se">\"</span><span class="s">}"</span><span class="p">;</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">respond_401</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">http_response_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">rsp</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">rsp</span><span class="o">-&gt;</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rsp</span><span class="o">-&gt;</span><span class="n">headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">json_ct_hdr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rsp</span><span class="o">-&gt;</span><span class="n">header_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">json_ct_hdr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">rsp</span><span class="o">-&gt;</span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">unauth_body</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rsp</span><span class="o">-&gt;</span><span class="n">body_len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">unauth_body</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rsp</span><span class="o">-&gt;</span><span class="n">final_chunk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* ── POST /api/fota/upload ───────────────────────────────────────────────── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">flash_img_context</span><span class="w"> </span><span class="n">fota_img_ctx</span><span class="p">;</span>
+<span class="k">static</span><span class="w"> </span><span class="n">atomic_t</span><span class="w"> </span><span class="n">fota_in_progress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ATOMIC_INIT</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">fota_auth_ok</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">fota_upload_handler</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">http_client_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">client</span><span class="p">,</span>
+<span class="w">            </span><span class="k">enum</span><span class="w"> </span><span class="n">http_transaction_status</span><span class="w"> </span><span class="n">status</span><span class="p">,</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_request_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">request_ctx</span><span class="p">,</span>
+<span class="w">            </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_response_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">response_ctx</span><span class="p">,</span>
+<span class="w">            </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">client</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">user_data</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HTTP_SERVER_TRANSACTION_ABORTED</span><span class="w"> </span><span class="o">||</span>
+<span class="w">        </span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HTTP_SERVER_TRANSACTION_COMPLETE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">atomic_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_in_progress</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">        </span><span class="n">fota_auth_ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="cm">/* First invocation for this request: auth + flash init. */</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">fota_auth_ok</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">atomic_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_in_progress</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">auth_api_check</span><span class="p">(</span><span class="n">request_ctx</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HTTP_SERVER_REQUEST_DATA_FINAL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">respond_401</span><span class="p">(</span><span class="n">response_ctx</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">atomic_cas</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_in_progress</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="cm">/* Another upload already in progress. */</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HTTP_SERVER_REQUEST_DATA_FINAL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">busy</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span>
+<span class="w">                    </span><span class="s">"{</span><span class="se">\"</span><span class="s">error</span><span class="se">\"</span><span class="s">:</span><span class="se">\"</span><span class="s">upload in progress</span><span class="se">\"</span><span class="s">}"</span><span class="p">;</span>
+<span class="w">                </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_503_SERVICE_UNAVAILABLE</span><span class="p">;</span>
+<span class="w">                </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">json_ct_hdr</span><span class="p">;</span>
+<span class="w">                </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">header_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">json_ct_hdr</span><span class="p">);</span>
+<span class="w">                </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">busy</span><span class="p">;</span>
+<span class="w">                </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">body_len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">busy</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">                </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">final_chunk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flash_img_init_id</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_img_ctx</span><span class="p">,</span>
+<span class="w">                       </span><span class="n">FIXED_PARTITION_ID</span><span class="p">(</span><span class="n">slot1_partition</span><span class="p">));</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">LOG_ERR</span><span class="p">(</span><span class="s">"flash_img_init_id failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">rc</span><span class="p">);</span>
+<span class="w">            </span><span class="n">atomic_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_in_progress</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HTTP_SERVER_REQUEST_DATA_FINAL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">;</span>
+<span class="w">                </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">final_chunk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">fota_auth_ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">fota_auth_ok</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="cm">/* Auth failed on an earlier chunk — discard remaining data. */</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HTTP_SERVER_REQUEST_DATA_FINAL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">respond_401</span><span class="p">(</span><span class="n">response_ctx</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="cm">/* Stream chunk into flash. */</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HTTP_SERVER_REQUEST_DATA_FINAL</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">request_ctx</span><span class="o">-&gt;</span><span class="n">data_len</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flash_img_buffered_write</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_img_ctx</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">request_ctx</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">request_ctx</span><span class="o">-&gt;</span><span class="n">data_len</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">last</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">LOG_ERR</span><span class="p">(</span><span class="s">"flash_img_buffered_write failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">rc</span><span class="p">);</span>
+<span class="w">            </span><span class="n">atomic_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_in_progress</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">            </span><span class="n">fota_auth_ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">last</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">;</span>
+<span class="w">                </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">final_chunk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HTTP_SERVER_REQUEST_DATA_FINAL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">size_t</span><span class="w"> </span><span class="n">written</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flash_img_bytes_written</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_img_ctx</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">LOG_INF</span><span class="p">(</span><span class="s">"FOTA upload complete: %zu bytes written to slot 1"</span><span class="p">,</span><span class="w"> </span><span class="n">written</span><span class="p">);</span>
+<span class="w">        </span><span class="n">atomic_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_in_progress</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">        </span><span class="n">fota_auth_ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">ok_buf</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+
+<span class="w">        </span><span class="n">snprintf</span><span class="p">((</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ok_buf</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ok_buf</span><span class="p">),</span>
+<span class="w">             </span><span class="s">"{</span><span class="se">\"</span><span class="s">ok</span><span class="se">\"</span><span class="s">:true,</span><span class="se">\"</span><span class="s">bytes</span><span class="se">\"</span><span class="s">:%zu}"</span><span class="p">,</span><span class="w"> </span><span class="n">written</span><span class="p">);</span>
+<span class="w">        </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_200_OK</span><span class="p">;</span>
+<span class="w">        </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">json_ct_hdr</span><span class="p">;</span>
+<span class="w">        </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">header_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">json_ct_hdr</span><span class="p">);</span>
+<span class="w">        </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ok_buf</span><span class="p">;</span>
+<span class="w">        </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">body_len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strlen</span><span class="p">((</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ok_buf</span><span class="p">);</span>
+<span class="w">        </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">final_chunk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* ── POST /api/fota/apply ────────────────────────────────────────────────── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_work_delayable</span><span class="w"> </span><span class="n">fota_reboot_work</span><span class="p">;</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">fota_reboot_fn</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_work</span><span class="w"> </span><span class="o">*</span><span class="n">work</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">work</span><span class="p">);</span>
+<span class="w">    </span><span class="n">LOG_INF</span><span class="p">(</span><span class="s">"FOTA: rebooting to apply update"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">sys_reboot</span><span class="p">(</span><span class="n">SYS_REBOOT_COLD</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">fota_apply_handler</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">http_client_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">client</span><span class="p">,</span>
+<span class="w">               </span><span class="k">enum</span><span class="w"> </span><span class="n">http_transaction_status</span><span class="w"> </span><span class="n">status</span><span class="p">,</span>
+<span class="w">               </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_request_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">request_ctx</span><span class="p">,</span>
+<span class="w">               </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_response_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">response_ctx</span><span class="p">,</span>
+<span class="w">               </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">client</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">user_data</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HTTP_SERVER_TRANSACTION_ABORTED</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">HTTP_SERVER_REQUEST_DATA_FINAL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">auth_api_check</span><span class="p">(</span><span class="n">request_ctx</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">respond_401</span><span class="p">(</span><span class="n">response_ctx</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boot_request_upgrade</span><span class="p">(</span><span class="n">BOOT_UPGRADE_TEST</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">LOG_ERR</span><span class="p">(</span><span class="s">"boot_request_upgrade failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">rc</span><span class="p">);</span>
+<span class="w">        </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">;</span>
+<span class="w">        </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">final_chunk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">LOG_INF</span><span class="p">(</span><span class="s">"FOTA: image marked pending — rebooting in 2 s"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">k_work_schedule</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_reboot_work</span><span class="p">,</span><span class="w"> </span><span class="n">K_MSEC</span><span class="p">(</span><span class="mi">2000</span><span class="p">));</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">ok</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"{</span><span class="se">\"</span><span class="s">ok</span><span class="se">\"</span><span class="s">:true,</span><span class="se">\"</span><span class="s">rebooting</span><span class="se">\"</span><span class="s">:true}"</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_200_OK</span><span class="p">;</span>
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">json_ct_hdr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">header_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">json_ct_hdr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ok</span><span class="p">;</span>
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">body_len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">final_chunk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* ── GET /api/fota/status ────────────────────────────────────────────────── */</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">fota_status_handler</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">http_client_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">client</span><span class="p">,</span>
+<span class="w">            </span><span class="k">enum</span><span class="w"> </span><span class="n">http_transaction_status</span><span class="w"> </span><span class="n">status</span><span class="p">,</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_request_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">request_ctx</span><span class="p">,</span>
+<span class="w">            </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_response_ctx</span><span class="w"> </span><span class="o">*</span><span class="n">response_ctx</span><span class="p">,</span>
+<span class="w">            </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">client</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">user_data</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HTTP_SERVER_TRANSACTION_ABORTED</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">HTTP_SERVER_REQUEST_DATA_FINAL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">auth_api_check</span><span class="p">(</span><span class="n">request_ctx</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">respond_401</span><span class="p">(</span><span class="n">response_ctx</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mcuboot_img_header</span><span class="w"> </span><span class="n">hdr0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">mcuboot_img_header</span><span class="w"> </span><span class="n">hdr1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">boot_read_bank_header</span><span class="p">(</span><span class="n">FIXED_PARTITION_ID</span><span class="p">(</span><span class="n">slot0_partition</span><span class="p">),</span>
+<span class="w">                  </span><span class="o">&amp;</span><span class="n">hdr0</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">hdr0</span><span class="p">));</span>
+<span class="w">    </span><span class="n">boot_read_bank_header</span><span class="p">(</span><span class="n">FIXED_PARTITION_ID</span><span class="p">(</span><span class="n">slot1_partition</span><span class="p">),</span>
+<span class="w">                  </span><span class="o">&amp;</span><span class="n">hdr1</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">hdr1</span><span class="p">));</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">confirmed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boot_is_img_confirmed</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">swap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mcuboot_swap_type</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">pending</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">swap</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">BOOT_SWAP_TYPE_TEST</span><span class="w"> </span><span class="o">||</span>
+<span class="w">            </span><span class="n">swap</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">BOOT_SWAP_TYPE_REVERT</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">status_buf</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">snprintf</span><span class="p">(</span>
+<span class="w">        </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">status_buf</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">status_buf</span><span class="p">),</span>
+<span class="w">        </span><span class="s">"{"</span>
+<span class="w">        </span><span class="s">"</span><span class="se">\"</span><span class="s">slot0</span><span class="se">\"</span><span class="s">:{</span><span class="se">\"</span><span class="s">version</span><span class="se">\"</span><span class="s">:</span><span class="se">\"</span><span class="s">%u.%u.%u+%u</span><span class="se">\"</span><span class="s">,</span><span class="se">\"</span><span class="s">confirmed</span><span class="se">\"</span><span class="s">:%s},"</span>
+<span class="w">        </span><span class="s">"</span><span class="se">\"</span><span class="s">slot1</span><span class="se">\"</span><span class="s">:{</span><span class="se">\"</span><span class="s">version</span><span class="se">\"</span><span class="s">:</span><span class="se">\"</span><span class="s">%u.%u.%u+%u</span><span class="se">\"</span><span class="s">,</span><span class="se">\"</span><span class="s">confirmed</span><span class="se">\"</span><span class="s">:false},"</span>
+<span class="w">        </span><span class="s">"</span><span class="se">\"</span><span class="s">pending</span><span class="se">\"</span><span class="s">:%s"</span>
+<span class="w">        </span><span class="s">"}"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">hdr0</span><span class="p">.</span><span class="n">h</span><span class="p">.</span><span class="n">v1</span><span class="p">.</span><span class="n">sem_ver</span><span class="p">.</span><span class="n">major</span><span class="p">,</span><span class="w"> </span><span class="n">hdr0</span><span class="p">.</span><span class="n">h</span><span class="p">.</span><span class="n">v1</span><span class="p">.</span><span class="n">sem_ver</span><span class="p">.</span><span class="n">minor</span><span class="p">,</span>
+<span class="w">        </span><span class="n">hdr0</span><span class="p">.</span><span class="n">h</span><span class="p">.</span><span class="n">v1</span><span class="p">.</span><span class="n">sem_ver</span><span class="p">.</span><span class="n">revision</span><span class="p">,</span>
+<span class="w">        </span><span class="p">(</span><span class="kt">unsigned</span><span class="p">)</span><span class="n">hdr0</span><span class="p">.</span><span class="n">h</span><span class="p">.</span><span class="n">v1</span><span class="p">.</span><span class="n">sem_ver</span><span class="p">.</span><span class="n">build_num</span><span class="p">,</span>
+<span class="w">        </span><span class="n">confirmed</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s">"true"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">"false"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">hdr1</span><span class="p">.</span><span class="n">h</span><span class="p">.</span><span class="n">v1</span><span class="p">.</span><span class="n">sem_ver</span><span class="p">.</span><span class="n">major</span><span class="p">,</span><span class="w"> </span><span class="n">hdr1</span><span class="p">.</span><span class="n">h</span><span class="p">.</span><span class="n">v1</span><span class="p">.</span><span class="n">sem_ver</span><span class="p">.</span><span class="n">minor</span><span class="p">,</span>
+<span class="w">        </span><span class="n">hdr1</span><span class="p">.</span><span class="n">h</span><span class="p">.</span><span class="n">v1</span><span class="p">.</span><span class="n">sem_ver</span><span class="p">.</span><span class="n">revision</span><span class="p">,</span>
+<span class="w">        </span><span class="p">(</span><span class="kt">unsigned</span><span class="p">)</span><span class="n">hdr1</span><span class="p">.</span><span class="n">h</span><span class="p">.</span><span class="n">v1</span><span class="p">.</span><span class="n">sem_ver</span><span class="p">.</span><span class="n">build_num</span><span class="p">,</span>
+<span class="w">        </span><span class="n">pending</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s">"true"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">"false"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">len</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="n">len</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">status_buf</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">;</span>
+<span class="w">        </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">final_chunk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_200_OK</span><span class="p">;</span>
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">headers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">json_ct_hdr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">header_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">json_ct_hdr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">body</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status_buf</span><span class="p">;</span>
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">body_len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="n">len</span><span class="p">;</span>
+<span class="w">    </span><span class="n">response_ctx</span><span class="o">-&gt;</span><span class="n">final_chunk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* ── init ────────────────────────────────────────────────────────────────── */</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">fota_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">k_work_init_delayable</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fota_reboot_work</span><span class="p">,</span><span class="w"> </span><span class="n">fota_reboot_fn</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Add <code>fota.c</code> to <code>lib/http_dashboard/CMakeLists.txt</code></strong></li>
+</ul>
+<p>After the <code>if(CONFIG_HTTP_DASHBOARD_AUTH)</code> block that adds <code>auth.c</code>, add:</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nb">if</span><span class="p">(</span><span class="s">CONFIG_HTTP_DASHBOARD_FOTA</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">zephyr_library_sources</span><span class="p">(</span><span class="s">src/fota.c</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">endif</span><span class="p">()</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 5: Register FOTA resources in <code>lib/http_dashboard/src/http_dashboard.c</code></strong></li>
+</ul>
+<p>Add the <code>fota.h</code> include after the other conditional includes (near line 44):</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#if defined(CONFIG_HTTP_DASHBOARD_FOTA)</span>
+<span class="cp">#</span><span class="w">   </span><span class="cp">include</span><span class="w"> </span><span class="cpf">"fota.h"</span>
+<span class="cp">#endif</span>
+</code></pre></div>
+<p>Add three resource detail structs and their <code>HTTP_RESOURCE_DEFINE</code> calls after the <code>api_locations_detail</code> block (before <code>HTTP_SERVICE_DEFINE</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#if defined(CONFIG_HTTP_DASHBOARD_FOTA)</span>
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_resource_detail_dynamic</span><span class="w"> </span><span class="n">fota_upload_detail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">common</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_RESOURCE_TYPE_DYNAMIC</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">bitmask_of_supported_http_methods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="n">HTTP_POST</span><span class="p">),</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">.</span><span class="n">cb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fota_upload_handler</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_resource_detail_dynamic</span><span class="w"> </span><span class="n">fota_apply_detail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">common</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_RESOURCE_TYPE_DYNAMIC</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">bitmask_of_supported_http_methods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="n">HTTP_POST</span><span class="p">),</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">.</span><span class="n">cb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fota_apply_handler</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">http_resource_detail_dynamic</span><span class="w"> </span><span class="n">fota_status_detail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">common</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HTTP_RESOURCE_TYPE_DYNAMIC</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">bitmask_of_supported_http_methods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BIT</span><span class="p">(</span><span class="n">HTTP_GET</span><span class="p">),</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">.</span><span class="n">cb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fota_status_handler</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="cp">#endif </span><span class="cm">/* CONFIG_HTTP_DASHBOARD_FOTA */</span>
+</code></pre></div>
+<p>Add <code>HTTP_RESOURCE_DEFINE</code> calls after <code>api_locations_resource</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#if defined(CONFIG_HTTP_DASHBOARD_FOTA)</span>
+<span class="n">HTTP_RESOURCE_DEFINE</span><span class="p">(</span><span class="n">fota_upload_resource</span><span class="p">,</span><span class="w"> </span><span class="n">dashboard_svc</span><span class="p">,</span>
+<span class="w">             </span><span class="s">"/api/fota/upload"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fota_upload_detail</span><span class="p">);</span>
+<span class="n">HTTP_RESOURCE_DEFINE</span><span class="p">(</span><span class="n">fota_apply_resource</span><span class="p">,</span><span class="w"> </span><span class="n">dashboard_svc</span><span class="p">,</span>
+<span class="w">             </span><span class="s">"/api/fota/apply"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fota_apply_detail</span><span class="p">);</span>
+<span class="n">HTTP_RESOURCE_DEFINE</span><span class="p">(</span><span class="n">fota_status_resource</span><span class="p">,</span><span class="w"> </span><span class="n">dashboard_svc</span><span class="p">,</span>
+<span class="w">             </span><span class="s">"/api/fota/status"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fota_status_detail</span><span class="p">);</span>
+<span class="cp">#endif</span>
+</code></pre></div>
+<p>Add <code>fota_init()</code> call in <code>http_dashboard_init()</code> before <code>zbus_chan_add_obs</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#if defined(CONFIG_HTTP_DASHBOARD_FOTA)</span>
+<span class="w">    </span><span class="n">fota_init</span><span class="p">();</span>
+<span class="cp">#endif</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 6: Verify native_sim build passes</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>/build-and-test
+</code></pre></div>
+<p>Expected: all tests pass. <code>CONFIG_HTTP_DASHBOARD_FOTA</code> is <code>n</code> on native_sim (no <code>BOOTLOADER_MCUBOOT</code>), so <code>fota.c</code> is not compiled.</p>
+<ul>
+<li>[ ] <strong>Step 7: Verify hardware build compiles</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span><span class="se">\</span>
+west<span class="w"> </span>build<span class="w"> </span>apps/gateway<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-b<span class="w"> </span>frdm_mcxn947/mcxn947/cpu0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sysbuild<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>build/frdm_mcuboot_check
+</code></pre></div>
+<p>Expected: compiles without error. (Note: <code>CONFIG_HTTP_DASHBOARD_FOTA</code> is not yet enabled in the hardware conf — will be enabled in Task 7.)</p>
+<ul>
+<li>[ ] <strong>Step 8: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+git<span class="w"> </span>add<span class="w"> </span>lib/http_dashboard/Kconfig<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>lib/http_dashboard/src/fota.h<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>lib/http_dashboard/src/fota.c<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>lib/http_dashboard/CMakeLists.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>lib/http_dashboard/src/http_dashboard.c
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(fota): add HTTP FOTA upload/apply/status endpoints to http_dashboard"</span>
+</code></pre></div>
+<hr>
+<h2 id="task-6-image-confirmation-library">Task 6: Image confirmation library</h2>
+<p><strong>Files:</strong>
+- Create: <code>lib/fota_confirm/Kconfig</code>
+- Create: <code>lib/fota_confirm/CMakeLists.txt</code>
+- Create: <code>lib/fota_confirm/src/fota_confirm.c</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Create directory</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/zephyr/workspace/weather-station/lib/fota_confirm/src
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Create <code>lib/fota_confirm/Kconfig</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="k">menuconfig</span><span class="w"> </span>FOTA_CONFIRM
+<span class="w">    </span><span class="nb">bool</span><span class="w"> </span><span class="s2">"Auto-confirm firmware image after successful boot"</span>
+<span class="w">    </span><span class="k">depends on</span><span class="w"> </span>BOOTLOADER_MCUBOOT
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>Schedules<span class="w"> </span>boot_write_img_confirmed()<span class="w"> </span>after<span class="w"> </span>a<span class="w"> </span>configurable<span class="w"> </span>settle
+<span class="w">      </span>delay<span class="w"> </span>at<span class="w"> </span>SYS_INIT<span class="w"> </span>APPLICATION<span class="w"> </span>priority<span class="w"> </span><span class="mi">99</span><span class="w"> </span><span class="p">(</span>after<span class="w"> </span>all<span class="w"> </span>other<span class="w"> </span>libs
+<span class="w">      </span>have<span class="w"> </span>initialised).<span class="w"> </span>Without<span class="w"> </span>confirmation,<span class="w"> </span>MCUboot<span class="w"> </span>treats<span class="w"> </span>the<span class="w"> </span>running
+<span class="w">      </span>image<span class="w"> </span>as<span class="w"> </span>a<span class="w"> </span>test<span class="w"> </span>image<span class="w"> </span>and<span class="w"> </span>reverts<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>previous<span class="w"> </span>slot<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>next
+<span class="w">      </span>reset.
+
+<span class="k">if</span><span class="w"> </span>FOTA_CONFIRM
+
+<span class="k">config</span><span class="w"> </span>FOTA_CONFIRM_DELAY_S
+<span class="w">    </span><span class="nb">int</span><span class="w"> </span><span class="s2">"Settle delay before confirming image (seconds)"</span>
+<span class="w">    </span><span class="k">default</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">    </span><span class="k">range</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">60</span>
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>How<span class="w"> </span>long<span class="w"> </span>to<span class="w"> </span>wait<span class="w"> </span>after<span class="w"> </span>SYS_INIT<span class="w"> </span>APPLICATION<span class="w"> </span><span class="mi">99</span><span class="w"> </span>before<span class="w"> </span>calling
+<span class="w">      </span>boot_write_img_confirmed().<span class="w"> </span>Allows<span class="w"> </span>HTTP<span class="w"> </span>dashboard,<span class="w"> </span>MQTT,<span class="w"> </span>and<span class="w"> </span>SNTP
+<span class="w">      </span>to<span class="w"> </span>bind<span class="w"> </span>their<span class="w"> </span>sockets<span class="w"> </span>before<span class="w"> </span>the<span class="w"> </span>image<span class="w"> </span>is<span class="w"> </span>marked<span class="w"> </span>permanent.
+
+module<span class="w"> </span><span class="o">=</span><span class="w"> </span>FOTA_CONFIRM
+module-str<span class="w"> </span><span class="o">=</span><span class="w"> </span>FOTA_CONFIRM
+<span class="k">source</span><span class="w"> </span><span class="s2">"subsys/logging/Kconfig.template.log_config"</span>
+
+<span class="k">endif</span><span class="w"> </span><span class="c1"># FOTA_CONFIRM</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Create <code>lib/fota_confirm/CMakeLists.txt</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">CONFIG_FOTA_CONFIRM</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">zephyr_library</span><span class="p">()</span>
+<span class="w">  </span><span class="nb">zephyr_library_sources</span><span class="p">(</span><span class="s">src/fota_confirm.c</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Create <code>lib/fota_confirm/src/fota_confirm.c</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* SPDX-License-Identifier: Apache-2.0 */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/init.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/kernel.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/logging/log.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/dfu/mcuboot.h&gt;</span>
+
+<span class="n">LOG_MODULE_REGISTER</span><span class="p">(</span><span class="n">fota_confirm</span><span class="p">,</span><span class="w"> </span><span class="n">CONFIG_FOTA_CONFIRM_LOG_LEVEL</span><span class="p">);</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">confirm_work_fn</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_work</span><span class="w"> </span><span class="o">*</span><span class="n">work</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">work</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">boot_is_img_confirmed</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boot_write_img_confirmed</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">LOG_INF</span><span class="p">(</span><span class="s">"firmware update confirmed"</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">LOG_ERR</span><span class="p">(</span><span class="s">"boot_write_img_confirmed failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">rc</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">static</span><span class="w"> </span><span class="n">K_WORK_DELAYABLE_DEFINE</span><span class="p">(</span><span class="n">confirm_work</span><span class="p">,</span><span class="w"> </span><span class="n">confirm_work_fn</span><span class="p">);</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">fota_confirm_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">k_work_schedule</span><span class="p">(</span><span class="o">&amp;</span><span class="n">confirm_work</span><span class="p">,</span><span class="w"> </span><span class="n">K_SECONDS</span><span class="p">(</span><span class="n">CONFIG_FOTA_CONFIRM_DELAY_S</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">SYS_INIT</span><span class="p">(</span><span class="n">fota_confirm_init</span><span class="p">,</span><span class="w"> </span><span class="n">APPLICATION</span><span class="p">,</span><span class="w"> </span><span class="mi">99</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 5: Verify native_sim build passes</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>/build-and-test
+</code></pre></div>
+<p>Expected: tests pass. <code>CONFIG_FOTA_CONFIRM</code> requires <code>BOOTLOADER_MCUBOOT</code>, which is absent on native_sim.</p>
+<ul>
+<li>[ ] <strong>Step 6: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+git<span class="w"> </span>add<span class="w"> </span>lib/fota_confirm/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(fota): add fota_confirm library — auto-confirm after 5 s settle"</span>
+</code></pre></div>
+<hr>
+<h2 id="task-7-enable-fota-on-hardware-and-final-build-verification">Task 7: Enable FOTA on hardware and final build verification</h2>
+<p><strong>Files:</strong>
+- Modify: <code>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Enable FOTA and confirm libs in hardware board conf</strong></li>
+</ul>
+<p>Add to the end of <code>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># ---------------------------------------------------------------</span>
+<span class="c1"># FOTA HTTP endpoints + auto-confirm</span>
+<span class="c1"># ---------------------------------------------------------------</span>
+<span class="na">CONFIG_HTTP_DASHBOARD_FOTA</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_FOTA_CONFIRM</span><span class="o">=</span><span class="s">y</span>
+<span class="na">CONFIG_FOTA_CONFIRM_DELAY_S</span><span class="o">=</span><span class="s">5</span>
+<span class="na">CONFIG_FOTA_RELAY</span><span class="o">=</span><span class="s">n</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Verify native_sim build is still clean</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>/build-and-test
+</code></pre></div>
+<p>Expected: all integration tests pass, no regressions.</p>
+<ul>
+<li>[ ] <strong>Step 3: Full hardware sysbuild — generate FOTA-capable artifacts</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+./scripts/gen-dev-key.sh
+
+<span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span><span class="se">\</span>
+west<span class="w"> </span>build<span class="w"> </span>apps/gateway<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-b<span class="w"> </span>frdm_mcxn947/mcxn947/cpu0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sysbuild<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>build/frdm_fota<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"-DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/keys/dev-ed25519.pem"</span>
+</code></pre></div>
+<p>Expected: build succeeds. Verify artifacts exist:</p>
+<div class="highlight"><pre><span></span><code>ls<span class="w"> </span>-lh<span class="w"> </span>build/frdm_fota/mcuboot/zephyr/zephyr.hex
+ls<span class="w"> </span>-lh<span class="w"> </span>build/frdm_fota/gateway/zephyr/zephyr.signed.bin
+</code></pre></div>
+<p>Both files must be present. <code>zephyr.signed.bin</code> is the FOTA payload; it must be smaller than 984 KB (the slot size).</p>
+<div class="highlight"><pre><span></span><code>wc<span class="w"> </span>-c<span class="w"> </span>build/frdm_fota/gateway/zephyr/zephyr.signed.bin
+</code></pre></div>
+<p>Expected: less than <code>1007616</code> bytes (984 × 1024).</p>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+git<span class="w"> </span>add<span class="w"> </span>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0.conf
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(fota): enable HTTP_DASHBOARD_FOTA and FOTA_CONFIRM on frdm_mcxn947"</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 5: Manual smoke test checklist (hardware only)</strong></li>
+</ul>
+<p>When hardware is available, perform these steps in order:</p>
+<div class="highlight"><pre><span></span><code>1. Flash MCUboot once:
+   west flash --runner jlink \
+     --hex-file build/frdm_fota/mcuboot/zephyr/zephyr.hex
+
+2. Flash initial application:
+   west flash --runner jlink \
+     --hex-file build/frdm_fota/merged.hex   (or use zephyr.signed.bin via mcumgr)
+
+3. Verify auto-confirm fires (watch serial console):
+   Expected log at ~5 s after boot:
+     [fota_confirm] firmware update confirmed
+
+4. Query status via HTTP:
+   curl -s -H "Authorization: Bearer &lt;token&gt;" \
+     http://&lt;board-ip&gt;:8080/api/fota/status | python3 -m json.tool
+   Expected: slot0.confirmed = true, pending = false
+
+5. Upload new image via HTTP:
+   curl -s -X POST \
+     -H "Authorization: Bearer &lt;token&gt;" \
+     -H "Content-Type: application/octet-stream" \
+     --data-binary @build/frdm_fota/gateway/zephyr.signed.bin \
+     http://&lt;board-ip&gt;:8080/api/fota/upload
+   Expected: {"ok":true,"bytes":&lt;N&gt;}
+
+6. Apply update:
+   curl -s -X POST \
+     -H "Authorization: Bearer &lt;token&gt;" \
+     http://&lt;board-ip&gt;:8080/api/fota/apply
+   Expected: {"ok":true,"rebooting":true}
+   Board reboots, MCUboot swaps slots, new image auto-confirms.
+
+7. Verify rollback: flash a deliberately bad image
+   (one that crashes before 5 s), observe MCUboot reverts to previous slot.
+
+8. Test UART path:
+   mcumgr --conntype serial --connstring /dev/ttyACM0,baud=115200 \
+     image upload build/frdm_fota/gateway/zephyr.signed.bin
+   mcumgr --conntype serial --connstring /dev/ttyACM0,baud=115200 \
+     image test &lt;hash-from-upload-output&gt;
+   mcumgr --conntype serial --connstring /dev/ttyACM0,baud=115200 reset
+</code></pre></div>
+<hr>
+<h2 id="self-review-notes">Self-review notes</h2>
+<ul>
+<li><strong>native_sim isolation:</strong> All FOTA Kconfig (<code>HTTP_DASHBOARD_FOTA</code>, <code>FOTA_CONFIRM</code>) depend on <code>BOOTLOADER_MCUBOOT</code>, which is never set in <code>prj.conf</code>. Safe.</li>
+<li><strong>No heap:</strong> <code>flash_img_context</code> is a static local in <code>fota.c</code>. <code>fota_reboot_work</code> and <code>confirm_work</code> are static delayables. All buffers (<code>ok_buf</code>, <code>status_buf</code>) are <code>static uint8_t[]</code>.</li>
+<li><strong>Concurrent upload protection:</strong> <code>atomic_cas(&amp;fota_in_progress, 0, 1)</code> ensures only one upload proceeds at a time; the second caller gets 503.</li>
+<li><strong>Auth always required:</strong> <code>CONFIG_HTTP_DASHBOARD_FOTA</code> depends on <code>HTTP_DASHBOARD_AUTH</code> — <code>auth_api_check()</code> is always available when <code>fota.c</code> is compiled.</li>
+<li><strong><code>slot0_partition</code> / <code>slot1_partition</code>:</strong> These DTS node names are defined in <code>frdm_mcxn947_mcxn947_cpu0.dtsi</code>. <code>FIXED_PARTITION_ID()</code> resolves them at compile time via <code>&lt;zephyr/storage/flash_map.h&gt;</code>.</li>
+<li><strong><code>BOOT_SWAP_TYPE_TEST</code> / <code>BOOT_SWAP_TYPE_REVERT</code>:</strong> Defined in <code>&lt;zephyr/dfu/mcuboot.h&gt;</code>. Used in <code>fota_status_handler</code> to determine <code>pending</code>.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

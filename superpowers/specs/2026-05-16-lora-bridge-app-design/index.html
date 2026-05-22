@@ -1,0 +1,1373 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-16-lora-bridge-app-design/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Design: apps/lora_bridge — Wio-E5 Mini LoRa Co-processor Firmware - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#design-appslora_bridge-wio-e5-mini-lora-co-processor-firmware" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Design: apps/lora_bridge — Wio-E5 Mini LoRa Co-processor Firmware
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Footprint
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Footprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-boardswio_e5_mini-custom-zephyr-board-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. boards/wio_e5_mini/ — Custom Zephyr Board Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-appslora_bridge-co-processor-firmware-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. apps/lora_bridge/ — Co-processor Firmware App
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-libuart_lora_sender-uart-tx-bridge-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. lib/uart_lora_sender/ — UART TX Bridge (NEW)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-simulationrenodewio_e5_mini-renode-model-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. simulation/renode/wio_e5_mini/ — Renode Model (NEW)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Constraints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acceptance-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acceptance Criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Tree
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="design-appslora_bridge-wio-e5-mini-lora-co-processor-firmware">Design: <code>apps/lora_bridge</code> — Wio-E5 Mini LoRa Co-processor Firmware</h1>
+<p><strong>Date:</strong> 2026-05-16
+<strong>Status:</strong> Draft
+<strong>Backlog:</strong> <code>LORA-BRIDGE-APP</code></p>
+<h2 id="overview">Overview</h2>
+<p>The gateway's LoRa radio runs on a dedicated Wio-E5 Mini (STM32WLE5JC) co-processor
+connected via UART (Flexcomm5 on the MCXN947). This app runs <code>lib/lora_radio/</code> on
+the co-processor and forwards decoded <code>env_sensor_data</code> frames to the gateway over UART.</p>
+<h2 id="architecture">Architecture</h2>
+<div class="highlight"><pre><span></span><code>┌───────────────────────── Wio-E5 Mini (lora_bridge app) ─────────────────────────┐
+│                                                                                  │
+│  lib/lora_radio/                     lib/uart_lora_sender/   (NEW)               │
+│  ┌──────────────────────┐           ┌──────────────────────────┐                 │
+│  │ LoRa RX → decode →   │──zbus──▶  │ Subscribe sensor_event_  │                 │
+│  │ publish to            │           │ chan → pack to 24-byte   │──UART──▶Gateway │
+│  │ sensor_event_chan     │           │ wire → uart_poll_out()   │   USART1       │
+│  └──────────────────────┘           └──────────────────────────┘                 │
+│                                                                                  │
+│  zbus: sensor_trigger_chan, sensor_event_chan                                    │
+│  Radio: SX126x @ 868 MHz, SF10, BW125                                            │
+└──────────────────────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p>Gateway side (already exists): <code>lib/uart_lora_bridge/</code> receives 24-byte frames,
+converts to <code>env_sensor_data</code>, publishes to gateway's <code>sensor_event_chan</code>.</p>
+<h2 id="components">Components</h2>
+<h3 id="1-boardswio_e5_mini-custom-zephyr-board-definition">1. <code>boards/wio_e5_mini/</code> — Custom Zephyr Board Definition</h3>
+<p>Workspace root <code>boards/</code> directory. Adapted from upstream <code>nucleo_wl55jc</code>.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>wio_e5_mini.dts</code></td>
+<td>DTS: includes <code>stm32wl55Xc.dtsi</code>, <code>wio_e5_mini-pinctrl.dtsi</code>; SubGHz SPI with <code>lora: radio@0</code>; USART1 for gateway UART; RF switch GPIOs PA4/PA5; LED PB5; I2C2 (future sensors)</td>
+</tr>
+<tr>
+<td><code>wio_e5_mini_defconfig</code></td>
+<td><code>CONFIG_SERIAL=y</code>, <code>CONFIG_GPIO=y</code>, <code>CONFIG_CONSOLE=y</code>, <code>CONFIG_UART_CONSOLE=y</code>, <code>CONFIG_ARM_MPU=y</code>, <code>CONFIG_HW_STACK_PROTECTION=y</code></td>
+</tr>
+<tr>
+<td><code>Kconfig.wio_e5_mini</code></td>
+<td><code>BOARD_WIO_E5_MINI</code> → selects <code>SOC_STM32WL55XX</code></td>
+</tr>
+<tr>
+<td><code>board.cmake</code></td>
+<td>Runners: openocd-stm32, stm32cubeprogrammer</td>
+</tr>
+<tr>
+<td><code>wio_e5_mini-pinctrl.dtsi</code></td>
+<td>Pinctrl: <code>usart1_tx_pb6_pb6</code>, <code>usart1_rx_pb7_pb7</code>, RF switch on PA4/PA5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key pin differences vs NUCLEO-WL55JC:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>NUCLEO-WL55JC</th>
+<th>Wio-E5 Mini</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF_CTRL1</td>
+<td>PC4</td>
+<td>PA4</td>
+</tr>
+<tr>
+<td>RF_CTRL2</td>
+<td>PC5</td>
+<td>PA5</td>
+</tr>
+<tr>
+<td>UART (gateway)</td>
+<td>LPUART1 (PA2/PA3)</td>
+<td>USART1 (PB6/PB7)</td>
+</tr>
+<tr>
+<td>LED</td>
+<td>PB9</td>
+<td>PB5</td>
+</tr>
+<tr>
+<td>BOOT</td>
+<td>PA0</td>
+<td>PB13</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-appslora_bridge-co-processor-firmware-app">2. <code>apps/lora_bridge/</code> — Co-processor Firmware App</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prj.conf</code></td>
+<td>ZBUS, shell, LORA_RADIO=y (real SX126x), LORA_RADIO_SHELL=y, UART_LORA_SENDER=y, sensor event + log. No fake sensors, LVGL, HTTP, MQTT</td>
+</tr>
+<tr>
+<td><code>CMakeLists.txt</code></td>
+<td>Standard pattern: <code>find_package(Zephyr)</code>, <code>project()</code>, <code>target_sources()</code></td>
+</tr>
+<tr>
+<td><code>src/main.c</code></td>
+<td><code>LOG_MODULE_REGISTER(lora_bridge, LOG_LEVEL_INF)</code> + <code>return 0</code> (ADR-008 Rule 4)</td>
+</tr>
+<tr>
+<td><code>boards/wio_e5_mini.overlay</code></td>
+<td>Enable SubGHz SPI radio, USART1 @ 9600 baud, RF switch GPIOs active-high, LED PB5 active-low</td>
+</tr>
+<tr>
+<td><code>boards/wio_e5_mini_renode.conf</code></td>
+<td><code>CONFIG_LORA_RADIO_FAKE=y</code> — use fake LoRa driver when running in Renode</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Kconfig summary (<code>prj.conf</code>):</strong>
+</p><div class="highlight"><pre><span></span><code>CONFIG_ZBUS=y
+CONFIG_SHELL=y
+CONFIG_SENSOR_EVENT=y
+CONFIG_SENSOR_EVENT_LOG=y
+CONFIG_LORA_RADIO=y
+CONFIG_LORA_RADIO_FAKE=n
+CONFIG_LORA_RADIO_SHELL=y
+CONFIG_UART_LORA_SENDER=y
+CONFIG_UART_LORA_SENDER_DEV_NAME="usart1"
+</code></pre></div><p></p>
+<h3 id="3-libuart_lora_sender-uart-tx-bridge-new">3. <code>lib/uart_lora_sender/</code> — UART TX Bridge (NEW)</h3>
+<p>Mirror of <code>lib/uart_lora_bridge/</code> but for the sending (co-processor) side.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Kconfig</code></td>
+<td><code>CONFIG_UART_LORA_SENDER</code> (depends on ZBUS, SENSOR_EVENT, SERIAL), <code>CONFIG_UART_LORA_SENDER_DEV_NAME</code> (default <code>usart1</code>)</td>
+</tr>
+<tr>
+<td><code>CMakeLists.txt</code></td>
+<td>Single source file</td>
+</tr>
+<tr>
+<td><code>include/uart_lora_sender/uart_lora_sender.h</code></td>
+<td>Empty header (no public API)</td>
+</tr>
+<tr>
+<td><code>src/uart_lora_sender.c</code></td>
+<td>Self-registers via <code>SYS_INIT(APPLICATION, 92)</code>. Subscribes to <code>sensor_event_chan</code>. On event: packs <code>env_sensor_data</code> into <code>uart_lora_wire</code> struct (20 bytes LE), computes CRC8-CCITT, sends 24-byte framed packet over UART via <code>uart_poll_out()</code>. Magic bytes: 0x5A 0xA5.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Wire format</strong> (same as <code>lib/uart_lora_bridge/</code>):
+</p><div class="highlight"><pre><span></span><code>[0x5A][0xA5][len=20][20-byte uart_lora_wire][crc8]
+</code></pre></div><p></p>
+<p>The <code>uart_lora_wire</code> struct and CRC8 table are duplicated from <code>lib/uart_lora_bridge/</code> to avoid cross-library dependencies. Both libraries define the same format independently.</p>
+<h3 id="4-simulationrenodewio_e5_mini-renode-model-new">4. <code>simulation/renode/wio_e5_mini/</code> — Renode Model (NEW)</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>wio_e5_mini.repl</code></td>
+<td>Platform description: Cortex-M4 @ 48 MHz, 256KB flash @ 0x08000000, 64KB SRAM @ 0x20000000, USART1 @ 0x40013800 with analyzer backend, Sub-GHz SPI @ 0x58010000 (stub registers), GPIO ports A/B/C with RF switch and LED pins, NVIC with STM32WL interrupt layout</td>
+</tr>
+<tr>
+<td><code>wio_e5_mini.resc</code></td>
+<td>Boot script: <code>sysbus LoadELF</code>, enable UART analyzer on USART1, connect UART analyzer to file or terminal</td>
+</tr>
+<tr>
+<td><code>wio_e5_mini_loopback.resc</code></td>
+<td>Placeholder for RENODE-PHASE2: dual-machine simulation with gateway MCXN947 connected via UART</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Renode scope this iteration:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Included</th>
+<th>Deferred</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cortex-M4 + memory map</td>
+<td>Full SX126x peripheral model (Python peripheral)</td>
+</tr>
+<tr>
+<td>USART1 with analyzer backend</td>
+<td>Sub-GHz SPI Python peripheral</td>
+</tr>
+<tr>
+<td>GPIO stubs for RF switch + LED</td>
+<td>Two-machine UART loopback test</td>
+</tr>
+<tr>
+<td>Boot → reach main() → UART output</td>
+<td>Robot Framework tests (<code>tests/</code> + <code>.robot</code> files)</td>
+</tr>
+<tr>
+<td>Fake LoRa driver for Renode builds</td>
+<td>Real radio register-level simulation</td>
+</tr>
+</tbody>
+</table>
+<h2 id="design-constraints">Design Constraints</h2>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>main.c</code> = <code>LOG_MODULE_REGISTER + return 0</code> only</td>
+<td>ADR-008 Rule 4</td>
+</tr>
+<tr>
+<td>All logic in libraries, self-wired via <code>SYS_INIT</code></td>
+<td>ADR-008 Rule 1</td>
+</tr>
+<tr>
+<td>App composes features via Kconfig only</td>
+<td>ADR-008 Rule 2</td>
+</tr>
+<tr>
+<td><code>env_sensor_data</code> is flat struct, no heap</td>
+<td>ADR-003</td>
+</tr>
+<tr>
+<td>zbus channel ownership: one <code>ZBUS_CHAN_DEFINE</code> per channel</td>
+<td>ADR-002</td>
+</tr>
+<tr>
+<td>UART protocol uses simple framed format (not zbus proxy agent)</td>
+<td>ADR-015 (deferred)</td>
+</tr>
+<tr>
+<td>Wire format: 0x5A 0xA5 magic, 20-byte payload, CRC8</td>
+<td><code>lib/uart_lora_bridge/</code></td>
+</tr>
+<tr>
+<td>Sensor UID ranges: 0x0021–0x00FF for remote sensors</td>
+<td>Sensor UID allocation table</td>
+</tr>
+</tbody>
+</table>
+<h2 id="acceptance-criteria">Acceptance Criteria</h2>
+<ol>
+<li>✅ <code>west build -b wio_e5_mini apps/lora_bridge</code> succeeds (hardware build)</li>
+<li>✅ <code>west build -b wio_e5_mini apps/lora_bridge -- -DCONFIG_LORA_RADIO_FAKE=y</code> succeeds (Renode build)</li>
+<li>✅ LoRa radio initializes with SX126x driver (EU868, SF10, BW125) — verified via shell <code>lora status</code></li>
+<li>✅ <code>lib/uart_lora_sender/</code> subscribes to <code>sensor_event_chan</code> and outputs framed 24-byte packets on USART1</li>
+<li>✅ Renode model boots → reaches <code>main()</code> → UART console output visible via analyzer</li>
+<li>✅ CRC8 computation matches <code>lib/uart_lora_bridge/</code> (unit test or verified by inspection)</li>
+<li>❌ Two-machine loopback test (deferred to RENODE-PHASE2)</li>
+<li>❌ Real hardware flash/debug (requires physical Wio-E5 Mini + ST-LINK)</li>
+</ol>
+<h2 id="file-tree">File Tree</h2>
+<div class="highlight"><pre><span></span><code>boards/wio_e5_mini/                    (NEW)
+├── Kconfig.wio_e5_mini
+├── board.cmake
+├── wio_e5_mini.dts
+├── wio_e5_mini_defconfig
+└── wio_e5_mini-pinctrl.dtsi
+
+apps/lora_bridge/                      (NEW)
+├── CMakeLists.txt
+├── prj.conf
+├── src/
+│   └── main.c
+└── boards/
+    ├── wio_e5_mini.overlay
+    └── wio_e5_mini_renode.conf
+
+lib/uart_lora_sender/                  (NEW)
+├── CMakeLists.txt
+├── Kconfig
+├── include/
+│   └── uart_lora_sender/
+│       └── uart_lora_sender.h
+└── src/
+    └── uart_lora_sender.c
+
+simulation/renode/wio_e5_mini/         (NEW)
+├── wio_e5_mini.repl
+├── wio_e5_mini.resc
+└── wio_e5_mini_loopback.resc
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../javascripts/mermaid-zoom.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

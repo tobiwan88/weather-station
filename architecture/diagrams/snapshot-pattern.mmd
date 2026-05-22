@@ -1,0 +1,30 @@
+---
+title: Concurrency — Snapshot Pattern
+---
+sequenceDiagram
+    participant ISR as fake_sensors_timer<br/>(k_timer ISR)
+    participant TRIG as sensor_trigger_chan<br/>(zbus)
+    participant SENSOR as fake_temperature<br/>(zbus listener)
+    participant EVCHAN as sensor_event_chan<br/>(zbus)
+    participant DASH_L as http_dashboard<br/>listener (ISR-derived)
+    participant RING as ring_buffer<br/>(shared state)
+    participant DASH_H as http_dashboard<br/>HTTP handler thread
+    participant BR as Browser
+
+    Note over ISR: k_timer fires (ISR context)
+    ISR->>TRIG: pub sensor_trigger_event K_NO_WAIT
+    TRIG->>SENSOR: listener callback (zbus thread)
+    SENSOR->>EVCHAN: pub env_sensor_data K_NO_WAIT
+    EVCHAN->>DASH_L: listener callback (ISR-derived)
+    Note over DASH_L: k_spinlock_lock (ISR-safe)
+    DASH_L->>RING: append (ts, q31)
+    Note over DASH_L: k_spinlock_unlock
+    DASH_L-->>EVCHAN: return immediately
+
+    Note over BR,DASH_H: Later — HTTP GET /api/data
+    BR->>DASH_H: GET /api/data
+    Note over DASH_H: k_spinlock_lock
+    DASH_H->>RING: memcpy → local snapshot
+    Note over DASH_H: k_spinlock_unlock
+    Note over DASH_H: serialize snapshot → JSON<br/>(no lock held — O(n) safe)
+    DASH_H-->>BR: 200 OK { sensors: [...] }

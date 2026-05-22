@@ -1,0 +1,2713 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/architecture/lora-protocol/">
+      
+      
+        <link rel="prev" href="../firmware-update/">
+      
+      
+        <link rel="next" href="../diagrams/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>LoRa Protocol - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lora-protocol-architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              LoRa Protocol
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#physical-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physical topology
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#library-integration-post-proxy-on-gateway-perspective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Library integration (post-proxy, on-gateway perspective)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frame-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frame Protocol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frame Protocol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#l2-header-8-bytes-shared-across-all-frame-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        L2 Header (8 bytes, shared across all frame types)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flags-byte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flags byte
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frame-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frame types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frame-budget-by-spreading-factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frame budget by spreading factor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internal-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Internal Modules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Internal Modules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#radio-driver-lora_radio_drvc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Radio Driver (lora_radio_drv.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#packet-framing-lora_packetc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packet Framing (lora_packet.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-manager-lora_sessionc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Manager (lora_session.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#protocol-handlers-lora_handler_c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocol Handlers (lora_handler_*.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zbus-channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zbus Channels
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Zbus Channels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#existing-channels-no-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Existing channels (no changes)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New channels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remote_peer_cmd_event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        remote_peer_cmd_event
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lora_link_event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lora_link_event
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lora_fota_event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lora_fota_event
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transport-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transport Registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provisioning-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provisioning Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Provisioning Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compact-sensor-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compact Sensor Data
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Compact Sensor Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wire-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wire format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gateway-reconstruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway reconstruction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sensor-node-tx-decision-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor node TX decision logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rpc-command-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RPC Command Set
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RPC Command Set">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frame-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frame formats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reliability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reliability
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fota-over-lora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FOTA over LoRa
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FOTA over LoRa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chunk-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chunk protocol
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fota-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FOTA modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duty-cycle-budget" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duty cycle budget
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kconfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-extensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Extensions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#physical-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physical topology
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#library-integration-post-proxy-on-gateway-perspective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Library integration (post-proxy, on-gateway perspective)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frame-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frame Protocol
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frame Protocol">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#l2-header-8-bytes-shared-across-all-frame-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        L2 Header (8 bytes, shared across all frame types)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flags-byte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flags byte
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frame-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frame types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frame-budget-by-spreading-factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frame budget by spreading factor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internal-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Internal Modules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Internal Modules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#radio-driver-lora_radio_drvc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Radio Driver (lora_radio_drv.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#packet-framing-lora_packetc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packet Framing (lora_packet.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-manager-lora_sessionc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Manager (lora_session.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#protocol-handlers-lora_handler_c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocol Handlers (lora_handler_*.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zbus-channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zbus Channels
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Zbus Channels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#existing-channels-no-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Existing channels (no changes)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New channels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remote_peer_cmd_event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        remote_peer_cmd_event
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lora_link_event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lora_link_event
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lora_fota_event" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        lora_fota_event
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transport-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transport Registration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provisioning-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provisioning Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Provisioning Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#security-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compact-sensor-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compact Sensor Data
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Compact Sensor Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wire-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wire format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gateway-reconstruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway reconstruction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sensor-node-tx-decision-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor node TX decision logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rpc-command-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RPC Command Set
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RPC Command Set">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frame-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frame formats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reliability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reliability
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fota-over-lora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FOTA over LoRa
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FOTA over LoRa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chunk-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chunk protocol
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fota-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FOTA modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#duty-cycle-budget" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Duty cycle budget
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kconfig
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#future-extensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future Extensions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="lora-protocol-architecture">LoRa Protocol Architecture</h1>
+<p>This document covers the detailed architecture for the LoRa wireless
+communication subsystem. For the architectural decision and rationale see
+<a href="../../adr/ADR-015-lora-protocol/">ADR-015</a>.</p>
+<hr>
+<h2 id="overview">Overview</h2>
+<p><code>lib/lora_radio/</code> is the LoRa bounded context — a Kconfig-gated, self-wiring
+Zephyr library that handles all LoRa-specific concerns (radio driver, packet
+framing, session management, protocol dispatch). It runs on the <strong>STM32WLE5JC
+LoRa co-processor</strong> (LoRa E5-Mini), not on the gateway itself.</p>
+<h3 id="physical-topology">Physical topology</h3>
+<p>The gateway (<code>frdm_mcxn947</code>) has no built-in LoRa radio. LoRa communication
+requires a dedicated co-processor connected via UART:</p>
+<div class="highlight"><pre><span></span><code>┌──────────────────────────┐   UART    ┌──────────────────────────────┐
+│  frdm_mcxn947 (gateway)  │◄─────────►│  STM32WLE5JC (LoRa module)   │
+│                          │           │                              │
+│  All consumer libs:      │           │  lib/lora_radio/:            │
+│   sensor_event_log       │           │    Radio driver (SX1262)     │
+│   http_dashboard         │           │    Packet framing + GCM      │
+│   lvgl_display           │           │    Session manager           │
+│   mqtt_publisher         │           │    Protocol handlers         │
+│                          │           │                              │
+│  remote_sensor_manager   │  zbus     │  local zbus channels:        │
+│  sensor_registry         │  proxy    │    sensor_event_chan         │
+│                          │  agent    │    lora_link_chan            │
+│  shadow channels:        │  (future) │    remote_discovery_chan     │
+│   same zbus channels     │           │    remote_scan_ctrl_chan     │
+│   as on STM32WLE5JC      │           │    remote_peer_cmd_chan      │
+│                          │           │    lora_fota_chan             │
+└──────────────────────────┘           └──────────────────────────────┘
+</code></pre></div>
+<p>The gateway will bridge zbus channels between the two MCUs using Zephyr's
+<strong>zbus Proxy Agent</strong> feature (experimental, <code>CONFIG_ZBUS_PROXY_AGENT</code>).
+Shadow channels on the gateway mirror the STM32WLE5JC's local channels; a
+proxy agent with a UART transport backend synchronizes messages across the
+UART link. The proxy/forwarding design is <strong>deferred</strong> — this document
+focuses on the LoRa protocol and <code>lib/lora_radio/</code> internals running on the
+STM32WLE5JC.</p>
+<h3 id="library-integration-post-proxy-on-gateway-perspective">Library integration (post-proxy, on-gateway perspective)</h3>
+<p>Once the UART proxy is implemented, the gateway sees <code>lib/lora_radio/</code>'s
+channels as local shadow channels — consumers (dashboard, MQTT, display)
+subscribe to them identically to local sensor channels:</p>
+<div class="highlight"><pre><span></span><code>┌─────────────────────────────────────────────────────────────────────┐
+│                        CONSUMERS (unchanged)                         │
+│  sensor_event_log  │  http_dashboard  │  lvgl_display  │  mqtt_pub  │
+└──────────────────────────┬──────────────────────────────────────────┘
+                           │  subscribe
+                    sensor_event_chan
+              ┌────────────┼────────────┐
+              │            │            │
+        fake_sensors        │      pipe_transport
+        (local)             │      (native_sim test)
+                           │
+            ┌──────────────┴──────────────┐
+            │   lib/remote_sensor/        │
+            │   (transport-agnostic mgr)  │
+            │   zbus-based dispatch       │
+            │   discovery → sensor_reg    │
+            └──────────────┬──────────────┘
+                           │  zbus channels
+            ┌──────────────┼──────────────┐
+            │              │              │
+      fake_remote     pipe_transport    ★ lora_radio ★
+      (test stub)     (FIFO test)       (this design)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│               ★ lib/lora_radio/ — Bounded Context ★                  │
+│                                                                     │
+│  ┌──────────┐   ┌───────────┐   ┌───────────┐   ┌──────────────┐  │
+│  │  Radio   │   │  Packet   │   │  Session  │   │   Protocol   │  │
+│  │  Driver  │   │  Framing  │   │  Manager  │   │   Handlers   │  │
+│  │          │   │           │   │           │   │              │  │
+│  │ SX1276/  │   │ 8B hdr +  │   │ pairing   │   │ data_handler │  │
+│  │ SX1262   │   │ GCM tag   │   │ state     │   │ rpc_handler  │  │
+│  │ SPI      │   │ CRC16     │   │ keys      │   │ fota_handler │  │
+│  │ IRQ      │   │           │   │ node_map  │   │ prov_handler │  │
+│  └──────────┘   └───────────┘   └───────────┘   └──────────────┘  │
+│                                                                     │
+│  EXTERNAL SURFACE:                                                  │
+│    → publishes env_sensor_data × N  →  sensor_event_chan            │
+│    → publishes lora_link_info       →  lora_link_chan (diagnostics) │
+│    → subscribes to remote_scan_ctrl_chan, remote_peer_cmd_chan      │
+│    → subscribes to sensor_trigger_chan, lora_fota_chan              │
+└─────────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<hr>
+<h2 id="frame-protocol">Frame Protocol</h2>
+<h3 id="l2-header-8-bytes-shared-across-all-frame-types">L2 Header (8 bytes, shared across all frame types)</h3>
+<div class="highlight"><pre><span></span><code>Byte 0:    [type:4][version:4]
+Byte 1:    [flags:8]
+Bytes 2–3: src_node (uint16 LE)
+Bytes 4–5: dst_node (uint16 LE)
+Bytes 6–7: seq_num (uint16 LE)
+</code></pre></div>
+<h3 id="flags-byte">Flags byte</h3>
+<table>
+<thead>
+<tr>
+<th>Bit</th>
+<th>Name</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>ACK_REQ</td>
+<td>Receiver must send ACK/NACK</td>
+</tr>
+<tr>
+<td>1</td>
+<td>ENCRYPTED</td>
+<td>Payload + GCM tag present (always 1 after pairing)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>FRAGMENTED</td>
+<td>Payload spans multiple frames</td>
+</tr>
+<tr>
+<td>3–7</td>
+<td>RESERVED</td>
+<td>Must be 0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frame-types">Frame types</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Reliable</th>
+<th>Payload structure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x0</td>
+<td>SENSOR_DATA</td>
+<td>fire &amp; forget</td>
+<td>N × (1B sensor_type + 4B Q31)</td>
+</tr>
+<tr>
+<td>0x1</td>
+<td>SENSOR_DATA_ACK</td>
+<td>optional</td>
+<td>last_seq (2B LE)</td>
+</tr>
+<tr>
+<td>0x2</td>
+<td>RPC_CMD</td>
+<td>ACK + retry</td>
+<td>cmd_id (1B) + param_len (1B) + params</td>
+</tr>
+<tr>
+<td>0x3</td>
+<td>RPC_RESP</td>
+<td>—</td>
+<td>cmd_id (1B) + status (1B) + data</td>
+</tr>
+<tr>
+<td>0x4</td>
+<td>FOTA_CHUNK</td>
+<td>ACK + retry</td>
+<td>chunk_offset (4B LE) + chunk_data</td>
+</tr>
+<tr>
+<td>0x5</td>
+<td>FOTA_CHUNK_ACK</td>
+<td>—</td>
+<td>chunk_offset (4B LE) + status (1B)</td>
+</tr>
+<tr>
+<td>0x6</td>
+<td>PROV_BEACON</td>
+<td>periodic</td>
+<td>caps_count (1B) + capability_TLVs + pubkey (32B) + nonce (16B) + fw_ver</td>
+</tr>
+<tr>
+<td>0x7</td>
+<td>PROV_RESPONSE</td>
+<td>—</td>
+<td>node_id (2B) + session_key (16B) + gateway_pubkey (32B) + sig (64B)</td>
+</tr>
+<tr>
+<td>0x8</td>
+<td>ACK/NACK</td>
+<td>—</td>
+<td>ack_seq (2B LE) + status (1B)</td>
+</tr>
+<tr>
+<td>0x9–0xF</td>
+<td>RESERVED</td>
+<td>—</td>
+<td>future expansion</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frame-budget-by-spreading-factor">Frame budget by spreading factor</h3>
+<table>
+<thead>
+<tr>
+<th>SF / BW</th>
+<th>Max frame</th>
+<th>Overhead</th>
+<th>Payload</th>
+<th>Readings (5B each)</th>
+<th>Min interval (1% duty)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SF12/BW125</td>
+<td>51 B</td>
+<td>20 B</td>
+<td>31 B</td>
+<td>6</td>
+<td>99 s</td>
+</tr>
+<tr>
+<td>SF11/BW125</td>
+<td>51 B</td>
+<td>20 B</td>
+<td>31 B</td>
+<td>6</td>
+<td>58 s</td>
+</tr>
+<tr>
+<td>SF10/BW125</td>
+<td>51 B</td>
+<td>20 B</td>
+<td>31 B</td>
+<td>6</td>
+<td>37 s</td>
+</tr>
+<tr>
+<td>SF9/BW125</td>
+<td>115 B</td>
+<td>20 B</td>
+<td>95 B</td>
+<td>19</td>
+<td>18.5 s</td>
+</tr>
+<tr>
+<td>SF8/BW125</td>
+<td>222 B</td>
+<td>20 B</td>
+<td>202 B</td>
+<td>40</td>
+<td>10.3 s</td>
+</tr>
+<tr>
+<td>SF7/BW125</td>
+<td>222 B</td>
+<td>20 B</td>
+<td>202 B</td>
+<td>40</td>
+<td>6.2 s</td>
+</tr>
+<tr>
+<td>SF7/BW500</td>
+<td>255 B</td>
+<td>20 B</td>
+<td>235 B</td>
+<td>47</td>
+<td>5.6 s</td>
+</tr>
+</tbody>
+</table>
+<p>Default for sensor data: SF10/BW125. For FOTA: SF7/BW500.</p>
+<hr>
+<h2 id="internal-modules">Internal Modules</h2>
+<h3 id="radio-driver-lora_radio_drvc">Radio Driver (<code>lora_radio_drv.c</code>)</h3>
+<p>SPI-based HAL for SX1276/SX1262. Provides:</p>
+<ul>
+<li>TX/RX FIFO management</li>
+<li>Channel activity detection (CAD)</li>
+<li>RSSI / SNR readback</li>
+<li>Interrupt-driven RX via GPIO</li>
+<li>Configurable SF / BW via Kconfig</li>
+</ul>
+<p>Abstracted behind a <code>struct lora_radio_ops</code> to allow a fake radio backend
+(<code>CONFIG_LORA_RADIO_FAKE</code>) for native_sim testing.</p>
+<h3 id="packet-framing-lora_packetc">Packet Framing (<code>lora_packet.c</code>)</h3>
+<p>Pure functions, no global state:</p>
+<ul>
+<li><code>lora_packet_encode()</code> — builds L2 header + payload buffer</li>
+<li><code>lora_packet_decode()</code> — validates and parses L2 header</li>
+<li><code>lora_packet_encrypt()</code> — AES-128-GCM encrypt + tag</li>
+<li><code>lora_packet_decrypt()</code> — AES-128-GCM decrypt + verify</li>
+<li><code>lora_packet_crc16()</code> — appends/validates radio-level CRC</li>
+</ul>
+<p>CRC16 is frame-level (radio hardware typically handles this, but the function
+is available for the fake radio backend).</p>
+<h3 id="session-manager-lora_sessionc">Session Manager (<code>lora_session.c</code>)</h3>
+<p>Maintains per-node state:</p>
+<ul>
+<li><code>node_id</code> → <code>session_key</code> mapping</li>
+<li><code>last_seq_rx</code> / <code>last_seq_tx</code> (sequence number tracking)</li>
+<li><code>retry_count</code> and <code>last_ack_time</code> for reliable frames</li>
+<li><code>pairing_state</code> enum: UNPAIRED, PAIRING, PAIRED, EXPIRED</li>
+<li>Node ID allocation pool (0x0001–0x00FF for LoRa)</li>
+<li>Persistence to Zephyr Settings (<code>lora/&lt;node_id&gt;/key</code>)</li>
+</ul>
+<p>On reboot: restores all sessions from Settings. Invalidates sessions where
+GCM auth fails (the node was unpaired or key rotated).</p>
+<h3 id="protocol-handlers-lora_handler_c">Protocol Handlers (<code>lora_handler_*.c</code>)</h3>
+<p>Dispatch table indexed by frame type byte. Each handler:</p>
+<ol>
+<li>Validates GCM tag (if ENCRYPTED flag set)</li>
+<li>Checks sequence number against session state (if ACK_REQ or reliable)</li>
+<li>Dispatches to the correct path:</li>
+<li><strong>data_handler</strong>: unpacks N × 5B readings, calls <code>remote_sensor_publish_data()</code></li>
+<li><strong>rpc_handler</strong>: dispatches to command table, builds RPC_RESP</li>
+<li><strong>fota_handler</strong>: writes chunk to <code>flash_img</code>, sends FOTA_CHUNK_ACK</li>
+<li><strong>prov_handler</strong>: validates beacon, assigns node_id + key, sends PROV_RESPONSE</li>
+<li>For reliable frames: schedules ACK transmission, updates session state</li>
+</ol>
+<p>Runs on the dedicated LoRa RX thread.</p>
+<hr>
+<h2 id="zbus-channels">Zbus Channels</h2>
+<h3 id="existing-channels-no-changes">Existing channels (no changes)</h3>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Owner</th>
+<th>LoRa role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sensor_event_chan</code></td>
+<td><code>sensor_event</code></td>
+<td>Publishes decoded <code>env_sensor_data</code> via <code>remote_sensor_publish_data()</code></td>
+</tr>
+<tr>
+<td><code>sensor_trigger_chan</code></td>
+<td><code>sensor_trigger</code></td>
+<td>Subscribes: when <code>target_uid</code> matches a paired LoRa node, sends TRIGGER_SAMPLE RPC</td>
+</tr>
+<tr>
+<td><code>remote_scan_ctrl_chan</code></td>
+<td><code>remote_sensor</code></td>
+<td>Subscribes: on SCAN_START for LORA proto, enables RX continuous mode</td>
+</tr>
+<tr>
+<td><code>remote_discovery_chan</code></td>
+<td><code>remote_sensor</code></td>
+<td>Publishes: FOUND/LOST events during pairing and session expiry</td>
+</tr>
+<tr>
+<td><code>config_cmd_chan</code></td>
+<td><code>config_cmd</code></td>
+<td>Subscribes: new LORA_RPC command type → <code>lora_radio_rpc_send()</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="new-channels">New channels</h3>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Owner</th>
+<th>Direction</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>remote_peer_cmd_chan</code></td>
+<td><code>remote_sensor</code></td>
+<td>Manager → Transports</td>
+<td><code>remote_peer_cmd_event</code> (PEER_ADD, PEER_REMOVE, SEND_TRIGGER)</td>
+</tr>
+<tr>
+<td><code>lora_link_chan</code></td>
+<td><code>lora_radio</code></td>
+<td>LoRa → Diagnostics</td>
+<td><code>lora_link_event</code> (RSSI, SNR, node_id, seq_num)</td>
+</tr>
+<tr>
+<td><code>lora_fota_chan</code></td>
+<td><code>lora_radio</code></td>
+<td>HTTP → LoRa</td>
+<td><code>lora_fota_event</code> (FOTA_START, FOTA_CANCEL, image_size, chunk data)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="remote_peer_cmd_event">remote_peer_cmd_event</h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">remote_peer_cmd_event</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">PEER_ADD</span><span class="p">,</span><span class="w"> </span><span class="n">PEER_REMOVE</span><span class="p">,</span><span class="w"> </span><span class="n">SEND_TRIGGER</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">action</span><span class="p">;</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">remote_transport_proto</span><span class="w"> </span><span class="n">proto</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">target_uid</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">  </span><span class="n">peer_addr</span><span class="p">[</span><span class="n">REMOTE_SENSOR_ADDR_MAX_LEN</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">  </span><span class="n">addr_len</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>Published by <code>remote_sensor_manager</code> after a sensor is registered/deregistered
+in <code>sensor_registry</code>, or when a trigger targets a remote sensor. Each transport
+subscribes and checks <code>proto</code> to filter.</p>
+<h3 id="lora_link_event">lora_link_event</h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">lora_link_event</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">node_id</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w">  </span><span class="n">rssi</span><span class="p">;</span><span class="w">      </span><span class="c1">// dBm</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">  </span><span class="n">snr</span><span class="p">;</span><span class="w">       </span><span class="c1">// dB</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">seq_num</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">crc_errors</span><span class="p">;</span><span class="w"> </span><span class="c1">// since last report</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>Published after each received frame. Initially consumed only by
+<code>sensor_event_log</code> (debug output). Future: dashboard widget showing per-node
+link quality.</p>
+<h3 id="lora_fota_event">lora_fota_event</h3>
+<div class="highlight"><pre><span></span><code><span class="k">struct</span><span class="w"> </span><span class="nc">lora_fota_event</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">FOTA_START</span><span class="p">,</span><span class="w"> </span><span class="n">FOTA_CANCEL</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">action</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">target_uid</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">image_size</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">  </span><span class="n">fota_mode</span><span class="p">;</span><span class="w">   </span><span class="c1">// 0x00 = full image, 0x01 = cpatch delta</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>Published by <code>http_dashboard</code> for sensor-node FOTA. <code>lora_radio</code> subscribes,
+reads the image from external SPI flash, and chunks it over LoRa. The FOTA
+chunk data itself does not traverse this channel — it's read directly from
+flash by the lora_radio FOTA handler.</p>
+<hr>
+<h2 id="transport-registration">Transport Registration</h2>
+<p>Transports auto-register at compile time via an iterable section. Unlike the
+original vtable design, the section carries only metadata — no function
+pointers:</p>
+<div class="highlight"><pre><span></span><code><span class="cm">/* In lib/lora_radio/src/main.c */</span>
+<span class="n">REMOTE_TRANSPORT_REGISTER</span><span class="p">(</span><span class="n">lora_transport</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">name</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">"lora"</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">proto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REMOTE_TRANSPORT_PROTO_LORA</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">caps</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">REMOTE_TRANSPORT_CAP_SCAN</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>The <code>remote_sensor_manager</code> reads this section at boot to know which transports
+exist, creates per-proto bookkeeping, and subscribes to <code>remote_discovery_chan</code>.
+All runtime interaction — scan control, peer management, trigger forwarding —
+goes through zbus channels. The manager never calls a transport function directly.</p>
+<hr>
+<h2 id="provisioning-flow">Provisioning Flow</h2>
+<div class="highlight"><pre><span></span><code>Sensor Node (STM32WLE5JC)               Gateway (frdm_mcxn947)
+│                                       │
+│  [User presses button]                │
+│  Enter pairing mode (30s timer)       │
+│                                       │
+│  PROV_BEACON (frame 0x6) ───────────►│
+│  {caps: TEMP+HUM,                    │  Validate capabilities
+│   pubkey: Ed25519_pk,                │  Check no duplicate pubkey
+│   nonce: rand[16],                   │  Assign node_id from pool
+│   fw_ver: "1.0.0"}                   │  Generate AES-128 session_key
+│                                       │
+│                      ◄─────────────── PROV_RESPONSE (frame 0x7)
+│                      {node_id, session_key, gateway_pubkey, sig}
+│                                       │
+│  Verify Ed25519 signature             │
+│  Store session_key in NVS             │
+│  Exit pairing mode                    │
+│                                       │
+│  SENSOR_DATA (frame 0x0) ───────────►│
+│  (encrypted, first reading)           │  Decrypt, validate GCM
+│                                       │  remote_sensor_publish_data()
+│                                       │  Persist session in Settings
+│                                       │
+│  [After reboot: session_key in NVS]   │  [After reboot: sessions
+│   Resume normal operation             │   restored from Settings]
+</code></pre></div>
+<h3 id="security-properties">Security properties</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gateway authentication</td>
+<td>PROV_RESPONSE signed with Ed25519</td>
+</tr>
+<tr>
+<td>Session key confidentiality</td>
+<td>Plaintext in PROV_RESPONSE — relies on 30s window + proximity</td>
+</tr>
+<tr>
+<td>Replay protection</td>
+<td>Nonce in beacon; sequence numbers in data frames</td>
+</tr>
+<tr>
+<td>Frame encryption</td>
+<td>AES-128-GCM on all post-pairing frames</td>
+</tr>
+<tr>
+<td>Unpair</td>
+<td>Gateway sends PEER_REMOVE; node wipes key; GCM auth fails → self-reset to pairing mode</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="compact-sensor-data">Compact Sensor Data</h2>
+<h3 id="wire-format">Wire format</h3>
+<p>Each reading on the wire is <strong>5 bytes</strong>:</p>
+<div class="highlight"><pre><span></span><code>Byte 0:    sensor_type (uint8)
+Bytes 1–4: q31_value (int32 LE)
+</code></pre></div>
+<p>No timestamp (gateway assigns <code>k_uptime_get()</code> on receipt).
+No UID (derived from L2 header <code>src_node</code> + <code>sensor_type</code>).</p>
+<h3 id="gateway-reconstruction">Gateway reconstruction</h3>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">lora_handle_sensor_data</span><span class="p">(</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">src_node</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">num_readings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">num_readings</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">enum</span><span class="w"> </span><span class="n">sensor_type</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">enum</span><span class="w"> </span><span class="n">sensor_type</span><span class="p">)</span><span class="n">payload</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="p">];</span>
+<span class="w">        </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">q31</span><span class="p">;</span>
+<span class="w">        </span><span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">q31</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">payload</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">q31</span><span class="p">));</span>
+
+<span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">uid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_uid_for_reading</span><span class="p">(</span><span class="n">src_node</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="p">);</span>
+<span class="w">        </span><span class="n">remote_sensor_publish_data</span><span class="p">(</span><span class="n">uid</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">q31</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="sensor-node-tx-decision-logic">Sensor node TX decision logic</h3>
+<div class="highlight"><pre><span></span><code>On each sample cycle (k_timer at publish_interval):
+  for each sensor_type:
+    reading = sensor_read(type)
+
+    if change_threshold[type] &gt; 0:
+      delta = abs(reading - last_sent[type])
+      if delta &gt;= change_threshold[type]:
+        enqueue_for_tx(type, reading)
+        last_sent[type] = reading
+        continue
+
+    if time_since_last_periodic &gt;= publish_interval:
+      enqueue_for_tx(type, reading)
+      last_sent[type] = reading
+
+  if enqueued_readings &gt; 0:
+    pack into SENSOR_DATA frame(s)
+    TX respecting duty cycle limit
+
+Separate keep-alive timer:
+  if keepalive_interval &gt; 0 AND
+     (now - last_any_tx) &gt;= keepalive_interval:
+    TX minimal keep-alive frame
+
+Duty cycle enforcement (1% sliding window):
+  at 0.9%: defer change-triggered TX, keep periodic
+  at 1.0%: skip all TX, buffer readings
+</code></pre></div>
+<hr>
+<h2 id="rpc-command-set">RPC Command Set</h2>
+<h3 id="frame-formats">Frame formats</h3>
+<p><strong>RPC_CMD (frame type 0x2):</strong>
+</p><div class="highlight"><pre><span></span><code>Byte 0:    cmd_id (uint8)
+Byte 1:    param_len (uint8)
+Bytes 2+:  params (command-specific)
+</code></pre></div>
+Flags: ACK_REQ=1, ENCRYPTED=1<p></p>
+<p><strong>RPC_RESP (frame type 0x3):</strong>
+</p><div class="highlight"><pre><span></span><code>Byte 0:    cmd_id (uint8, echoed)
+Byte 1:    status (uint8, 0x00 = OK)
+Bytes 2+:  response data
+</code></pre></div><p></p>
+<h3 id="command-table">Command table</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Command</th>
+<th>Params</th>
+<th>Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00</td>
+<td>PING</td>
+<td>—</td>
+<td>uptime_ms (4B)</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>GET_VERSION</td>
+<td>—</td>
+<td>fw_ver (null-term string)</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>GET_STATUS</td>
+<td>—</td>
+<td>battery_mv (2B), rssi (1B), uptime (4B)</td>
+</tr>
+<tr>
+<td>0x10</td>
+<td>SET_PUBLISH_INTERVAL</td>
+<td>interval_s (2B)</td>
+<td>status</td>
+</tr>
+<tr>
+<td>0x11</td>
+<td>SET_SPREADING</td>
+<td>sf (1B), bw (1B)</td>
+<td>status</td>
+</tr>
+<tr>
+<td>0x12</td>
+<td>SET_TX_POWER</td>
+<td>dBm (1B, signed)</td>
+<td>status</td>
+</tr>
+<tr>
+<td>0x13</td>
+<td>SET_KEEPALIVE</td>
+<td>interval_s (2B)</td>
+<td>status</td>
+</tr>
+<tr>
+<td>0x14</td>
+<td>SET_CHANGE_THRESHOLD</td>
+<td>sensor_type (1B), q31_delta (4B)</td>
+<td>status</td>
+</tr>
+<tr>
+<td>0x20</td>
+<td>TRIGGER_SAMPLE</td>
+<td>sensor_type (1B, 0xFF=all)</td>
+<td>num_samples (1B)</td>
+</tr>
+<tr>
+<td>0x30</td>
+<td>FOTA_START</td>
+<td>image_size (4B), fota_mode (1B)</td>
+<td>status</td>
+</tr>
+<tr>
+<td>0x31</td>
+<td>FOTA_CANCEL</td>
+<td>—</td>
+<td>status</td>
+</tr>
+<tr>
+<td>0xFF</td>
+<td>REBOOT</td>
+<td>delay_ms (2B)</td>
+<td>status</td>
+</tr>
+</tbody>
+</table>
+<h3 id="reliability">Reliability</h3>
+<ul>
+<li>One pending RPC per node (serialized)</li>
+<li>SF-dependent timeout: 5s at SF7, 30s at SF10</li>
+<li>Up to 3 retries per command</li>
+<li>Duplicate detection: sensor node checks seq_num, re-sends last response</li>
+<li>RPC_RESP serves as implicit ACK — no separate ACK frame</li>
+</ul>
+<hr>
+<h2 id="fota-over-lora">FOTA over LoRa</h2>
+<h3 id="flow">Flow</h3>
+<div class="highlight"><pre><span></span><code>Browser → POST /api/fota/sensor/&lt;uid&gt;/upload → Gateway stores in SPI flash
+Browser → POST /api/fota/sensor/&lt;uid&gt;/apply  → http_dashboard publishes FOTA_START
+                                               → lora_radio starts chunk loop
+
+Gateway (lora_radio)                       Sensor Node (STM32WLE5JC)
+│                                          │
+│  Read chunk from SPI flash               │
+│  FOTA_CHUNK (offset=N, data) ──────────►│
+│                                          │  flash_img_buffered_write(slot1, data)
+│                       ◄────────────────── FOTA_CHUNK_ACK (offset=N, OK)
+│                                          │
+│  ... repeat for all chunks ...           │
+│                                          │
+│  FOTA_CHUNK (offset=final, LAST flag) ─►│
+│                                          │  Verify ED25519 signature
+│                                          │  boot_request_upgrade(TEST)
+│                                          │  Reboot
+│                                          │
+│                                          │  [MCUboot: verify, swap, boot new]
+│                                          │
+│                       ◄────────────────── SENSOR_DATA (new fw version in caps)
+│                                          │
+│  Publish FOTA_COMPLETE                   │
+</code></pre></div>
+<h3 id="chunk-protocol">Chunk protocol</h3>
+<ul>
+<li>Window size: 4–16 chunks in flight (Kconfig)</li>
+<li>Retry timer: 2 seconds per chunk</li>
+<li>Max retries: 3 per chunk</li>
+<li>Consecutive timeout cooldown: 30 seconds pause after 3 failures</li>
+<li>Flash error: abort session immediately</li>
+<li>ACK carries written offset → gateway skips completed chunks on retry</li>
+</ul>
+<h3 id="fota-modes">FOTA modes</h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full image</td>
+<td>0x00</td>
+<td>Write complete image to MCUboot slot 1</td>
+</tr>
+<tr>
+<td>cpatch delta</td>
+<td>0x01</td>
+<td>Apply binary patch to existing slot 1 image (future)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="duty-cycle-budget">Duty cycle budget</h3>
+<table>
+<thead>
+<tr>
+<th>SF / BW</th>
+<th>Chunk size</th>
+<th>Airtime</th>
+<th>Interval</th>
+<th>128 KB image</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SF7/BW500</td>
+<td>231 B</td>
+<td>~56 ms</td>
+<td>5.6 s</td>
+<td>~52 min</td>
+</tr>
+<tr>
+<td>SF7/BW125</td>
+<td>50 B</td>
+<td>~72 ms</td>
+<td>7.2 s</td>
+<td>~6.4 hr</td>
+</tr>
+<tr>
+<td>SF10/BW125</td>
+<td>50 B</td>
+<td>~371 ms</td>
+<td>37.1 s</td>
+<td>~33 hr</td>
+</tr>
+</tbody>
+</table>
+<p>Gateway auto-negotiates to highest supported SF during FOTA_START.</p>
+<hr>
+<h2 id="kconfig">Kconfig</h2>
+<div class="highlight"><pre><span></span><code>CONFIG_LORA_RADIO                  — Master switch
+CONFIG_LORA_RADIO_DRV_SX1276       — Semtech SX1276 driver (choice)
+CONFIG_LORA_RADIO_DRV_SX1262       — Semtech SX1262 driver (choice)
+CONFIG_LORA_RADIO_FAKE             — Fake radio for native_sim testing
+CONFIG_LORA_RADIO_FOTA             — Enable FOTA chunk handler
+CONFIG_LORA_RADIO_FOTA_CHUNK_SIZE  — Max chunk data size (default 231)
+CONFIG_LORA_RADIO_FOTA_WINDOW      — In-flight chunks (default 8)
+CONFIG_LORA_RADIO_AUTO_PUBLISH_MS  — Periodic trigger forwarding (0 = disabled)
+CONFIG_LORA_RADIO_RX_THREAD_STACK  — RX thread stack (default 2048)
+CONFIG_LORA_SENSOR_PUBLISH_INTERVAL_S — Default publish interval (default 60)
+CONFIG_LORA_SENSOR_KEEPALIVE_S     — Default keep-alive interval (default 0)
+CONFIG_LORA_RADIO_DEFAULT_SF       — Default spreading factor (default 10)
+CONFIG_LORA_RADIO_DEFAULT_BW       — Default bandwidth (default 125)
+CONFIG_LORA_RADIO_SESSION_MAX      — Max paired nodes (default 16)
+</code></pre></div>
+<hr>
+<h2 id="future-extensions">Future Extensions</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>How it fits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>UART proxy agent</strong></td>
+<td><code>CONFIG_ZBUS_PROXY_AGENT</code> + UART transport backend bridges gateway ↔ STM32WLE5JC channels. Shadow channels on gateway mirror <code>sensor_event_chan</code>, <code>lora_link_chan</code>, <code>remote_discovery_chan</code>, etc. Gateway consumers see no difference. Deferred to next ADR.</td>
+</tr>
+<tr>
+<td>cpatch delta FOTA</td>
+<td><code>fota_mode = 0x01</code> in FOTA_START — no protocol change</td>
+</tr>
+<tr>
+<td>New sensor types</td>
+<td>Add <code>sensor_type</code> enum value — consumers ignore unknown types</td>
+</tr>
+<tr>
+<td>New RPC commands</td>
+<td>Add command ID in reserved range — no framing change</td>
+</tr>
+<tr>
+<td>DH key exchange</td>
+<td>Add to PROV_BEACON/RESPONSE as optional TLV — backward compatible</td>
+</tr>
+<tr>
+<td>Mesh / repeater</td>
+<td>New frame type + dst_node forwarding logic — header already supports it</td>
+</tr>
+<tr>
+<td>LoRaWAN</td>
+<td>Replace <code>lib/lora_radio/</code> internals — external surface (same zbus channels) unchanged</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../../adr/ADR-015-lora-protocol/">ADR-015</a> — architectural decision record</li>
+<li><a href="../../adr/ADR-006-lora-channel-boundary/">ADR-006</a> — bounded context (superseded)</li>
+<li><a href="../../adr/ADR-014-mcuboot-fota/">ADR-014</a> — MCUboot FOTA</li>
+<li><a href="../event-bus/">event-bus.md</a> — zbus channel architecture</li>
+<li><a href="../system-overview/">system-overview.md</a> — system layers and library roles</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

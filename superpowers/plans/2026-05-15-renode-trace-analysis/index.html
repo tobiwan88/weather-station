@@ -1,0 +1,2347 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-15-renode-trace-analysis/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Renode Trace Analysis Implementation Plan - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#renode-trace-analysis-implementation-plan" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Renode Trace Analysis Implementation Plan
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Footprint
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Footprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#task-1-library-scaffold-kconfig-cmakeliststxt-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 1: Library scaffold — Kconfig, CMakeLists.txt, header
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-2-trace-recorder-core-ring-buffer-and-tracing-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2: Trace recorder core — ring buffer and tracing hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-3-shell-commands-trace-status-trace-dump-trace-clear" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 3: Shell commands — trace status, trace dump, trace clear
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-4-renode-target-kconfig-fragment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 4: Renode target Kconfig fragment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-5-renode-resc-profiler-function-logging-trace-dump-macro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 5: Renode .resc — profiler + function logging + trace dump macro
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-6-renode-robot-framework-test-gateway_tracerobot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 6: Renode Robot Framework test — gateway_trace.robot
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-7-post-processor-scriptsparse-tracepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 7: Post-processor — scripts/parse-trace.py
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-8-dev-workflow-script-scriptstrace-and-analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 8: Dev workflow script — scripts/trace-and-analyze
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-9-ci-changes-build-with-trace-publish-artifacts-deploy-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 9: CI changes — build with trace, publish artifacts, deploy-results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-10-backlog-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 10: Backlog update
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-11-integration-test-full-pipeline-smoke-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 11: Integration test — full pipeline smoke test
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="renode-trace-analysis-implementation-plan">Renode Trace Analysis Implementation Plan</h1>
+<blockquote>
+<p><strong>For agentic workers:</strong> REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (<code>- [ ]</code>) syntax for tracking.</p>
+</blockquote>
+<p><strong>Goal:</strong> Add a trace capture, post-processing, and deployment pipeline that captures thread context switches, ISR events, and function call stacks from Renode runs and publishes interactive Perfetto traces to gh-pages.</p>
+<p><strong>Architecture:</strong> New <code>lib/trace_recorder/</code> library overrides Zephyr <code>__weak</code> tracing hooks, writing 8-byte binary records to a static ring buffer. Renode dumps the buffer via <code>sysbus ReadMemory</code> while simultaneously recording a Perfetto profiler trace. A Python post-processor parses the binary trace, correlates with ELF symbols, merges with Renode's Perfetto trace, and deploys to gh-pages for deep-linked interactive viewing.</p>
+<p><strong>Tech Stack:</strong> Zephyr tracing subsystem (<code>CONFIG_TRACING_USER</code>), Renode guest profiler (<code>EnableProfilerPerfetto</code>), Python 3 <code>struct</code>/<code>subprocess</code>/Perfetto protobuf, Robot Framework, GitHub Actions artifacts + gh-pages.</p>
+<hr>
+<h3 id="task-1-library-scaffold-kconfig-cmakeliststxt-header">Task 1: Library scaffold — Kconfig, CMakeLists.txt, header</h3>
+<p><strong>Files:</strong>
+- Create: <code>lib/trace_recorder/Kconfig</code>
+- Create: <code>lib/trace_recorder/CMakeLists.txt</code>
+- Create: <code>lib/trace_recorder/include/trace_recorder/trace_recorder.h</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Create <code>lib/trace_recorder/Kconfig</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="k">menuconfig</span><span class="w"> </span>TRACE_RECORDER
+<span class="w">    </span><span class="nb">bool</span><span class="w"> </span><span class="s2">"Thread trace recorder for Renode performance analysis"</span>
+<span class="w">    </span><span class="k">select</span><span class="w"> </span>TRACING_USER
+<span class="w">    </span><span class="k">select</span><span class="w"> </span>THREAD_CUSTOM_DATA
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>Enables<span class="w"> </span>a<span class="w"> </span>lightweight<span class="w"> </span>thread-context-switch<span class="w"> </span>trace<span class="w"> </span>recorder<span class="w"> </span>that
+<span class="w">      </span>writes<span class="w"> </span><span class="mi">8</span>-byte<span class="w"> </span>binary<span class="w"> </span>records<span class="w"> </span><span class="p">(</span>timestamp,<span class="w"> </span>event<span class="w"> </span>type,<span class="w"> </span>thread<span class="w"> </span>ID,
+<span class="w">      </span>priority)<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>static<span class="w"> </span>ring<span class="w"> </span>buffer.<span class="w"> </span>Designed<span class="w"> </span>for<span class="w"> </span>post-mortem<span class="w"> </span>dump
+<span class="w">      </span>via<span class="w"> </span>Renode<span class="w"> </span>sysbus<span class="w"> </span>ReadMemory.
+
+<span class="w">      </span>Events<span class="w"> </span>captured:<span class="w"> </span>thread<span class="w"> </span>create,<span class="w"> </span>switch<span class="w"> </span>in/out,<span class="w"> </span>ISR<span class="w"> </span>enter/exit,
+<span class="w">      </span>idle.<span class="w">  </span>No<span class="w"> </span>public<span class="w"> </span>API<span class="w"> </span>—<span class="w"> </span>self-wires<span class="w"> </span>via<span class="w"> </span>SYS_INIT.
+
+<span class="w">      </span>Use<span class="w"> </span>with<span class="w"> </span>CONFIG_TRACING=y<span class="w"> </span><span class="p">(</span>auto-selected<span class="w"> </span>via<span class="w"> </span>TRACING_USER).
+
+<span class="k">if</span><span class="w"> </span>TRACE_RECORDER
+
+<span class="k">config</span><span class="w"> </span>TRACE_RECORDER_BUFFER_SIZE
+<span class="w">    </span><span class="nb">int</span><span class="w"> </span><span class="s2">"Number of trace records in ring buffer"</span>
+<span class="w">    </span><span class="k">default</span><span class="w"> </span><span class="mi">4096</span>
+<span class="w">    </span><span class="k">range</span><span class="w"> </span><span class="mi">256</span><span class="w"> </span><span class="mi">65536</span>
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>Each<span class="w"> </span>record<span class="w"> </span>is<span class="w"> </span><span class="mi">8</span><span class="w"> </span>bytes<span class="w"> </span><span class="p">(</span>timestamp<span class="w"> </span>+<span class="w"> </span>event_type<span class="w"> </span>+<span class="w"> </span>event_data
+<span class="w">      </span>+<span class="w"> </span>thread_id).<span class="w"> </span><span class="mi">4096</span><span class="w"> </span>records<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span>KB.<span class="w"> </span>At<span class="w"> </span><span class="mi">1000</span><span class="w"> </span>context<span class="w"> </span>switches/sec
+<span class="w">      </span>this<span class="w"> </span>covers<span class="w"> </span>~4<span class="w"> </span>seconds<span class="w"> </span>of<span class="w"> </span>execution.
+
+<span class="k">config</span><span class="w"> </span>TRACE_RECORDER_SHELL
+<span class="w">    </span><span class="nb">bool</span><span class="w"> </span><span class="s2">"Shell commands for trace recorder"</span>
+<span class="w">    </span><span class="k">default</span><span class="w"> </span>y
+<span class="w">    </span><span class="k">depends on</span><span class="w"> </span>SHELL
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>Registers<span class="w"> </span>the<span class="w"> </span><span class="s1">'trace'</span><span class="w"> </span>shell<span class="w"> </span>command<span class="w"> </span>group<span class="w"> </span>with<span class="w"> </span>sub-commands:
+<span class="w">        </span>status<span class="w">  </span>—<span class="w"> </span>buffer<span class="w"> </span>utilisation<span class="w"> </span>and<span class="w"> </span>overflow<span class="w"> </span>count
+<span class="w">        </span>dump<span class="w">    </span>—<span class="w"> </span><span class="nb">hex</span><span class="w"> </span>dump<span class="w"> </span>of<span class="w"> </span>buffer<span class="w"> </span>+<span class="w"> </span>thread<span class="w"> </span>name<span class="w"> </span>table
+<span class="w">        </span>clear<span class="w">   </span>—<span class="w"> </span>reset<span class="w"> </span>head/tail<span class="w"> </span>to<span class="w"> </span>zero
+
+<span class="k">config</span><span class="w"> </span>TRACE_RECORDER_MAX_THREADS
+<span class="w">    </span><span class="nb">int</span><span class="w"> </span><span class="s2">"Maximum number of tracked threads"</span>
+<span class="w">    </span><span class="k">default</span><span class="w"> </span><span class="mi">16</span>
+<span class="w">    </span><span class="k">range</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="mi">64</span>
+<span class="w">    </span><span class="k">help</span>
+<span class="w">      </span>Size<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>static<span class="w"> </span>thread-name<span class="w"> </span>lookup<span class="w"> </span>table<span class="w"> </span><span class="p">(</span>ID<span class="w"> </span>→<span class="w"> </span>name<span class="w"> </span><span class="nb">string</span><span class="p">)</span>.
+<span class="w">      </span>Each<span class="w"> </span>entry<span class="w"> </span>uses<span class="w"> </span>CONFIG_THREAD_MAX_NAME_LEN<span class="w"> </span>bytes<span class="w"> </span><span class="p">(</span><span class="k">default</span><span class="w"> </span><span class="mi">32</span><span class="p">)</span>.
+
+module<span class="w"> </span><span class="o">=</span><span class="w"> </span>TRACE_RECORDER
+module-str<span class="w"> </span><span class="o">=</span><span class="w"> </span>TRACE_RECORDER
+<span class="k">source</span><span class="w"> </span><span class="s2">"subsys/logging/Kconfig.template.log_config"</span>
+
+<span class="k">endif</span><span class="w"> </span><span class="c1"># TRACE_RECORDER</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Create <code>lib/trace_recorder/CMakeLists.txt</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c"># SPDX-License-Identifier: Apache-2.0</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">CONFIG_TRACE_RECORDER</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">zephyr_library</span><span class="p">()</span>
+<span class="w">  </span><span class="nb">zephyr_library_sources</span><span class="p">(</span><span class="s">src/trace_recorder.c</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">zephyr_library_sources_ifdef</span><span class="p">(</span><span class="s">CONFIG_TRACE_RECORDER_SHELL</span>
+<span class="w">                                </span><span class="s">src/trace_recorder_shell.c</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">zephyr_library_include_directories</span><span class="p">(</span><span class="s">include</span><span class="p">)</span>
+<span class="w">  </span><span class="nb">zephyr_include_directories</span><span class="p">(</span><span class="s">include</span><span class="p">)</span>
+<span class="nb">endif</span><span class="p">()</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Create <code>lib/trace_recorder/include/trace_recorder/trace_recorder.h</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* SPDX-License-Identifier: Apache-2.0 */</span>
+<span class="cm">/**</span>
+<span class="cm"> * @file trace_recorder.h</span>
+<span class="cm"> * @brief Thread trace recorder for Renode performance analysis.</span>
+<span class="cm"> *</span>
+<span class="cm"> * Enable with CONFIG_TRACE_RECORDER=y. The library self-registers via</span>
+<span class="cm"> * SYS_INIT at APPLICATION 1, overriding Zephyr's __weak tracing _user</span>
+<span class="cm"> * hooks to record thread context switches, ISR events, and idle events</span>
+<span class="cm"> * to a static ring buffer for post-mortem dump via Renode.</span>
+<span class="cm"> *</span>
+<span class="cm"> * No public API.</span>
+<span class="cm"> */</span>
+
+<span class="cp">#ifndef TRACE_RECORDER_TRACE_RECORDER_H_</span>
+<span class="cp">#define TRACE_RECORDER_TRACE_RECORDER_H_</span>
+
+<span class="cm">/* No public API — library registers itself via SYS_INIT. */</span>
+
+<span class="cp">#endif </span><span class="cm">/* TRACE_RECORDER_TRACE_RECORDER_H_ */</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Verify the scaffold compiles</strong></li>
+</ul>
+<p></p><div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>build<span class="w"> </span>-p<span class="w"> </span>auto<span class="w"> </span>-b<span class="w"> </span>native_sim/native/64<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>apps/gateway<span class="w"> </span>-d<span class="w"> </span>build/test-scaffold<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DCONFIG_TRACE_RECORDER<span class="o">=</span>y
+</code></pre></div>
+Expected: build succeeds (library registers but has empty source — no-op).<p></p>
+<ul>
+<li>[ ] <strong>Step 5: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>lib/trace_recorder/Kconfig<span class="w"> </span>lib/trace_recorder/CMakeLists.txt<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>lib/trace_recorder/include/trace_recorder/trace_recorder.h
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(trace_recorder): add library scaffold (Kconfig, CMakeLists, header)"</span>
+</code></pre></div>
+<hr>
+<h3 id="task-2-trace-recorder-core-ring-buffer-and-tracing-hooks">Task 2: Trace recorder core — ring buffer and tracing hooks</h3>
+<p><strong>Files:</strong>
+- Create: <code>lib/trace_recorder/src/trace_recorder.c</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write <code>lib/trace_recorder/src/trace_recorder.c</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* SPDX-License-Identifier: Apache-2.0 */</span>
+<span class="cm">/**</span>
+<span class="cm"> * @file trace_recorder.c</span>
+<span class="cm"> * @brief Overrides Zephyr __weak tracing _user hooks to record thread</span>
+<span class="cm"> *        context switches, ISR events, and idle events in a static ring</span>
+<span class="cm"> *        buffer for post-mortem Renode memory dump.</span>
+<span class="cm"> */</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/kernel.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/logging/log.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/sys/atomic.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/sys/__assert.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/init.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/tracing/tracing_user.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;trace_recorder/trace_recorder.h&gt;</span>
+
+<span class="n">LOG_MODULE_REGISTER</span><span class="p">(</span><span class="n">trace_recorder</span><span class="p">,</span><span class="w"> </span><span class="n">CONFIG_TRACE_RECORDER_LOG_LEVEL</span><span class="p">);</span>
+
+<span class="cm">/* ── trace record format (8 bytes) ───────────────────────────────── */</span>
+
+<span class="cp">#define TRACE_EVENT_SWITCHED_IN   0</span>
+<span class="cp">#define TRACE_EVENT_SWITCHED_OUT  1</span>
+<span class="cp">#define TRACE_EVENT_CREATE        2</span>
+<span class="cp">#define TRACE_EVENT_ISR_ENTER     3</span>
+<span class="cp">#define TRACE_EVENT_ISR_EXIT      4</span>
+<span class="cp">#define TRACE_EVENT_IDLE_ENTER    5</span>
+
+<span class="cp">#define TRACE_THREAD_ID_UNKNOWN   0xFFFFU</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">trace_record</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">timestamp</span><span class="p">;</span><span class="w">   </span><span class="cm">/* k_cycle_get_32() */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">  </span><span class="n">event_type</span><span class="p">;</span><span class="w">  </span><span class="cm">/* TRACE_EVENT_* */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w">  </span><span class="n">event_data</span><span class="p">;</span><span class="w">  </span><span class="cm">/* priority for SWITCHED_IN, 0 otherwise */</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">thread_id</span><span class="p">;</span><span class="w">   </span><span class="cm">/* assigned thread ID, or TRACE_THREAD_ID_UNKNOWN */</span>
+<span class="p">};</span>
+
+<span class="n">BUILD_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">trace_record</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">         </span><span class="s">"trace_record must be 8 bytes"</span><span class="p">);</span>
+
+<span class="cm">/* ── static buffer (BSS — dumpable via Renode sysbus ReadMemory) ─── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">trace_record</span><span class="w"> </span><span class="n">trace_records</span><span class="p">[</span><span class="n">CONFIG_TRACE_RECORDER_BUFFER_SIZE</span><span class="p">];</span>
+
+<span class="cm">/* No init needed — BSS zeroed by CRT. All-zero record means end-of-data. */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">trace_thread_names</span><span class="p">[</span><span class="n">CONFIG_TRACE_RECORDER_MAX_THREADS</span><span class="p">]</span>
+<span class="w">                   </span><span class="p">[</span><span class="n">CONFIG_THREAD_MAX_NAME_LEN</span><span class="p">];</span>
+
+<span class="cm">/* ── ring buffer state ───────────────────────────────────────────── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_spinlock</span><span class="w"> </span><span class="n">g_trace_lock</span><span class="p">;</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">g_trace_head</span><span class="p">;</span><span class="w">       </span><span class="cm">/* next write index */</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w">     </span><span class="n">g_trace_ready</span><span class="p">;</span><span class="w">      </span><span class="cm">/* false until SYS_INIT completes */</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">g_trace_overflow</span><span class="p">;</span><span class="w">   </span><span class="cm">/* count of dropped records */</span>
+<span class="k">static</span><span class="w"> </span><span class="n">atomic_t</span><span class="w"> </span><span class="n">g_next_thread_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ATOMIC_INIT</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w">  </span><span class="cm">/* 1-based; 0 = unassigned */</span>
+
+<span class="cm">/* ── helper: write one record ─────────────────────────────────────── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">trace_write_record</span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">event_type</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">event_data</span><span class="p">,</span>
+<span class="w">                   </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">thread_id</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">k_spinlock_key_t</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_trace_lock</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">g_trace_head</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">CONFIG_TRACE_RECORDER_BUFFER_SIZE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">g_trace_overflow</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="n">k_spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_trace_lock</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">trace_record</span><span class="w"> </span><span class="o">*</span><span class="n">rec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">trace_records</span><span class="p">[</span><span class="n">g_trace_head</span><span class="p">];</span>
+<span class="w">    </span><span class="n">rec</span><span class="o">-&gt;</span><span class="n">timestamp</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">k_cycle_get_32</span><span class="p">();</span>
+<span class="w">    </span><span class="n">rec</span><span class="o">-&gt;</span><span class="n">event_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_type</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rec</span><span class="o">-&gt;</span><span class="n">event_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_data</span><span class="p">;</span>
+<span class="w">    </span><span class="n">rec</span><span class="o">-&gt;</span><span class="n">thread_id</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">thread_id</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">g_trace_head</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="n">k_spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_trace_lock</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* ── helper: get thread ID from custom_data ───────────────────────── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">uint16_t</span><span class="w"> </span><span class="nf">trace_thread_id</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">custom_data</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">TRACE_THREAD_ID_UNKNOWN</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="cm">/* custom_data stores a 1-based ID (0 = unassigned, NULL-safe) */</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">uint16_t</span><span class="p">)(</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">custom_data</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* ── Zephyr tracing _user hooks (override __weak defaults) ────────── */</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_create_user</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">g_trace_ready</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint16_t</span><span class="p">)</span><span class="n">atomic_inc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_next_thread_id</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">__ASSERT</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">CONFIG_TRACE_RECORDER_MAX_THREADS</span><span class="p">,</span>
+<span class="w">         </span><span class="s">"trace_recorder: too many threads (max %d); increase "</span>
+<span class="w">         </span><span class="s">"CONFIG_TRACE_RECORDER_MAX_THREADS"</span><span class="p">,</span>
+<span class="w">         </span><span class="n">CONFIG_TRACE_RECORDER_MAX_THREADS</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">custom_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_thread_name_get</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">strncpy</span><span class="p">(</span><span class="n">trace_thread_names</span><span class="p">[</span><span class="n">id</span><span class="p">],</span><span class="w"> </span><span class="n">name</span><span class="p">,</span>
+<span class="w">            </span><span class="n">CONFIG_THREAD_MAX_NAME_LEN</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="n">trace_thread_names</span><span class="p">[</span><span class="n">id</span><span class="p">][</span><span class="n">CONFIG_THREAD_MAX_NAME_LEN</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">trace_write_record</span><span class="p">(</span><span class="n">TRACE_EVENT_CREATE</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_switched_in_user</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">g_trace_ready</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_sched_current_thread_query</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trace_thread_id</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">prio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="p">)</span><span class="n">k_thread_priority_get</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">trace_write_record</span><span class="p">(</span><span class="n">TRACE_EVENT_SWITCHED_IN</span><span class="p">,</span><span class="w"> </span><span class="n">prio</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_switched_out_user</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">g_trace_ready</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_sched_current_thread_query</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trace_thread_id</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">trace_write_record</span><span class="p">(</span><span class="n">TRACE_EVENT_SWITCHED_OUT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_isr_enter_user</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">g_trace_ready</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">trace_write_record</span><span class="p">(</span><span class="n">TRACE_EVENT_ISR_ENTER</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">               </span><span class="n">TRACE_THREAD_ID_UNKNOWN</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_isr_exit_user</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">g_trace_ready</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">trace_write_record</span><span class="p">(</span><span class="n">TRACE_EVENT_ISR_EXIT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">               </span><span class="n">TRACE_THREAD_ID_UNKNOWN</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_idle_user</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">g_trace_ready</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">trace_write_record</span><span class="p">(</span><span class="n">TRACE_EVENT_IDLE_ENTER</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">               </span><span class="n">TRACE_THREAD_ID_UNKNOWN</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* No-ops for hooks we don't need (must override to prevent link errors</span>
+<span class="cm"> * if tracing_test.h/other format backend is not in use). These are</span>
+<span class="cm"> * weak in tracing_user.c so defining them here is sufficient. */</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_abort_user</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_suspend_user</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_resume_user</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_name_set_user</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_info_user</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_priority_set_user</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">prio</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">prio</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_sched_ready_user</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_thread_pend_user</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_sys_init_enter_user</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">init_entry</span><span class="w"> </span><span class="o">*</span><span class="n">entry</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">level</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">level</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">sys_trace_sys_init_exit_user</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">init_entry</span><span class="w"> </span><span class="o">*</span><span class="n">entry</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">level</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">result</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">level</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* ── SYS_INIT: assign IDs to pre-existing threads ─────────────────── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">assign_existing_thread</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">user_data</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">custom_data</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint16_t</span><span class="p">)</span><span class="n">atomic_inc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_next_thread_id</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">CONFIG_TRACE_RECORDER_MAX_THREADS</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">LOG_WRN</span><span class="p">(</span><span class="s">"too many pre-existing threads; skipping ID assignment"</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">custom_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">id</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_thread_name_get</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">strncpy</span><span class="p">(</span><span class="n">trace_thread_names</span><span class="p">[</span><span class="n">id</span><span class="p">],</span><span class="w"> </span><span class="n">name</span><span class="p">,</span>
+<span class="w">            </span><span class="n">CONFIG_THREAD_MAX_NAME_LEN</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="n">trace_thread_names</span><span class="p">[</span><span class="n">id</span><span class="p">][</span><span class="n">CONFIG_THREAD_MAX_NAME_LEN</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">trace_recorder_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">k_thread_foreach</span><span class="p">(</span><span class="n">assign_existing_thread</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">    </span><span class="n">g_trace_ready</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="n">LOG_DBG</span><span class="p">(</span><span class="s">"trace_recorder: init done, %u pre-existing threads"</span><span class="p">,</span>
+<span class="w">        </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">atomic_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_next_thread_id</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">SYS_INIT</span><span class="p">(</span><span class="n">trace_recorder_init</span><span class="p">,</span><span class="w"> </span><span class="n">APPLICATION</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Build test</strong></li>
+</ul>
+<p></p><div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>build<span class="w"> </span>-p<span class="w"> </span>auto<span class="w"> </span>-b<span class="w"> </span>native_sim/native/64<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>apps/gateway<span class="w"> </span>-d<span class="w"> </span>build/test-core<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DCONFIG_TRACE_RECORDER<span class="o">=</span>y
+</code></pre></div>
+Expected: build succeeds (note: native_sim build with trace enabled — tracing hooks fire on boot).<p></p>
+<ul>
+<li>[ ] <strong>Step 3: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>lib/trace_recorder/src/trace_recorder.c
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(trace_recorder): add ring buffer and tracing _user hooks"</span>
+</code></pre></div>
+<hr>
+<h3 id="task-3-shell-commands-trace-status-trace-dump-trace-clear">Task 3: Shell commands — <code>trace status</code>, <code>trace dump</code>, <code>trace clear</code></h3>
+<p><strong>Files:</strong>
+- Create: <code>lib/trace_recorder/src/trace_recorder_shell.c</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write <code>lib/trace_recorder/src/trace_recorder_shell.c</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* SPDX-License-Identifier: Apache-2.0 */</span>
+<span class="cm">/**</span>
+<span class="cm"> * @file trace_recorder_shell.c</span>
+<span class="cm"> * @brief Shell commands for the trace recorder.</span>
+<span class="cm"> *</span>
+<span class="cm"> *   trace status   — buffer utilisation / overflow count</span>
+<span class="cm"> *   trace dump     — hex dump of records + thread name table</span>
+<span class="cm"> *   trace clear    — reset buffer</span>
+<span class="cm"> */</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/kernel.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/shell/shell.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/sys/atomic.h&gt;</span>
+
+<span class="cm">/* ── external symbols from trace_recorder.c ──────────────────────── */</span>
+
+<span class="k">extern</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">trace_record</span><span class="w"> </span><span class="n">trace_records</span><span class="p">[];</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">trace_thread_names</span><span class="p">[][</span><span class="n">CONFIG_THREAD_MAX_NAME_LEN</span><span class="p">];</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">g_trace_head</span><span class="p">;</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">g_trace_overflow</span><span class="p">;</span>
+
+<span class="cm">/* ── trace status ─────────────────────────────────────────────────── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">cmd_status</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">shell</span><span class="w"> </span><span class="o">*</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">argc</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">g_trace_head</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">overflow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">g_trace_overflow</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">capacity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CONFIG_TRACE_RECORDER_BUFFER_SIZE</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"Trace recorder status:"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"  Records:    %u / %u (%u%%)"</span><span class="p">,</span>
+<span class="w">            </span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="n">capacity</span><span class="p">,</span>
+<span class="w">            </span><span class="n">capacity</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="p">)(</span><span class="n">head</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100ULL</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">capacity</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"  Overflow:   %u records dropped"</span><span class="p">,</span><span class="w"> </span><span class="n">overflow</span><span class="p">);</span>
+<span class="w">    </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"  Each record: 8 bytes (total buffer: %u bytes)"</span><span class="p">,</span>
+<span class="w">            </span><span class="n">capacity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">8</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* ── trace dump ───────────────────────────────────────────────────── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">cmd_dump</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">shell</span><span class="w"> </span><span class="o">*</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">argc</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">g_trace_head</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">capacity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CONFIG_TRACE_RECORDER_BUFFER_SIZE</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"--- TRACE DUMP BEGIN ---"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"records=%u capacity=%u overflow=%u"</span><span class="p">,</span>
+<span class="w">            </span><span class="n">head</span><span class="p">,</span><span class="w"> </span><span class="n">capacity</span><span class="p">,</span><span class="w"> </span><span class="n">g_trace_overflow</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* print thread name table */</span>
+<span class="w">    </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"thread_names:"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">CONFIG_TRACE_RECORDER_MAX_THREADS</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">trace_thread_names</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">'\0'</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"  [%u] %s"</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">trace_thread_names</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="cm">/* print records as hex (8 bytes each, 16 bytes per shell line) */</span>
+<span class="w">    </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"records_hex:"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">raw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">trace_records</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">total_bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">total_bytes</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">remain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total_bytes</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">remain</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span>
+<span class="w">                </span><span class="s">"%02x%02x%02x%02x%02x%02x%02x%02x"</span>
+<span class="w">                </span><span class="s">"%02x%02x%02x%02x%02x%02x%02x%02x"</span><span class="p">,</span>
+<span class="w">                </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">],</span>
+<span class="w">                </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">5</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">6</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">7</span><span class="p">],</span>
+<span class="w">                </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">8</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">9</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">11</span><span class="p">],</span>
+<span class="w">                </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">12</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">13</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">14</span><span class="p">],</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">15</span><span class="p">]);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">char</span><span class="w"> </span><span class="n">buf</span><span class="p">[</span><span class="mi">128</span><span class="p">];</span>
+<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">off</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">remain</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">off</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">snprintf</span><span class="p">(</span><span class="n">buf</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">off</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">off</span><span class="p">,</span>
+<span class="w">                        </span><span class="s">"%02x"</span><span class="p">,</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">j</span><span class="p">]);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"%s"</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"--- TRACE DUMP END ---"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* ── trace clear ──────────────────────────────────────────────────── */</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">cmd_clear</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">shell</span><span class="w"> </span><span class="o">*</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">argc</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">g_trace_head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">g_trace_overflow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">shell_print</span><span class="p">(</span><span class="n">sh</span><span class="p">,</span><span class="w"> </span><span class="s">"Trace buffer cleared."</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/* ── command registration ─────────────────────────────────────────── */</span>
+
+<span class="n">SHELL_STATIC_SUBCMD_SET_CREATE</span><span class="p">(</span>
+<span class="w">    </span><span class="n">sub_trace</span><span class="p">,</span>
+<span class="w">    </span><span class="n">SHELL_CMD</span><span class="p">(</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="s">"Show trace buffer utilisation"</span><span class="p">,</span><span class="w"> </span><span class="n">cmd_status</span><span class="p">),</span>
+<span class="w">    </span><span class="n">SHELL_CMD</span><span class="p">(</span><span class="n">dump</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="s">"Hex dump of trace records + thread names"</span><span class="p">,</span>
+<span class="w">          </span><span class="n">cmd_dump</span><span class="p">),</span>
+<span class="w">    </span><span class="n">SHELL_CMD</span><span class="p">(</span><span class="n">clear</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="s">"Reset trace buffer"</span><span class="p">,</span><span class="w"> </span><span class="n">cmd_clear</span><span class="p">),</span>
+<span class="w">    </span><span class="n">SHELL_SUBCMD_SET_END</span><span class="p">);</span>
+
+<span class="n">SHELL_CMD_REGISTER</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sub_trace</span><span class="p">,</span><span class="w"> </span><span class="s">"Trace recorder controls"</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Build test with shell</strong></li>
+</ul>
+<p></p><div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>build<span class="w"> </span>-p<span class="w"> </span>auto<span class="w"> </span>-b<span class="w"> </span>native_sim/native/64<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>apps/gateway<span class="w"> </span>-d<span class="w"> </span>build/test-shell<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DCONFIG_TRACE_RECORDER<span class="o">=</span>y<span class="w"> </span>-DCONFIG_TRACE_RECORDER_SHELL<span class="o">=</span>y
+</code></pre></div>
+Expected: build succeeds, <code>trace</code> command available in shell.<p></p>
+<ul>
+<li>[ ] <strong>Step 3: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>lib/trace_recorder/src/trace_recorder_shell.c
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(trace_recorder): add shell commands (status, dump, clear)"</span>
+</code></pre></div>
+<hr>
+<h3 id="task-4-renode-target-kconfig-fragment">Task 4: Renode target Kconfig fragment</h3>
+<p><strong>Files:</strong>
+- Create: <code>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0_trace_recorder.conf</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write the Kconfig fragment</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>CONFIG_TRACE_RECORDER=y
+CONFIG_TRACE_RECORDER_BUFFER_SIZE=4096
+CONFIG_TRACE_RECORDER_SHELL=y
+</code></pre></div>
+<p>(Other needed configs — <code>CONFIG_TRACING</code>, <code>CONFIG_TRACING_USER</code>, <code>CONFIG_THREAD_CUSTOM_DATA</code> — are auto-selected by <code>TRACE_RECORDER</code>. The Renode board already has <code>CONFIG_THREAD_MONITOR=y</code> and <code>CONFIG_THREAD_NAME=y</code> from the base gateway config.)</p>
+<ul>
+<li>[ ] <strong>Step 2: Verify the build works with the fragment</strong></li>
+</ul>
+<p></p><div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+<span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>build<span class="w"> </span>-p<span class="w"> </span>auto<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-b<span class="w"> </span>frdm_mcxn947/mcxn947/cpu0<span class="w"> </span>--sysbuild<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>apps/gateway<span class="w"> </span>-d<span class="w"> </span>build/renode-trace<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DDTC_OVERLAY_FILE<span class="o">=</span>boards/frdm_mcxn947_mcxn947_cpu0_renode.overlay<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DEXTRA_CONF_FILE<span class="o">=</span><span class="s2">"boards/frdm_mcxn947_mcxn947_cpu0_renode.conf;boards/frdm_mcxn947_mcxn947_cpu0_trace_recorder.conf"</span>
+</code></pre></div>
+Expected: build succeeds (may need to add <code>--</code> for sysbuild args; adjust as needed).<p></p>
+<ul>
+<li>[ ] <strong>Step 3: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>apps/gateway/boards/frdm_mcxn947_mcxn947_cpu0_trace_recorder.conf
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(gateway): add trace_recorder Kconfig fragment for Renode target"</span>
+</code></pre></div>
+<hr>
+<h3 id="task-5-renode-resc-profiler-function-logging-trace-dump-macro">Task 5: Renode <code>.resc</code> — profiler + function logging + trace dump macro</h3>
+<p><strong>Files:</strong>
+- Modify: <code>simulation/renode/frdm_mcxn947.resc</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Update <code>simulation/renode/frdm_mcxn947.resc</code></strong></li>
+</ul>
+<p>Replace the existing <code>macro reset</code> block with the expanded version below (adds profiler enable + function name logging in the reset macro, and a new <code>dump-trace</code> macro for test teardown):</p>
+<div class="highlight"><pre><span></span><code>$name?="frdm_mcxn947_mcxn947_cpu0"
+$bin?=@zephyr.elf
+$repl?=$ORIGIN/frdm_mcxn947_mcxn947_cpu0.repl
+
+using sysbus
+mach create $name
+
+machine LoadPlatformDescription $repl
+
+showAnalyzer flexcomm4lpuart4
+
+set osPanicHook
+"""
+self.ErrorLog("OS Panicked")
+"""
+
+cpu0 AddSymbolHook "z_fatal_error" $osPanicHook
+
+macro reset
+"""
+    sysbus LoadELF $bin
+    cpu0 VectorTableOffset `sysbus GetSymbolAddress "_vector_table"`
+    cpu0 EnableZephyrMode
+    cpu0 EnableProfilerPerfetto @${ORIGIN}/trace_functions.perfetto false
+    cpu0 LogFunctionNames true "k_ z_ work_ mqtt_ net_ zbus_ mbedtls_" true
+"""
+
+macro dump-trace
+"""
+    cpu0 FlushProfiler
+    emulation RunFor "0.01"
+    sysbus ReadMemory `sysbus GetSymbolAddress "trace_records"` 32768 @${ORIGIN}/trace.bin
+    echo "[TRACE] Dumped trace buffer (32 KB) to trace.bin"
+"""
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>simulation/renode/frdm_mcxn947.resc
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(renode): add profiler, function logging, and trace dump macro to .resc"</span>
+</code></pre></div>
+<hr>
+<h3 id="task-6-renode-robot-framework-test-gateway_tracerobot">Task 6: Renode Robot Framework test — <code>gateway_trace.robot</code></h3>
+<p><strong>Files:</strong>
+- Modify: <code>simulation/renode/tests/common.robot</code>
+- Create: <code>simulation/renode/tests/gateway_trace.robot</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Add <code>Dump Trace</code> keyword to <code>common.robot</code></strong></li>
+</ul>
+<p>Append to the existing <code>*** Keywords ***</code> section in <code>simulation/renode/tests/common.robot</code>:</p>
+<div class="highlight"><pre><span></span><code>Dump Trace
+    [Documentation]    Flush profiler, pause briefly, then dump trace buffer.
+    Execute Command    cpu0 FlushProfiler
+    Execute Command    emulation RunFor "0.01"
+    ${trace_addr}=     Execute Command    sysbus GetSymbolAddress "trace_records"
+    Execute Command    sysbus ReadMemory ${trace_addr.strip()} 32768 @${CURDIR}/../trace.bin
+    Log To Console     [TRACE] trace.bin written
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Create <code>simulation/renode/tests/gateway_trace.robot</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>*** Settings ***
+Resource            common.robot
+
+*** Test Cases ***
+Gateway Boots And Collects Trace
+    [Documentation]    Boot the gateway, wait for shell, let it run briefly,
+    ...                then collect a trace dump.
+    [Tags]    trace    boot
+    Prepare Machine         ${ELF}
+    Wait For Boot Banner
+    Wait For Shell Prompt
+    # Let the system run for a few seconds to accumulate trace data
+    Execute Command         sleep 5
+    Dump Trace
+    # Verify trace buffer address resolves (confirms ELF loaded correctly)
+    ${trace_addr}=         Execute Command    sysbus GetSymbolAddress "trace_records"
+    Should Not Be Equal    ${trace_addr.strip()}    0x0    trace_records symbol not found
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Verify the test runs locally</strong></li>
+</ul>
+<p></p><div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+<span class="c1"># Build first (use existing build from Task 4 if still available)</span>
+renode-test<span class="w"> </span>--show-log<span class="w"> </span>simulation/renode/tests/gateway_trace.robot
+</code></pre></div>
+Expected: test passes, <code>trace.bin</code> and <code>trace_functions.perfetto</code> files appear in <code>simulation/renode/</code>.<p></p>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>simulation/renode/tests/common.robot<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>simulation/renode/tests/gateway_trace.robot
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(renode): add gateway_trace robot test and Dump Trace keyword"</span>
+</code></pre></div>
+<hr>
+<h3 id="task-7-post-processor-scriptsparse-tracepy">Task 7: Post-processor — <code>scripts/parse-trace.py</code></h3>
+<p><strong>Files:</strong>
+- Create: <code>scripts/parse-trace.py</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write <code>scripts/parse-trace.py</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""</span>
+<span class="sd">parse-trace.py — Convert Renode binary trace dump to Perfetto trace + summary.</span>
+
+<span class="sd">Inputs:</span>
+<span class="sd">  --trace trace.bin            Binary trace from Renode sysbus ReadMemory</span>
+<span class="sd">  --elf zephyr.elf             ELF file for symbol/thread-name resolution</span>
+<span class="sd">  --names trace_names.bin      (optional) Thread names dump</span>
+<span class="sd">  --profiler trace_functions.perfetto  (optional) Renode Perfetto profiler output</span>
+
+<span class="sd">Outputs:</span>
+<span class="sd">  --output trace_combined.perfetto   Perfetto trace (default stdout text report)</span>
+<span class="sd">  --summary                         Print human-readable summary to stdout</span>
+<span class="sd">  --json trace_threads.json         Raw timeline as JSON</span>
+
+<span class="sd">The binary trace format is a flat sequence of 8-byte records:</span>
+<span class="sd">  uint32_t timestamp;   // k_cycle_get_32()</span>
+<span class="sd">  uint8_t  event_type;  // 0=switched_in, 1=switched_out, 2=create,</span>
+<span class="sd">                        // 3=isr_enter, 4=isr_exit, 5=idle</span>
+<span class="sd">  uint8_t  event_data;  // priority for switched_in, 0 otherwise</span>
+<span class="sd">  uint16_t thread_id;   // 0xFFFF = unknown (ISR/idle)</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="n">RECORD_FMT</span> <span class="o">=</span> <span class="s2">"&lt;IBBH"</span>  <span class="c1"># timestamp:u32, type:u8, data:u8, id:u16</span>
+<span class="n">RECORD_SIZE</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="n">RECORD_FMT</span><span class="p">)</span>  <span class="c1"># 8</span>
+
+<span class="n">EVENT_NAMES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">0</span><span class="p">:</span> <span class="s2">"switched_in"</span><span class="p">,</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="s2">"switched_out"</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="s2">"create"</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="s2">"isr_enter"</span><span class="p">,</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="s2">"isr_exit"</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="s2">"idle_enter"</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">UNKNOWN_THREAD_ID</span> <span class="o">=</span> <span class="mh">0xFFFF</span>
+
+
+<span class="k">def</span> <span class="nf">parse_binary_trace</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Parse the binary trace file into a list of dicts."""</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">RECORD_SIZE</span><span class="p">):</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">RECORD_SIZE</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">RECORD_SIZE</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">ts</span><span class="p">,</span> <span class="n">evt_type</span><span class="p">,</span> <span class="n">evt_data</span><span class="p">,</span> <span class="n">thread_id</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">RECORD_FMT</span><span class="p">,</span> <span class="n">chunk</span><span class="p">)</span>
+
+        <span class="c1"># All-zero record = end of valid data (BSS initialization)</span>
+        <span class="k">if</span> <span class="n">ts</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">evt_type</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">evt_data</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">thread_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">ts</span><span class="p">,</span>
+            <span class="s2">"event_type"</span><span class="p">:</span> <span class="n">evt_type</span><span class="p">,</span>
+            <span class="s2">"event_name"</span><span class="p">:</span> <span class="n">EVENT_NAMES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">evt_type</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"unknown_</span><span class="si">{</span><span class="n">evt_type</span><span class="si">}</span><span class="s2">"</span><span class="p">),</span>
+            <span class="s2">"event_data"</span><span class="p">:</span> <span class="n">evt_data</span><span class="p">,</span>
+            <span class="s2">"thread_id"</span><span class="p">:</span> <span class="n">thread_id</span><span class="p">,</span>
+        <span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">records</span>
+
+
+<span class="k">def</span> <span class="nf">resolve_thread_names</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">elf_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build thread_id -&gt; name mapping from create events and ELF symbols.</span>
+<span class="sd">    Falls back to hex IDs if resolution fails."""</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Extract names from CREATE events (the names table is embedded in</span>
+    <span class="c1"># the firmware; we rely on create events recording IDs in order)</span>
+    <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"event_type"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># CREATE</span>
+            <span class="n">tid</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"thread_id"</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">tid</span> <span class="o">!=</span> <span class="n">UNKNOWN_THREAD_ID</span> <span class="ow">and</span> <span class="n">tid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                <span class="n">names</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"thread_</span><span class="si">{</span><span class="n">tid</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="c1"># Try to resolve names from ELF if available</span>
+    <span class="k">if</span> <span class="n">elf_path</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">subprocess</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">"nm"</span><span class="p">,</span> <span class="s2">"--defined-only"</span><span class="p">,</span> <span class="n">elf_path</span><span class="p">],</span>
+                <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="c1"># We can't easily map ELF symbols to thread IDs without the</span>
+            <span class="c1"># thread_names table, but we note the availability.</span>
+            <span class="c1"># For now, use the CREATE-event-derived names.</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">names</span>
+
+
+<span class="k">def</span> <span class="nf">build_timeline</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">thread_names</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Build per-thread run intervals from switched_in/out pairs."""</span>
+    <span class="n">threads</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"unknown"</span><span class="p">,</span>
+        <span class="s2">"run_time_cycles"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">"switch_count"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">"intervals"</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="p">})</span>
+
+    <span class="n">current_thread</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">switch_in_ts</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+        <span class="n">tid</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"thread_id"</span><span class="p">]</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"event_type"</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">evt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># switched_in</span>
+            <span class="k">if</span> <span class="n">current_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Implicit switch-out of previous thread</span>
+                <span class="k">pass</span>
+            <span class="n">current_thread</span> <span class="o">=</span> <span class="n">tid</span>
+            <span class="n">switch_in_ts</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">]</span>
+            <span class="n">threads</span><span class="p">[</span><span class="n">tid</span><span class="p">][</span><span class="s2">"switch_count"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">elif</span> <span class="n">evt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># switched_out</span>
+            <span class="k">if</span> <span class="n">current_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">run_time</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">]</span> <span class="o">-</span> <span class="n">switch_in_ts</span>
+                <span class="n">threads</span><span class="p">[</span><span class="n">current_thread</span><span class="p">][</span><span class="s2">"run_time_cycles"</span><span class="p">]</span> <span class="o">+=</span> <span class="n">run_time</span>
+                <span class="n">threads</span><span class="p">[</span><span class="n">current_thread</span><span class="p">][</span><span class="s2">"intervals"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">switch_in_ts</span><span class="p">,</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="n">current_thread</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Close final interval</span>
+    <span class="k">if</span> <span class="n">current_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">records</span><span class="p">:</span>
+        <span class="n">last_ts</span> <span class="o">=</span> <span class="n">records</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">"timestamp"</span><span class="p">]</span>
+        <span class="n">run_time</span> <span class="o">=</span> <span class="n">last_ts</span> <span class="o">-</span> <span class="n">switch_in_ts</span>
+        <span class="n">threads</span><span class="p">[</span><span class="n">current_thread</span><span class="p">][</span><span class="s2">"run_time_cycles"</span><span class="p">]</span> <span class="o">+=</span> <span class="n">run_time</span>
+        <span class="n">threads</span><span class="p">[</span><span class="n">current_thread</span><span class="p">][</span><span class="s2">"intervals"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">switch_in_ts</span><span class="p">,</span> <span class="n">last_ts</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Assign names</span>
+    <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">threads</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">info</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span> <span class="o">=</span> <span class="n">thread_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tid</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"thread_0x</span><span class="si">{</span><span class="n">tid</span><span class="si">:</span><span class="s2">04x</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">threads</span>
+
+
+<span class="k">def</span> <span class="nf">print_summary</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span> <span class="n">records</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Print human-readable trace summary."""</span>
+    <span class="n">total_cycles</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s2">"run_time_cycles"</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">threads</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">total_cycles</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">total_cycles</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># avoid div by zero</span>
+
+    <span class="n">isr_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"event_type"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">switch_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"event_type"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Trace summary:"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Total records:    </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Context switches: </span><span class="si">{</span><span class="n">switch_count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  ISR entries:      </span><span class="si">{</span><span class="n">isr_count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Tracked threads:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">threads</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'Thread'</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'Runtime %'</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">'Switches'</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">'ID'</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">52</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">threads</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">"run_time_cycles"</span><span class="p">]):</span>
+        <span class="n">pct</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">"run_time_cycles"</span><span class="p">]</span> <span class="o">*</span> <span class="mf">100.0</span> <span class="o">/</span> <span class="n">total_cycles</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">pct</span><span class="si">:</span><span class="s2">8.1f</span><span class="si">}</span><span class="s2">%  </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'switch_count'</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">tid</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">52</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'TOTAL'</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="mf">100.0</span><span class="si">:</span><span class="s2">8.1f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">write_perfetto_trace</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span> <span class="n">records</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Write a minimal Perfetto trace with per-thread sched_switch events.</span>
+<span class="sd">    This uses Perfetto's trace proto format. For a full implementation,</span>
+<span class="sd">    use the perfetto protobuf Python bindings. This stub writes a JSON</span>
+<span class="sd">    representation that Perfetto UI can import."""</span>
+    <span class="c1"># Perfetto UI accepts JSON traces in Chrome Tracing format</span>
+    <span class="n">trace_events</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">tid_track</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"event_type"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># switched_in</span>
+            <span class="n">tid</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"thread_id"</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"thread_</span><span class="si">{</span><span class="n">tid</span><span class="si">}</span><span class="s2">"</span>
+            <span class="n">ts_us</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">]</span>  <span class="c1"># cycles; approximate as us for visual</span>
+
+            <span class="k">if</span> <span class="n">tid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tid_track</span><span class="p">:</span>
+                <span class="n">tid_track</span><span class="p">[</span><span class="n">tid</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tid_track</span><span class="p">)</span>
+                <span class="n">trace_events</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"thread_name"</span><span class="p">,</span>
+                    <span class="s2">"ph"</span><span class="p">:</span> <span class="s2">"M"</span><span class="p">,</span>
+                    <span class="s2">"pid"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="s2">"tid"</span><span class="p">:</span> <span class="n">tid</span><span class="p">,</span>
+                    <span class="s2">"args"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">},</span>
+                <span class="p">})</span>
+
+            <span class="n">trace_events</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"running"</span><span class="p">,</span>
+                <span class="s2">"ph"</span><span class="p">:</span> <span class="s2">"B"</span><span class="p">,</span>
+                <span class="s2">"ts"</span><span class="p">:</span> <span class="n">ts_us</span><span class="p">,</span>
+                <span class="s2">"pid"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">"tid"</span><span class="p">:</span> <span class="n">tid</span><span class="p">,</span>
+            <span class="p">})</span>
+
+        <span class="k">elif</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"event_type"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># switched_out</span>
+            <span class="n">tid</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"thread_id"</span><span class="p">]</span>
+            <span class="n">ts_us</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">]</span>
+            <span class="n">trace_events</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"running"</span><span class="p">,</span>
+                <span class="s2">"ph"</span><span class="p">:</span> <span class="s2">"E"</span><span class="p">,</span>
+                <span class="s2">"ts"</span><span class="p">:</span> <span class="n">ts_us</span><span class="p">,</span>
+                <span class="s2">"pid"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">"tid"</span><span class="p">:</span> <span class="n">tid</span><span class="p">,</span>
+            <span class="p">})</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"traceEvents"</span><span class="p">:</span> <span class="n">trace_events</span><span class="p">,</span>
+        <span class="s2">"displayTimeUnit"</span><span class="p">:</span> <span class="s2">"ns"</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Perfetto trace written to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">write_json_timeline</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span> <span class="n">records</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Write raw timeline as JSON."""</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"threads"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">tid</span><span class="p">):</span> <span class="p">{</span>
+                <span class="s2">"name"</span><span class="p">:</span> <span class="n">info</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span>
+                <span class="s2">"run_time_cycles"</span><span class="p">:</span> <span class="n">info</span><span class="p">[</span><span class="s2">"run_time_cycles"</span><span class="p">],</span>
+                <span class="s2">"switch_count"</span><span class="p">:</span> <span class="n">info</span><span class="p">[</span><span class="s2">"switch_count"</span><span class="p">],</span>
+                <span class="s2">"intervals"</span><span class="p">:</span> <span class="n">info</span><span class="p">[</span><span class="s2">"intervals"</span><span class="p">],</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">tid</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">threads</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">},</span>
+        <span class="s2">"record_count"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">),</span>
+        <span class="s2">"isr_enter_count"</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"event_type"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="s2">"idle_enter_count"</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">"event_type"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Timeline JSON written to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Parse Renode binary trace dump"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--trace"</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Binary trace file (trace.bin)"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--elf"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"ELF file for symbol resolution"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--profiler"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Renode Perfetto profiler output"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--output"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Output Perfetto trace file (.perfetto or .json)"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--summary"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Print human-readable summary"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--json"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Output raw timeline as JSON"</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">records</span> <span class="o">=</span> <span class="n">parse_binary_trace</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">trace</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">records</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Warning: no trace records found in binary file"</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="n">thread_names</span> <span class="o">=</span> <span class="n">resolve_thread_names</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">elf</span><span class="p">)</span>
+    <span class="n">threads</span> <span class="o">=</span> <span class="n">build_timeline</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">thread_names</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">summary</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+        <span class="n">print_summary</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span> <span class="n">records</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+        <span class="n">write_perfetto_trace</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span> <span class="n">records</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">json</span><span class="p">:</span>
+        <span class="n">write_json_timeline</span><span class="p">(</span><span class="n">threads</span><span class="p">,</span> <span class="n">records</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="mi">0</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Test with a sample trace</strong></li>
+</ul>
+<p>Create a minimal test trace and verify the parser works:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate a tiny synthetic trace for testing</span>
+python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+<span class="s2">import struct</span>
+<span class="s2">records = [</span>
+<span class="s2">    (1000, 2, 0, 0),    # create thread 0</span>
+<span class="s2">    (2000, 0, 5, 0),    # switched_in thread 0 prio 5</span>
+<span class="s2">    (5000, 1, 0, 0),    # switched_out thread 0</span>
+<span class="s2">    (6000, 3, 0, 65535),# isr_enter</span>
+<span class="s2">    (6100, 4, 0, 65535),# isr_exit</span>
+<span class="s2">    (7000, 0, 5, 0),    # switched_in thread 0</span>
+<span class="s2">    (9000, 5, 0, 65535),# idle_enter</span>
+<span class="s2">]</span>
+<span class="s2">with open('/tmp/test_trace.bin', 'wb') as f:</span>
+<span class="s2">    for ts, typ, data, tid in records:</span>
+<span class="s2">        f.write(struct.pack('&lt;IBBH', ts, typ, data, tid))</span>
+<span class="s2">"</span>
+python3<span class="w"> </span>scripts/parse-trace.py<span class="w"> </span>--trace<span class="w"> </span>/tmp/test_trace.bin<span class="w"> </span>--summary
+</code></pre></div>
+<p>Expected output:
+</p><div class="highlight"><pre><span></span><code>Trace summary:
+  Total records:    7
+  Context switches: 2
+  ISR entries:      1
+  Tracked threads:  2
+  ...
+</code></pre></div><p></p>
+<ul>
+<li>[ ] <strong>Step 3: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>scripts/parse-trace.py
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(trace): add parse-trace.py post-processor (binary trace -&gt; summary + Perfetto)"</span>
+</code></pre></div>
+<hr>
+<h3 id="task-8-dev-workflow-script-scriptstrace-and-analyze">Task 8: Dev workflow script — <code>scripts/trace-and-analyze</code></h3>
+<p><strong>Files:</strong>
+- Create: <code>scripts/trace-and-analyze</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write <code>scripts/trace-and-analyze</code></strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env bash</span>
+<span class="nb">set</span><span class="w"> </span>-euo<span class="w"> </span>pipefail
+
+<span class="nv">SCRIPT_DIR</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>dirname<span class="w"> </span><span class="s2">"</span><span class="nv">$0</span><span class="s2">"</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">pwd</span><span class="k">)</span><span class="s2">"</span>
+<span class="nv">PROJECT_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="nv">$SCRIPT_DIR</span><span class="s2">/.."</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">pwd</span><span class="k">)</span><span class="s2">"</span>
+
+<span class="nv">BUILD_DIR</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_ROOT</span><span class="si">}</span><span class="s2">/build/renode-trace"</span>
+<span class="nv">RENODE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_ROOT</span><span class="si">}</span><span class="s2">/simulation/renode"</span>
+<span class="nv">ELF</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BUILD_DIR</span><span class="si">}</span><span class="s2">/gateway/zephyr/zephyr.elf"</span>
+<span class="nv">TRACE_BIN</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">RENODE_DIR</span><span class="si">}</span><span class="s2">/trace.bin"</span>
+<span class="nv">PERFETTO_TRACE</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">RENODE_DIR</span><span class="si">}</span><span class="s2">/trace_functions.perfetto"</span>
+<span class="nv">OUTPUT</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">1</span><span class="k">:-</span><span class="si">${</span><span class="nv">RENODE_DIR</span><span class="si">}</span><span class="p">/trace_combined.json</span><span class="si">}</span><span class="s2">"</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== 1. Building gateway with trace recorder ==="</span>
+<span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>build<span class="w"> </span>-p<span class="w"> </span>auto<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-b<span class="w"> </span>frdm_mcxn947/mcxn947/cpu0<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--sysbuild<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--build-dir<span class="w"> </span><span class="s2">"</span><span class="nv">$BUILD_DIR</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>apps/gateway<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DDTC_OVERLAY_FILE<span class="o">=</span><span class="s2">"boards/frdm_mcxn947_mcxn947_cpu0_renode.overlay"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DEXTRA_CONF_FILE<span class="o">=</span><span class="s2">"boards/frdm_mcxn947_mcxn947_cpu0_renode.conf;boards/frdm_mcxn947_mcxn947_cpu0_trace_recorder.conf"</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== 2. Running Renode trace test ==="</span>
+renode-test<span class="w"> </span>--show-log<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">RENODE_DIR</span><span class="si">}</span><span class="s2">/tests/gateway_trace.robot"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"WARNING: Renode test failed, but trace files may still exist."</span>
+<span class="o">}</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== 3. Parsing trace ==="</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$TRACE_BIN</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span>python3<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">SCRIPT_DIR</span><span class="si">}</span><span class="s2">/parse-trace.py"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--trace<span class="w"> </span><span class="s2">"</span><span class="nv">$TRACE_BIN</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--elf<span class="w"> </span><span class="s2">"</span><span class="nv">$ELF</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--profiler<span class="w"> </span><span class="s2">"</span><span class="nv">$PERFETTO_TRACE</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span><span class="s2">"</span><span class="nv">$OUTPUT</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--summary
+
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">""</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"=== Done ==="</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Perfetto trace: </span><span class="nv">$OUTPUT</span><span class="s2">"</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Open in browser:  https://ui.perfetto.dev"</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"  (Drag &amp; drop trace file, or use --output trace_combined.perfetto)"</span>
+<span class="k">else</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"ERROR: trace.bin not found at </span><span class="nv">$TRACE_BIN</span><span class="s2">"</span>
+<span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="k">fi</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Make executable</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>chmod<span class="w"> </span>+x<span class="w"> </span>scripts/trace-and-analyze
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>scripts/trace-and-analyze
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(trace): add trace-and-analyze one-command dev workflow script"</span>
+</code></pre></div>
+<hr>
+<h3 id="task-9-ci-changes-build-with-trace-publish-artifacts-deploy-results">Task 9: CI changes — build with trace, publish artifacts, deploy-results</h3>
+<p><strong>Files:</strong>
+- Modify: <code>.github/workflows/ci.yml</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Update the Renode build step to include trace config</strong></li>
+</ul>
+<p>In <code>.github/workflows/ci.yml</code>, find the <code>- name: Build gateway for Renode</code> step (around line 194). Change the <code>EXTRA_CONF_FILE</code> line from:</p>
+<div class="highlight"><pre><span></span><code><span class="w">              </span><span class="l l-Scalar l-Scalar-Plain">-DEXTRA_CONF_FILE=boards/frdm_mcxn947_mcxn947_cpu0_renode.conf</span>
+</code></pre></div>
+<p>to:</p>
+<div class="highlight"><pre><span></span><code><span class="w">              </span><span class="l l-Scalar l-Scalar-Plain">-DEXTRA_CONF_FILE="boards/frdm_mcxn947_mcxn947_cpu0_renode.conf;boards/frdm_mcxn947_mcxn947_cpu0_trace_recorder.conf"</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Update the Renode artifact upload step to include trace files</strong></li>
+</ul>
+<p>Find the <code>- name: Upload test artifacts</code> step (around line 235). Change the <code>path:</code> block from:</p>
+<div class="highlight"><pre><span></span><code><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">            </span><span class="no">robot_output.xml</span>
+<span class="w">            </span><span class="no">log.html</span>
+<span class="w">            </span><span class="no">report.html</span>
+</code></pre></div>
+<p>to:</p>
+<div class="highlight"><pre><span></span><code><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">            </span><span class="no">robot_output.xml</span>
+<span class="w">            </span><span class="no">log.html</span>
+<span class="w">            </span><span class="no">report.html</span>
+<span class="w">            </span><span class="no">simulation/renode/trace.bin</span>
+<span class="w">            </span><span class="no">simulation/renode/trace_functions.perfetto</span>
+<span class="w">            </span><span class="no">build/renode/gateway/zephyr/zephyr.elf</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Add the <code>deploy-results</code> job</strong></li>
+</ul>
+<p>Add a new job after the existing <code>snapshot</code> job (at the end of <code>ci.yml</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="c1"># ── 7. Deploy results to gh-pages ──────────────────────────────────────────</span>
+<span class="w">  </span><span class="nt">deploy-results</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy results to gh-pages</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">(github.event_name == 'push' &amp;&amp; github.ref == 'refs/heads/master') ||</span>
+<span class="w">      </span><span class="no">github.event_name == 'pull_request'</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">test-and-coverage</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">renode</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">fetch-depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Configure git user</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">git config --global user.email "ci@example.com"</span>
+<span class="w">          </span><span class="no">git config --global user.name "CI Bot"</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Download coverage report</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/download-artifact@v4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coverage-report</span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deploy/coverage/</span>
+<span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Download Twister results</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/download-artifact@v4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">twister-results</span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deploy/twister/</span>
+<span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Download Renode boot trace</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/download-artifact@v4</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">renode-gateway_boot</span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deploy/renode/</span>
+<span class="w">        </span><span class="nt">continue-on-error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Determine target directory on gh-pages</span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dir</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">if [ "${{ github.event_name }}" = "pull_request" ]; then</span>
+<span class="w">            </span><span class="no">echo "path=dev/traces/pr-${{ github.event.pull_request.number }}" &gt;&gt; "$GITHUB_OUTPUT"</span>
+<span class="w">          </span><span class="no">else</span>
+<span class="w">            </span><span class="no">echo "path=dev/traces/master" &gt;&gt; "$GITHUB_OUTPUT"</span>
+<span class="w">          </span><span class="no">fi</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deploy to gh-pages</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">TARGET_DIR="${{ steps.dir.outputs.path }}"</span>
+<span class="w">          </span><span class="no">git fetch origin gh-pages</span>
+<span class="w">          </span><span class="no">git checkout gh-pages</span>
+<span class="w">          </span><span class="no">mkdir -p "$TARGET_DIR"</span>
+<span class="w">          </span><span class="no"># Remove old results for this ref (overwrite, not accumulate)</span>
+<span class="w">          </span><span class="no">rm -rf "$TARGET_DIR"/*</span>
+<span class="w">          </span><span class="no"># Copy new results</span>
+<span class="w">          </span><span class="no">if [ -d deploy/coverage ] &amp;&amp; [ "$(ls -A deploy/coverage 2&gt;/dev/null)" ]; then</span>
+<span class="w">            </span><span class="no">mkdir -p "$TARGET_DIR/coverage"</span>
+<span class="w">            </span><span class="no">cp -r deploy/coverage/* "$TARGET_DIR/coverage/"</span>
+<span class="w">          </span><span class="no">fi</span>
+<span class="w">          </span><span class="no">if [ -d deploy/twister ] &amp;&amp; [ "$(ls -A deploy/twister 2&gt;/dev/null)" ]; then</span>
+<span class="w">            </span><span class="no">mkdir -p "$TARGET_DIR/twister"</span>
+<span class="w">            </span><span class="no">cp -r deploy/twister/* "$TARGET_DIR/twister/"</span>
+<span class="w">          </span><span class="no">fi</span>
+<span class="w">          </span><span class="no">if [ -d deploy/renode ] &amp;&amp; [ "$(ls -A deploy/renode 2&gt;/dev/null)" ]; then</span>
+<span class="w">            </span><span class="no">mkdir -p "$TARGET_DIR/renode"</span>
+<span class="w">            </span><span class="no">cp -r deploy/renode/* "$TARGET_DIR/renode/"</span>
+<span class="w">            </span><span class="no"># If trace files exist, parse and deploy Perfetto/Chrome trace</span>
+<span class="w">            </span><span class="no">TRACE_BIN="deploy/renode/simulation/renode/trace.bin"</span>
+<span class="w">            </span><span class="no">TRACE_ELF="deploy/renode/build/renode/gateway/zephyr/zephyr.elf"</span>
+<span class="w">            </span><span class="no">if [ -f "$TRACE_BIN" ] &amp;&amp; [ -f "$TRACE_ELF" ]; then</span>
+<span class="w">              </span><span class="no">python3 scripts/parse-trace.py \</span>
+<span class="w">                </span><span class="no">--trace "$TRACE_BIN" \</span>
+<span class="w">                </span><span class="no">--elf "$TRACE_ELF" \</span>
+<span class="w">                </span><span class="no">--output "$TARGET_DIR/trace_combined.json" \</span>
+<span class="w">                </span><span class="no">--summary || echo "WARNING: trace parsing failed"</span>
+<span class="w">              </span><span class="no">REPO_OWNER="$(echo '${{ github.repository }}' | cut -d/ -f1)"</span>
+<span class="w">              </span><span class="no">REPO_NAME="$(echo '${{ github.repository }}' | cut -d/ -f2)"</span>
+<span class="w">              </span><span class="no">echo "Perfetto deep-link: https://ui.perfetto.dev/#!/?url=https://${REPO_OWNER}.github.io/${REPO_NAME}/${TARGET_DIR}/trace_combined.json"</span>
+<span class="w">            </span><span class="no">fi</span>
+<span class="w">          </span><span class="no">fi</span>
+<span class="w">          </span><span class="no">git add .</span>
+<span class="w">          </span><span class="no">git diff --staged --quiet || git commit -m "ci: deploy results to $TARGET_DIR"</span>
+<span class="w">          </span><span class="no">git push origin gh-pages</span>
+<span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">GITHUB_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>.github/workflows/ci.yml
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feat(ci): add trace build config, publish trace artifacts, deploy-results job"</span>
+</code></pre></div>
+<p><strong>Note:</strong> No changes needed to <code>benchmark.yml</code>. The <code>deploy-results</code> job deploys to <code>dev/traces/</code> which lives under the <code>dev/</code> directory already preserved by <code>benchmark.yml</code>'s <code>docs</code> job (<code>find ... ! -name 'dev'</code>).</p>
+<hr>
+<h3 id="task-10-backlog-update">Task 10: Backlog update</h3>
+<p><strong>Files:</strong>
+- Modify: <code>docs/backlog.md</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Add <code>[RENODE-TRACE-GH-PAGES]</code> item to <code>docs/backlog.md</code></strong></li>
+</ul>
+<p>Append to the end of the file, before any existing end marker:</p>
+<div class="highlight"><pre><span></span><code>---
+
+<span class="gu">## [RENODE-TRACE-GH-PAGES] Perfetto deep-link 404 guard and retention cleanup</span>
+
+The <span class="sb">`deploy-results`</span> CI job deploys <span class="sb">`trace_combined.json`</span> (Chrome Tracing
+format) and test reports to the <span class="sb">`gh-pages`</span> branch. The Perfetto UI deep-link
+pattern <span class="sb">`ui.perfetto.dev/#!/?url=...`</span> works for any public URL.
+
+<span class="gs">**Known gaps:**</span>
+<span class="k">-</span><span class="w"> </span>No 404 guard: if a trace file was not generated (build failure, size &gt; 50 MB),
+  the deep-link silently fails in Perfetto UI. A health-check script or index
+  page listing available traces would improve UX.
+<span class="k">-</span><span class="w"> </span>No retention cleanup: old PR traces accumulate indefinitely on <span class="sb">`gh-pages`</span>.
+  A periodic cleanup job (e.g., remove traces for closed PRs older than 30
+  days) is needed.
+<span class="k">-</span><span class="w"> </span>Trace format: currently outputs Chrome Tracing JSON. Migrating to the binary
+  Perfetto proto format (.perfetto or .pb) would reduce file size for large
+  traces and enable Perfetto's full feature set (flow events, counters).
+
+<span class="gs">**Acceptance:**</span>
+<span class="k">-</span><span class="w"> </span>An index page at <span class="sb">`&lt;org&gt;.github.io/weather-station/traces/`</span> lists all
+  available traces with links.
+<span class="k">-</span><span class="w"> </span>Old PR trace directories are removed when the PR is closed/merged.
+<span class="k">-</span><span class="w"> </span>Optional: binary Perfetto proto output from parse-trace.py.
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>docs/backlog.md
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"docs(backlog): add RENODE-TRACE-GH-PAGES item"</span>
+</code></pre></div>
+<hr>
+<h3 id="task-11-integration-test-full-pipeline-smoke-test">Task 11: Integration test — full pipeline smoke test</h3>
+<ul>
+<li>[ ] <strong>Step 1: Build with trace enabled</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
+<span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>build<span class="w"> </span>-p<span class="w"> </span>always<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-b<span class="w"> </span>frdm_mcxn947/mcxn947/cpu0<span class="w"> </span>--sysbuild<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>apps/gateway<span class="w"> </span>-d<span class="w"> </span>build/renode-trace<span class="w"> </span>--<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DDTC_OVERLAY_FILE<span class="o">=</span>boards/frdm_mcxn947_mcxn947_cpu0_renode.overlay<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-DEXTRA_CONF_FILE<span class="o">=</span><span class="s2">"boards/frdm_mcxn947_mcxn947_cpu0_renode.conf;boards/frdm_mcxn947_mcxn947_cpu0_trace_recorder.conf"</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Run Renode trace test</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>renode-test<span class="w"> </span>--show-log<span class="w"> </span>simulation/renode/tests/gateway_trace.robot
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Parse the trace</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>python3<span class="w"> </span>scripts/parse-trace.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--trace<span class="w"> </span>simulation/renode/trace.bin<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--elf<span class="w"> </span>build/renode-trace/gateway/zephyr/zephyr.elf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--summary
+</code></pre></div>
+<p>Expected: summary output shows thread IDs, runtime percentages, context switch count.</p>
+<ul>
+<li>[ ] <strong>Step 4: Verify trace file opens in Perfetto UI</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># Generate a Chrome Tracing JSON trace</span>
+python3<span class="w"> </span>scripts/parse-trace.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--trace<span class="w"> </span>simulation/renode/trace.bin<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--elf<span class="w"> </span>build/renode-trace/gateway/zephyr/zephyr.elf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span>/tmp/trace_test.json
+
+<span class="c1"># Check that the output file is valid JSON and has traceEvents</span>
+python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+<span class="s2">import json</span>
+<span class="s2">with open('/tmp/trace_test.json') as f:</span>
+<span class="s2">    data = json.load(f)</span>
+<span class="s2">assert 'traceEvents' in data, 'Missing traceEvents'</span>
+<span class="s2">assert len(data['traceEvents']) &gt; 0, 'No trace events'</span>
+<span class="s2">print(f'OK: {len(data[\"traceEvents\"])} trace events')</span>
+<span class="s2">"</span>
+</code></pre></div>
+<p>Expected: <code>OK: N trace events</code> where N &gt; 0.</p>
+<ul>
+<li>[ ] <strong>Step 5: Run full native_sim integration tests to confirm no regressions</strong></li>
+</ul>
+<p></p><div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>twister<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span>native_sim/native/64<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-T<span class="w"> </span>tests/integration<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--inline-logs<span class="w"> </span>-v<span class="w"> </span>-N
+</code></pre></div>
+Expected: all integration tests pass.<p></p>
+<ul>
+<li>[ ] <strong>Step 6: Commit any fixes</strong></li>
+</ul>
+<p>If any issues were found during the smoke test, fix and commit them.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../../javascripts/mermaid-zoom.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

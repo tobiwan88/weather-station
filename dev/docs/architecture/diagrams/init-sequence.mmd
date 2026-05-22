@@ -1,0 +1,98 @@
+---
+title: SYS_INIT Boot Sequence (APPLICATION Priority)
+---
+sequenceDiagram
+    participant KERNEL as Zephyr Kernel
+    participant SNTP as sntp_sync<br/>priority 80
+    participant FT as fake_temperature<br/>priority 90
+    participant FH as fake_humidity<br/>priority 91
+    participant LVGL as lvgl_display<br/>priority 91
+    participant CO2 as fake_co2<br/>priority 92
+    participant RSM as remote_sensor_mgr<br/>priority 92
+    participant VOC as fake_voc<br/>priority 93
+    participant FRS as fake_remote_sensor<br/>priority 93
+    participant RSET as remote_sensor_settings<br/>priority 94
+    participant SEL as sensor_event_log<br/>priority 95
+    participant LOC as location_registry<br/>priority 96
+    participant DASH as http_dashboard<br/>priority 97
+    participant MQTTP as mqtt_publisher<br/>priority 98
+    participant TMR as fake_sensors_timer<br/>priority 99
+    participant CLK as clock_display<br/>priority 99
+    participant MAIN as main()
+
+    KERNEL->>SNTP: sntp_sync_init()
+    SNTP->>SNTP: initial SNTP query (blocking)
+    SNTP->>SNTP: schedule periodic_work (K_SECONDS(3600))
+    SNTP-->>KERNEL: return 0
+
+    KERNEL->>FT: fake_temperature_init()
+    FT->>FT: sensor_registry_register(uid, ...)
+    FT->>FT: zbus_chan_add_obs(sensor_trigger_chan)
+    FT->>FT: pub sensor_trigger_event(STARTUP)
+    FT-->>KERNEL: return 0
+
+    KERNEL->>FH: fake_humidity_init()
+    FH->>FH: sensor_registry_register(uid, ...)
+    FH->>FH: zbus_chan_add_obs(sensor_trigger_chan)
+    FH->>FH: pub sensor_trigger_event(STARTUP)
+    FH-->>KERNEL: return 0
+
+    KERNEL->>LVGL: lvgl_display_init()
+    LVGL->>LVGL: zbus_chan_add_obs(sensor_event_chan)
+    LVGL->>LVGL: start LVGL workqueue thread
+    LVGL-->>KERNEL: return 0
+
+    KERNEL->>CO2: fake_co2_init()
+    CO2->>CO2: sensor_registry_register(uid, ...)
+    CO2->>CO2: zbus_chan_add_obs(sensor_trigger_chan)
+    CO2->>CO2: pub sensor_trigger_event(STARTUP)
+    CO2-->>KERNEL: return 0
+
+    KERNEL->>RSM: remote_sensor_manager_init()
+    RSM->>RSM: zbus_chan_add_obs(remote_discovery_chan)
+    RSM->>RSM: pub remote_scan_ctrl_event(START_ALL)
+    RSM-->>KERNEL: return 0
+
+    KERNEL->>VOC: fake_voc_init()
+    VOC->>VOC: sensor_registry_register(uid, ...)
+    VOC->>VOC: zbus_chan_add_obs(sensor_trigger_chan)
+    VOC->>VOC: pub sensor_trigger_event(STARTUP)
+    VOC-->>KERNEL: return 0
+
+    KERNEL->>FRS: fake_remote_sensor_init()
+    FRS->>FRS: init node state + start simulation timers
+    FRS-->>KERNEL: return 0
+
+    KERNEL->>RSET: remote_sensor_settings_init()
+    RSET->>RSET: load persisted peer list → re-register known remote sensors
+    RSET-->>KERNEL: return 0
+
+    KERNEL->>SEL: sensor_event_log_init()
+    SEL->>SEL: zbus_chan_add_obs(sensor_event_chan)
+    Note over SEL: also at priority 95: sensor_registry settings load,<br/>sntp_sync config_cmd init, fake_sensors config_cmd init
+    SEL-->>KERNEL: return 0
+
+    KERNEL->>LOC: location_registry_settings_load()
+    LOC->>LOC: load persisted location names from settings
+    LOC-->>KERNEL: return 0
+
+    KERNEL->>DASH: http_dashboard_init()
+    DASH->>DASH: zbus_chan_add_obs(sensor_event_chan)
+    DASH->>DASH: HTTP_SERVICE start on port 8080
+    DASH-->>KERNEL: return 0
+
+    KERNEL->>MQTTP: mqtt_publisher_init()
+    MQTTP->>MQTTP: zbus_chan_add_obs(sensor_event_chan)
+    MQTTP->>MQTTP: start publisher thread (connect to broker)
+    MQTTP-->>KERNEL: return 0
+
+    KERNEL->>TMR: fake_sensors_timer_init()
+    TMR->>TMR: k_timer_start(AUTO_PUBLISH_MS)
+    TMR-->>KERNEL: return 0
+
+    KERNEL->>CLK: clock_display_init()
+    CLK->>CLK: k_work_reschedule(K_NO_WAIT)
+    CLK-->>KERNEL: return 0
+
+    KERNEL->>MAIN: main()
+    Note over MAIN: if CONFIG_LVGL_DISPLAY:<br/>  lvgl_display_run() — never returns<br/>else:<br/>  k_sleep(K_FOREVER)

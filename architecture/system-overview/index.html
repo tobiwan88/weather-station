@@ -1,0 +1,1774 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/architecture/system-overview/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../event-bus/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>System Overview - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#system-overview" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              System Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Footprint
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Goals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libraries-and-their-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Libraries and Their Roles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-design-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Design Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-uid-allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor UID Allocation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-and-workspace-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository and Workspace Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-and-display-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway and Display Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway and Display Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#display-routing-via-sensor_registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Display routing via sensor_registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-split-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future split path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extension-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extension Points
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Footprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Goals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libraries-and-their-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Libraries and Their Roles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-design-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Design Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-uid-allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor UID Allocation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#repository-and-workspace-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository and Workspace Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-and-display-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway and Display Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway and Display Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#display-routing-via-sensor_registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Display routing via sensor_registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-split-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Future split path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extension-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extension Points
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="system-overview">System Overview</h1>
+<blockquote>
+<p>Design rationale: <a href="../../adr/ADR-001-repo-and-workspace-structure/">ADR-001</a>, <a href="../../adr/ADR-007-gateway-display-combined/">ADR-007</a>, <a href="../../adr/ADR-008-kconfig-app-composition/">ADR-008</a>, <a href="../../adr/ADR-009-native-sim-first/">ADR-009</a>.</p>
+</blockquote>
+<h2 id="goals">Goals</h2>
+<p>The gateway is a coordinator node that aggregates sensor readings, displays them locally, exposes them over HTTP, and keeps wall-clock time via SNTP. The design prioritises two properties above all else:</p>
+<ol>
+<li><strong>Adding a new consumer of sensor data must not require touching any existing code.</strong> The gateway listener, the HTTP dashboard, and the MQTT publisher are all independent — none knows the others exist.</li>
+<li><strong>Feature selection must be possible without editing C code.</strong> Whether the HTTP dashboard or LVGL display is included is a <code>prj.conf</code> decision, not a <code>main.c</code> decision.</li>
+</ol>
+<p>These two goals drive every structural choice in the codebase.</p>
+<hr>
+<h2 id="layers">Layers</h2>
+<div class="highlight"><pre><span></span><code>┌──────────────────────────────────────────────────┐
+│  Application  apps/gateway/  apps/sensor-node/   │
+│  ─────────────────────────────────────────────── │
+│  main.c declares nothing; all features via       │
+│  SYS_INIT auto-wiring and prj.conf selection     │
+├──────────────────────────────────────────────────┤
+│  Libraries    lib/                               │
+│  ─────────────────────────────────────────────── │
+│  Independently optional libraries,               │
+│  each compiled only when its CONFIG_ is set.     │
+│  Libraries communicate only through zbus         │
+│  channels, never by calling each other's         │
+│  internal logic. Public read-only APIs           │
+│  (sensor_registry, location_registry) may be     │
+│  called by any library.                          │
+├──────────────────────────────────────────────────┤
+│  Zephyr RTOS                                     │
+│  zbus · k_timer · k_work · HTTP_SERVER · LVGL   │
+└──────────────────────────────────────────────────┘
+</code></pre></div>
+<pre class="mermaid"><code>---
+title: Weather-Station System Architecture
+---
+graph TB
+    subgraph APP["APPLICATION LAYER"]
+        GW["apps/gateway\nmain.c &amp;lt;50 lines\nprj.conf (features)"]
+        SN["apps/sensor-node\npipe_publisher egress\nprj.conf (lighter stack)"]
+    end
+
+    subgraph LIBS["LIBRARY LAYER (lib/)"]
+        direction TB
+        subgraph CHANNELS["zbus Channels"]
+            SEC["sensor_event\n(env_sensor_data)"]
+            STC["sensor_trigger\n(trigger event)"]
+        end
+        subgraph SENSORS["Sensor Layer"]
+            FS["fake_sensors\nDT-driven drivers\n+ auto-publish timer"]
+            SR["sensor_registry\nuid → metadata"]
+        end
+        subgraph SERVICES["Services"]
+            SNTP["sntp_sync\nwall-clock SNTP"]
+            HTTP["http_dashboard\nChart.js + config API\nport 8080"]
+            CLK["clock_display\nHH:MM UTC ticker"]
+            LVGL["lvgl_display\nSDL window (native_sim)"]
+            CC["config_cmd\ncmd channel"]
+            LOC["location_registry\nnamed locations"]
+            SEL["sensor_event_log\nconsole logger"]
+            RS["remote_sensor\ntransport abstraction + manager"]
+            FRS["fake_remote_sensor\ntesting stub"]
+            MQTT["mqtt_publisher\nMQTT egress"]
+            PIPE_PUB["pipe_publisher\nFIFO protobuf writer\n(sensor-node)"]
+            PIPE_TX["pipe_transport\nFIFO protobuf reader\n(gateway)"]
+        end
+    end
+
+    subgraph RTOS["ZEPHYR RTOS"]
+        ZBUS["zbus pub/sub"]
+        KTIMER["k_timer"]
+        KWORK["k_work_delayable"]
+        KSPIN["k_spinlock"]
+        KMUX["k_mutex"]
+        HTTPD["HTTP_SERVER"]
+        NET["NET_SOCKETS / SNTP"]
+        LVGLLIB["LVGL / SDL2"]
+    end
+
+    GW --&gt;|"Kconfig selects"| LIBS
+    SN --&gt;|"Kconfig selects"| LIBS
+
+    FS --&gt;|publishes| SEC
+    FS --&gt;|subscribes| STC
+    FS --&gt;|subscribes| CC
+    HTTP --&gt;|subscribes| SEC
+    HTTP --&gt;|reads| SR
+    HTTP --&gt;|reads| LOC
+    HTTP --&gt;|publishes| CC
+    FS --&gt;|registers| SR
+    SNTP --&gt;|subscribes| CC
+    SEL --&gt;|subscribes| SEC
+    RS --&gt;|publishes| SEC
+    RS --&gt;|subscribes| STC
+    FRS --&gt;|implements vtable| RS
+    MQTT --&gt;|subscribes| SEC
+    PIPE_PUB --&gt;|publishes| SEC
+    PIPE_PUB --&gt;|writes FIFO| SEC
+    PIPE_TX --&gt;|reads FIFO| SEC
+    PIPE_TX --&gt;|publishes| SEC
+
+    SEC --&gt; ZBUS
+    STC --&gt; ZBUS
+    SNTP --&gt; NET
+    HTTP --&gt; HTTPD
+    CLK --&gt; KWORK
+    SNTP --&gt; KWORK
+    FS --&gt; KTIMER
+    HTTP --&gt; KSPIN
+    SR --&gt; KMUX
+    LVGL --&gt; LVGLLIB
+
+    style APP fill:#dbeafe,stroke:#3b82f6
+    style LIBS fill:#dcfce7,stroke:#16a34a
+    style CHANNELS fill:#fef9c3,stroke:#ca8a04
+    style SENSORS fill:#f0fdf4,stroke:#16a34a
+    style SERVICES fill:#f0fdf4,stroke:#16a34a
+    style RTOS fill:#fce7f3,stroke:#db2777
+</code></pre>
+<hr>
+<h2 id="libraries-and-their-roles">Libraries and Their Roles</h2>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sensor_event</code></td>
+<td>Owns the event data model (<code>env_sensor_data</code>) and the channel all sensors publish to</td>
+</tr>
+<tr>
+<td><code>sensor_trigger</code></td>
+<td>Owns the trigger event type and the channel all trigger sources publish to</td>
+</tr>
+<tr>
+<td><code>sensor_registry</code></td>
+<td>Runtime mapping of sensor UID → rich user-editable metadata; sensors self-register at boot</td>
+</tr>
+<tr>
+<td><code>fake_sensors</code></td>
+<td>Emulated local sensor drivers (temp, humidity, CO2, VOC); subscribes to trigger channel, publishes to event channel</td>
+</tr>
+<tr>
+<td><code>sntp_sync</code></td>
+<td>Maintains wall-clock time via SNTP; provides a single authoritative <code>get_epoch_ms()</code></td>
+</tr>
+<tr>
+<td><code>clock_display</code></td>
+<td>Reads wall-clock time every 60 s and logs it; depends on nothing else</td>
+</tr>
+<tr>
+<td><code>http_dashboard</code></td>
+<td>Web dashboard and config API; subscribes to event channel, publishes on config_cmd_chan</td>
+</tr>
+<tr>
+<td><code>lvgl_display</code></td>
+<td>LVGL render loop; runs on the main thread because SDL requires it</td>
+</tr>
+<tr>
+<td><code>config_cmd</code></td>
+<td>Owns the <code>config_cmd_chan</code> zbus channel; decouples config producers (HTTP) from consumers (fake_sensors, sntp_sync, mqtt_publisher)</td>
+</tr>
+<tr>
+<td><code>location_registry</code></td>
+<td>Runtime CRUD for named physical locations; replaces compile-time DT location properties</td>
+</tr>
+<tr>
+<td><code>sensor_event_log</code></td>
+<td>Self-registering zbus listener that logs every sensor event to console; no public API</td>
+</tr>
+<tr>
+<td><code>mqtt_publisher</code></td>
+<td>Subscribes to <code>sensor_event_chan</code>; publishes readings to an MQTT broker under <code>{gw}/{location}/{name}/{type}</code></td>
+</tr>
+<tr>
+<td><code>remote_sensor</code></td>
+<td>Transport-agnostic abstraction for wireless remote sensors; vtable pattern, manager thread, UID derivation</td>
+</tr>
+<tr>
+<td><code>fake_remote_sensor</code></td>
+<td>Simulated remote sensor transport adapter for testing; implements the <code>remote_transport</code> vtable</td>
+</tr>
+<tr>
+<td><code>pipe_publisher</code></td>
+<td>Writes <code>env_sensor_data</code> events as length-prefixed protobuf to a POSIX FIFO (sensor-node side)</td>
+</tr>
+<tr>
+<td><code>pipe_transport</code></td>
+<td>Reads from POSIX FIFO, decodes protobuf frames, publishes to <code>sensor_event_chan</code> (gateway side)</td>
+</tr>
+<tr>
+<td><code>sensor_node_tx</code></td>
+<td>Subscribes to <code>sensor_event_chan</code>, accumulates readings in a ring buffer, transmits batched 5-byte LoRa frames on timer or force-TX command; shell: <code>sensor_node_tx force/enable/disable/status</code></td>
+</tr>
+<tr>
+<td><code>trace_recorder</code></td>
+<td>Overrides Zephyr tracing hooks to capture thread switch/ISR/idle events in a static ring buffer for Renode post-mortem dump</td>
+</tr>
+<tr>
+<td><code>uart_lora_bridge</code></td>
+<td>Receives 24-byte wire frames from LoRa co-processor over UART, converts to <code>env_sensor_data</code>, publishes to <code>sensor_event_chan</code> (gateway side)</td>
+</tr>
+<tr>
+<td><code>uart_lora_sender</code></td>
+<td>Subscribes to <code>sensor_event_chan</code>, packs events into 24-byte wire frames, sends over UART to gateway (co-processor side)</td>
+</tr>
+<tr>
+<td><code>lora_radio</code></td>
+<td>LoRa bounded context: radio driver, packet framing, session management, protocol handlers; runs on STM32WLE5JC co-processor</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>---
+title: Library Dependency Graph
+---
+graph TD
+    APP["apps/gateway\n(application)"]
+    SN_APP["apps/sensor-node\n(application)"]
+
+    SE["sensor_event\nenv_sensor_data + chan"]
+    ST["sensor_trigger\ntrigger event + chan"]
+    SR["sensor_registry\nuid → metadata"]
+    FS["fake_sensors\nDT-driven drivers"]
+    SNTP["sntp_sync\nwall-clock SNTP"]
+    HTTP["http_dashboard\nweb dashboard + API"]
+    CLK["clock_display\nHH:MM ticker"]
+    LVGL["lvgl_display\nSDL window"]
+    CC["config_cmd\ncmd channel"]
+    LOC["location_registry\nnamed locations"]
+    SEL["sensor_event_log\nconsole logger"]
+    RS["remote_sensor\ntransport abstraction"]
+    FRS["fake_remote_sensor\ntesting stub"]
+    MQTT["mqtt_publisher\nMQTT egress"]
+    SNTX["sensor_node_tx\nLoRa TX batcher"]
+    LORA["lora_node\nLoRa packet encoder"]
+
+    ZBUS(["ZBUS\n(Zephyr)"])
+    NET(["NETWORKING\n(Zephyr)"])
+    HTTPD(["HTTP_SERVER\n(Zephyr)"])
+    LVGLLIB(["LVGL + DISPLAY\n(Zephyr)"])
+    SNTPLIB(["SNTP\n(Zephyr)"])
+    SETTINGS(["SETTINGS\n(Zephyr)"])
+    LORADRV(["LORA DRIVER\n(Zephyr)"])
+    PSACRYPTO(["PSA_CRYPTO\n(Zephyr)"])
+
+    APP --&gt;|Kconfig| SE
+    APP --&gt;|Kconfig| ST
+    APP --&gt;|Kconfig| SR
+    APP --&gt;|Kconfig| FS
+    APP --&gt;|Kconfig| SNTP
+    APP --&gt;|Kconfig| HTTP
+    APP --&gt;|Kconfig| CLK
+    APP --&gt;|Kconfig| LVGL
+    APP --&gt;|Kconfig| CC
+    APP --&gt;|Kconfig| LOC
+    APP --&gt;|Kconfig| SEL
+    APP --&gt;|Kconfig| RS
+    APP --&gt;|Kconfig| FRS
+    APP --&gt;|Kconfig| MQTT
+
+    SN_APP --&gt;|Kconfig| FS
+    SN_APP --&gt;|Kconfig| SE
+    SN_APP --&gt;|Kconfig| ST
+    SN_APP --&gt;|Kconfig| SR
+    SN_APP --&gt;|Kconfig| SEL
+    SN_APP --&gt;|Kconfig| SNTX
+
+    FS --&gt; SE
+    FS --&gt; ST
+    FS --&gt; SR
+    FS --&gt; CC
+
+    HTTP --&gt; SE
+    HTTP --&gt; SR
+    HTTP --&gt; LOC
+    HTTP --&gt; CC
+    HTTP --&gt; HTTPD
+
+    SNTP --&gt; CC
+    SNTP --&gt; NET
+    SNTP --&gt; SNTPLIB
+
+    SEL --&gt; SE
+
+    RS --&gt; SE
+    RS --&gt; SR
+    RS --&gt; SETTINGS
+    FRS --&gt; RS
+
+    MQTT --&gt; SE
+    MQTT --&gt; NET
+
+    LOC --&gt; SETTINGS
+
+    SNTX --&gt; SE
+    SNTX --&gt; CC
+    SNTX --&gt; LORA
+    LORA --&gt; LORADRV
+    LORA --&gt; PSACRYPTO
+
+    SE --&gt; ZBUS
+    ST --&gt; ZBUS
+    SR --&gt; ZBUS
+    CC --&gt; ZBUS
+
+    HTTP --&gt; NET
+    LVGL --&gt; LVGLLIB
+
+    style APP fill:#dbeafe,stroke:#3b82f6
+    style SN_APP fill:#dbeafe,stroke:#3b82f6
+    style ZBUS fill:#fce7f3,stroke:#db2777
+    style NET fill:#fce7f3,stroke:#db2777
+    style HTTPD fill:#fce7f3,stroke:#db2777
+    style LVGLLIB fill:#fce7f3,stroke:#db2777
+    style SNTPLIB fill:#fce7f3,stroke:#db2777
+    style SETTINGS fill:#fce7f3,stroke:#db2777
+    style LORADRV fill:#fce7f3,stroke:#db2777
+    style PSACRYPTO fill:#fce7f3,stroke:#db2777
+</code></pre>
+<p>The critical point: <code>http_dashboard</code> and <code>fake_sensors</code> do not reference each other. <code>http_dashboard</code> publishes a <code>config_cmd_event</code> on <code>config_cmd_chan</code>; <code>fake_sensors</code> subscribes independently. Neither knows the other exists.</p>
+<hr>
+<h2 id="key-design-rules">Key Design Rules</h2>
+<p><strong>One event per physical measurement.</strong> Temperature and humidity from the same physical sensor are separate <code>env_sensor_data</code> events on the same channel. This keeps consumers simple (each reading is self-describing) and matches the wire format for LoRa (fixed 20-byte frame, no aggregation).</p>
+<p><strong><code>main.c</code> is wiring, not logic.</strong> The only things permitted in <code>main.c</code> are <code>LOG_MODULE_REGISTER</code>, a <code>SYS_INIT</code> call for the gateway's own zbus listener, and either <code>lvgl_display_run()</code> or <code>k_sleep(K_FOREVER)</code>. All behaviour lives in libraries.</p>
+<p><strong>No library-to-library calls for internal logic.</strong> Libraries are not allowed to <code>#include</code> each other's internal headers or call each other's private functions. The only shared surface for coordination is zbus channels. Two exceptions exist:
+- <strong><code>sensor_registry</code></strong> and <strong><code>location_registry</code></strong> expose public read-only APIs that any library may call (e.g. <code>http_dashboard</code> reads display names and locations for JSON responses).
+- <strong>Integration files</strong> compiled conditionally when two CONFIG symbols are both set (e.g. <code>fake_sensors_config_cmd.c</code> compiled when both <code>CONFIG_FAKE_SENSORS</code> and <code>CONFIG_CONFIG_CMD</code> are enabled).</p>
+<p>If two libraries need to coordinate at runtime, they do so through a channel, not a function call.</p>
+<p><strong>Q31 on the wire, float only at the edges.</strong> Sensor values are stored and transmitted as Q31 fixed-point. Conversion to <code>float</code> happens only when formatting for human display (logs, HTTP JSON). This avoids floating-point in ISR contexts and keeps the wire format deterministic.</p>
+<hr>
+<h2 id="sensor-uid-allocation">Sensor UID Allocation</h2>
+<p><code>sensor_uid</code> is the runtime identity key used by <code>sensor_registry</code>, LVGL cards, and
+MQTT topics. UIDs are assigned at DT node definition time (in <code>apps/&lt;app&gt;/boards/native_sim.overlay</code>)
+and must be unique across all overlay files in the project.</p>
+<table>
+<thead>
+<tr>
+<th>Range</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x0001–0x000F</code></td>
+<td>Gateway-local / indoor sensors</td>
+</tr>
+<tr>
+<td><code>0x0011–0x001F</code></td>
+<td>Gateway outdoor sensors</td>
+</tr>
+<tr>
+<td><code>0x0021–0x00FF</code></td>
+<td>Remote sensor nodes (LoRa, BLE, etc.)</td>
+</tr>
+<tr>
+<td><code>0x0101+</code></td>
+<td>Test-only instances</td>
+</tr>
+</tbody>
+</table>
+<p>Use the lowest free UID in the appropriate range. Never reuse a UID — UIDs are
+the identity key for <code>sensor_registry</code>, LVGL display cards, and MQTT topic paths.</p>
+<hr>
+<h2 id="repository-and-workspace-structure">Repository and Workspace Structure</h2>
+<p>The repo uses Zephyr <strong>T2 topology</strong> (application-as-manifest): <code>weather-station</code> is simultaneously the west manifest repository <em>and</em> a Zephyr module. <code>west init -l .</code> points west at the local manifest; <code>west update</code> fetches Zephyr and external modules.</p>
+<div class="highlight"><pre><span></span><code>weather-station/               ← git repo root, also west manifest
+│
+├── west.yml                   ← declares Zephyr version + module allowlist
+├── zephyr/module.yml          ← registers repo as a Zephyr module
+├── CMakeLists.txt             ← module-level: add_subdirectory lib drivers
+├── Kconfig                    ← module-level: rsource sub-Kconfigs
+├── VERSION                    ← semantic version (MAJOR.MINOR.PATCHLEVEL)
+│
+├── apps/                      ← one sub-directory per firmware image
+│   ├── gateway/               ← Wi-Fi hub + LVGL display
+│   ├── sensor-node/           ← LoRa TX beacon
+│   └── lora_bridge/           ← Wio-E5 Mini LoRa co-processor firmware
+│
+├── lib/                       ← shared reusable libraries (west modules)
+│   ├── sensor_event/          ← env_sensor_data struct, Q31 helpers, zbus channel
+│   ├── sensor_trigger/        ← sensor_trigger_event struct, zbus channel
+│   ├── sensor_registry/       ← uid → label/location/scaling metadata
+│   ├── fake_sensors/          ← DT-instantiated fake drivers + auto-publish timer
+│   ├── sntp_sync/             ← SNTP time sync with runtime resync
+│   ├── clock_display/         ← wall-clock widget for LVGL display
+│   ├── lvgl_display/          ← LVGL display manager (sensor tiles)
+│   ├── http_dashboard/        ← Chart.js timeseries + config REST API
+│   ├── uart_lora_bridge/      ← gateway-side UART receiver (24-byte wire → zbus)
+│   ├── uart_lora_sender/      ← co-processor-side UART sender (zbus → 24-byte wire)
+│   └── lora_radio/            ← LoRa bounded context (SX126x, sessions, FOTA)
+│
+├── include/common/            ← shared headers (zbus channel declarations,
+│                                 data structs, Q31 helpers)
+│
+├── drivers/                   ← out-of-tree Zephyr drivers (future real HW)
+├── dts/bindings/              ← custom devicetree bindings (fake,temperature…)
+├── boards/                    ← custom board definitions
+│   └── seeed/wio_e5_mini/     ← Wio-E5 Mini (STM32WLE5JC) board definition
+│
+├── tests/                     ← twister test suites
+├── simulation/                ← Renode .resc and Robot Framework scripts
+│
+├── .devcontainer/             ← VS Code devcontainer (tobiwan88/zephyr_docker)
+├── .github/workflows/         ← CI (build + twister + Renode)
+├── scripts/
+│   ├── parse-trace.py         ← Binary trace → Perfetto JSON post-processor
+│   └── trace-and-analyze      ← One-command Renode + trace dev workflow
+</code></pre></div>
+<p>The <code>west.yml</code> uses a <code>name-allowlist</code> import to fetch only the Zephyr modules this project needs. Without it, west would clone every Zephyr module (~30+), most of which this project never uses.</p>
+<p>Apps never reference <code>lib/</code> via CMake paths. Instead:
+1. <code>zephyr/module.yml</code> tells Zephyr the repo root is a module.
+2. The root <code>CMakeLists.txt</code> calls <code>add_subdirectory(lib)</code>.
+3. Each <code>lib/*/CMakeLists.txt</code> calls <code>zephyr_library()</code> (conditional on Kconfig).
+4. Apps enable libraries via <code>prj.conf</code> Kconfig symbols only.</p>
+<hr>
+<h2 id="gateway-and-display-architecture">Gateway and Display Architecture</h2>
+<p>For v1, the <code>apps/gateway/</code> firmware image contains both the gateway logic (Wi-Fi, MQTT, HTTP, LoRa RX) and the display logic (LVGL, button handler). They run in the same Zephyr image on the same MCU.</p>
+<p>Even though gateway and display are in one image, they are <strong>architecturally separate modules</strong> communicating only via zbus. The display manager never calls MQTT functions. The MQTT publisher never calls LVGL functions.</p>
+<div class="highlight"><pre><span></span><code>                    apps/gateway (single firmware image)
+┌───────────────────────────────────────────────────────────────┐
+│                                                               │
+│  SENSOR PRODUCERS              SHARED BUS     CONSUMERS       │
+│  ─────────────────             ──────────     ─────────       │
+│                                                               │
+│  [fake_temp_indoor] ──┐                                       │
+│  [fake_hum_indoor]  ──┤                  ┌──► [display_mgr]  │
+│  [fake_temp_outdoor]──┤─► sensor_event ──┤    (LVGL thread)  │
+│  [fake_hum_outdoor] ──┤       _chan      ├──► [mqtt_manager] │
+│  [lora_rx thread]   ──┘                  └──► [flash_storage]│
+│                                               (future)        │
+│                                                               │
+│  [periodic timer] ──┐                                         │
+│  [button B3]      ──┤─► sensor_trigger_chan ──► all sensors   │
+│  [mqtt command]   ──┘                                         │
+│                                                               │
+│  Wi-Fi ──► HTTP server  (config page, port 8080)              │
+│        ──► MQTT client  (→ Mosquitto)                         │
+│                                                               │
+│  Display hardware ──► LVGL ──► display_manager subscriber     │
+│  Button B1-B4     ──► button handler ──► sensor_trigger_chan  │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p>Button responsibilities:</p>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>zbus action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B1</td>
+<td>Previous screen (display-internal)</td>
+</tr>
+<tr>
+<td>B2</td>
+<td>Next screen (display-internal)</td>
+</tr>
+<tr>
+<td>B3</td>
+<td>Publish <code>sensor_trigger_event</code> with <code>TRIGGER_SOURCE_BUTTON</code></td>
+</tr>
+<tr>
+<td>B4</td>
+<td>Settings / backlight (display-internal)</td>
+</tr>
+</tbody>
+</table>
+<p>On <code>native_sim</code>, buttons are simulated by the shell: <code>fake_sensors trigger</code> is equivalent to a B3 press.</p>
+<h3 id="display-routing-via-sensor_registry">Display routing via sensor_registry</h3>
+<p>The display manager never hardcodes which UID maps to which tile. It looks up <code>sensor_registry_lookup(uid)-&gt;location</code> and routes values accordingly. Adding a new room (e.g. "garage") requires adding a new tile to the LVGL layout — no change to the routing logic.</p>
+<h3 id="future-split-path">Future split path</h3>
+<p>Because gateway and display communicate <strong>only via zbus</strong>, splitting them into separate devices requires only configuration changes — no source code changes to any library:</p>
+<table>
+<thead>
+<tr>
+<th>Phase 1 (current)</th>
+<th>Phase 2 (future)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>apps/gateway/</code> with <code>DISPLAY=y LVGL=y</code></td>
+<td><code>apps/gateway/</code> with <code>DISPLAY=n</code> + <code>apps/display-unit/</code> with <code>DISPLAY=y</code></td>
+</tr>
+<tr>
+<td>Single build target</td>
+<td>Two build targets, connected by UART bridge (serialised zbus events)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="extension-points">Extension Points</h2>
+<table>
+<thead>
+<tr>
+<th>To add</th>
+<th>What changes</th>
+<th>What does not change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New sensor consumer (flash logger, display)</td>
+<td>One new zbus listener on <code>sensor_event_chan</code> (this is how <code>mqtt_publisher</code> was added)</td>
+<td>All existing consumers and sensor drivers</td>
+</tr>
+<tr>
+<td>New trigger source (button, MQTT command)</td>
+<td>Publish <code>sensor_trigger_event</code> to <code>sensor_trigger_chan</code></td>
+<td>All sensor drivers</td>
+</tr>
+<tr>
+<td>Real hardware sensor (BME280, SHT4x)</td>
+<td>New driver that subscribes to trigger chan, publishes to event chan</td>
+<td>All consumers</td>
+</tr>
+<tr>
+<td>New sensor type (pressure, CO₂, VOC)</td>
+<td>New <code>enum sensor_type</code> value; existing consumers that don't handle it ignore it</td>
+<td>All existing consumers</td>
+</tr>
+<tr>
+<td>New transport adapter (BLE, Thread)</td>
+<td>Implement <code>remote_transport</code> vtable; register with <code>remote_sensor</code></td>
+<td>All consumers, manager</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mermaid-zoom.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

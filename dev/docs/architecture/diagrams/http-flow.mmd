@@ -1,0 +1,55 @@
+---
+title: HTTP Dashboard — POST /api/config Side-Effects
+---
+sequenceDiagram
+    participant BR as Browser
+    participant HTTP as HTTP Server Thread
+    participant CC as config_cmd_chan<br/>(zbus)
+    participant FS as fake_sensors_timer
+    participant SNTP as sntp_sync
+    participant SR as sensor_registry
+    participant LOC as location_registry
+    participant MQTTP as mqtt_publisher
+
+    BR->>HTTP: POST /api/config<br/>trigger_interval_ms=2000<br/>sntp_server=ntp.ubuntu.com<br/>action=sntp_resync<br/>sensor_1_name=Kitchen<br/>mqtt_enabled=true
+
+    Note over HTTP: Parse URL-encoded body<br/>form_extract() each field
+
+    alt trigger_interval_ms present
+        HTTP->>CC: publish CONFIG_CMD_SET_TRIGGER_INTERVAL
+        CC-->>FS: zbus listener callback
+        FS->>FS: k_timer_start(&g_auto_timer,<br/>K_MSEC(2000), K_MSEC(2000))
+    end
+
+    alt sntp_server present
+        HTTP->>HTTP: update sntp_server_buf<br/>(spinlock-protected snapshot)
+    end
+
+    alt action=sntp_resync
+        HTTP->>CC: publish CONFIG_CMD_SNTP_RESYNC
+        CC-->>SNTP: zbus listener callback
+        SNTP->>SNTP: k_work_reschedule(&immediate_work, K_NO_WAIT)
+        Note over SNTP: Runs async in work queue<br/>performs SNTP query
+    end
+
+    alt sensor_<uid>_name present and USER_META enabled
+        HTTP->>SR: sensor_registry_set_meta(uid, .display_name="Kitchen")
+        alt SETTINGS enabled
+            SR->>SR: settings_save_subtree(...)
+        end
+    end
+
+    alt action=add_location / action=remove_location
+        HTTP->>LOC: location_registry_add/remove(name)
+        alt SETTINGS enabled
+            LOC->>LOC: settings_save_subtree(...)
+        end
+    end
+
+    alt mqtt_* fields present
+        HTTP->>CC: publish CONFIG_CMD_MQTT_SET_*
+        CC-->>MQTTP: zbus listener callback
+        MQTTP->>MQTTP: update config, reconnect if needed
+    end
+
+    HTTP-->>BR: 303 See Other → /config

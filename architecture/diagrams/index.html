@@ -1,0 +1,1991 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/architecture/diagrams/">
+      
+      
+        <link rel="prev" href="../lora-protocol/">
+      
+      
+        <link rel="next" href="../../adr/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Diagrams - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#architecture-diagrams" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Diagrams
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Footprint
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#system-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zbus-channel-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        zbus Channel Map
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor Data Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#library-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Library Dependencies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#boot-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boot Sequence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-config-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP Config Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concurrency-snapshot-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency — Snapshot Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fota-update-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FOTA Update Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-test-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration Test Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-trace-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Renode Trace Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fake-sensor-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fake Sensor Data Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-node-tx-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor Node TX Data Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Footprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#system-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zbus-channel-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        zbus Channel Map
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor Data Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#library-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Library Dependencies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#boot-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Boot Sequence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-config-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP Config Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concurrency-snapshot-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concurrency — Snapshot Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fota-update-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FOTA Update Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-test-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration Test Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renode-trace-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Renode Trace Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fake-sensor-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fake Sensor Data Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-node-tx-data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor Node TX Data Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="architecture-diagrams">Architecture Diagrams</h1>
+<p>Diagrams are authored as Mermaid source files in <code>docs/architecture/diagrams/</code>.
+They are embedded inline in the most relevant architecture page and collected here
+as a reference catalog. Click any diagram to zoom (lightbox).</p>
+<h2 id="system-overview">System Overview</h2>
+<p>Layered component view of the weather-station firmware.</p>
+<pre class="mermaid"><code>---
+title: Weather-Station System Architecture
+---
+graph TB
+    subgraph APP["APPLICATION LAYER"]
+        GW["apps/gateway\nmain.c &amp;lt;50 lines\nprj.conf (features)"]
+        SN["apps/sensor-node\npipe_publisher egress\nprj.conf (lighter stack)"]
+    end
+
+    subgraph LIBS["LIBRARY LAYER (lib/)"]
+        direction TB
+        subgraph CHANNELS["zbus Channels"]
+            SEC["sensor_event\n(env_sensor_data)"]
+            STC["sensor_trigger\n(trigger event)"]
+        end
+        subgraph SENSORS["Sensor Layer"]
+            FS["fake_sensors\nDT-driven drivers\n+ auto-publish timer"]
+            SR["sensor_registry\nuid → metadata"]
+        end
+        subgraph SERVICES["Services"]
+            SNTP["sntp_sync\nwall-clock SNTP"]
+            HTTP["http_dashboard\nChart.js + config API\nport 8080"]
+            CLK["clock_display\nHH:MM UTC ticker"]
+            LVGL["lvgl_display\nSDL window (native_sim)"]
+            CC["config_cmd\ncmd channel"]
+            LOC["location_registry\nnamed locations"]
+            SEL["sensor_event_log\nconsole logger"]
+            RS["remote_sensor\ntransport abstraction + manager"]
+            FRS["fake_remote_sensor\ntesting stub"]
+            MQTT["mqtt_publisher\nMQTT egress"]
+            PIPE_PUB["pipe_publisher\nFIFO protobuf writer\n(sensor-node)"]
+            PIPE_TX["pipe_transport\nFIFO protobuf reader\n(gateway)"]
+        end
+    end
+
+    subgraph RTOS["ZEPHYR RTOS"]
+        ZBUS["zbus pub/sub"]
+        KTIMER["k_timer"]
+        KWORK["k_work_delayable"]
+        KSPIN["k_spinlock"]
+        KMUX["k_mutex"]
+        HTTPD["HTTP_SERVER"]
+        NET["NET_SOCKETS / SNTP"]
+        LVGLLIB["LVGL / SDL2"]
+    end
+
+    GW --&gt;|"Kconfig selects"| LIBS
+    SN --&gt;|"Kconfig selects"| LIBS
+
+    FS --&gt;|publishes| SEC
+    FS --&gt;|subscribes| STC
+    FS --&gt;|subscribes| CC
+    HTTP --&gt;|subscribes| SEC
+    HTTP --&gt;|reads| SR
+    HTTP --&gt;|reads| LOC
+    HTTP --&gt;|publishes| CC
+    FS --&gt;|registers| SR
+    SNTP --&gt;|subscribes| CC
+    SEL --&gt;|subscribes| SEC
+    RS --&gt;|publishes| SEC
+    RS --&gt;|subscribes| STC
+    FRS --&gt;|implements vtable| RS
+    MQTT --&gt;|subscribes| SEC
+    PIPE_PUB --&gt;|publishes| SEC
+    PIPE_PUB --&gt;|writes FIFO| SEC
+    PIPE_TX --&gt;|reads FIFO| SEC
+    PIPE_TX --&gt;|publishes| SEC
+
+    SEC --&gt; ZBUS
+    STC --&gt; ZBUS
+    SNTP --&gt; NET
+    HTTP --&gt; HTTPD
+    CLK --&gt; KWORK
+    SNTP --&gt; KWORK
+    FS --&gt; KTIMER
+    HTTP --&gt; KSPIN
+    SR --&gt; KMUX
+    LVGL --&gt; LVGLLIB
+
+    style APP fill:#dbeafe,stroke:#3b82f6
+    style LIBS fill:#dcfce7,stroke:#16a34a
+    style CHANNELS fill:#fef9c3,stroke:#ca8a04
+    style SENSORS fill:#f0fdf4,stroke:#16a34a
+    style SERVICES fill:#f0fdf4,stroke:#16a34a
+    style RTOS fill:#fce7f3,stroke:#db2777
+</code></pre>
+<h2 id="zbus-channel-map">zbus Channel Map</h2>
+<p>Publishers, channels, and subscribers across the zbus event bus.</p>
+<pre class="mermaid"><code>---
+title: zbus Channel Map
+---
+graph LR
+    subgraph TRIGGERS["Trigger Sources"]
+        TMR["fake_sensors_timer\nk_timer periodic"]
+        BOOT["SYS_INIT startup\none-shot at boot"]
+        BTN["button ISR\n(future)"]
+        MQTT_CMD["MQTT command\n(future)"]
+    end
+
+    subgraph CHAN_T["sensor_trigger_chan (zbus)"]
+        ST["struct sensor_trigger_event\n{ source, target_uid }"]
+    end
+
+    subgraph SENSORS["Sensor Listeners"]
+        FT["fake_temperature\nlistener"]
+        FH["fake_humidity\nlistener"]
+        RSM["remote_sensor_manager\n(pull transports)"]
+        RD["real drivers\n(future)"]
+    end
+
+    subgraph CHAN_E["sensor_event_chan (zbus)"]
+        SE["struct env_sensor_data\n{ uid, type, q31_value, timestamp_ms }"]
+    end
+
+    subgraph CONSUMERS["Event Consumers"]
+        SEL["sensor_event_log\nLOG_INF per event"]
+        HTTPL["http_dashboard\nring buffer append"]
+        MQTTP["mqtt_publisher\nbroker egress"]
+        FLASH["flash storage\n(future)"]
+    end
+
+    subgraph CHAN_CFG["config_cmd_chan (zbus)"]
+        CC["struct config_cmd_event\n{ cmd, arg }"]
+    end
+
+    subgraph CFG_CONSUMERS["Config Consumers"]
+        FS_CFG["fake_sensors\ninterval update"]
+        SNTP_CFG["sntp_sync\nresync trigger"]
+    end
+
+    subgraph CHAN_DISC["remote discovery (k_msgq, not zbus)"]
+        RD2["remote_sensor_announce_disc()\n→ manager k_msgq"]
+    end
+
+    subgraph CHAN_SCAN["remote_scan_ctrl_chan (zbus)"]
+        SC["struct remote_scan_ctrl_event\n{ action, proto }"]
+    end
+
+    subgraph TRANSPORTS["Transport Adapters"]
+        FAKE_T["fake_remote_sensor\n(testing stub)"]
+        BLE_T["ble_sensor\n(future)"]
+        LORA_T["lora_sensor\n(future)"]
+    end
+
+    TMR --&gt;|pub K_NO_WAIT| ST
+    BOOT --&gt;|pub K_NO_WAIT| ST
+    BTN --&gt;|pub K_NO_WAIT| ST
+    MQTT_CMD --&gt;|pub K_NO_WAIT| ST
+
+    ST --&gt;|sub| FT
+    ST --&gt;|sub| FH
+    ST --&gt;|sub| RSM
+    ST --&gt;|sub| RD
+
+    FT --&gt;|pub K_NO_WAIT| SE
+    FH --&gt;|pub K_NO_WAIT| SE
+    RSM --&gt;|remote_sensor_publish_data| SE
+    RD --&gt;|pub K_NO_WAIT| SE
+
+    SE --&gt;|sub| SEL
+    SE --&gt;|sub| HTTPL
+    SE --&gt;|sub| MQTTP
+    SE --&gt;|sub| FLASH
+
+    HTTPL --&gt;|pub config_cmd_event| CC
+    CC --&gt;|sub| FS_CFG
+    CC --&gt;|sub| SNTP_CFG
+    CC --&gt;|sub| MQTT_CFG
+
+    FAKE_T --&gt;|remote_sensor_announce_disc| RD2
+    BLE_T --&gt;|remote_sensor_announce_disc| RD2
+    LORA_T --&gt;|remote_sensor_announce_disc| RD2
+    RD2 --&gt;|k_msgq| RSM
+
+    RSM --&gt;|pub K_NO_WAIT| SC
+    SC --&gt;|vtable scan_start/stop| FAKE_T
+    SC --&gt;|vtable scan_start/stop| BLE_T
+    SC --&gt;|vtable scan_start/stop| LORA_T
+
+    style CHAN_T fill:#fef9c3,stroke:#ca8a04
+    style CHAN_E fill:#fef9c3,stroke:#ca8a04
+    style CHAN_CFG fill:#fef9c3,stroke:#ca8a04
+    style CHAN_DISC fill:#fef9c3,stroke:#ca8a04
+    style CHAN_SCAN fill:#fef9c3,stroke:#ca8a04
+    style TRIGGERS fill:#dbeafe,stroke:#3b82f6
+    style SENSORS fill:#dcfce7,stroke:#16a34a
+    style CONSUMERS fill:#fce7f3,stroke:#db2777
+    style CFG_CONSUMERS fill:#fce7f3,stroke:#db2777
+    style TRANSPORTS fill:#e0e7ff,stroke:#6366f1
+</code></pre>
+<h2 id="sensor-data-flow">Sensor Data Flow</h2>
+<p>Sensor trigger → event → consumers sequence.</p>
+<pre class="mermaid"><code>---
+title: Sensor Data Flow (Event-Driven)
+---
+sequenceDiagram
+    participant TMR as fake_sensors_timer&lt;br/&gt;(k_timer ISR)
+    participant TRIG as sensor_trigger_chan&lt;br/&gt;(zbus)
+    participant FTEMP as fake_temperature&lt;br/&gt;(zbus listener)
+    participant FHUM as fake_humidity&lt;br/&gt;(zbus listener)
+    participant EVCHAN as sensor_event_chan&lt;br/&gt;(zbus)
+    participant GW as gateway listener&lt;br/&gt;(LOG_INF)
+    participant DASH as http_dashboard&lt;br/&gt;(ring buffer)
+    participant BROWSER as Browser&lt;br/&gt;GET /api/data
+
+    Note over TMR: Every AUTO_PUBLISH_MS
+    TMR-&gt;&gt;TRIG: pub sensor_trigger_event&lt;br/&gt;{ source=TIMER, target_uid=0 }
+
+    Note over TRIG,FHUM: zbus dispatches to all listeners
+    TRIG-&gt;&gt;FTEMP: listener callback
+    FTEMP-&gt;&gt;FTEMP: read milli-°C → Q31 encode
+    FTEMP-&gt;&gt;EVCHAN: pub env_sensor_data&lt;br/&gt;{ uid, TEMPERATURE, q31, ts }
+
+    TRIG-&gt;&gt;FHUM: listener callback
+    FHUM-&gt;&gt;FHUM: read milli-%RH → Q31 encode
+    FHUM-&gt;&gt;EVCHAN: pub env_sensor_data&lt;br/&gt;{ uid, HUMIDITY, q31, ts }
+
+    Note over EVCHAN,DASH: zbus dispatches to all subscribers
+    EVCHAN-&gt;&gt;GW: listener callback → LOG_INF
+    EVCHAN-&gt;&gt;DASH: listener callback
+
+    Note over DASH: acquire k_spinlock
+    DASH-&gt;&gt;DASH: append (ts, q31) to ring buffer
+    Note over DASH: release k_spinlock
+
+    Note over BROWSER,DASH: Later — HTTP GET /api/data
+    BROWSER-&gt;&gt;DASH: HTTP GET /api/data
+    Note over DASH: acquire k_spinlock
+    DASH-&gt;&gt;DASH: memcpy snapshot
+    Note over DASH: release k_spinlock
+    DASH-&gt;&gt;DASH: serialize snapshot → JSON&lt;br/&gt;(no lock held)
+    DASH--&gt;&gt;BROWSER: 200 OK { sensors: [...] }
+</code></pre>
+<h2 id="library-dependencies">Library Dependencies</h2>
+<p>Inter-library dependency graph.</p>
+<pre class="mermaid"><code>---
+title: Library Dependency Graph
+---
+graph TD
+    APP["apps/gateway\n(application)"]
+    SN_APP["apps/sensor-node\n(application)"]
+
+    SE["sensor_event\nenv_sensor_data + chan"]
+    ST["sensor_trigger\ntrigger event + chan"]
+    SR["sensor_registry\nuid → metadata"]
+    FS["fake_sensors\nDT-driven drivers"]
+    SNTP["sntp_sync\nwall-clock SNTP"]
+    HTTP["http_dashboard\nweb dashboard + API"]
+    CLK["clock_display\nHH:MM ticker"]
+    LVGL["lvgl_display\nSDL window"]
+    CC["config_cmd\ncmd channel"]
+    LOC["location_registry\nnamed locations"]
+    SEL["sensor_event_log\nconsole logger"]
+    RS["remote_sensor\ntransport abstraction"]
+    FRS["fake_remote_sensor\ntesting stub"]
+    MQTT["mqtt_publisher\nMQTT egress"]
+    SNTX["sensor_node_tx\nLoRa TX batcher"]
+    LORA["lora_node\nLoRa packet encoder"]
+
+    ZBUS(["ZBUS\n(Zephyr)"])
+    NET(["NETWORKING\n(Zephyr)"])
+    HTTPD(["HTTP_SERVER\n(Zephyr)"])
+    LVGLLIB(["LVGL + DISPLAY\n(Zephyr)"])
+    SNTPLIB(["SNTP\n(Zephyr)"])
+    SETTINGS(["SETTINGS\n(Zephyr)"])
+    LORADRV(["LORA DRIVER\n(Zephyr)"])
+    PSACRYPTO(["PSA_CRYPTO\n(Zephyr)"])
+
+    APP --&gt;|Kconfig| SE
+    APP --&gt;|Kconfig| ST
+    APP --&gt;|Kconfig| SR
+    APP --&gt;|Kconfig| FS
+    APP --&gt;|Kconfig| SNTP
+    APP --&gt;|Kconfig| HTTP
+    APP --&gt;|Kconfig| CLK
+    APP --&gt;|Kconfig| LVGL
+    APP --&gt;|Kconfig| CC
+    APP --&gt;|Kconfig| LOC
+    APP --&gt;|Kconfig| SEL
+    APP --&gt;|Kconfig| RS
+    APP --&gt;|Kconfig| FRS
+    APP --&gt;|Kconfig| MQTT
+
+    SN_APP --&gt;|Kconfig| FS
+    SN_APP --&gt;|Kconfig| SE
+    SN_APP --&gt;|Kconfig| ST
+    SN_APP --&gt;|Kconfig| SR
+    SN_APP --&gt;|Kconfig| SEL
+    SN_APP --&gt;|Kconfig| SNTX
+
+    FS --&gt; SE
+    FS --&gt; ST
+    FS --&gt; SR
+    FS --&gt; CC
+
+    HTTP --&gt; SE
+    HTTP --&gt; SR
+    HTTP --&gt; LOC
+    HTTP --&gt; CC
+    HTTP --&gt; HTTPD
+
+    SNTP --&gt; CC
+    SNTP --&gt; NET
+    SNTP --&gt; SNTPLIB
+
+    SEL --&gt; SE
+
+    RS --&gt; SE
+    RS --&gt; SR
+    RS --&gt; SETTINGS
+    FRS --&gt; RS
+
+    MQTT --&gt; SE
+    MQTT --&gt; NET
+
+    LOC --&gt; SETTINGS
+
+    SNTX --&gt; SE
+    SNTX --&gt; CC
+    SNTX --&gt; LORA
+    LORA --&gt; LORADRV
+    LORA --&gt; PSACRYPTO
+
+    SE --&gt; ZBUS
+    ST --&gt; ZBUS
+    SR --&gt; ZBUS
+    CC --&gt; ZBUS
+
+    HTTP --&gt; NET
+    LVGL --&gt; LVGLLIB
+
+    style APP fill:#dbeafe,stroke:#3b82f6
+    style SN_APP fill:#dbeafe,stroke:#3b82f6
+    style ZBUS fill:#fce7f3,stroke:#db2777
+    style NET fill:#fce7f3,stroke:#db2777
+    style HTTPD fill:#fce7f3,stroke:#db2777
+    style LVGLLIB fill:#fce7f3,stroke:#db2777
+    style SNTPLIB fill:#fce7f3,stroke:#db2777
+    style SETTINGS fill:#fce7f3,stroke:#db2777
+    style LORADRV fill:#fce7f3,stroke:#db2777
+    style PSACRYPTO fill:#fce7f3,stroke:#db2777
+</code></pre>
+<h2 id="boot-sequence">Boot Sequence</h2>
+<p>SYS_INIT boot ordering by priority.</p>
+<pre class="mermaid"><code>---
+title: SYS_INIT Boot Sequence (APPLICATION Priority)
+---
+sequenceDiagram
+    participant KERNEL as Zephyr Kernel
+    participant TRACE as trace_recorder&lt;br/&gt;priority 1
+    participant SNTP as sntp_sync&lt;br/&gt;priority 80
+    participant FT as fake_temperature&lt;br/&gt;priority 90
+    participant FH as fake_humidity&lt;br/&gt;priority 91
+    participant LVGL as lvgl_display&lt;br/&gt;priority 91
+    participant CO2 as fake_co2&lt;br/&gt;priority 92
+    participant RSM as remote_sensor_mgr&lt;br/&gt;priority 92
+    participant VOC as fake_voc&lt;br/&gt;priority 93
+    participant FRS as fake_remote_sensor&lt;br/&gt;priority 93
+    participant RSET as remote_sensor_settings&lt;br/&gt;priority 94
+    participant SEL as sensor_event_log&lt;br/&gt;priority 95
+    participant LOC as location_registry&lt;br/&gt;priority 96
+    participant DASH as http_dashboard&lt;br/&gt;priority 97
+    participant MQTTP as mqtt_publisher&lt;br/&gt;priority 98
+    participant TMR as fake_sensors_timer&lt;br/&gt;priority 99
+    participant CLK as clock_display&lt;br/&gt;priority 99
+    participant MAIN as main()
+
+    KERNEL-&gt;&gt;TRACE: trace_recorder_init()
+    TRACE-&gt;&gt;TRACE: k_thread_foreach(assign_existing_thread)
+    TRACE-&gt;&gt;TRACE: override __weak tracing hooks
+    TRACE-&gt;&gt;TRACE: trace_ready = true
+    TRACE--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;SNTP: sntp_sync_init()
+    SNTP-&gt;&gt;SNTP: initial SNTP query (blocking)
+    SNTP-&gt;&gt;SNTP: schedule periodic_work (K_SECONDS(3600))
+    SNTP--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;FT: fake_temperature_init()
+    FT-&gt;&gt;FT: sensor_registry_register(uid, ...)
+    FT-&gt;&gt;FT: zbus_chan_add_obs(sensor_trigger_chan)
+    FT-&gt;&gt;FT: pub sensor_trigger_event(STARTUP)
+    FT--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;FH: fake_humidity_init()
+    FH-&gt;&gt;FH: sensor_registry_register(uid, ...)
+    FH-&gt;&gt;FH: zbus_chan_add_obs(sensor_trigger_chan)
+    FH-&gt;&gt;FH: pub sensor_trigger_event(STARTUP)
+    FH--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;LVGL: lvgl_display_init()
+    LVGL-&gt;&gt;LVGL: zbus_chan_add_obs(sensor_event_chan)
+    LVGL-&gt;&gt;LVGL: start LVGL workqueue thread
+    LVGL--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;CO2: fake_co2_init()
+    CO2-&gt;&gt;CO2: sensor_registry_register(uid, ...)
+    CO2-&gt;&gt;CO2: zbus_chan_add_obs(sensor_trigger_chan)
+    CO2-&gt;&gt;CO2: pub sensor_trigger_event(STARTUP)
+    CO2--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;RSM: remote_sensor_manager_init()
+    RSM-&gt;&gt;RSM: zbus_chan_add_obs(remote_discovery_chan)
+    RSM-&gt;&gt;RSM: pub remote_scan_ctrl_event(START_ALL)
+    RSM--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;VOC: fake_voc_init()
+    VOC-&gt;&gt;VOC: sensor_registry_register(uid, ...)
+    VOC-&gt;&gt;VOC: zbus_chan_add_obs(sensor_trigger_chan)
+    VOC-&gt;&gt;VOC: pub sensor_trigger_event(STARTUP)
+    VOC--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;FRS: fake_remote_sensor_init()
+    FRS-&gt;&gt;FRS: init node state + start simulation timers
+    FRS--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;RSET: remote_sensor_settings_init()
+    RSET-&gt;&gt;RSET: load persisted peer list → re-register known remote sensors
+    RSET--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;SEL: sensor_event_log_init()
+    SEL-&gt;&gt;SEL: zbus_chan_add_obs(sensor_event_chan)
+    Note over SEL: also at priority 95: sensor_registry settings load,&lt;br/&gt;sntp_sync config_cmd init, fake_sensors config_cmd init
+    SEL--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;LOC: location_registry_settings_load()
+    LOC-&gt;&gt;LOC: load persisted location names from settings
+    LOC--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;DASH: http_dashboard_init()
+    DASH-&gt;&gt;DASH: zbus_chan_add_obs(sensor_event_chan)
+    DASH-&gt;&gt;DASH: HTTP_SERVICE start on port 8080
+    DASH--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;MQTTP: mqtt_publisher_init()
+    MQTTP-&gt;&gt;MQTTP: zbus_chan_add_obs(sensor_event_chan)
+    MQTTP-&gt;&gt;MQTTP: start publisher thread (connect to broker)
+    MQTTP--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;TMR: fake_sensors_timer_init()
+    TMR-&gt;&gt;TMR: k_timer_start(AUTO_PUBLISH_MS)
+    TMR--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;CLK: clock_display_init()
+    CLK-&gt;&gt;CLK: k_work_reschedule(K_NO_WAIT)
+    CLK--&gt;&gt;KERNEL: return 0
+
+    KERNEL-&gt;&gt;MAIN: main()
+    Note over MAIN: if CONFIG_LVGL_DISPLAY:&lt;br/&gt;  lvgl_display_run() — never returns&lt;br/&gt;else:&lt;br/&gt;  k_sleep(K_FOREVER)
+</code></pre>
+<h2 id="http-config-flow">HTTP Config Flow</h2>
+<p>POST /api/config side-effects.</p>
+<pre class="mermaid"><code>---
+title: HTTP Dashboard — POST /api/config Side-Effects
+---
+sequenceDiagram
+    participant BR as Browser
+    participant HTTP as HTTP Server Thread
+    participant CC as config_cmd_chan&lt;br/&gt;(zbus)
+    participant FS as fake_sensors_timer
+    participant SNTP as sntp_sync
+    participant SR as sensor_registry
+    participant LOC as location_registry
+    participant MQTTP as mqtt_publisher
+
+    BR-&gt;&gt;HTTP: POST /api/config&lt;br/&gt;trigger_interval_ms=2000&lt;br/&gt;sntp_server=ntp.ubuntu.com&lt;br/&gt;action=sntp_resync&lt;br/&gt;sensor_1_name=Kitchen&lt;br/&gt;mqtt_enabled=true
+
+    Note over HTTP: Parse URL-encoded body&lt;br/&gt;form_extract() each field
+
+    alt trigger_interval_ms present
+        HTTP-&gt;&gt;CC: publish CONFIG_CMD_SET_TRIGGER_INTERVAL
+        CC--&gt;&gt;FS: zbus listener callback
+        FS-&gt;&gt;FS: k_timer_start(&amp;g_auto_timer,&lt;br/&gt;K_MSEC(2000), K_MSEC(2000))
+    end
+
+    alt sntp_server present
+        HTTP-&gt;&gt;HTTP: update sntp_server_buf&lt;br/&gt;(spinlock-protected snapshot)
+    end
+
+    alt action=sntp_resync
+        HTTP-&gt;&gt;CC: publish CONFIG_CMD_SNTP_RESYNC
+        CC--&gt;&gt;SNTP: zbus listener callback
+        SNTP-&gt;&gt;SNTP: k_work_reschedule(&amp;immediate_work, K_NO_WAIT)
+        Note over SNTP: Runs async in work queue&lt;br/&gt;performs SNTP query
+    end
+
+    alt sensor_&lt;uid&gt;_name present and USER_META enabled
+        HTTP-&gt;&gt;SR: sensor_registry_set_meta(uid, .display_name="Kitchen")
+        alt SETTINGS enabled
+            SR-&gt;&gt;SR: settings_save_subtree(...)
+        end
+    end
+
+    alt action=add_location / action=remove_location
+        HTTP-&gt;&gt;LOC: location_registry_add/remove(name)
+        alt SETTINGS enabled
+            LOC-&gt;&gt;LOC: settings_save_subtree(...)
+        end
+    end
+
+    alt mqtt_* fields present
+        HTTP-&gt;&gt;CC: publish CONFIG_CMD_MQTT_SET_*
+        CC--&gt;&gt;MQTTP: zbus listener callback
+        MQTTP-&gt;&gt;MQTTP: update config, reconnect if needed
+    end
+
+    HTTP--&gt;&gt;BR: 303 See Other → /config
+</code></pre>
+<h2 id="concurrency-snapshot-pattern">Concurrency — Snapshot Pattern</h2>
+<p>How the HTTP dashboard safely shares ring buffer data between an ISR-derived producer
+and an HTTP handler thread without holding the lock during serialisation.</p>
+<pre class="mermaid"><code>---
+title: Concurrency — Snapshot Pattern
+---
+sequenceDiagram
+    participant ISR as fake_sensors_timer&lt;br/&gt;(k_timer ISR)
+    participant TRIG as sensor_trigger_chan&lt;br/&gt;(zbus)
+    participant SENSOR as fake_temperature&lt;br/&gt;(zbus listener)
+    participant EVCHAN as sensor_event_chan&lt;br/&gt;(zbus)
+    participant DASH_L as http_dashboard&lt;br/&gt;listener (ISR-derived)
+    participant RING as ring_buffer&lt;br/&gt;(shared state)
+    participant DASH_H as http_dashboard&lt;br/&gt;HTTP handler thread
+    participant BR as Browser
+
+    Note over ISR: k_timer fires (ISR context)
+    ISR-&gt;&gt;TRIG: pub sensor_trigger_event K_NO_WAIT
+    TRIG-&gt;&gt;SENSOR: listener callback (zbus thread)
+    SENSOR-&gt;&gt;EVCHAN: pub env_sensor_data K_NO_WAIT
+    EVCHAN-&gt;&gt;DASH_L: listener callback (ISR-derived)
+    Note over DASH_L: k_spinlock_lock (ISR-safe)
+    DASH_L-&gt;&gt;RING: append (ts, q31)
+    Note over DASH_L: k_spinlock_unlock
+    DASH_L--&gt;&gt;EVCHAN: return immediately
+
+    Note over BR,DASH_H: Later — HTTP GET /api/data
+    BR-&gt;&gt;DASH_H: GET /api/data
+    Note over DASH_H: k_spinlock_lock
+    DASH_H-&gt;&gt;RING: memcpy → local snapshot
+    Note over DASH_H: k_spinlock_unlock
+    Note over DASH_H: serialize snapshot → JSON&lt;br/&gt;(no lock held — O(n) safe)
+    DASH_H--&gt;&gt;BR: 200 OK { sensors: [...] }
+</code></pre>
+<h2 id="fota-update-flow">FOTA Update Flow</h2>
+<p>End-to-end firmware update: HTTP upload → MCUboot swap → confirm.</p>
+<pre class="mermaid"><code>---
+title: FOTA Update Flow
+---
+sequenceDiagram
+    participant DEV as Developer&lt;br/&gt;(browser / curl)
+    participant HTTP as HTTP dashboard&lt;br/&gt;/api/fota/*
+    participant FLASH as flash_img&lt;br/&gt;(slot 1)
+    participant BOOT as MCUboot
+    participant APP as Zephyr app&lt;br/&gt;(new image)
+    participant CONF as fota_confirm&lt;br/&gt;SYS_INIT 99
+
+    DEV-&gt;&gt;HTTP: POST /api/fota/upload&lt;br/&gt;(zephyr.signed.bin, octet-stream)
+    Note over HTTP: flash_img_init(slot1)&lt;br/&gt;stream chunks via&lt;br/&gt;flash_img_buffered_write()
+    HTTP-&gt;&gt;FLASH: write image progressively
+    HTTP--&gt;&gt;DEV: 200 OK { sha256: "..." }
+
+    DEV-&gt;&gt;HTTP: POST /api/fota/apply
+    HTTP-&gt;&gt;BOOT: boot_request_upgrade(TEST)
+    Note over HTTP: k_work_schedule reboot +2 s
+    HTTP--&gt;&gt;DEV: 200 OK
+    Note over HTTP: reboot
+
+    Note over BOOT: Verify ED25519 signature
+    Note over BOOT: SWAP_MOVE slot1 → slot0
+    BOOT-&gt;&gt;APP: boot new image
+
+    Note over APP: All SYS_INIT libraries init
+    APP-&gt;&gt;CONF: SYS_INIT APPLICATION 99
+    Note over CONF: k_work_schedule confirm +5 s
+    Note over CONF: (settle: HTTP, MQTT, SNTP bind sockets)
+    CONF-&gt;&gt;BOOT: boot_write_img_confirmed()
+    Note over CONF: LOG_INF "firmware update confirmed"
+
+    Note over BOOT,APP: If app crashes before confirm:&lt;br/&gt;next reset → MCUboot detects&lt;br/&gt;unconfirmed slot0 → SWAP_MOVE&lt;br/&gt;reverses → previous image restored
+</code></pre>
+<h2 id="integration-test-pipeline">Integration Test Pipeline</h2>
+<p>How Twister, the native_sim binary, and pytest interact during a test run.</p>
+<pre class="mermaid"><code>---
+title: Integration Test Pipeline
+---
+sequenceDiagram
+    participant TW as west twister
+    participant BUILD as CMake / west build&lt;br/&gt;(native_sim/native/64)
+    participant DUT as zephyr.exe&lt;br/&gt;(DUT process)
+    participant PY as pytest session
+    participant SHELL as ShellHarness&lt;br/&gt;(UART pty)
+    participant HTTP as HttpHarness&lt;br/&gt;(port 8080)
+
+    TW-&gt;&gt;BUILD: build apps/gateway
+    BUILD--&gt;&gt;TW: zephyr.exe
+
+    TW-&gt;&gt;DUT: launch zephyr.exe (subprocess)
+    Note over DUT: SYS_INIT chain runs&lt;br/&gt;HTTP server binds :8080&lt;br/&gt;shell pty opens
+
+    TW-&gt;&gt;PY: invoke pytest --device-serial=&lt;pty&gt;
+    PY-&gt;&gt;PY: device_ready fixture:&lt;br/&gt;wait for ready sentinel
+
+    Note over DUT,PY: gateway prints ready sentinel
+    DUT--&gt;&gt;PY: sentinel matched
+
+    loop test suite
+        PY-&gt;&gt;SHELL: send shell command
+        SHELL-&gt;&gt;DUT: write to pty
+        DUT--&gt;&gt;SHELL: shell output
+        SHELL--&gt;&gt;PY: parsed response
+
+        PY-&gt;&gt;HTTP: HTTP request
+        HTTP-&gt;&gt;DUT: TCP :8080
+        DUT--&gt;&gt;HTTP: HTTP response
+        HTTP--&gt;&gt;PY: parsed JSON / status
+    end
+
+    PY--&gt;&gt;TW: pytest exit code + JUnit XML
+    TW-&gt;&gt;DUT: terminate process
+    TW--&gt;&gt;TW: collect results / pass-fail
+</code></pre>
+<h2 id="renode-trace-pipeline">Renode Trace Pipeline</h2>
+<p>How the trace recorder, Renode, and parse-trace.py interact during the trace-and-analyze workflow.</p>
+<pre class="mermaid"><code>---
+title: Renode Trace Pipeline
+---
+flowchart LR
+    subgraph Build
+        A[gateway source] --&gt; B[west build&lt;br/&gt;+ trace_recorder Kconfig]
+        B --&gt; C[zephyr.elf]
+    end
+
+    subgraph Renode
+        C --&gt; D[Renode emulation&lt;br/&gt;frdm_mcxn947.resc]
+        D --&gt; E[CPU EnableProfilerPerfetto]
+        D --&gt; F[CPU LogFunctionNames]
+        D --&gt; G[sysbus ReadMemory&lt;br/&gt;trace_records buffer]
+        E --&gt; H[trace_functions.perfetto]
+        F --&gt; H
+        G --&gt; I[trace.bin]
+    end
+
+    subgraph Post-process
+        I --&gt; J[parse-trace.py]
+        C --&gt; J
+        H --&gt; J
+        J --&gt; K[trace_combined.json&lt;br/&gt;Perfetto Chrome Tracing]
+        J --&gt; L[stdout summary&lt;br/&gt;runtime %, switches]
+        J --&gt; M[trace_threads.json&lt;br/&gt;raw timeline]
+    end
+
+    subgraph View
+        K --&gt; N[Perfetto UI&lt;br/&gt;ui.perfetto.dev]
+    end
+</code></pre>
+<h2 id="fake-sensor-data-flow">Fake Sensor Data Flow</h2>
+<p>Fake sensor lifecycle: board overlay → DT_FOREACH → SYS_INIT → trigger → publish.</p>
+<pre class="mermaid"><code>flowchart TD
+    A["Board overlay\nnative_sim.overlay"] --&gt;|DT_FOREACH_STATUS_OKAY| B["fake_temperature.c\nfake_humidity.c\n..."]
+    B --&gt;|SYS_INIT APPLICATION| C["Subscribe sensor_trigger_chan\nRegister fake_sensor_entry\nRegister sensor_registry metadata"]
+    C --&gt;|runtime: trigger event| D["on_trigger()\nq31_encode()\nzbus_chan_pub(sensor_event_chan)"]
+    D --&gt; E["sensor_event_log"]
+    D --&gt; F["http_dashboard\nring buffer"]
+    D --&gt; G["mqtt_publisher"]
+</code></pre>
+<h2 id="sensor-node-tx-data-flow">Sensor Node TX Data Flow</h2>
+<p>Sensor event accumulation → batched LoRa transmission sequence.</p>
+<pre class="mermaid"><code>---
+title: Sensor Node TX Data Flow
+---
+flowchart LR
+    SENSORS["Fake Sensors\n(temp, hum, CO2, VOC)"]
+    TRIG["sensor_trigger_chan"]
+    EVT["sensor_event_chan\nenv_sensor_data"]
+
+    subgraph sensor_node_tx
+        LISTENER["zbus Listener\n(ADR-002: no blocking)"]
+        LOCK["k_spinlock"]
+        BUF["Ring Buffer\nenv_sensor_data[20]"]
+        WIRE["Wire Array\nlora_reading[20]\n5 bytes each"]
+        TIMER["k_work_delayable\n(CONFIG_SENSOR_NODE_TX_INTERVAL_S)"]
+        FORCE["FORCE_TX\nconfig_cmd_chan"]
+    end
+
+    LORA["lora_node\nlora_node_transmit()"]
+    AIR["((LoRa RF))"]
+
+    SENSORS --&gt;|trigger| TRIG
+    TRIG --&gt;|sample + publish| SENSORS
+    SENSORS --&gt;|publish| EVT
+    EVT --&gt;|callback| LISTENER
+    LISTENER --&gt;|lock| LOCK
+    LOCK --&gt;|copy| BUF
+    BUF --&gt;|unlock| LOCK
+
+    TIMER --&gt;|expiry| TX_PATH
+    FORCE --&gt;|command| TX_PATH
+
+    subgraph TX_PATH[TX Path]
+        SNAP["Lock → snapshot → convert\n→ unlock → transmit"]
+    end
+
+    BUF --&gt;|convert| WIRE
+    WIRE --&gt;|5-byte readings| LORA
+    SNAP --&gt;|uses| BUF
+    SNAP --&gt;|writes| WIRE
+    SNAP --&gt;|calls| LORA
+    LORA --&gt; AIR
+
+    style sensor_node_tx fill:#f0fdf4,stroke:#22c55e
+    style TX_PATH fill:#fef3c7,stroke:#f59e0b
+    style SENSORS fill:#dbeafe,stroke:#3b82f6
+    style LORA fill:#ede9fe,stroke:#8b5cf6
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mermaid-zoom.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
