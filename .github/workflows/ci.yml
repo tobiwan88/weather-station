@@ -499,6 +499,14 @@ jobs:
           git fetch origin gh-pages
           git checkout gh-pages
           rm -rf deploy/                # remove accidentally-committed staging dir
+          # Ensure .gitignore exists (prevent accidental commits of .github/, deploy/)
+          cat > .gitignore <<'GITIGNORE_EOF'
+          # CI staging / temp files
+          deploy/
+
+          # GitHub workflows (should never be on gh-pages)
+          .github/
+          GITIGNORE_EOF
           mkdir -p "$TARGET_DIR"
           # Remove old results for this ref (overwrite, not accumulate)
           [[ -n "$TARGET_DIR" && "$TARGET_DIR" == dev/traces/* ]] || { echo "ERROR: unsafe TARGET_DIR"; exit 1; }
@@ -510,7 +518,12 @@ jobs:
           fi
           if [ -d /tmp/deploy/twister ] && [ "$(ls -A /tmp/deploy/twister 2>/dev/null)" ]; then
             mkdir -p "$TARGET_DIR/twister"
-            cp -r /tmp/deploy/twister/* "$TARGET_DIR/twister/"
+            # Only copy report files, not build directories (which contain
+            # thousands of intermediate build artifacts that bloat gh-pages).
+            for f in twister.json twister.xml twister.log twister_report.xml \
+                     twister_suite_report.xml ztest.json testplan.json; do
+              cp /tmp/deploy/twister/"$f" "$TARGET_DIR/twister/" 2>/dev/null || true
+            done
           fi
           if [ -d /tmp/deploy/renode ] && [ "$(ls -A /tmp/deploy/renode 2>/dev/null)" ]; then
             mkdir -p "$TARGET_DIR/renode"
