@@ -1,0 +1,166 @@
+Loading Zephyr default modules (Zephyr base).
+-- Application: /__w/weather-station/weather-station/tests/fake_sensors
+-- CMake version: 3.31.6
+-- Found Python3: /home/zephyr/.venv/bin/python3 (found suitable version "3.13.5", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /__w/weather-station/zephyr/.cache
+-- Zephyr version: 4.4.0 (/__w/weather-station/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: native_sim, qualifiers: native/64
+-- Found host-tools: zephyr 1.0.1 (/home/zephyr/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /usr/bin/dtc (found suitable version "1.7.2", minimum required is "1.4.6")
+-- Found BOARD.dts: /__w/weather-station/zephyr/boards/native/native_sim/native_sim_64.dts
+-- Found devicetree overlay: /__w/weather-station/weather-station/tests/fake_sensors/boards/native_sim_native_64.overlay
+-- Generated zephyr.dts: /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/fake_sensors/weather_station.fake_sensors/zephyr/zephyr.dts
+-- Generated pickled edt: /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/fake_sensors/weather_station.fake_sensors/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/fake_sensors/weather_station.fake_sensors/zephyr/include/generated/zephyr/devicetree_generated.h
+Parsing /__w/weather-station/zephyr/Kconfig
+Loaded configuration '/__w/weather-station/zephyr/boards/native/native_sim/native_sim_64_defconfig'
+Merged configuration '/__w/weather-station/weather-station/tests/fake_sensors/prj.conf'
+Merged configuration '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/fake_sensors/weather_station.fake_sensors/twister/testsuite_extra.conf'
+Merged configuration '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/fake_sensors/weather_station.fake_sensors/zephyr/misc/generated/extra_kconfig_options.conf'
+Configuration saved to '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/fake_sensors/weather_station.fake_sensors/zephyr/.config'
+Kconfig header saved to '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/fake_sensors/weather_station.fake_sensors/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /usr/bin/ld.bfd (found version "2.44")
+-- The C compiler identification is GNU 14.2.0
+-- The CXX compiler identification is unknown
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/gcc
+-- Found gen_kobject_list: /__w/weather-station/zephyr/scripts/build/gen_kobject_list.py
+-- Configuring done (13.4s)
+-- Generating done (0.2s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    TC_NAME
+
+
+-- Build files have been written to: /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/fake_sensors/weather_station.fake_sensors
+[1/125] Preparing syscall dependency handling
+
+[2/125] Generating misc/generated/syscalls_subdirs.trigger
+[3/125] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[4/125] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[5/125] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[6/125] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[7/125] Generating include/generated/zephyr/driver-validation.h
+[8/125] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[9/125] Generating ../../include/generated/zephyr/heap_constants.h
+[10/125] Building C object zephyr/CMakeFiles/offsets.dir/arch/posix/core/offsets/offsets.c.obj
+[11/125] Generating include/generated/zephyr/offsets.h
+[12/125] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.0 (/__w/weather-station/zephyr), build: 37cce8aca56f
+[13/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/libc/validate_libc.c.obj
+[14/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/printk.c.obj
+[15/125] Building C object CMakeFiles/app.dir/src/main.c.obj
+[16/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/sem.c.obj
+[17/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_packaged.c.obj
+[18/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/clock.c.obj
+[19/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/heap/heap.c.obj
+[20/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/thread_entry.c.obj
+[21/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_complete.c.obj
+[22/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf.c.obj
+[23/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/set.c.obj
+[24/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/dec.c.obj
+[25/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/hex.c.obj
+[26/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/assert.c.obj
+[27/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/timeutil.c.obj
+[28/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitmask.c.obj
+[29/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitarray.c.obj
+[30/125] Building C object zephyr/CMakeFiles/zephyr.dir/misc/generated/configs.c.obj
+[31/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt.c.obj
+[32/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/rb.c.obj
+[33/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/ring_buffer.c.obj
+[34/125] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt_common.c.obj
+[35/125] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_cache.c.obj
+[36/125] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_msg.c.obj
+[37/125] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/tracing/tracing_none.c.obj
+[38/125] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_mgmt.c.obj
+[39/125] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/backends/log_backend_native_posix.c.obj
+[40/125] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_core.c.obj
+[41/125] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_output.c.obj
+[42/125] Generating linker_zephyr_pre0.cmd
+[43/125] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/init.c.obj
+[44/125] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/cpuhalt.c.obj
+[45/125] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/posix_core_nsi.c.obj
+[46/125] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/irq.c.obj
+[47/125] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/native_remap.c.obj
+[48/125] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/native_tasks.c.obj
+[49/125] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/fatal.c.obj
+[50/125] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/swap.c.obj
+[51/125] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/cmdline.c.obj
+[52/125] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/misc.c.obj
+[53/125] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/soc.c.obj
+[54/125] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/thread.c.obj
+[55/125] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/cpu_wait.c.obj
+[56/125] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/posix_arch_if.c.obj
+[57/125] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/nsi_if.c.obj
+[58/125] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest.c.obj
+[59/125] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/irq_handler.c.obj
+[60/125] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_rules.c.obj
+[61/125] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_error_hook.c.obj
+[62/125] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_posix.c.obj
+[63/125] Building C object zephyr/subsys/zbus/CMakeFiles/subsys__zbus.dir/zbus_runtime_observers.c.obj
+[64/125] Building C object zephyr/subsys/zbus/CMakeFiles/subsys__zbus.dir/zbus.c.obj
+[65/125] Building C object zephyr/drivers/console/CMakeFiles/drivers__console.dir/posix_arch_console.c.obj
+[66/125] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/sys_clock_init.c.obj
+[67/125] Building C object zephyr/subsys/zbus/CMakeFiles/subsys__zbus.dir/zbus_iterable_sections.c.obj
+[68/125] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/native_sim_timer.c.obj
+[69/125] Building C object modules/weather-station/lib/sensor_trigger/CMakeFiles/..__weather-station__lib__sensor_trigger.dir/src/sensor_trigger.c.obj
+[70/125] Building C object modules/weather-station/lib/sensor_event/CMakeFiles/..__weather-station__lib__sensor_event.dir/src/sensor_event.c.obj
+[71/125] Building C object modules/weather-station/lib/sensor_registry/CMakeFiles/..__weather-station__lib__sensor_registry.dir/src/sensor_registry.c.obj
+[72/125] Building C object modules/weather-station/lib/fake_sensors/CMakeFiles/..__weather-station__lib__fake_sensors.dir/src/fake_humidity.c.obj
+[73/125] Building C object modules/weather-station/lib/fake_sensors/CMakeFiles/..__weather-station__lib__fake_sensors.dir/src/fake_temperature.c.obj
+[74/125] Building C object modules/weather-station/lib/fake_sensors/CMakeFiles/..__weather-station__lib__fake_sensors.dir/src/fake_co2.c.obj
+[75/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/main_weak.c.obj
+[76/125] Building C object modules/weather-station/lib/fake_sensors/CMakeFiles/..__weather-station__lib__fake_sensors.dir/src/fake_voc.c.obj
+[77/125] Building C object modules/weather-station/lib/fake_sensors/CMakeFiles/..__weather-station__lib__fake_sensors.dir/src/fake_sensors_timer.c.obj
+[78/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/busy_wait.c.obj
+[79/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/banner.c.obj
+[80/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/device.c.obj
+[81/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/errno.c.obj
+[82/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/version.c.obj
+[83/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/fatal.c.obj
+[84/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/init.c.obj
+[85/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/kheap.c.obj
+[86/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/float.c.obj
+[87/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mem_slab.c.obj
+[88/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/idle.c.obj
+[89/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mailbox.c.obj
+[90/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/msg_q.c.obj
+[91/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/sem.c.obj
+[92/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mutex.c.obj
+[93/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/condvar.c.obj
+[94/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/queue.c.obj
+[95/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/system_work_q.c.obj
+[96/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/stack.c.obj
+[97/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/thread.c.obj
+[98/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timeslicing.c.obj
+[99/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/spinlock_validate.c.obj
+[100/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/pipe.c.obj
+[101/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/work.c.obj
+[102/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/sched.c.obj
+[103/125] Linking C static library app/libapp.a
+[104/125] Building C object zephyr/CMakeFiles/zephyr_pre0.dir/misc/empty_file.c.obj
+[105/125] Linking C static library zephyr/libzephyr.a
+[106/125] Linking C static library zephyr/arch/arch/posix/core/libarch__posix__core.a
+[107/125] Linking C static library zephyr/arch/common/libarch__common.a
+[108/125] Linking C static library zephyr/soc/soc/native/libsoc__native__inf_clock.a
+[109/125] Linking C static library zephyr/boards/native/native_sim/libboards__native__native_sim.a
+[110/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timeout.c.obj
+[111/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/dynamic_disabled.c.obj
+[112/125] Linking C static library zephyr/subsys/testsuite/ztest/libsubsys__testsuite__ztest.a
+[113/125] Linking C static library zephyr/drivers/console/libdrivers__console.a
+[114/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timer.c.obj
+[115/125] Linking C static library zephyr/subsys/zbus/libsubsys__zbus.a
+[116/125] Linking C static library modules/weather-station/lib/sensor_event/lib..__weather-station__lib__sensor_event.a
+[117/125] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mempool.c.obj
+[118/125] Linking C static library zephyr/drivers/timer/libdrivers__timer.a
+[119/125] Linking C static library modules/weather-station/lib/sensor_trigger/lib..__weather-station__lib__sensor_trigger.a
+[120/125] Linking C static library modules/weather-station/lib/sensor_registry/lib..__weather-station__lib__sensor_registry.a
+[121/125] Linking C static library modules/weather-station/lib/fake_sensors/lib..__weather-station__lib__fake_sensors.a
+[122/125] Linking C static library zephyr/kernel/libkernel.a
+[123/125] Linking C executable zephyr/zephyr.elf
+Generating files from /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/fake_sensors/weather_station.fake_sensors/zephyr/zephyr.elf for board: native_sim/native/64
+[124/125] Building native simulator runner, and linking final executable
+[125/125] Running utility command for native_runner_executable

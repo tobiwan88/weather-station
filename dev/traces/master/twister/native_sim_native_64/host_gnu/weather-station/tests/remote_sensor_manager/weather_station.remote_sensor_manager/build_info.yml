@@ -1,0 +1,52 @@
+cmake:
+  application:
+    configuration-dir: '/__w/weather-station/weather-station/tests/remote_sensor_manager'
+    source-dir: '/__w/weather-station/weather-station/tests/remote_sensor_manager'
+  board:
+    name: 'native_sim'
+    path:
+     - '/__w/weather-station/zephyr/boards/native/native_sim'
+    qualifiers: 'native/64'
+    revision: ''
+  devicetree:
+    bindings-dirs:
+     - '/__w/weather-station/weather-station/dts/bindings'
+     - '/__w/weather-station/zephyr/dts/bindings'
+    files:
+     - '/__w/weather-station/zephyr/boards/native/native_sim/native_sim_64.dts'
+    include-dirs:
+     - '/__w/weather-station/weather-station/include'
+     - '/__w/weather-station/weather-station/dts'
+     - '/__w/weather-station/modules/hal/nxp/dts'
+     - '/__w/weather-station/modules/hal/stm32/dts'
+     - '/__w/weather-station/zephyr/include'
+     - '/__w/weather-station/zephyr/include/zephyr'
+     - '/__w/weather-station/zephyr/dts/common'
+     - '/__w/weather-station/zephyr/dts/vendor'
+     - '/__w/weather-station/zephyr/dts/rx'
+     - '/__w/weather-station/zephyr/dts/x86'
+     - '/__w/weather-station/zephyr/dts/xtensa'
+     - '/__w/weather-station/zephyr/dts/sparc'
+     - '/__w/weather-station/zephyr/dts/riscv'
+     - '/__w/weather-station/zephyr/dts/posix'
+     - '/__w/weather-station/zephyr/dts/arm64'
+     - '/__w/weather-station/zephyr/dts/arm'
+     - '/__w/weather-station/zephyr/dts/arc'
+     - '/__w/weather-station/zephyr/dts'
+  kconfig:
+    extra-user-files:
+     - '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/remote_sensor_manager/weather_station.remote_sensor_manager/twister/testsuite_extra.conf'
+    files:
+     - '/__w/weather-station/zephyr/boards/native/native_sim/native_sim_64_defconfig'
+     - '/__w/weather-station/weather-station/tests/remote_sensor_manager/prj.conf'
+     - '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/remote_sensor_manager/weather_station.remote_sensor_manager/twister/testsuite_extra.conf'
+     - '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/remote_sensor_manager/weather_station.remote_sensor_manager/zephyr/misc/generated/extra_kconfig_options.conf'
+    user-files:
+     - '/__w/weather-station/weather-station/tests/remote_sensor_manager/prj.conf'
+  toolchain:
+    name: 'host'
+    path: ''
+  zephyr:
+    version: '4.4.0'
+    zephyr-base: '/__w/weather-station/zephyr'
+version: '0.1.0'

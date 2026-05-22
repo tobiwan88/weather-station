@@ -1,0 +1,1 @@
+"mcuboot":"/__w/weather-station/bootloader/mcuboot":"/__w/weather-station/bootloader/mcuboot/boot/zephyr/sysbuild"

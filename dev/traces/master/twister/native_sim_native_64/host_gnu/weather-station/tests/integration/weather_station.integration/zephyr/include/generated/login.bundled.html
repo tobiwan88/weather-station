@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Weather Station — Sign In</title>
+  <style>
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #252836;
+  --border: #2e3246;
+  --text: #e2e8f0;
+  --text-muted: #8892a4;
+  --accent: #5b8dee;
+  --green: #22c55e;
+  --red: #ef4444;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.login-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 56px);
+  padding: 1.5rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.login-card h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.6rem;
+}
+
+.flash {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.flash.hidden { display: none; }
+
+.flash-error {
+  background: #450a0a;
+  border: 1px solid var(--red);
+  color: var(--red);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.field label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.field input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 0.45rem 0.65rem;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+
+.field input:focus { border-color: var(--accent); }
+
+.actions { margin-top: 0.5rem; }
+
+.btn-primary {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  transition: opacity 0.15s;
+}
+
+.btn-primary:hover { opacity: 0.85; }
+
+</style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Weather Station</h1>
+    </div>
+  </header>
+  <main class="login-main">
+    <div class="card login-card">
+      <h2>Sign In</h2>
+      <div id="loginError" class="flash flash-error hidden"></div>
+      <form id="loginForm">
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username"
+                 autocomplete="username" maxlength="64" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password"
+                 autocomplete="current-password" maxlength="64" required>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn-primary">Sign In</button>
+        </div>
+      </form>
+    </div>
+  </main>
+  <script>
+// login.js — submit login form via fetch, redirect on success
+
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var form = e.target;
+  var data = new URLSearchParams(new FormData(form)).toString();
+
+  fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: data,
+  }).then(function (r) {
+    if (r.status === 401) {
+      showError('Invalid username or password.');
+      return;
+    }
+    if (!r.ok) {
+      showError('Server error (' + r.status + ').');
+      return;
+    }
+    // Session cookie is set by the server (HttpOnly). Navigate to dashboard.
+    window.location.replace('/');
+  }).catch(function () {
+    showError('Connection error. Is the device reachable?');
+  });
+});
+
+function showError(msg) {
+  var el = document.getElementById('loginError');
+  if (el) {
+    el.textContent = msg;
+    el.classList.remove('hidden');
+  }
+}
+
+</script>
+</body>
+</html>

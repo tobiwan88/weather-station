@@ -1,0 +1,171 @@
+Loading Zephyr default modules (Zephyr base).
+-- Application: /__w/weather-station/weather-station/tests/trace_recorder
+-- CMake version: 3.31.6
+-- Found Python3: /home/zephyr/.venv/bin/python3 (found suitable version "3.13.5", minimum required is "3.12") found components: Interpreter
+-- Cache files will be written to: /__w/weather-station/zephyr/.cache
+-- Zephyr version: 4.4.0 (/__w/weather-station/zephyr)
+-- Found west (found suitable version "1.5.0", minimum required is "0.14.0")
+-- Board: native_sim, qualifiers: native/64
+-- Found host-tools: zephyr 1.0.1 (/home/zephyr/zephyr-sdk)
+-- Found toolchain: host (gcc/ld)
+-- Found Dtc: /usr/bin/dtc (found suitable version "1.7.2", minimum required is "1.4.6")
+-- Found BOARD.dts: /__w/weather-station/zephyr/boards/native/native_sim/native_sim_64.dts
+-- Generated zephyr.dts: /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/trace_recorder/weather_station.trace_recorder_malloc/zephyr/zephyr.dts
+-- Generated pickled edt: /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/trace_recorder/weather_station.trace_recorder_malloc/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/trace_recorder/weather_station.trace_recorder_malloc/zephyr/include/generated/zephyr/devicetree_generated.h
+
+warning: TRACE_RECORDER_SHELL (defined at /__w/weather-station/weather-
+station/lib/trace_recorder/Kconfig:29) was assigned the value 'y' but got the value 'n'. Check these
+unsatisfied dependencies: SHELL (=n). See
+http://docs.zephyrproject.org/latest/kconfig.html#CONFIG_TRACE_RECORDER_SHELL and/or look up
+TRACE_RECORDER_SHELL in the menuconfig/guiconfig interface. The Application Development Primer,
+Setting Configuration Values, and Kconfig - Tips and Best Practices sections of the manual might be
+helpful too.
+
+
+warning: TRACE_RECORDER_CMD_DUMP_MALLOC (defined at /__w/weather-station/weather-
+station/lib/trace_recorder/Kconfig:39) was assigned the value 'y' but got the value 'n'. Check these
+unsatisfied dependencies: TRACE_RECORDER_SHELL (=n). See
+http://docs.zephyrproject.org/latest/kconfig.html#CONFIG_TRACE_RECORDER_CMD_DUMP_MALLOC and/or look
+up TRACE_RECORDER_CMD_DUMP_MALLOC in the menuconfig/guiconfig interface. The Application Development
+Primer, Setting Configuration Values, and Kconfig - Tips and Best Practices sections of the manual
+might be helpful too.
+
+Parsing /__w/weather-station/zephyr/Kconfig
+Loaded configuration '/__w/weather-station/zephyr/boards/native/native_sim/native_sim_64_defconfig'
+Merged configuration '/__w/weather-station/weather-station/tests/trace_recorder/prj.conf'
+Merged configuration '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/trace_recorder/weather_station.trace_recorder_malloc/twister/testsuite_extra.conf'
+Merged configuration '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/trace_recorder/weather_station.trace_recorder_malloc/zephyr/misc/generated/extra_kconfig_options.conf'
+Configuration saved to '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/trace_recorder/weather_station.trace_recorder_malloc/zephyr/.config'
+Kconfig header saved to '/__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/trace_recorder/weather_station.trace_recorder_malloc/zephyr/include/generated/zephyr/autoconf.h'
+-- Found GnuLd: /usr/bin/ld.bfd (found version "2.44")
+-- The C compiler identification is GNU 14.2.0
+-- The CXX compiler identification is unknown
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/gcc
+-- Found gen_kobject_list: /__w/weather-station/zephyr/scripts/build/gen_kobject_list.py
+-- Configuring done (13.6s)
+-- Generating done (0.1s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    TC_NAME
+
+
+-- Build files have been written to: /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/trace_recorder/weather_station.trace_recorder_malloc
+[1/113] Preparing syscall dependency handling
+
+[2/113] Generating misc/generated/syscalls_subdirs.trigger
+[3/113] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[4/113] Generating include/generated/device-api-sections.ld, include/generated/device-api-sections.cmake
+[5/113] Generating include/generated/zephyr/kobj-types-enum.h, include/generated/zephyr/otype-to-str.h, include/generated/zephyr/otype-to-size.h
+[6/113] Generating include/generated/zephyr/syscall_dispatch.c, include/generated/zephyr/syscall_exports_llext.c, syscall_weakdefs_llext.c, include/generated/zephyr/syscall_list.h
+[7/113] Generating include/generated/zephyr/driver-validation.h
+[8/113] Building C object zephyr/lib/heap/CMakeFiles/heap_constants.dir/heap_constants.c.obj
+[9/113] Generating ../../include/generated/zephyr/heap_constants.h
+[10/113] Building C object zephyr/CMakeFiles/offsets.dir/arch/posix/core/offsets/offsets.c.obj
+[11/113] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.0 (/__w/weather-station/zephyr), build: 37cce8aca56f
+[12/113] Generating include/generated/zephyr/offsets.h
+[13/113] Building C object CMakeFiles/app.dir/src/main.c.obj
+[14/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/libc/validate_libc.c.obj
+[15/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/printk.c.obj
+[16/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_packaged.c.obj
+[17/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/clock.c.obj
+[18/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/heap/heap.c.obj
+[19/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/thread_entry.c.obj
+[20/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/sem.c.obj
+[21/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/dec.c.obj
+[22/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf.c.obj
+[23/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/assert.c.obj
+[24/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/hex.c.obj
+[25/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/set.c.obj
+[26/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/cbprintf_complete.c.obj
+[27/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/rb.c.obj
+[28/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitmask.c.obj
+[29/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt.c.obj
+[30/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/timeutil.c.obj
+[31/113] Building C object zephyr/CMakeFiles/zephyr.dir/misc/generated/configs.c.obj
+[32/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/ring_buffer.c.obj
+[33/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/getopt/getopt_common.c.obj
+[34/113] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_cache.c.obj
+[35/113] Building C object zephyr/CMakeFiles/zephyr.dir/lib/utils/bitarray.c.obj
+[36/113] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_msg.c.obj
+[37/113] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_mgmt.c.obj
+[38/113] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_output.c.obj
+[39/113] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/tracing/tracing_none.c.obj
+[40/113] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/log_core.c.obj
+[41/113] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/logging/backends/log_backend_native_posix.c.obj
+[42/113] Generating linker_zephyr_pre0.cmd
+[43/113] Building C object zephyr/arch/common/CMakeFiles/arch__common.dir/init.c.obj
+[44/113] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/irq.c.obj
+[45/113] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/fatal.c.obj
+[46/113] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/posix_core_nsi.c.obj
+[47/113] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/cpuhalt.c.obj
+[48/113] Building C object zephyr/CMakeFiles/zephyr.dir/subsys/tracing/user/tracing_user.c.obj
+[49/113] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/native_tasks.c.obj
+[50/113] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/swap.c.obj
+[51/113] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/native_remap.c.obj
+[52/113] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/cmdline.c.obj
+[53/113] Building C object zephyr/arch/arch/posix/core/CMakeFiles/arch__posix__core.dir/thread.c.obj
+[54/113] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/misc.c.obj
+[55/113] Building C object zephyr/soc/soc/native/CMakeFiles/soc__native__inf_clock.dir/soc.c.obj
+[56/113] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/posix_arch_if.c.obj
+[57/113] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/nsi_if.c.obj
+[58/113] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/cpu_wait.c.obj
+[59/113] Building C object zephyr/boards/native/native_sim/CMakeFiles/boards__native__native_sim.dir/irq_handler.c.obj
+[60/113] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_error_hook.c.obj
+[61/113] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_posix.c.obj
+[62/113] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest_rules.c.obj
+[63/113] Building C object zephyr/drivers/console/CMakeFiles/drivers__console.dir/posix_arch_console.c.obj
+[64/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/main_weak.c.obj
+[65/113] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/sys_clock_init.c.obj
+[66/113] Building C object zephyr/drivers/timer/CMakeFiles/drivers__timer.dir/native_sim_timer.c.obj
+[67/113] Building C object zephyr/subsys/testsuite/ztest/CMakeFiles/subsys__testsuite__ztest.dir/src/ztest.c.obj
+[68/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/busy_wait.c.obj
+[69/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/banner.c.obj
+[70/113] Building C object modules/weather-station/lib/trace_recorder/CMakeFiles/..__weather-station__lib__trace_recorder.dir/src/trace_recorder.c.obj
+[71/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/device.c.obj
+[72/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/errno.c.obj
+[73/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/version.c.obj
+[74/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/kheap.c.obj
+[75/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/init.c.obj
+[76/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/float.c.obj
+[77/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/idle.c.obj
+[78/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/fatal.c.obj
+[79/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mailbox.c.obj
+[80/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mem_slab.c.obj
+[81/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/msg_q.c.obj
+[82/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mutex.c.obj
+[83/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/sem.c.obj
+[84/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/system_work_q.c.obj
+[85/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/queue.c.obj
+[86/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/condvar.c.obj
+[87/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/stack.c.obj
+[88/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/thread.c.obj
+[89/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/pipe.c.obj
+[90/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/spinlock_validate.c.obj
+[91/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timeslicing.c.obj
+[92/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/thread_monitor.c.obj
+[93/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/work.c.obj
+[94/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timer.c.obj
+[95/113] Linking C static library app/libapp.a
+[96/113] Building C object zephyr/CMakeFiles/zephyr_pre0.dir/misc/empty_file.c.obj
+[97/113] Linking C static library zephyr/libzephyr.a
+[98/113] Linking C static library zephyr/arch/common/libarch__common.a
+[99/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/dynamic_disabled.c.obj
+[100/113] Linking C static library zephyr/arch/arch/posix/core/libarch__posix__core.a
+[101/113] Linking C static library zephyr/soc/soc/native/libsoc__native__inf_clock.a
+[102/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/timeout.c.obj
+[103/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/mempool.c.obj
+[104/113] Building C object zephyr/kernel/CMakeFiles/kernel.dir/sched.c.obj
+[105/113] Linking C static library zephyr/boards/native/native_sim/libboards__native__native_sim.a
+[106/113] Linking C static library zephyr/drivers/timer/libdrivers__timer.a
+[107/113] Linking C static library zephyr/drivers/console/libdrivers__console.a
+[108/113] Linking C static library modules/weather-station/lib/trace_recorder/lib..__weather-station__lib__trace_recorder.a
+[109/113] Linking C static library zephyr/subsys/testsuite/ztest/libsubsys__testsuite__ztest.a
+[110/113] Linking C static library zephyr/kernel/libkernel.a
+[111/113] Linking C executable zephyr/zephyr.elf
+Generating files from /__w/weather-station/weather-station/twister-out/native_sim_native_64/host_gnu/weather-station/tests/trace_recorder/weather_station.trace_recorder_malloc/zephyr/zephyr.elf for board: native_sim/native/64
+[112/113] Building native simulator runner, and linking final executable
+[113/113] Running utility command for native_runner_executable

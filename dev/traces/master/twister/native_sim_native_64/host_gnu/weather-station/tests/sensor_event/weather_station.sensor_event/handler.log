@@ -1,0 +1,42 @@
+*** Booting Zephyr OS build 37cce8aca56f ***
+Running TESTSUITE sensor_event_suite
+===================================================================
+START - test_env_sensor_data_size
+ PASS - test_env_sensor_data_size in 0.000 seconds
+===================================================================
+START - test_q31_co2_clamp
+ PASS - test_q31_co2_clamp in 0.000 seconds
+===================================================================
+START - test_q31_co2_roundtrip
+ PASS - test_q31_co2_roundtrip in 0.000 seconds
+===================================================================
+START - test_q31_humidity_roundtrip
+ PASS - test_q31_humidity_roundtrip in 0.000 seconds
+===================================================================
+START - test_q31_temperature_roundtrip
+ PASS - test_q31_temperature_roundtrip in 0.000 seconds
+===================================================================
+START - test_q31_voc_clamp
+ PASS - test_q31_voc_clamp in 0.000 seconds
+===================================================================
+START - test_q31_voc_roundtrip
+ PASS - test_q31_voc_roundtrip in 0.000 seconds
+===================================================================
+TESTSUITE sensor_event_suite succeeded
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE PASS - 100.00% [sensor_event_suite]: pass = 7, fail = 0, skip = 0, total = 7 duration = 0.000 seconds
+ - PASS - [sensor_event_suite.test_env_sensor_data_size] duration = 0.000 seconds
+ - PASS - [sensor_event_suite.test_q31_co2_clamp] duration = 0.000 seconds
+ - PASS - [sensor_event_suite.test_q31_co2_roundtrip] duration = 0.000 seconds
+ - PASS - [sensor_event_suite.test_q31_humidity_roundtrip] duration = 0.000 seconds
+ - PASS - [sensor_event_suite.test_q31_temperature_roundtrip] duration = 0.000 seconds
+ - PASS - [sensor_event_suite.test_q31_voc_clamp] duration = 0.000 seconds
+ - PASS - [sensor_event_suite.test_q31_voc_roundtrip] duration = 0.000 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+RunID: 728f1676757a0ff49f831354e4ea0566
+PROJECT EXECUTION SUCCESSFUL
