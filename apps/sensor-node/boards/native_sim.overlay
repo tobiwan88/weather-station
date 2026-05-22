@@ -7,20 +7,20 @@
  *   - One temperature sensor
  *   - One humidity sensor
  *
- * UIDs 0x0021–0x002F are reserved for sensor-node 0.
+ * Sensor UIDs are assigned at build time via Kconfig:
+ *   CONFIG_FAKE_TEMPERATURE_UID_BASE (default 0x0021)
+ *   CONFIG_FAKE_HUMIDITY_UID_BASE (default 0x0022)
  */
 
 / {
 	fake_temp_node: fake-temp-node {
 		compatible = "fake,temperature";
-		sensor-uid = <0x0021>;
 		initial-value-mdegc = <5000>;
 		status = "okay";
 	};
 
 	fake_hum_node: fake-hum-node {
 		compatible = "fake,humidity";
-		sensor-uid = <0x0022>;
 		initial-value-mpct = <70000>;
 		status = "okay";
 	};

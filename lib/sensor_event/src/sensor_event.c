@@ -31,15 +31,26 @@ static double decode_generic(int32_t q31)
 	return (double)q31 / (double)INT32_MAX;
 }
 
+static double decode_pressure(int32_t q31)
+{
+	return q31_to_pressure_hpa(q31);
+}
+
+static double decode_gas_resistance(int32_t q31)
+{
+	return q31_to_gas_resistance_ohm(q31);
+}
+
 static const struct sensor_type_desc descs[] = {
 	[SENSOR_TYPE_TEMPERATURE] = {"\xc2\xb0\x43", decode_temperature}, /* °C */
 	[SENSOR_TYPE_HUMIDITY] = {"%", decode_humidity},
-	[SENSOR_TYPE_PRESSURE] = {"hPa", decode_generic},
+	[SENSOR_TYPE_PRESSURE] = {"hPa", decode_pressure},
 	[SENSOR_TYPE_CO2] = {"ppm", decode_co2},
 	[SENSOR_TYPE_VOC] = {"IAQ", decode_voc},
 	[SENSOR_TYPE_LIGHT] = {"lux", decode_generic},
 	[SENSOR_TYPE_UV_INDEX] = {"", decode_generic},
 	[SENSOR_TYPE_BATTERY_MV] = {"mV", decode_generic},
+	[SENSOR_TYPE_GAS_RESISTANCE] = {"\xce\xa9", decode_gas_resistance}, /* Ω */
 };
 
 static const struct sensor_type_desc fallback = {"", decode_generic};

@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig SEN0460_SENSOR
+	bool "SEN0460 PM2.5 sensor (stub)"
+	depends on SENSOR
+	depends on SENSOR_EVENT
+	depends on SENSOR_TRIGGER
+	select HW_SENSOR_UTILS
+	help
+	  Stub driver for DFRobot SEN0460 PM2.5 air quality sensor.
+	  Registers with the sensor registry and subscribes to
+	  sensor_trigger_chan, but returns -ENOSYS on read.
+	  Proves the hardware sensor architecture without functional code.
+
+if SEN0460_SENSOR
+
+config SEN0460_SENSOR_DEFAULT_UID
+	hex "Default sensor UID if not specified in DT"
+	default 0x0021
+
+config SEN0460_SENSOR_LOG_LEVEL
+	int "Log level"
+	default 3
+
+module = SEN0460_SENSOR
+module-str = sen0460_sensor
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # SEN0460_SENSOR

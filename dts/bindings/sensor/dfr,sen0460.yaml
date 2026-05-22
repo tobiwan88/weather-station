@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: Apache-2.0
+
+title: DFRobot SEN0460 PM2.5 Air Quality Sensor (I2C)
+
+description: |
+    The SEN0460 is a PM2.5 air quality sensor from DFRobot that measures
+    particulate matter concentration via laser scattering.
+
+compatible: "dfr,sen0460"
+
+include: [sensor-device.yaml, i2c-device.yaml]
