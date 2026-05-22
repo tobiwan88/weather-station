@@ -1,0 +1,15 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * SEN0460 PM2.5 sensor overlay for lora_e5_mini.
+ *
+ * Adds SEN0460 air quality sensor on I2C2 bus (address 0x19).
+ */
+
+&i2c2 {
+	sen0460@19 {
+		compatible = "dfr,sen0460";
+		reg = <0x19>;
+		label = "SEN0460";
+	};
+};

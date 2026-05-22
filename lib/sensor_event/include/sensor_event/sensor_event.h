@@ -10,6 +10,7 @@
  * Q31 encoding:
  *   temperature: range -40..+85 °C  → q31 = (t + 40) / 125 * INT32_MAX
  *   humidity:    range 0..100 %RH   → q31 = h / 100 * INT32_MAX
+ *   pm:          range 0..1000 µg/m³ → q31 = (ugm3 / 1000.0) * INT32_MAX
  */
 
 #ifndef SENSOR_EVENT_SENSOR_EVENT_H_
@@ -34,6 +35,9 @@ enum sensor_type {
 	SENSOR_TYPE_UV_INDEX,       /**< UV index (dimensionless)        */
 	SENSOR_TYPE_BATTERY_MV,     /**< Battery voltage, millivolts     */
 	SENSOR_TYPE_GAS_RESISTANCE, /**< Gas resistance, ohms (MOX)    */
+	SENSOR_TYPE_PM1_0,          /**< PM1.0 concentration, µg/m³    */
+	SENSOR_TYPE_PM2_5,          /**< PM2.5 concentration, µg/m³    */
+	SENSOR_TYPE_PM10,           /**< PM10 concentration, µg/m³     */
 };
 
 /**
@@ -277,6 +281,28 @@ static inline int32_t gas_resistance_ohm_to_q31(double ohms)
 static inline double q31_to_gas_resistance_ohm(int32_t q31)
 {
 	return pow(10.0, (double)q31 / (double)INT32_MAX * 7.0 + 3.0);
+}
+
+/*
+ * PM concentration: phys ∈ [0, 1000] µg/m³, span = 1000 µg/m³
+ *   encode: q31 = (ugm3 / 1000.0) * INT32_MAX
+ *   decode: ugm3 = (double)q31 / INT32_MAX * 1000.0
+ */
+
+static inline int32_t pm_ugm3_to_q31(double ugm3)
+{
+	if (!(ugm3 >= 0.0)) {
+		return 0;
+	}
+	if (ugm3 >= 1000.0) {
+		return INT32_MAX;
+	}
+	return (int32_t)(ugm3 / 1000.0 * (double)INT32_MAX);
+}
+
+static inline double q31_to_pm_ugm3(int32_t q31)
+{
+	return (double)q31 / (double)INT32_MAX * 1000.0;
 }
 
 #ifdef __cplusplus
