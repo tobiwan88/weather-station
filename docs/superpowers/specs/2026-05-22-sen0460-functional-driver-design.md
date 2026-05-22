@@ -13,8 +13,9 @@ into the trigger-driven pipeline, with low-power management for battery operatio
 
 ## Goals
 
-1. Implement a Zephyr `sensor_driver_api` driver for the SEN0460 — upstreamable later
-2. Wire the driver into the existing weather-station zbus wrapper (trigger → read → publish)
+1. Implement a Zephyr sensor driver using the **read/decode API** (`sensor_submit_t` +
+   `sensor_decoder_api`) — the new upstreamable Zephyr sensor model
+2. Wire the driver into the weather-station zbus wrapper (trigger → read + decode → publish)
 3. PM1.0, PM2.5, PM10 standard concentration readings (µg/m³) only — health-relevant subset
 4. Aggressive power management: wake → 10s settle → read → sleep, triggered every 5 minutes
 5. Follow the BME680 pattern: driver layer (upstreamable) + wrapper layer (weather-station integration)
@@ -57,28 +58,38 @@ that can be read in a single I2C burst.
 
 ```
 lib/sen0460_sensor/
-├── CMakeLists.txt              # Updated: adds I2C dependency
-├── Kconfig                      # Updated: settle time, sample interval, existing UID/log
+├── CMakeLists.txt              # Updated: adds I2C + RTIO deps
+├── Kconfig                      # Updated: settle time, sample interval, RTIO
 ├── include/sen0460_sensor/
 │   └── sen0460_sensor.h        # Public API: enable/disable (unchanged)
 └── src/
-    ├── sen0460_driver.c        # NEW: Zephyr sensor driver (sensor_driver_api)
+    ├── sen0460_driver.c        # NEW: Zephyr sensor driver (read/decode API)
     └── sen0460_sensor.c        # MODIFIED: zbus wrapper → functional reads
 ```
 
 ### Layer Split (BME680 Pattern)
 
 **Layer 1 — `sen0460_driver.c` (upstreamable):**
-- Implements `sensor_driver_api`: `sample_fetch()`, `channel_get()`, `attr_set()`
+- Implements `sensor_submit_t` — non-blocking RTIO submit for I2C reads into caller-provided buffer
+- Implements `sensor_decoder_api` — stateless decode functions:
+  - `.decode`: unpacks 6 raw bytes → 3× `q31_t` values (one per PM channel)
+  - `.get_frame_count`: always returns 1 (single-frame sensor, no FIFO)
+  - `.has_trigger`: returns false (no trigger info in the data stream)
+- Implements `sensor_attr_set_t` for power suspend/resume
 - I2C communication via Zephyr I2C API (`i2c_burst_read_dt`, `i2c_burst_write_dt`)
 - Registers via `SENSOR_DEVICE_DT_INST_DEFINE`
-- No knowledge of zbus, sensor types, Q31 encoding, or weather-station concepts
+- **RTIO fallback:** When `CONFIG_RTIO=n`, `sensor_submit_t` uses a `k_work` to perform
+  the blocking I2C read and complete the RTIO SQE manually
+- No knowledge of zbus, `sensor_type`, or weather-station concepts
+- Decoder outputs Zephyr-standard `q31_t` values: 0 → 0 µg/m³, `INT32_MAX` → 1000 µg/m³
 
 **Layer 2 — `sen0460_sensor.c` (weather-station wrapper):**
 - Gets the device via `DEVICE_DT_GET_ANY(dfr_sen0460)`
 - Subscribes to `sensor_trigger_chan` via `ZBUS_LISTENER_DEFINE`
+- Creates a polling I/O device via `SENSOR_DT_READ_IODEV` for the three PM channels
+- Allocates an `RTIO_DEFINE` context for the read
 - Trigger callback: wakes sensor → starts settle timer → defers to `k_work_delayable`
-- Sample work: `sensor_sample_fetch()` → `sensor_channel_get()` → channel-to-type mapping → Q31 encode → `hw_sensor_publish()`
+- Settle work: `sensor_read()` (blocking on iodev) → `decoder->decode()` per channel → populate `env_sensor_data` → `zbus_chan_pub()`
 - Manages the settle-delay work item and power state machine
 - Registers with `sensor_registry` (label `"sen0460"`, UID `0x0021`)
 
@@ -86,20 +97,33 @@ lib/sen0460_sensor/
 a DT binding in `zephyr/dts/bindings/sensor/dfr,sen0460.yaml`. The wrapper stays in
 this repo with only a Kconfig dependency change.
 
-### Data Flow
+### Data Flow (Read/Decode Pipeline)
 
 ```
 [Timer trigger, 5min] → sensor_trigger_chan → [sen0460 zbus listener]
-    → pm_device_action_run(RESUME) → write 0x02 to reg 0x01
+    → attr_set(PM_RESUME) → write 0x02 to reg 0x01
     → submit k_work_delayable(CONFIG_SEN0460_SENSOR_SETTLE_MS=10000)
 
 [After settle delay]:
-    → sensor_sample_fetch() → i2c_burst_read 6 bytes from reg 0x05
-    → sensor_channel_get(PM_1_0) → uint16 → pm_ugm3_to_q31() → hw_sensor_publish()
-    → sensor_channel_get(PM_2_5) → uint16 → pm_ugm3_to_q31() → hw_sensor_publish()
-    → sensor_channel_get(PM_10)  → uint16 → pm_ugm3_to_q31() → hw_sensor_publish()
-    → pm_device_action_run(SUSPEND) → write 0x01 to reg 0x01
+    → sensor_read(sen0460_iodev, &rtio_ctx, buf, 6)   // blocking polling read
+    → rtio_cqe_consume_block(&rtio_ctx)                // wait for I2C completion
+    → decoder->decode(buf, {PM_1_0, 0}, &fit, 1, &q31_data[0])
+    → decoder->decode(buf, {PM_2_5, 0}, &fit, 1, &q31_data[1])
+    → decoder->decode(buf, {PM_10, 0},  &fit, 1, &q31_data[2])
+    → For each q31_data[i]:
+        env_sensor_data = {
+            .sensor_uid   = state.uid,
+            .type         = chan_to_sensor_type(q31_data[i].header.channel),
+            .q31_value    = q31_data[i].q31,   // q31_t is int32_t, same as our field
+            .timestamp_ms = k_uptime_get(),
+        }
+        zbus_chan_pub(&sensor_event_chan, &evt, K_NO_WAIT)
+    → attr_set(PM_SUSPEND) → write 0x01 to reg 0x01
 ```
+
+**Note:** The Zephyr decoder's q31 encoding (0→0, 1000→INT32_MAX) matches our project's
+PM Q31 convention, so no rescaling is needed between `decoder->decode()` output and
+`env_sensor_data.q31_value`.
 
 ## Data Model
 
@@ -113,17 +137,25 @@ In `lib/sensor_event/include/sensor_event/sensor_event.h`:
 | `SENSOR_TYPE_PM2_5` | 0–1000 µg/m³ | Same Q31 helper |
 | `SENSOR_TYPE_PM10` | 0–1000 µg/m³ | Same Q31 helper |
 
-All three share one `pm_ugm3_to_q31()` / `q31_to_pm_ugm3()` pair — same physical unit and range.
+All three share one `pm_ugm3_to_q31()` / `q31_to_pm_ugm3()` pair — same physical unit
+and range. The **encode** helper (`pm_ugm3_to_q31`) is used by fake sensors and future
+drivers. The **decode** helper (`q31_to_pm_ugm3`) is used by display/MQTT consumers.
+
+The SEN0460 wrapper does **not** call `pm_ugm3_to_q31()` — it takes the `q31_t` value
+directly from the Zephyr decoder output (which already encodes to the same range).
 
 ### Zephyr Sensor Channel Mapping
 
-In `sen0460_driver.c`:
+In `sen0460_driver.c` (decoder implementation):
 
-| Zephyr `sensor_channel` | Our `sensor_type` |
-|---|---|
-| `SENSOR_CHAN_PM_1_0` | `SENSOR_TYPE_PM1_0` |
-| `SENSOR_CHAN_PM_2_5` | `SENSOR_TYPE_PM2_5` |
-| `SENSOR_CHAN_PM_10` | `SENSOR_TYPE_PM10` |
+| Zephyr `sensor_channel` | Register | Bytes in buffer | Q31 output range |
+|---|---|---|---|
+| `SENSOR_CHAN_PM_1_0` | 0x05 | buf[0..1] | 0–INT32_MAX (0–1000 µg/m³) |
+| `SENSOR_CHAN_PM_2_5` | 0x07 | buf[2..3] | 0–INT32_MAX (0–1000 µg/m³) |
+| `SENSOR_CHAN_PM_10` | 0x09 | buf[4..5] | 0–INT32_MAX (0–1000 µg/m³) |
+
+The driver's `sensor_submit_t` reads all 6 bytes in one I2C burst (registers 0x05–0x0A).
+The decoder extracts the subset for the requested channel.
 
 ## Power Management
 
@@ -140,8 +172,7 @@ Timer trigger (every 5 min) → sensor_trigger_chan → sen0460_trigger_cb
 
 After settle delay:
   sen0460_sample_work_fn:
-    → sensor_sample_fetch() [reads PM1.0/PM2.5/PM10 registers]
-    → sensor_channel_get() × 3 → Q31 encode → hw_sensor_publish() × 3
+    → sensor_read() → decoder->decode() × 3 → populate + publish env_sensor_data × 3
     → suspends sensor via attr_set(PM_SUSPEND) [I2C write 0x01 to 0x01]
 ```
 
@@ -151,13 +182,13 @@ After settle delay:
 SUSPENDED ←── init, disable(), after each sample cycle
     │
     ▼ trigger arrives (only if enabled)
-AWAKENING ←── pm_device_action_run(RESUME) + settle timer started
+AWAKENING ←── attr_set(PM_RESUME) + settle timer started
     │
     ▼ settle timer fires
-SAMPLING ←── sample_fetch + channel_get + publish
+SAMPLING ←── sensor_read + decoder.decode + publish
     │
     ▼ publish complete
-SUSPENDED ←── pm_device_action_run(SUSPEND)
+SUSPENDED ←── attr_set(PM_SUSPEND)
 ```
 
 ### Interactions with enable/disable
@@ -166,7 +197,7 @@ SUSPENDED ←── pm_device_action_run(SUSPEND)
 - `sen0460_sensor_disable()`: cancels any pending settle timer, suspends sensor, sets `enabled = false`
 - Trigger while disabled: silent drop (existing behavior)
 - Trigger while already awakening/sampling: ignored (prevent double-fire)
-- `pm_device` calls gated by `#ifdef CONFIG_PM_DEVICE` with `-ENOSYS` tolerance — same pattern as BME680
+- `attr_set(PM_SUSPEND/RESUME)` calls gated by `#ifdef CONFIG_PM_DEVICE` with `-ENOSYS` tolerance
 
 ### Battery Budget
 
@@ -182,14 +213,16 @@ Future optimization: reduce settle time via Kconfig after field testing of actua
 
 ```kconfig
 menuconfig SEN0460_SENSOR
-    bool "SEN0460 PM2.5 sensor"
+    bool "SEN0460 PM2.5 sensor (read/decode API)"
     depends on SENSOR
     depends on SENSOR_EVENT
     depends on SENSOR_TRIGGER
     depends on I2C
+    select RTIO
     select HW_SENSOR_UTILS
     help
       Driver for DFRobot SEN0460 PM2.5 air quality sensor (I2C).
+      Uses Zephyr's read/decode sensor API (sensor_submit_t + sensor_decoder_api).
       Measures PM1.0, PM2.5, PM10 standard concentration.
       Subscribes to sensor_trigger_chan and publishes env_sensor_data events.
 
@@ -233,20 +266,24 @@ endif # SEN0460_SENSOR
 |---|---|
 | No SEN0460 DT node / HW absent | Init logs warning, returns 0, driver stays inactive |
 | `i2c_is_ready_dt()` fails at init | Same graceful degradation |
-| `sensor_sample_fetch()` I2C read fails | `LOG_ERR`, skip this cycle, try again next trigger |
-| `sensor_channel_get()` with unsupported channel | Return `-ENOTSUP` |
-| `hw_sensor_publish()` fails | `LOG_WRN`, continue with next channel |
+| `sensor_submit` fails (I2C NACK) | Complete RTIO SQE with error code; wrapper logs error, skips cycle |
+| `sensor_read()` returns error | `LOG_ERR`, skip this cycle, try again next trigger |
+| `decoder->decode()` called with unsupported channel | Return `-ENOTSUP` |
+| `zbus_chan_pub()` fails | `LOG_WRN`, continue with next channel |
 | Trigger during settle/awake | Silent drop (prevent double-fire) |
-| `CONFIG_PM_DEVICE=n` | `pm_device_action_run()` returns `-ENOSYS`, ignored with warning |
+| `CONFIG_PM_DEVICE=n` | `attr_set(PM_SUSPEND/RESUME)` returns `-ENOSYS`, ignored with warning |
 
 ## Test Strategy
 
-1. **native_sim build** with `CONFIG_SEN0460_SENSOR=y` + DT overlay — verify compilation and init
-2. **Integration test** (pytest, smoke marker): trigger via shell, verify PM2.5 `env_sensor_data` appears in event log
+1. **native_sim build** with `CONFIG_SEN0460_SENSOR=y` + `CONFIG_RTIO=y` + DT overlay —
+   verify compilation and init
+2. **Integration test** (pytest, smoke marker): trigger via shell, verify PM2.5
+   `env_sensor_data` appears in event log
 3. **Sensor registry test:** `sensor_registry list` shows `sen0460` with UID `0x0021`
 4. **Power cycle test:** enable → trigger → verify settle delay → verify suspend → disable
 5. **PM-disabled build:** verify enable/disable still works without `CONFIG_PM_DEVICE`
 6. **Error path test:** trigger without DT node → graceful warning, no crash
+7. **Decoder unit test:** feed raw 6-byte buffer, verify decode outputs correct q31 values
 
 App integration is in `apps/outdoor_sensor_node/` only — no changes to `apps/gateway/`.
 
@@ -262,11 +299,14 @@ App integration is in `apps/outdoor_sensor_node/` only — no changes to `apps/g
 
 ## Implementation Plan Summary
 
-1. Add `SENSOR_TYPE_PM1_0`, `SENSOR_TYPE_PM2_5`, `SENSOR_TYPE_PM10` to `enum sensor_type` + Q31 helpers to `sensor_event.h`
-2. Create `lib/sen0460_sensor/src/sen0460_driver.c` — Zephyr sensor driver with `sample_fetch`, `channel_get`, `attr_set`
-3. Rewrite `lib/sen0460_sensor/src/sen0460_sensor.c` — functional trigger callback, settle work item, publish pipeline
-4. Update `lib/sen0460_sensor/Kconfig` — add settle time, sample interval, I2C dependency
-5. Update `lib/sen0460_sensor/CMakeLists.txt` — add `sen0460_driver.c`, I2C include
+1. Add `SENSOR_TYPE_PM1_0`, `SENSOR_TYPE_PM2_5`, `SENSOR_TYPE_PM10` to `enum sensor_type`
+   + `pm_ugm3_to_q31()`/`q31_to_pm_ugm3()` helpers to `sensor_event.h`
+2. Create `lib/sen0460_sensor/src/sen0460_driver.c` — Zephyr sensor driver implementing
+   `sensor_submit_t` + `sensor_decoder_api` + `sensor_attr_set_t`
+3. Rewrite `lib/sen0460_sensor/src/sen0460_sensor.c` — functional trigger callback,
+   settle work item, `sensor_read()` + `decoder->decode()` publish pipeline
+4. Update `lib/sen0460_sensor/Kconfig` — add `select RTIO`, settle time, sample interval
+5. Update `lib/sen0460_sensor/CMakeLists.txt` — add `sen0460_driver.c`, I2C + RTIO includes
 6. Add DT overlay for `dfr,sen0460` in `apps/outdoor_sensor_node/`
 7. Add integration tests (smoke marker)
 8. Update CLAUDE.md catalog entry (remove "stub" qualification)
