@@ -116,7 +116,7 @@ All libraries under `lib/` are self-contained, Kconfig-gated, and self-wire via 
 | `fake_remote_sensor` | `CONFIG_FAKE_REMOTE_SENSOR` | Testing stub implementing `remote_transport` vtable (`REMOTE_TRANSPORT_PROTO_FAKE`). |
 | `hw_sensor_utils` | `CONFIG_HW_SENSOR_UTILS` | Shared `hw_sensor_publish()` helper for hardware sensor drivers. No state, no SYS_INIT — pure utility. |
 | `bme680_sensor` | `CONFIG_BME680_SENSOR` | BME680/BME688 hardware driver. Subscribes trigger chan, reads T/H/P/gas via Zephyr sensor API, publishes event chan. `pm_device` integration, power optimization Kconfig hooks (ODR, heater profile, forced mode). Public API: `bme680_sensor_enable()/disable()`. |
-| `sen0460_sensor` | `CONFIG_SEN0460_SENSOR` | SEN0460 PM2.5 stub (DT binding, Kconfig, skeleton). Returns `-ENOSYS` on read — proves architecture. Functional driver deferred. |
+| `sen0460_sensor` | `CONFIG_SEN0460_SENSOR` | SEN0460 PM2.5/PM1.0/PM10 air quality sensor (I2C). Zephyr read/decode API driver (`sensor_submit_t` + `sensor_decoder_api`). Subscribes trigger chan, reads PM via I2C burst, publishes event chan. Power management: wake → 10s settle → read → sleep. Public API: `sen0460_sensor_enable()/disable()`. |
 
 **Sensor UID allocation** (assigned via Kconfig, not DT):
 
