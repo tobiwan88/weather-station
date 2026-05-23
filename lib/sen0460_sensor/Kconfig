@@ -1,22 +1,41 @@
 # SPDX-License-Identifier: Apache-2.0
 
 menuconfig SEN0460_SENSOR
-	bool "SEN0460 PM2.5 sensor (stub)"
+	bool "SEN0460 PM2.5 sensor (read/decode API)"
 	depends on SENSOR
 	depends on SENSOR_EVENT
 	depends on SENSOR_TRIGGER
+	depends on I2C
+	select RTIO
 	select HW_SENSOR_UTILS
 	help
-	  Stub driver for DFRobot SEN0460 PM2.5 air quality sensor.
-	  Registers with the sensor registry and subscribes to
-	  sensor_trigger_chan, but returns -ENOSYS on read.
-	  Proves the hardware sensor architecture without functional code.
+	  Driver for DFRobot SEN0460 PM2.5 air quality sensor (I2C).
+	  Uses Zephyr's read/decode sensor API (sensor_submit_t + sensor_decoder_api).
+	  Measures PM1.0, PM2.5, PM10 standard concentration.
+	  Subscribes to sensor_trigger_chan and publishes env_sensor_data events.
 
 if SEN0460_SENSOR
 
 config SEN0460_SENSOR_DEFAULT_UID
-	hex "Default sensor UID if not specified in DT"
+	hex "Default sensor UID"
 	default 0x0021
+
+config SEN0460_SENSOR_SETTLE_MS
+	int "Settle delay after wake (ms)"
+	default 10000
+	range 0 30000
+	help
+	  Delay between waking the sensor and reading. The internal laser
+	  and fan need time to stabilize for accurate PM readings.
+
+config SEN0460_SENSOR_SAMPLE_INTERVAL_SEC
+	int "Sample interval (seconds)"
+	default 300
+	range 10 3600
+	help
+	  Interval between measurement cycles. Used by the trigger source
+	  (sensor_trigger) to configure the timer period. Set at compile-time;
+	  runtime override via config_cmd_chan is deferred.
 
 config SEN0460_SENSOR_LOG_LEVEL
 	int "Log level"
