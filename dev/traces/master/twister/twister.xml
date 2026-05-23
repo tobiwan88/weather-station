@@ -1,15 +1,15 @@
 <testsuites>
-	<testsuite name="native_sim/native/64" timestamp="2026-05-22T17:40:01.672270" time="52.410000000000004" tests="8" failures="0" errors="0" skipped="0">
+	<testsuite name="native_sim/native/64" timestamp="2026-05-23T05:24:31.410321" time="52.760000000000005" tests="8" failures="0" errors="0" skipped="0">
 		<properties>
-			<property name="version" value="37cce8aca56f" />
+			<property name="version" value="2e084475c3d9" />
 		</properties>
 		<testcase classname="native_sim/native/64:weather_station.trace_recorder" name="weather_station.trace_recorder" time="0.01" />
 		<testcase classname="native_sim/native/64:weather_station.trace_recorder_malloc" name="weather_station.trace_recorder_malloc" time="0.01" />
 		<testcase classname="native_sim/native/64:weather_station.remote_sensor_uid" name="weather_station.remote_sensor_uid" time="0.01" />
 		<testcase classname="native_sim/native/64:weather_station.fake_sensors" name="weather_station.fake_sensors" time="0.01" />
 		<testcase classname="native_sim/native/64:weather_station.remote_sensor_manager" name="weather_station.remote_sensor_manager" time="0.09" />
-		<testcase classname="native_sim/native/64:weather_station.integration" name="weather_station.integration" time="52.14" />
-		<testcase classname="native_sim/native/64:weather_station.sensor_event" name="weather_station.sensor_event" time="0.08" />
+		<testcase classname="native_sim/native/64:weather_station.integration" name="weather_station.integration" time="52.51" />
+		<testcase classname="native_sim/native/64:weather_station.sensor_event" name="weather_station.sensor_event" time="0.06" />
 		<testcase classname="native_sim/native/64:weather_station.mqtt_publisher" name="weather_station.mqtt_publisher" time="0.06" />
 	</testsuite>
 </testsuites>

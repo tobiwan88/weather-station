@@ -75,7 +75,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l11">offloaded_netdev_if_enable (subsys/net/l2/offloaded_netdev/offloaded_netdev.c:11)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="65">called 65 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="68">called 68 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">83.3%</div>
@@ -182,7 +182,7 @@
         <td class="lineno"><a id="l11" href="#l11">11</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">offloaded_netdev_if_enable</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_if</span><span class="w"> </span><span class="o">*</span><span class="n">iface</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">state</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -196,7 +196,7 @@
         <td class="lineno"><a id="l13" href="#l13">13</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">offloaded_if_api</span><span class="w"> </span><span class="o">*</span><span class="n">off_if</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">net_if_get_device</span><span class="p">(</span><span class="n">iface</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">api</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -212,14 +212,14 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/4</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 65 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 68 times.</div>
               <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 5 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 4 &rightarrow; 5 not taken.</div>
-              <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 65 times.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 68 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">65</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">68</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">off_if</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="n">off_if</span><span class="o">-&gt;</span><span class="n">enable</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -247,7 +247,7 @@
         <td class="lineno"><a id="l19" href="#l19">19</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">off_if</span><span class="o">-&gt;</span><span class="n">enable</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -285,7 +285,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-05-22 17:42:09
+          at 2026-05-23 05:26:41
         </footer>
       </div>
     </div>

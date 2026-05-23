@@ -75,7 +75,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l396">zvfs_eventfd (lib/os/zvfs/zvfs_eventfd.c:396)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="131">called 131 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="137">called 137 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">78.3%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">62.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">77.8%</div>
@@ -89,7 +89,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l215">zvfs_eventfd_ioctl_op (lib/os/zvfs/zvfs_eventfd.c:215)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="574">called 574 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="580">called 580 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">60.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">44.4%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">70.8%</div>
@@ -103,7 +103,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l34">zvfs_eventfd_is_in_use (lib/os/zvfs/zvfs_eventfd.c:34)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="574">called 574 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="580">called 580 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -117,7 +117,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l49">zvfs_eventfd_poll_prepare (lib/os/zvfs/zvfs_eventfd.c:49)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="287">called 287 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="290">called 290 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">37.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">60.0%</div>
@@ -441,7 +441,7 @@
         <td class="lineno"><a id="l34" href="#l34">34</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">574</td>
+        <td class="linecount coveredLine show_coveredLine">580</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">zvfs_eventfd_is_in_use</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">zvfs_eventfd</span><span class="w"> </span><span class="o">*</span><span class="n">efd</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -455,7 +455,7 @@
         <td class="lineno"><a id="l36" href="#l36">36</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">574</td>
+        <td class="linecount coveredLine show_coveredLine">580</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">efd</span><span class="o">-&gt;</span><span class="n">flags</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ZVFS_EFD_IN_USE</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -546,7 +546,7 @@
         <td class="lineno"><a id="l49" href="#l49">49</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">zvfs_eventfd_poll_prepare</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">zvfs_eventfd</span><span class="w"> </span><span class="o">*</span><span class="n">efd</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -583,12 +583,12 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 287 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 290 times.</div>
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 6 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">287</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">290</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pfd</span><span class="o">-&gt;</span><span class="n">events</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ZSOCK_POLLIN</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -598,11 +598,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 4 not taken.</div>
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 287 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 290 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">287</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">290</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">pev</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">pev_end</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -637,35 +637,35 @@
         <td class="lineno"><a id="l60" href="#l60">60</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="p">(</span><span class="o">*</span><span class="n">pev</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">efd</span><span class="o">-&gt;</span><span class="n">read_sig</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l61" href="#l61">61</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="p">(</span><span class="o">*</span><span class="n">pev</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">K_POLL_TYPE_SIGNAL</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l62" href="#l62">62</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="p">(</span><span class="o">*</span><span class="n">pev</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">K_POLL_MODE_NOTIFY_ONLY</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l63" href="#l63">63</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="p">(</span><span class="o">*</span><span class="n">pev</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">K_POLL_STATE_NOT_READY</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l64" href="#l64">64</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="p">(</span><span class="o">*</span><span class="n">pev</span><span class="p">)</span><span class="o">++</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -689,11 +689,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 6 &rightarrow; 7 not taken.</div>
-              <div class="takenBranch">&check; Branch 6 &rightarrow; 10 taken 287 times.</div>
+              <div class="takenBranch">&check; Branch 6 &rightarrow; 10 taken 290 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">287</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">290</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pfd</span><span class="o">-&gt;</span><span class="n">events</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ZSOCK_POLLOUT</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -784,7 +784,7 @@
         <td class="lineno"><a id="l80" href="#l80">80</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1743,7 +1743,7 @@
         <td class="lineno"><a id="l215" href="#l215">215</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">574</td>
+        <td class="linecount coveredLine show_coveredLine">580</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">zvfs_eventfd_ioctl_op</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">request</span><span class="p">,</span><span class="w"> </span><span class="kt">va_list</span><span class="w"> </span><span class="n">args</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -1771,7 +1771,7 @@
         <td class="lineno"><a id="l219" href="#l219">219</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">574</td>
+        <td class="linecount coveredLine show_coveredLine">580</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">zvfs_eventfd</span><span class="w"> </span><span class="o">*</span><span class="n">efd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">zvfs_eventfd</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">obj</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1792,7 +1792,7 @@
         <td class="lineno"><a id="l222" href="#l222">222</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">574</td>
+        <td class="linecount coveredLine show_coveredLine">580</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">efd</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1809,11 +1809,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 4 &rightarrow; 5 not taken.</div>
-              <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 574 times.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 580 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">574</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">580</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">zvfs_eventfd_is_in_use</span><span class="p">(</span><span class="n">efd</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1859,13 +1859,13 @@
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 6 &rightarrow; 7 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 6 &rightarrow; 8 not taken.</div>
-              <div class="takenBranch">&check; Branch 6 &rightarrow; 13 taken 287 times.</div>
+              <div class="takenBranch">&check; Branch 6 &rightarrow; 13 taken 290 times.</div>
               <div class="takenBranch">&check; Branch 6 &rightarrow; 18 taken 221 times.</div>
-              <div class="takenBranch">&check; Branch 6 &rightarrow; 22 taken 66 times.</div>
+              <div class="takenBranch">&check; Branch 6 &rightarrow; 22 taken 69 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">574</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">580</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -2012,7 +2012,7 @@
         <td class="lineno"><a id="l251" href="#l251">251</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">case</span><span class="w"> </span><span class="no">ZFD_IOCTL_POLL_PREPARE</span><span class="p">:</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -2047,21 +2047,21 @@
         <td class="lineno"><a id="l256" href="#l256">256</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">pfd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">va_arg</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">zsock_pollfd</span><span class="w"> </span><span class="o">*</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l257" href="#l257">257</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">pev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">va_arg</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_poll_event</span><span class="w"> </span><span class="o">**</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l258" href="#l258">258</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">pev_end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">va_arg</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_poll_event</span><span class="w"> </span><span class="o">*</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -2075,14 +2075,14 @@
         <td class="lineno"><a id="l260" href="#l260">260</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zvfs_eventfd_poll_prepare</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">pfd</span><span class="p">,</span><span class="w"> </span><span class="n">pev</span><span class="p">,</span><span class="w"> </span><span class="n">pev_end</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l261" href="#l261">261</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">290</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">break</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -2166,28 +2166,28 @@
         <td class="lineno"><a id="l273" href="#l273">273</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">default</span><span class="o">:</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l274" href="#l274">274</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EOPNOTSUPP</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l275" href="#l275">275</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l276" href="#l276">276</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">break</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -2208,14 +2208,14 @@
         <td class="lineno"><a id="l279" href="#l279">279</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">574</td>
+        <td class="linecount coveredLine show_coveredLine">580</td>
         <td class="src  coveredLine show_coveredLine"><span class="nl">unlock</span><span class="p">:</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l280" href="#l280">280</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">574</td>
+        <td class="linecount coveredLine show_coveredLine">580</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">efd</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -2229,7 +2229,7 @@
         <td class="lineno"><a id="l282" href="#l282">282</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">574</td>
+        <td class="linecount coveredLine show_coveredLine">580</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3027,7 +3027,7 @@
         <td class="lineno"><a id="l396" href="#l396">396</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">131</td>
+        <td class="linecount coveredLine show_coveredLine">137</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">zvfs_eventfd</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">initval</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">flags</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -3041,7 +3041,7 @@
         <td class="lineno"><a id="l398" href="#l398">398</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">131</td>
+        <td class="linecount coveredLine show_coveredLine">137</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3055,7 +3055,7 @@
         <td class="lineno"><a id="l400" href="#l400">400</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">131</td>
+        <td class="linecount coveredLine show_coveredLine">137</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">zvfs_eventfd</span><span class="w"> </span><span class="o">*</span><span class="n">efd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3072,11 +3072,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 3 not taken.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 131 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 137 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">131</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">137</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">flags</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">~</span><span class="n">ZVFS_EFD_FLAGS_SET</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3113,26 +3113,26 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 65 times.</div>
-              <div class="takenBranch">&check; Branch 5 &rightarrow; 7 taken 66 times.</div>
+              <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 68 times.</div>
+              <div class="takenBranch">&check; Branch 5 &rightarrow; 7 taken 69 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">131</td>
+        <td class="linecount coveredLine show_coveredLine">137</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sys_bitarray_alloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">efds_bitarray</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">offset</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l408" href="#l408">408</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">errno</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ENOMEM</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l409" href="#l409">409</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3153,7 +3153,7 @@
         <td class="lineno"><a id="l412" href="#l412">412</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">efd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">efds</span><span class="p">[</span><span class="n">offset</span><span class="p">];</span></td>
       </tr>
       <tr class="source-line">
@@ -3167,7 +3167,7 @@
         <td class="lineno"><a id="l414" href="#l414">414</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">fd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zvfs_reserve_fd</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
@@ -3177,11 +3177,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 9 not taken.</div>
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 11 taken 66 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 11 taken 69 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">66</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">69</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">fd</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3216,14 +3216,14 @@
         <td class="lineno"><a id="l420" href="#l420">420</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">efd</span><span class="o">-&gt;</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ZVFS_EFD_IN_USE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">flags</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l421" href="#l421">421</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">efd</span><span class="o">-&gt;</span><span class="n">cnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initval</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3237,14 +3237,14 @@
         <td class="lineno"><a id="l423" href="#l423">423</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_poll_signal_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">efd</span><span class="o">-&gt;</span><span class="n">write_sig</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l424" href="#l424">424</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_poll_signal_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">efd</span><span class="o">-&gt;</span><span class="n">read_sig</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3261,11 +3261,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 13 &rightarrow; 14 not taken.</div>
-              <div class="takenBranch">&check; Branch 13 &rightarrow; 15 taken 66 times.</div>
+              <div class="takenBranch">&check; Branch 13 &rightarrow; 15 taken 69 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">66</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">69</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">initval</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3293,7 +3293,7 @@
         <td class="lineno"><a id="l430" href="#l430">430</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_poll_signal_raise</span><span class="p">(</span><span class="o">&amp;</span><span class="n">efd</span><span class="o">-&gt;</span><span class="n">write_sig</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3307,7 +3307,7 @@
         <td class="lineno"><a id="l432" href="#l432">432</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">zvfs_finalize_fd</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">efd</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">zvfs_eventfd_fd_vtable</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3321,7 +3321,7 @@
         <td class="lineno"><a id="l434" href="#l434">434</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">fd</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3821,7 +3821,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-05-22 17:42:09
+          at 2026-05-23 05:26:41
         </footer>
       </div>
     </div>

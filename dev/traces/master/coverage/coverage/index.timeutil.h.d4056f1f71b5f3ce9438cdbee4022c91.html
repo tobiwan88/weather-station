@@ -75,7 +75,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l439">timespec_add (include/zephyr/sys/timeutil.h:439)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="257">called 257 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="267">called 267 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">60.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">16.7%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
@@ -96,14 +96,14 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l379">timespec_is_valid (include/zephyr/sys/timeutil.h:379)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="63">called 63 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="65">called 65 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">66.7%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">25.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">83.3%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l482">timespec_negate (include/zephyr/sys/timeutil.h:482)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="63">called 63 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="65">called 65 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">71.4%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">25.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
@@ -2800,7 +2800,7 @@
         <td class="lineno"><a id="l379" href="#l379">379</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">63</td>
+        <td class="linecount coveredLine show_coveredLine">65</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">timespec_is_valid</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">timespec</span><span class="w"> </span><span class="o">*</span><span class="n">ts</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -2830,9 +2830,9 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/8</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 63 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 65 times.</div>
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 5 not taken.</div>
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 63 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 65 times.</div>
               <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 5 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 7 &rightarrow; 8 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 7 &rightarrow; 10 not taken.</div>
@@ -2841,7 +2841,7 @@
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">63</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">65</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">ts</span><span class="o">-&gt;</span><span class="n">tv_nsec</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">ts</span><span class="o">-&gt;</span><span class="n">tv_nsec</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">NSEC_PER_SEC</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3233,7 +3233,7 @@
         <td class="lineno"><a id="l439" href="#l439">439</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">257</td>
+        <td class="linecount coveredLine show_coveredLine">267</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">timespec_add</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">timespec</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">timespec</span><span class="w"> </span><span class="o">*</span><span class="n">b</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -3326,10 +3326,10 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">3/12</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 63 times.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 6 taken 194 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 65 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 6 taken 202 times.</div>
               <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 4 not taken.</div>
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 6 taken 63 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 6 taken 65 times.</div>
               <div class="notTakenBranch">&cross; Branch 4 &rightarrow; 5 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 4 &rightarrow; 6 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 16 &rightarrow; 17 not taken.</div>
@@ -3341,7 +3341,7 @@
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">257</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">267</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">SYS_TIME_T_MIN</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3379,7 +3379,7 @@
             <summary class="linebranchSummary">1/12</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 6 &rightarrow; 7 not taken.</div>
-              <div class="takenBranch">&check; Branch 6 &rightarrow; 10 taken 257 times.</div>
+              <div class="takenBranch">&check; Branch 6 &rightarrow; 10 taken 267 times.</div>
               <div class="notTakenBranch">&cross; Branch 7 &rightarrow; 8 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 7 &rightarrow; 10 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 9 not taken.</div>
@@ -3393,7 +3393,7 @@
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">257</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">267</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">SYS_TIME_T_MAX</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">b</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3428,14 +3428,14 @@
         <td class="lineno"><a id="l462" href="#l462">462</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">257</td>
+        <td class="linecount coveredLine show_coveredLine">267</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">b</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l463" href="#l463">463</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">257</td>
+        <td class="linecount coveredLine show_coveredLine">267</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">a</span><span class="o">-&gt;</span><span class="n">tv_nsec</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">b</span><span class="o">-&gt;</span><span class="n">tv_nsec</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3449,7 +3449,7 @@
         <td class="lineno"><a id="l465" href="#l465">465</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">257</td>
+        <td class="linecount coveredLine show_coveredLine">267</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">timespec_normalize</span><span class="p">(</span><span class="n">a</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3568,7 +3568,7 @@
         <td class="lineno"><a id="l482" href="#l482">482</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">63</td>
+        <td class="linecount coveredLine show_coveredLine">65</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">timespec_negate</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">timespec</span><span class="w"> </span><span class="o">*</span><span class="n">ts</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -3648,13 +3648,13 @@
             <summary class="linebranchSummary">1/4</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 3 not taken.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 63 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 65 times.</div>
               <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 10 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 11 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">63</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">65</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ts</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SYS_TIME_T_MIN</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3689,14 +3689,14 @@
         <td class="lineno"><a id="l498" href="#l498">498</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">63</td>
+        <td class="linecount coveredLine show_coveredLine">65</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">ts</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">ts</span><span class="o">-&gt;</span><span class="n">tv_sec</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l499" href="#l499">499</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">63</td>
+        <td class="linecount coveredLine show_coveredLine">65</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">ts</span><span class="o">-&gt;</span><span class="n">tv_nsec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">ts</span><span class="o">-&gt;</span><span class="n">tv_nsec</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3710,7 +3710,7 @@
         <td class="lineno"><a id="l501" href="#l501">501</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">63</td>
+        <td class="linecount coveredLine show_coveredLine">65</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">timespec_normalize</span><span class="p">(</span><span class="n">ts</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -5127,7 +5127,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-05-22 17:42:09
+          at 2026-05-23 05:26:41
         </footer>
       </div>
     </div>
