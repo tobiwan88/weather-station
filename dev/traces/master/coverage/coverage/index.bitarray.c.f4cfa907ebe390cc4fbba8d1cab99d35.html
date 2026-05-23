@@ -110,7 +110,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l491">sys_bitarray_alloc (lib/utils/bitarray.c:491)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="131">called 131 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="137">called 137 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">41.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">27.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">40.6%</div>
@@ -3675,7 +3675,7 @@
         <td class="lineno"><a id="l491" href="#l491">491</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">131</td>
+        <td class="linecount coveredLine show_coveredLine">137</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">sys_bitarray_alloc</span><span class="p">(</span><span class="n">sys_bitarray_t</span><span class="w"> </span><span class="o">*</span><span class="n">bitarray</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_bits</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -3766,7 +3766,7 @@
         <td class="lineno"><a id="l504" href="#l504">504</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">131</td>
+        <td class="linecount coveredLine show_coveredLine">137</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bitarray</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3783,13 +3783,13 @@
             <summary class="linebranchSummary">2/4</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 4 not taken.</div>
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 130 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 136 times.</div>
               <div class="notTakenBranch">&cross; Branch 13 &rightarrow; 14 not taken.</div>
               <div class="takenBranch">&check; Branch 13 &rightarrow; 15 taken 1 time.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">131</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">137</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="n">CHECKIF</span><span class="p">(</span><span class="n">offset</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3826,10 +3826,10 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">4/8</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 130 times.</div>
+              <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 136 times.</div>
               <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 7 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 6 &rightarrow; 7 not taken.</div>
-              <div class="takenBranch">&check; Branch 6 &rightarrow; 8 taken 130 times.</div>
+              <div class="takenBranch">&check; Branch 6 &rightarrow; 8 taken 136 times.</div>
               <div class="takenBranch">&check; Branch 15 &rightarrow; 16 taken 1 time.</div>
               <div class="notTakenBranch">&cross; Branch 15 &rightarrow; 17 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 16 &rightarrow; 17 not taken.</div>
@@ -3837,7 +3837,7 @@
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">131</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">137</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">num_bits</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">num_bits</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">bitarray</span><span class="o">-&gt;</span><span class="n">num_bits</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3874,14 +3874,14 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/4</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 130 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 136 times.</div>
               <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 14 not taken.</div>
               <div class="takenBranch">&check; Branch 18 &rightarrow; 19 taken 1 time.</div>
               <div class="notTakenBranch">&cross; Branch 18 &rightarrow; 24 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">131</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">137</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bitarray</span><span class="o">-&gt;</span><span class="n">num_bits</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">32</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3902,7 +3902,7 @@
         <td class="lineno"><a id="l519" href="#l519">519</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">131</td>
+        <td class="linecount coveredLine show_coveredLine">137</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">off</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bitmask_find_gap</span><span class="p">(</span><span class="n">bitarray</span><span class="o">-&gt;</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">num_bits</span><span class="p">,</span><span class="w"> </span><span class="n">bitarray</span><span class="o">-&gt;</span><span class="n">num_bits</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3911,21 +3911,21 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">3/4</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 10 &rightarrow; 11 taken 65 times.</div>
-              <div class="takenBranch">&check; Branch 10 &rightarrow; 12 taken 65 times.</div>
+              <div class="takenBranch">&check; Branch 10 &rightarrow; 11 taken 68 times.</div>
+              <div class="takenBranch">&check; Branch 10 &rightarrow; 12 taken 68 times.</div>
               <div class="notTakenBranch">&cross; Branch 20 &rightarrow; 21 not taken.</div>
               <div class="takenBranch">&check; Branch 20 &rightarrow; 22 taken 1 time.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">131</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">137</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">off</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l521" href="#l521">521</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">ENOSPC</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3939,21 +3939,21 @@
         <td class="lineno"><a id="l523" href="#l523">523</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">bitarray</span><span class="o">-&gt;</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">BIT_MASK</span><span class="p">(</span><span class="n">num_bits</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">off</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l524" href="#l524">524</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="o">*</span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">off</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l525" href="#l525">525</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">66</td>
+        <td class="linecount coveredLine show_coveredLine">69</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3967,7 +3967,7 @@
         <td class="lineno"><a id="l527" href="#l527">527</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">131</td>
+        <td class="linecount coveredLine show_coveredLine">137</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">goto</span><span class="w"> </span><span class="n">out</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -4289,14 +4289,14 @@
         <td class="lineno"><a id="l573" href="#l573">573</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">131</td>
+        <td class="linecount coveredLine show_coveredLine">137</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bitarray</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l574" href="#l574">574</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">131</td>
+        <td class="linecount coveredLine show_coveredLine">137</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -5944,7 +5944,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-05-22 17:42:09
+          at 2026-05-23 05:26:41
         </footer>
       </div>
     </div>

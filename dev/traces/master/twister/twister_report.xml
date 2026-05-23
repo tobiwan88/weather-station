@@ -1,7 +1,7 @@
 <testsuites>
-	<testsuite name="native_sim/native/64" timestamp="2026-05-22T17:40:01.672270" time="52.410000000000004" tests="134" failures="0" errors="0" skipped="18">
+	<testsuite name="native_sim/native/64" timestamp="2026-05-23T05:24:31.410321" time="52.760000000000005" tests="137" failures="0" errors="0" skipped="21">
 		<properties>
-			<property name="version" value="37cce8aca56f" />
+			<property name="version" value="2e084475c3d9" />
 		</properties>
 		<testcase classname="weather_station.trace_recorder" name="weather_station.trace_recorder.trace_recorder_suite.record_size" time="0.00" />
 		<testcase classname="weather_station.trace_recorder" name="weather_station.trace_recorder.trace_recorder_suite.initial_state" time="0.00" />
@@ -33,49 +33,58 @@
 		<testcase classname="weather_station.remote_sensor_manager" name="weather_station.remote_sensor_manager.remote_sensor_manager_suite.publish_produces_event" time="0.27" />
 		<testcase classname="weather_station.remote_sensor_manager" name="weather_station.remote_sensor_manager.remote_sensor_manager_suite.trigger_routing" time="0.27" />
 		<testcase classname="weather_station.remote_sensor_manager" name="weather_station.remote_sensor_manager.remote_sensor_manager_suite.event_uid_in_registry" time="0.27" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_set_trigger_interval_via_http" time="1.44" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_trigger_interval_bounds_accepted" time="3.50" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_sntp_resync_accepted" time="2.10" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_page_is_public" time="0.31" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_unauthenticated_page_redirects" time="0.38" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_unauthenticated_api_returns_401" time="0.37" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_bad_credentials" time="0.42" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_success_sets_cookie" time="0.43" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_without_auth_returns_401" time="1.40" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_set_trigger_interval_via_http" time="1.46" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_trigger_interval_bounds_accepted" time="3.52" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_sntp_resync_accepted" time="2.08" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_page_is_public" time="0.29" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_unauthenticated_page_redirects" time="0.35" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_unauthenticated_api_returns_401" time="0.25" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_bad_credentials" time="0.41" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_success_sets_cookie" time="0.35" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_without_auth_returns_401" time="1.41" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_with_wrong_bearer_token_returns_401" time="1.39" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_logout_invalidates_session" time="1.17" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_change_credentials_wrong_old_pass" time="1.05" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_change_credentials_success" time="2.45" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_bearer_token_accesses_api" time="0.31" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_change_credentials_success" time="2.36" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_bearer_token_accesses_api" time="0.32" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_token_rotate" time="6.58" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_dashboard_page_reachable" time="0.39" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_endpoint_returns_json" time="0.39" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_has_sensor_entries" time="0.40" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_sensor_schema" time="0.40" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_sensor_schema" time="0.41" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_reading_schema" time="0.40" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_has_all_sensor_uids" time="0.40" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_config_endpoint_returns_json" time="0.29" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_config_includes_api_token" time="0.39" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_config_endpoint_returns_json" time="0.40" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_config_includes_api_token" time="0.40" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_locations_endpoint_returns_json" time="0.39" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_trigger_interval_accepted" time="1.30" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_returns_ok_json" time="0.54" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_two_back_to_back_posts" time="4.70" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_config_in_get_api" time="0.39" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_trigger_interval_accepted" time="1.31" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_returns_ok_json" time="0.55" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_two_back_to_back_posts" time="4.71" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_config_in_get_api" time="0.40" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_broker_via_http" time="2.12" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_gateway_via_http" time="2.12" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_keepalive_via_http" time="2.12" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_auth_via_http" time="2.12" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_status_shows_config" time="0.22" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_enable_disable" time="0.25" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_set_server" time="1.17" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_set_gateway" time="1.17" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_set_server" time="1.18" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_set_gateway" time="1.18" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_disabled_stops_publishing" time="0">
 			<skipped type="skipped" message="MQTT broker not available on localhost:1883" />
 		</testcase>
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_enabled_resumes_publishing" time="0">
 			<skipped type="skipped" message="MQTT broker not available on localhost:1883" />
 		</testcase>
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_trigger_propagates_to_http" time="0.30" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_sen0460_enabled_in_build" time="0">
+			<skipped type="skipped" message="CONFIG_SEN0460_SENSOR not enabled in this build" />
+		</testcase>
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_sen0460_graceful_degrade" time="0">
+			<skipped type="skipped" message="CONFIG_SEN0460_SENSOR not enabled in this build" />
+		</testcase>
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_sen0460_not_in_sensor_registry" time="0">
+			<skipped type="skipped" message="CONFIG_SEN0460_SENSOR not enabled in this build" />
+		</testcase>
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_trigger_propagates_to_http" time="0.40" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_indoor_temp_value_in_http" time="0.40" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_set_value_reflected_in_http" time="0.42" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_trigger_publishes_to_mqtt" time="0">

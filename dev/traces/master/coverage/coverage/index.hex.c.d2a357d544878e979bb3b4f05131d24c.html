@@ -75,7 +75,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l40">bin2hex (lib/utils/hex.c:40)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="96">called 96 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="99">called 99 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">87.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">88.9%</div>
@@ -96,7 +96,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l27">hex2char (lib/utils/hex.c:27)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="3072">called 3072 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="3168">called 3168 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">85.7%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">85.7%</div>
@@ -315,7 +315,7 @@
         <td class="lineno"><a id="l27" href="#l27">27</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3072</td>
+        <td class="linecount coveredLine show_coveredLine">3168</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">hex2char</span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">c</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -331,19 +331,19 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 1599 times.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 1473 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 1647 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 1521 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">3072</td>
+        <td class="linecount coveredLine show_coveredLine">3168</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l30" href="#l30">30</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1599</td>
+        <td class="linecount coveredLine show_coveredLine">1647</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="o">*</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="sc">&#39;0&#39;</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -352,19 +352,19 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 1473 times.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 1521 times.</div>
               <div class="notTakenBranch">&cross; Branch 4 &rightarrow; 6 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">1473</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">1521</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l32" href="#l32">32</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1473</td>
+        <td class="linecount coveredLine show_coveredLine">1521</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="o">*</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="sc">&#39;a&#39;</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -399,7 +399,7 @@
         <td class="lineno"><a id="l37" href="#l37">37</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3072</td>
+        <td class="linecount coveredLine show_coveredLine">3168</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -420,7 +420,7 @@
         <td class="lineno"><a id="l40" href="#l40">40</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">96</td>
+        <td class="linecount coveredLine show_coveredLine">99</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">size_t</span><span class="w"> </span><span class="nf">bin2hex</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">buflen</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">hex</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">hexlen</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -437,11 +437,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 3 not taken.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 96 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 99 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">96</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">99</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">hexlen</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">((</span><span class="n">buflen</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2U</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1U</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -471,26 +471,26 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 5 taken 1536 times.</div>
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 96 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 5 taken 1584 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 99 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">1632</td>
+        <td class="linecount coveredLine show_coveredLine">1683</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">buflen</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l47" href="#l47">47</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1536</td>
+        <td class="linecount coveredLine show_coveredLine">1584</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">hex2char</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">hex</span><span class="p">[</span><span class="mi">2U</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="p">]);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l48" href="#l48">48</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1536</td>
+        <td class="linecount coveredLine show_coveredLine">1584</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">hex2char</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xf</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">hex</span><span class="p">[</span><span class="mi">2U</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1U</span><span class="p">]);</span></td>
       </tr>
       <tr class="source-line">
@@ -511,14 +511,14 @@
         <td class="lineno"><a id="l51" href="#l51">51</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">96</td>
+        <td class="linecount coveredLine show_coveredLine">99</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">hex</span><span class="p">[</span><span class="mi">2U</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">buflen</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l52" href="#l52">52</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">96</td>
+        <td class="linecount coveredLine show_coveredLine">99</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">2U</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">buflen</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -780,7 +780,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-05-22 17:42:09
+          at 2026-05-23 05:26:41
         </footer>
       </div>
     </div>
