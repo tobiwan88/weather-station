@@ -1,6 +1,6 @@
 ---
 name: arch-sync
-description: Regenerate docs/architecture/architecture-constraints.md from all ADRs and update the architecture index. Run after any ADR status change or new ADR creation.
+description: Use after any ADR status change or new ADR creation
 argument-hint: "[--dry-run]"
 ---
 

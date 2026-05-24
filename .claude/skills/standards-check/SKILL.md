@@ -1,6 +1,6 @@
 ---
 name: standards-check
-description: Fast check of changed files against Zephyr coding standards, banned patterns, KISS/DRY/SOLID principles, and ADR constraints. Runs after every implementation subtask and build iteration.
+description: Use after every implementation subtask, build iteration, or when asked to audit changed code
 argument-hint: "[git-ref or file...]"
 disable-model-invocation: false
 ---
@@ -305,6 +305,18 @@ Keep the report concise:
 - One-sentence per issue; no essays
 
 ---
+
+---
+
+## Red Flags — STOP and re-check
+
+- Claiming PASS without running ALL grep checks
+- Trusting a previous run's output instead of running fresh
+- Skipping Step 2 (constraint loading) because "I remember them"
+- Skipping Step 4 (Zephyr idioms) because "only small changes"
+- Marking ADR constraints as N/A without checking the diff
+- Using "looks fine" / "seems compliant" / "should be okay"
+- **Any wording implying compliance without having RUN the verification**
 
 ## Rules
 

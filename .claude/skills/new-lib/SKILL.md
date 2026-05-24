@@ -1,6 +1,6 @@
 ---
 name: new-lib
-description: Scaffold a new Zephyr library under lib/ with Kconfig, CMakeLists.txt, public header, and source file. Accepts four arguments.
+description: Use when adding a new library under lib/
 argument-hint: <lib_name> "<description>" <kconfig_symbol> <sys_init_priority>
 ---
 
