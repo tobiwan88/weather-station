@@ -4,7 +4,9 @@
 
 ## Context
 
-Three agents are built (`/arch-sync`, `/standards-check`, `/dev-plan`). Six agents and two skills remain to complete Phase 1. This plan orders them by dependency and value to the weather-station project.
+Three agents are built (`/arch-sync`, `/standards-check`, `/dev-plan`). Five agents and one skill remain to complete Phase 1. This plan orders them by dependency and value to the weather-station project.
+
+**FFF removed:** The project uses zero FFF mocks. All 7 existing test suites follow the native_sim + zbus-listener + DT-defined fake sensors pattern. Sub-agents find this pattern via cocoindex search. No FFF skill needed.
 
 ## ADR Constraints Applicable
 
@@ -29,7 +31,7 @@ Three agents are built (`/arch-sync`, `/standards-check`, `/dev-plan`). Six agen
 - Modify: `.claude/skills/dev-plan/SKILL.md` (add ask_until_understood directive)
 
 **Depends on:** none
-**Parallel with:** IMPL-002
+**Parallel with:** none (first item, nothing to parallelize with)
 **Estimated:** 40 lines (+ 6 lines per agent wired in)
 
 **Description:**
@@ -37,31 +39,19 @@ Reusable prompt fragment (~30 lines) that agents compose into their system promp
 
 Wire into `/arch-sync`, `/dev-plan`, and `/standards-check` as a "Before Step 1" directive. Also add to the existing `/adr` skill which already does this conversationally.
 
-### IMPL-002: `fff_mock_pattern` skill
-**Domain:** skill
-**Files:**
-- Create: `.claude/skills/fff-mock-pattern/SKILL.md`
-
-**Depends on:** none
-**Parallel with:** IMPL-001
-**Estimated:** 50 lines
-
-**Description:**
-Reusable prompt fragment for FFF (Fake Function Framework) mock patterns in Zephyr unit tests. Covers: include headers, DEFINE_FFF_GLOBALS, FAKE_VALUE_FUNC declarations, ZTEST_SUITE setUp with RESET_FAKE/FFF_RESET_HISTORY, return value configuration. Referenced by `/test-write` and `/dev-implement-subtask`.
-
 ### IMPL-003: `/dev-implement-subtask` agent
 **Domain:** agent
 **Files:**
 - Create: `.claude/skills/dev-implement-subtask/SKILL.md`
 
-**Depends on:** IMPL-002 (fff_mock_pattern)
-**Parallel with:** IMPL-004
+**Depends on:** none
+**Parallel with:** IMPL-005, IMPL-006
 **Estimated:** 180 lines
 
 **Description:**
 Code-writing agent that implements exactly one YAML subtask from a `/dev-plan` output. Hard constraints: only touch files in `files_to_create` and `files_to_modify`; never touch test files; never disable Kconfig safety options. Steps: load constraints → search cocoindex for patterns → implement → build check → iterate up to 5x. Includes diff cap (200 lines max modification to existing files per iteration).
 
-Composes: `fff_mock_pattern`, `zephyr_coding_standards` (new inline section), `architecture-constraints.md`.
+Composes inline: Zephyr coding standards section, `architecture-constraints.md` constraints. Finds test patterns from existing 7 test suites via cocoindex search — no FFF needed.
 
 ### IMPL-004: `/dev-coordinate` agent
 **Domain:** agent
@@ -82,12 +72,12 @@ Phase 1 dispatches sequentially (user invokes each subtask). Phase 3 fan-out is 
 **Files:**
 - Create: `.claude/skills/test-write/SKILL.md`
 
-**Depends on:** IMPL-002 (fff_mock_pattern), IMPL-001 (ask_until_understood)
-**Parallel with:** IMPL-006
-**Estimated:** 200 lines
+**Depends on:** IMPL-001 (ask_until_understood)
+**Parallel with:** IMPL-003, IMPL-006
+**Estimated:** 180 lines
 
 **Description:**
-Independent test writer. HARD CONSTRAINT: must NOT read any files under `src/`. Derives tests from REQ file only — never from implementation. Outputs: ztest unit tests in `tests/unit/` using FFF mocks; Robot Framework tests in `tests/renode/` for renode-tagged criteria. Dry-run builds via `west twister -p native_sim`. Lists [hil] and [manual] deferred criteria.
+Independent test writer. HARD CONSTRAINT: must NOT read any files under `src/`. Derives tests from REQ file only — never from implementation. Outputs ztest suites following the existing project pattern (native_sim, zbus listeners, DT-defined fake sensors, semaphore-based event waiting — see `tests/fake_sensors/src/main.c` and `tests/mqtt_publisher/src/main.c` for canonical examples). Lists [hil] and [manual] deferred criteria. Dry-run builds via `west twister -p native_sim`. No Renode, no Robot Framework — not set up in this project.
 
 ### IMPL-006: `/arch-validate` agent
 **Domain:** agent
@@ -136,9 +126,6 @@ IMPL-001 (ask_until_understood) ──┬──► IMPL-005 (/test-write)
                                   ├──► IMPL-006 (/arch-validate)
                                   └──► IMPL-008 (wire into existing)
 
-IMPL-002 (fff_mock_pattern) ──────┬──► IMPL-003 (/dev-implement-subtask)
-                                  └──► IMPL-005 (/test-write)
-
 IMPL-003 (/dev-implement-subtask) ──► IMPL-004 (/dev-coordinate)
 
 IMPL-006 (/arch-validate) ──► IMPL-007 (/sec-arch-review)
@@ -152,9 +139,9 @@ No conflicts. Every agent creates exactly one file in `.claude/skills/<name>/SKI
 
 | Wave | Subtask | Rationale |
 |---|---|---|
-| **Wave 1** | IMPL-001 + IMPL-002 | Both are pure skills (no tool calls), fully parallel, unblock everything else |
+| **Wave 1** | IMPL-001 | Pure skill (no tool calls), unblocks everything else |
 | **Wave 2** | IMPL-008 | Trivial wiring — completes immediately after Wave 1 |
-| **Wave 3** | IMPL-003 + IMPL-005 + IMPL-006 | Three independent agents. IMPL-003 and IMPL-005 both need IMPL-002. IMPL-006 is standalone |
+| **Wave 3** | IMPL-003 + IMPL-005 + IMPL-006 | Three independent agents, fully parallel. IMPL-003 and IMPL-005 share no dependencies |
 | **Wave 4** | IMPL-004 | Needs IMPL-003 to exist |
 | **Wave 5** | IMPL-007 | Needs IMPL-006 to exist |
 
@@ -162,10 +149,10 @@ No conflicts. Every agent creates exactly one file in `.claude/skills/<name>/SKI
 
 | Metric | Count |
 |---|---|
-| Skills to create | 2 (`ask_until_understood`, `fff_mock_pattern`) |
+| Skills to create | 1 (`ask_until_understood`) |
 | Agents to create | 5 (`/dev-implement-subtask`, `/dev-coordinate`, `/test-write`, `/arch-validate`, `/sec-arch-review`) |
 | Files modified | 3 (wire ask_until_understood into existing 3 agents) |
-| Total new lines | ~1,000 |
+| Total new lines | ~950 |
 | Waves | 5 |
 
 ## Deferred / Out of Scope
@@ -183,7 +170,7 @@ These agents were in the original plan but are NOT included here:
 - [ ] `ask_until_understood` wired into all human-facing agents
 - [ ] `/dev-coordinate` can successfully read a plan from `/dev-plan` and dispatch subtasks sequentially
 - [ ] `/dev-implement-subtask` respects file allowlists (verified by `/standards-check`)
-- [ ] `/test-write` produces compilable tests without reading `src/`
+- [ ] `/test-write` produces compilable tests following the zbus-listener pattern (no FFF, no src/ access)
 - [ ] `/arch-validate` correctly identifies ADR constraint violations in a test diff
 - [ ] `/sec-arch-review` delegates to `/arch-validate` and adds security-only checks
 - [ ] All skills pass `pre-commit run --all-files`
