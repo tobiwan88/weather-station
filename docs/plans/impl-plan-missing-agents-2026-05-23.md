@@ -49,9 +49,27 @@ Wire into `/arch-sync`, `/dev-plan`, and `/standards-check` as a "Before Step 1"
 **Estimated:** 180 lines
 
 **Description:**
-Code-writing agent that implements exactly one YAML subtask from a `/dev-plan` output. Hard constraints: only touch files in `files_to_create` and `files_to_modify`; never touch test files; never disable Kconfig safety options. Steps: load constraints → search cocoindex for patterns → implement → build check → iterate up to 5x. Includes diff cap (200 lines max modification to existing files per iteration).
+Code-writing agent that implements exactly one YAML subtask from a `/dev-plan` output.
 
-Composes inline: Zephyr coding standards section, `architecture-constraints.md` constraints. Finds test patterns from existing 7 test suites via cocoindex search — no FFF needed.
+```
+<HARD-GATE>
+You may ONLY create or modify files listed in files_to_create and files_to_modify.
+You may NOT touch test files.
+You may NOT modify files owned by another subtask.
+You may NOT disable Kconfig safety options or add casts to silence warnings.
+Violating any of these = the subtask is invalid. Stop and escalate.
+</HARD-GATE>
+```
+
+Steps: load constraints → search cocoindex for patterns → implement → build check → iterate up to 5x. Includes diff cap (200 lines max modification to existing files per iteration).
+
+**Red Flags — STOP:**
+- Touching a file not in the allowlist
+- Skipping the build check because "trivial change"
+- Proceeding past a build failure saying "will fix in next iteration"
+- Exceeding 200 lines of diffs and rationalizing "it's all necessary"
+- Disabling a Kconfig safety option to make a build pass
+- Any iteration past #5 without escalating
 
 ### IMPL-004: `/dev-coordinate` agent
 **Domain:** agent

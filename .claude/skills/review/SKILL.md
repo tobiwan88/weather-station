@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review staged or committed code changes by spawning specialized sub-agents (architecture, security, coding standards, embedded, tests). Each agent reviews from a different angle.
+description: Use when completing tasks, implementing major features, or before merging
 argument-hint: "[commit-range or file...]"
 ---
 

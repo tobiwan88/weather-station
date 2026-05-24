@@ -1,6 +1,6 @@
 ---
 name: explore-adrs
-description: Discover and present relevant ADRs before starting feature work. Reads the ADR index, matches decisions to the feature request, and surfaces them as design constraints. Invoke before brainstorming or any implementation work.
+description: Use before brainstorming or starting any feature work. Surfaces relevant ADR constraints.
 disable-model-invocation: false
 ---
 

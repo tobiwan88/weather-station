@@ -1,3 +1,8 @@
+---
+name: new-diagram
+description: Use when adding or updating architecture diagrams
+---
+
 # Diagram Conventions Guide
 
 Use this guide when adding or updating architecture diagrams for the weather-station project.
