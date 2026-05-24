@@ -1,5 +1,11 @@
 # Backlog
 
+## [REQ-INGESTION] Requirements ingestion and CocoIndex Zephyr corpus
+
+See plan: [`docs/requirements/PLAN-requirements-and-cocoindex.md`](requirements/PLAN-requirements-and-cocoindex.md)
+
+Tracks: CocoIndex Layer 2 (Zephyr corpus indexer), REQ file creation per domain (SENSORS, LORA, MQTT, HTTP, DISPLAY, FOTA, POWER, TIME, CONFIG, LOCATION, DATA), MCP config updates.
+
 ## [Lora SENSOR] Do we support RCP/FOTA coommands?
 - review and adjust
 
