@@ -1,6 +1,7 @@
 ---
 name: build-and-test
-description: Use after any code, Kconfig, DTS, or config change — before committing
+description: Use after any code, Kconfig, DTS, or config change — before committing. Runs the mandatory build + test gate for the weather-station project.
+allowed-tools: Bash
 disable-model-invocation: false
 ---
 
@@ -94,13 +95,22 @@ Do not skip or reorder steps.
 
 ## Red Flags — STOP and re-run the failed step
 
-- "Should pass" / "probably fine" / "looks correct" — you didn't verify
-- Trusting a build from an earlier session
-- Skipping sensor-node build because "only gateway changed"
-- Skipping shell smoke-test because "just a small change"
-- Proceeding past a test failure saying "will fix later"
-- Proceeding past a pre-commit hook failure
-- **Any wording implying success without having RUN the verification command**
+| Feeling | Reality |
+|---------|---------|
+| "Should pass" / "probably fine" / "looks correct" | You didn't verify |
+| Trusting a build from an earlier session | Not fresh evidence |
+| Skipping sensor-node build because "only gateway changed" | Build both |
+| Skipping shell smoke-test because "just a small change" | Small changes can break init |
+| Proceeding past a test failure saying "will fix later" | Fix now or don't proceed |
+| Proceeding past a pre-commit hook failure | Fix now or don't proceed |
+| Any wording implying success without having RUN the verification command | No evidence = no claim |
+
+## Gotchas
+
+- **ZEPHYR_BASE is stale.** Always prefix `west twister` with `ZEPHYR_BASE=/home/zephyr/workspace/zephyr`. `west build` is NOT affected.
+- **Pristine vs. incremental.** Kconfig/DTS/conf changes require `-p always`. When in doubt, pristine is always safe.
+- **Mosquitto.** MQTT tests skip silently if no broker is running. Start `mosquitto -p 1883 -d` for full coverage.
+- **CMakeCache.txt.** If builds fail with a stale path, delete `CMakeCache.txt` and rebuild.
 
 ## Binary path reference
 
