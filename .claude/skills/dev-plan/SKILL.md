@@ -71,6 +71,7 @@ For each subtask, produce a YAML block:
   files_to_create:
     - "lib/new_module/src/new_module.c"
     - "lib/new_module/include/new_module/new_module.h"
+    - "tests/new_module/testcase.yaml"
   files_to_modify:
     - "apps/gateway/prj.conf"
   depends_on: []            # IMPL-NNN IDs this must wait for
@@ -91,7 +92,12 @@ For each subtask, produce a YAML block:
 
 **Rules:**
 - New files → `files_to_create`. Modifications to existing files → `files_to_modify`.
-- Tests are **never** in either field — tests have a separate workflow.
+- Unit tests (ztest, test_*.c under `tests/<module>/`) **may** be included — they are
+  part of the implementation and exercise internal APIs. Plan them alongside the code
+  they test (TDD: red → green cycle).
+- Integration/E2E/system-level tests (pytest, SIL, HIL) are **never** in either field —
+  they have a separate workflow. They test cross-subsystem behavior and don't belong
+  to a single implementation subtask.
 - If the feature requires a **new zbus channel**, flag it explicitly — this needs an ADR.
 - Keep subtask count **≤ 5** for a typical REQ. More than 5 means the REQ is too large;
   suggest how to split it.
@@ -105,9 +111,9 @@ For each subtask, produce a YAML block:
 Produce a text-based graph:
 
 ```
-IMPL-001 (new module skeleton) ──┐
-IMPL-002 (DT binding)          ──┤──► IMPL-004 (integration test)
-IMPL-003 (Kconfig wiring)       ──┘
+IMPL-001 (new module + unit tests) ──┐
+IMPL-002 (DT binding)               ──┤──► IMPL-004 (integration test)
+IMPL-003 (Kconfig wiring)            ──┘
 ```
 
 - `──►` means "must wait for"
@@ -145,7 +151,7 @@ Present the complete plan in this format. Do **not** write to disk yet.
 
 ### IMPL-001: <Title>
 **Domain:** sensor
-**Files to create:** `lib/foo/src/foo.c`, `lib/foo/include/foo/foo.h`
+**Files to create:** `lib/foo/src/foo.c`, `lib/foo/include/foo/foo.h`, `tests/foo/testcase.yaml`
 **Files to modify:** `apps/gateway/prj.conf`
 **Depends on:** none
 **Parallel with:** IMPL-003
@@ -214,8 +220,8 @@ Report the written plan path and suggest next steps:
   push for parallelism.
 - **Do not** skip file allowlists. They are hard boundaries — if a subtask
   needs a file not listed, the plan is wrong.
-- **Do not** include tests in `files_to_create` or `files_to_modify`. Tests have
-  a separate workflow.
+- **Do not** include integration/E2E tests in `files_to_create` or `files_to_modify`.
+  Unit tests (ztest) are fine; pytest/HIL tests have a separate workflow.
 - **Do not** exceed 5 subtasks per REQ. Split the REQ into multiple plans.
 - **Do not** propose a new zbus channel without flagging the ADR requirement.
 - **Do not** write to disk before the user confirms the draft.
