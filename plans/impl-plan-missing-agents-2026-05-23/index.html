@@ -1,0 +1,1383 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/plans/impl-plan-missing-agents-2026-05-23/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Implementation Plan — Missing Agent Pipeline Components - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#implementation-plan-missing-agent-pipeline-components" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Implementation Plan — Missing Agent Pipeline Components
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../adr/" class="md-tabs__link">
+          
+  
+  
+  ADR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Footprint
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ADR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    ADR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Decision Records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Footprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-constraints-applicable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR Constraints Applicable
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subtasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subtasks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Subtasks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#impl-001-ask_until_understood-skill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMPL-001: ask_until_understood skill
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impl-003-dev-implement-subtask-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMPL-003: /dev-implement-subtask agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impl-004-dev-coordinate-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMPL-004: /dev-coordinate agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impl-005-test-write-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMPL-005: /test-write agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impl-006-arch-validate-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMPL-006: /arch-validate agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impl-007-sec-arch-review-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMPL-007: /sec-arch-review agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impl-008-integration-wire-ask_until_understood-into-existing-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IMPL-008: Integration: wire ask_until_understood into existing agents
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependency Graph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-conflict-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Conflict Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-order-by-wave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Order (by wave)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estimated-totals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estimated Totals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deferred-out-of-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deferred / Out of Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#success-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Success Criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="implementation-plan-missing-agent-pipeline-components">Implementation Plan — Missing Agent Pipeline Components</h1>
+<blockquote>
+<p>Generated from Phase 1 gap analysis of the Agentic Firmware Development Pipeline
+Plan date: 2026-05-23</p>
+</blockquote>
+<h2 id="context">Context</h2>
+<p>Three agents are built (<code>/arch-sync</code>, <code>/standards-check</code>, <code>/dev-plan</code>). Five agents and one skill remain to complete Phase 1. This plan orders them by dependency and value to the weather-station project.</p>
+<p><strong>FFF removed:</strong> The project uses zero FFF mocks. All 7 existing test suites follow the native_sim + zbus-listener + DT-defined fake sensors pattern. Sub-agents find this pattern via cocoindex search. No FFF skill needed.</p>
+<h2 id="adr-constraints-applicable">ADR Constraints Applicable</h2>
+<table>
+<thead>
+<tr>
+<th>ADR</th>
+<th>Constraint</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADR-008</td>
+<td>Kconfig-only composition; library CMakeLists only <code>CONFIG_</code> gates</td>
+<td><code>/dev-implement-subtask</code> must respect this</td>
+</tr>
+<tr>
+<td>ADR-002</td>
+<td>zbus channel ownership rules</td>
+<td><code>/test-write</code> and <code>/dev-implement-subtask</code> must follow</td>
+</tr>
+<tr>
+<td>ADR-003</td>
+<td>Flat struct, no heap pointers</td>
+<td>All code-writing agents</td>
+</tr>
+<tr>
+<td>ADR-009</td>
+<td>native_sim first</td>
+<td>Tests target native_sim</td>
+</tr>
+<tr>
+<td>ADR-012</td>
+<td>Pytest + Twister; no pytest config files</td>
+<td><code>/test-write</code> output format</td>
+</tr>
+<tr>
+<td>ADR-005</td>
+<td>Fake sensors UIDs 0x0001–0x00FF</td>
+<td>Implement agents must not reuse real UID ranges</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="subtasks">Subtasks</h2>
+<h3 id="impl-001-ask_until_understood-skill">IMPL-001: <code>ask_until_understood</code> skill</h3>
+<p><strong>Domain:</strong> skill
+<strong>Files:</strong>
+- Create: <code>.claude/skills/ask-until-understood/SKILL.md</code>
+- Modify: <code>.claude/skills/arch-sync/SKILL.md</code> (add ask_until_understood directive)
+- Modify: <code>.claude/skills/dev-plan/SKILL.md</code> (add ask_until_understood directive)</p>
+<p><strong>Depends on:</strong> none
+<strong>Parallel with:</strong> none (first item, nothing to parallelize with)
+<strong>Estimated:</strong> 40 lines (+ 6 lines per agent wired in)</p>
+<p><strong>Description:</strong>
+Reusable prompt fragment (~30 lines) that agents compose into their system prompt. Enforces: identify gaps, ask all questions in one message, never invent missing constraints, flag assumptions explicitly.</p>
+<p>Wire into <code>/arch-sync</code>, <code>/dev-plan</code>, and <code>/standards-check</code> as a "Before Step 1" directive. Also add to the existing <code>/adr</code> skill which already does this conversationally.</p>
+<h3 id="impl-003-dev-implement-subtask-agent">IMPL-003: <code>/dev-implement-subtask</code> agent</h3>
+<p><strong>Domain:</strong> agent
+<strong>Files:</strong>
+- Create: <code>.claude/skills/dev-implement-subtask/SKILL.md</code></p>
+<p><strong>Depends on:</strong> none
+<strong>Parallel with:</strong> IMPL-005, IMPL-006
+<strong>Estimated:</strong> 180 lines</p>
+<p><strong>Description:</strong>
+Code-writing agent that implements exactly one YAML subtask from a <code>/dev-plan</code> output.</p>
+<div class="highlight"><pre><span></span><code>&lt;HARD-GATE&gt;
+You may ONLY create or modify files listed in files_to_create and files_to_modify.
+You may NOT touch test files.
+You may NOT modify files owned by another subtask.
+You may NOT disable Kconfig safety options or add casts to silence warnings.
+Violating any of these = the subtask is invalid. Stop and escalate.
+&lt;/HARD-GATE&gt;
+</code></pre></div>
+<p>Steps: load constraints → search cocoindex for patterns → implement → build check → iterate up to 5x. Includes diff cap (200 lines max modification to existing files per iteration).</p>
+<p><strong>Red Flags — STOP:</strong>
+- Touching a file not in the allowlist
+- Skipping the build check because "trivial change"
+- Proceeding past a build failure saying "will fix in next iteration"
+- Exceeding 200 lines of diffs and rationalizing "it's all necessary"
+- Disabling a Kconfig safety option to make a build pass
+- Any iteration past #5 without escalating</p>
+<h3 id="impl-004-dev-coordinate-agent">IMPL-004: <code>/dev-coordinate</code> agent</h3>
+<p><strong>Domain:</strong> agent
+<strong>Files:</strong>
+- Create: <code>.claude/skills/dev-coordinate/SKILL.md</code></p>
+<p><strong>Depends on:</strong> IMPL-003 (needs /dev-implement-subtask to exist)
+<strong>Parallel with:</strong> none — sequential
+<strong>Estimated:</strong> 160 lines</p>
+<p><strong>Description:</strong>
+Reads an <code>impl-plan-*.md</code> file, parses subtask YAML blocks, dispatches <code>/dev-implement-subtask</code> for each subtask in dependency order. After each subtask: runs <code>/standards-check</code>. If BLOCK: feeds findings back to implement-subtask (3 iterations max then escalate). After all subtasks: runs <code>west twister</code>. Writes summary to <code>docs/plans/impl-summary-&lt;slug&gt;.md</code>.</p>
+<p>Phase 1 dispatches sequentially (user invokes each subtask). Phase 3 fan-out is future work.</p>
+<h3 id="impl-005-test-write-agent">IMPL-005: <code>/test-write</code> agent</h3>
+<p><strong>Domain:</strong> agent
+<strong>Files:</strong>
+- Create: <code>.claude/skills/test-write/SKILL.md</code></p>
+<p><strong>Depends on:</strong> IMPL-001 (ask_until_understood)
+<strong>Parallel with:</strong> IMPL-003, IMPL-006
+<strong>Estimated:</strong> 180 lines</p>
+<p><strong>Description:</strong>
+Independent test writer. HARD CONSTRAINT: must NOT read any files under <code>src/</code>. Derives tests from REQ file only — never from implementation. Outputs ztest suites following the existing project pattern (native_sim, zbus listeners, DT-defined fake sensors, semaphore-based event waiting — see <code>tests/fake_sensors/src/main.c</code> and <code>tests/mqtt_publisher/src/main.c</code> for canonical examples). Lists [hil] and [manual] deferred criteria. Dry-run builds via <code>west twister -p native_sim</code>. No Renode, no Robot Framework — not set up in this project.</p>
+<h3 id="impl-006-arch-validate-agent">IMPL-006: <code>/arch-validate</code> agent</h3>
+<p><strong>Domain:</strong> agent
+<strong>Files:</strong>
+- Create: <code>.claude/skills/arch-validate/SKILL.md</code></p>
+<p><strong>Depends on:</strong> IMPL-001 (ask_until_understood)
+<strong>Parallel with:</strong> IMPL-005
+<strong>Estimated:</strong> 120 lines</p>
+<p><strong>Description:</strong>
+Validates a git diff against <code>architecture-constraints.md</code> and accepted ADRs — NOT against a YAML schema. Complements <code>/standards-check</code> (which checks code patterns) by checking architecture-level rules. Steps: load constraints → extract rules → analyze diff → produce compliance table. Output: <code>docs/arch/validation-report-&lt;timestamp&gt;.md</code> with COMPLIANT/VIOLATION/NOT APPLICABLE status per constraint.</p>
+<h3 id="impl-007-sec-arch-review-agent">IMPL-007: <code>/sec-arch-review</code> agent</h3>
+<p><strong>Domain:</strong> agent
+<strong>Files:</strong>
+- Create: <code>.claude/skills/sec-arch-review/SKILL.md</code></p>
+<p><strong>Depends on:</strong> IMPL-006 (delegates to /arch-validate)
+<strong>Parallel with:</strong> none
+<strong>Estimated:</strong> 150 lines</p>
+<p><strong>Description:</strong>
+Pre-merge security + architecture review. Delegates architecture check to <code>/arch-validate</code>. Adds: hardcoded credential scan, disabled security Kconfig flags (HW_STACK_PROTECTION, FORTIFY_SOURCE), banned crypto (MD5, SHA1, DES, RC4), TLS verification, acceptance criterion cross-reference. No CRA-specific checks — this project has no CRA obligations. Output: <code>docs/reviews/sec-arch-&lt;timestamp&gt;.md</code>.</p>
+<h3 id="impl-008-integration-wire-ask_until_understood-into-existing-agents">IMPL-008: Integration: wire <code>ask_until_understood</code> into existing agents</h3>
+<p><strong>Domain:</strong> refactor
+<strong>Files:</strong>
+- Modify: <code>.claude/skills/arch-sync/SKILL.md</code>
+- Modify: <code>.claude/skills/dev-plan/SKILL.md</code>
+- Modify: <code>.claude/skills/standards-check/SKILL.md</code></p>
+<p><strong>Depends on:</strong> IMPL-001
+<strong>Parallel with:</strong> IMPL-003, IMPL-004, IMPL-005, IMPL-006, IMPL-007 (no file overlap)
+<strong>Estimated:</strong> 30 lines total</p>
+<p><strong>Description:</strong>
+Add "apply ask_until_understood" directive to the start of each agent's Steps section. For <code>/arch-sync</code>: before Step 1. For <code>/dev-plan</code>: before Step 0 (already has this inline, formalize). For <code>/standards-check</code>: before Step 1 (when given a feature description rather than a git ref).</p>
+<hr>
+<h2 id="dependency-graph">Dependency Graph</h2>
+<div class="highlight"><pre><span></span><code>IMPL-001 (ask_until_understood) ──┬──► IMPL-005 (/test-write)
+                                  ├──► IMPL-006 (/arch-validate)
+                                  └──► IMPL-008 (wire into existing)
+
+IMPL-003 (/dev-implement-subtask) ──► IMPL-004 (/dev-coordinate)
+
+IMPL-006 (/arch-validate) ──► IMPL-007 (/sec-arch-review)
+</code></pre></div>
+<h2 id="file-conflict-report">File Conflict Report</h2>
+<p>No conflicts. Every agent creates exactly one file in <code>.claude/skills/&lt;name&gt;/SKILL.md</code>. IMPL-008 modifies files created by IMPL-001 batch — this is intentional and declared as a dependency.</p>
+<h2 id="implementation-order-by-wave">Implementation Order (by wave)</h2>
+<table>
+<thead>
+<tr>
+<th>Wave</th>
+<th>Subtask</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Wave 1</strong></td>
+<td>IMPL-001</td>
+<td>Pure skill (no tool calls), unblocks everything else</td>
+</tr>
+<tr>
+<td><strong>Wave 2</strong></td>
+<td>IMPL-008</td>
+<td>Trivial wiring — completes immediately after Wave 1</td>
+</tr>
+<tr>
+<td><strong>Wave 3</strong></td>
+<td>IMPL-003 + IMPL-005 + IMPL-006</td>
+<td>Three independent agents, fully parallel. IMPL-003 and IMPL-005 share no dependencies</td>
+</tr>
+<tr>
+<td><strong>Wave 4</strong></td>
+<td>IMPL-004</td>
+<td>Needs IMPL-003 to exist</td>
+</tr>
+<tr>
+<td><strong>Wave 5</strong></td>
+<td>IMPL-007</td>
+<td>Needs IMPL-006 to exist</td>
+</tr>
+</tbody>
+</table>
+<h2 id="estimated-totals">Estimated Totals</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Skills to create</td>
+<td>1 (<code>ask_until_understood</code>)</td>
+</tr>
+<tr>
+<td>Agents to create</td>
+<td>5 (<code>/dev-implement-subtask</code>, <code>/dev-coordinate</code>, <code>/test-write</code>, <code>/arch-validate</code>, <code>/sec-arch-review</code>)</td>
+</tr>
+<tr>
+<td>Files modified</td>
+<td>3 (wire ask_until_understood into existing 3 agents)</td>
+</tr>
+<tr>
+<td>Total new lines</td>
+<td>~950</td>
+</tr>
+<tr>
+<td>Waves</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deferred-out-of-scope">Deferred / Out of Scope</h2>
+<p>These agents were in the original plan but are NOT included here:</p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Why deferred</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/req-engineer</code></td>
+<td>Project has 16 accepted ADRs and 14-page architecture docs. Requirements ingestion is done. Would be valuable for a brand-new subsystem (e.g., adding LoRaWAN).</td>
+</tr>
+<tr>
+<td><code>/release-prep</code></td>
+<td>Requires <code>west spdx</code> (SPDX SBOM generation), <code>git-cliff</code>, <code>osv-scanner</code>, <code>sbomqs</code> — none of which are set up. This is a Phase 2+ concern if the project ships production firmware.</td>
+</tr>
+<tr>
+<td><code>/cra-audit</code></td>
+<td>EU Cyber Resilience Act is not a requirement for this project. The agent exists in the plan as a reusable pattern.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="success-criteria">Success Criteria</h2>
+<ul>
+<li>[ ] <code>ask_until_understood</code> wired into all human-facing agents</li>
+<li>[ ] <code>/dev-coordinate</code> can successfully read a plan from <code>/dev-plan</code> and dispatch subtasks sequentially</li>
+<li>[ ] <code>/dev-implement-subtask</code> respects file allowlists (verified by <code>/standards-check</code>)</li>
+<li>[ ] <code>/test-write</code> produces compilable tests following the zbus-listener pattern (no FFF, no src/ access)</li>
+<li>[ ] <code>/arch-validate</code> correctly identifies ADR constraint violations in a test diff</li>
+<li>[ ] <code>/sec-arch-review</code> delegates to <code>/arch-validate</code> and adds security-only checks</li>
+<li>[ ] All skills pass <code>pre-commit run --all-files</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mermaid-zoom.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
