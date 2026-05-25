@@ -1,6 +1,6 @@
 ---
 name: west-patch
-description: Add a new out-of-tree patch for Zephyr (or another west module) using the west patch workflow.
+description: Use when adding an out-of-tree patch to Zephyr or another west module
 argument-hint: "<short description of the fix>"
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep
 ---
