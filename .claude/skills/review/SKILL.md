@@ -13,52 +13,49 @@ allowed-tools: Read, Bash, Task, Grep
 This skill collects the patch, then spawns **parallel sub-agents** that each
 review from a different angle. Results are synthesised into a single report.
 
----
+## Step 1 — Collect the patch context
 
-## Step 1 — Collect the patch
-
-Determine what to review based on the argument:
-
-- **No argument:** review uncommitted changes (`git diff` + `git diff --staged`)
-- **Commit range** (contains `..` or `~`): `git diff <range>`
-- **`HEAD`**: `git diff HEAD~1..HEAD` (last commit)
-- **File paths**: `git diff -- <files>`
-
-Run the appropriate command and store the full patch output. Also collect:
+Use the review context collection script instead of manual git commands:
 
 ```bash
-# Changed file list
-git diff --stat <range-or-flags>
-
-# Commit messages (if reviewing commits)
-git log --oneline <range>
+scripts/collect-review-context.sh [git-ref] [file...]
 ```
 
-If the patch is empty, tell the user there is nothing to review and stop.
-
----
-
-## Step 2 — Gather minimal context
-
-For each changed file, read the **first 30 lines** (imports, module header,
-struct definitions) to give reviewers file-level context. Do NOT read entire
-files — the agents only need the patch + enough framing to understand it.
-
-Also read the project's architecture rules from CLAUDE.md (the "Architecture
-rules" and "Integration tests" sections) to include in agent prompts.
-
-Run pre-commit on changed files to gather SCA results:
-
+**Examples:**
 ```bash
-git diff --name-only <range-or-flags> | xargs pre-commit run --files 2>&1
+scripts/collect-review-context.sh                  # uncommitted changes
+scripts/collect-review-context.sh HEAD~1..HEAD     # last commit
+scripts/collect-review-context.sh master..HEAD     # commits since master
 ```
 
-If pre-commit fails, note the failures — they will be included in agent prompts
-so agents don't waste tokens re-checking what the tool already caught.
+**Output:** JSON to stdout with patch content, changed files list, commit messages, pre-commit results, and file headers (first 30 lines of each changed file).
 
----
+**JSON output schema:**
+```json
+{
+  "script": "collect-review-context",
+  "timestamp": "2026-05-25T12:00:00Z",
+  "verdict": "READY|EMPTY",
+  "files_changed": ["lib/foo/src/foo.c", "lib/foo/include/foo/foo.h"],
+  "file_count": 2,
+  "patch_lines": 150,
+  "diff_stat": "...",
+  "patch_content": "...",
+  "commit_messages": "...",
+  "pre_commit_output": "...",
+  "file_headers": [
+    {"path": "lib/foo/src/foo.c", "header": "...first 30 lines..."},
+    {"path": "lib/foo/include/foo/foo.h", "header": "...first 30 lines..."}
+  ],
+  "summary": "Collected context for 2 files, 150 lines of diff."
+}
+```
 
-## Step 3 — Spawn review agents in parallel
+**Exit codes:** 0 = context collected, 1 = no changes to review
+
+If the patch is empty (verdict: "EMPTY"), tell the user there is nothing to review and stop.
+
+## Step 2 — Spawn review agents in parallel
 
 Launch **all agents in a single message** so they run in parallel.
 Use the fastest available model for each agent to keep cost low and speed high.
@@ -85,9 +82,7 @@ See [`references/embedded-review-prompt`](references/embedded-review-prompt) for
 
 See [`references/test-coverage-review-prompt`](references/test-coverage-review-prompt) for the full prompt template. Insert `{patch_content}`.
 
----
-
-## Step 4 — Synthesise the report
+## Step 3 — Synthesise the report
 
 After all agents complete, combine their findings into a single structured
 report. Group by severity:
@@ -114,8 +109,6 @@ report. Group by severity:
 Deduplicate: if two agents flag the same line, merge into one finding.
 Attribute each finding to its source angle (arch / security / C quality /
 embedded / tests).
-
----
 
 ## Red Flags — STOP and re-check
 

@@ -9,89 +9,68 @@ disable-model-invocation: false
 
 Run the mandatory build + test gate for the weather-station project.
 
-## Verification Gate (non-negotiable)
+## Use the script
 
-Before claiming any step passes:
-1. **IDENTIFY** what output proves it (exit code 0, "BUILD SUCCESS", "0 failed")
-2. **RUN** the full command fresh — never trust a previous run
-3. **READ** the full output, scan for errors, count failures
-4. **VERIFY** the output matches the success condition
-5. **ONLY THEN** claim the step passed and move to the next
-
-Never claim: "should pass", "probably fine", "looks correct", "built earlier."
-Each step's evidence must come from THIS invocation. If a step fails, fix it
-BEFORE moving on — do not proceed with known failures.
-
-## When to use pristine vs. incremental
-
-**Incremental** (only `.c` / `.h` files changed — no Kconfig, no DTS, no `.conf`):
-```bash
-west build -b native_sim/native/64 apps/gateway
-west build -b native_sim/native/64 apps/sensor-node
-```
-
-**Pristine** (after any Kconfig, DTS overlay, or `.conf` change):
-```bash
-west build -p always -b native_sim/native/64 apps/gateway
-west build -p always -b native_sim/native/64 apps/sensor-node
-```
-
-If in doubt, use pristine — it is slower but always correct.
-
-## Shell smoke-test (run after every build)
+Instead of running individual commands, use the build gate script:
 
 ```bash
-printf "help\nfake_sensors list\nkernel uptime\n" | \
-  timeout 10 /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe \
-  -uart_stdinout 2>&1
+scripts/build-gate.sh [options]
 ```
 
-Check that:
-- `help` lists the `fake_sensors` command (shell + library linked correctly)
-- `fake_sensors list` shows all sensors declared in `apps/gateway/boards/native_sim.overlay`
-- Startup log shows expected `fake_temperature` / `fake_humidity` init messages
+**Options:**
+- `--pristine` — Force pristine rebuild (default: auto-detects from git diff)
+- `--skip-smoke` — Skip shell smoke-test step
+- `--skip-tests` — Skip twister test step
+- `--skip-precommit` — Skip pre-commit step
+- `--quiet` — Suppress stderr progress output
 
-Fix any runtime failure **before** running Twister.
+**Output:** JSON to stdout with per-step results, durations, and overall verdict. Human-readable progress goes to stderr.
 
-## Full test suite
-
-**CRITICAL:** `ZEPHYR_BASE` in the shell is stale. Always prefix `west twister`:
-
+**Example:**
 ```bash
-ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
-  west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
+scripts/build-gate.sh
+scripts/build-gate.sh --pristine
+scripts/build-gate.sh --skip-tests --skip-precommit
 ```
 
-This runs both the C-based ztest suites **and** the pytest integration tests.
-
-**Mosquitto is only required to run MQTT-marked integration tests.** Without a
-broker, those tests are skipped and the DUT continues normally — the MQTT
-publisher thread retries the connection in the background. Start it if you want
-full MQTT coverage:
-
-```bash
-mosquitto -p 1883 -d 2>/dev/null || true
+**JSON output schema:**
+```json
+{
+  "script": "build-gate",
+  "timestamp": "2026-05-25T12:00:00Z",
+  "verdict": "PASS|FAIL",
+  "steps": [
+    {"name": "Build gateway", "status": "PASS|FAIL|SKIP", "duration_s": 12.3, "detail": "...", "errors": []},
+    {"name": "Build sensor-node", "status": "PASS|FAIL|SKIP", "duration_s": 8.1, "detail": "...", "errors": []},
+    {"name": "Shell smoke-test", "status": "PASS|FAIL|SKIP", "duration_s": 2.0, "detail": "...", "errors": []},
+    {"name": "Twister tests", "status": "PASS|FAIL|SKIP", "duration_s": 45.0, "detail": "...", "errors": []},
+    {"name": "Pre-commit", "status": "PASS|FAIL|SKIP", "duration_s": 3.0, "detail": "...", "errors": []}
+  ],
+  "summary": "All 5 steps passed."
+}
 ```
 
-All tests must be green. Never commit with a red suite.
+**Exit codes:** 0 = all PASS, 1 = one or more FAIL, 2 = partial (some skipped)
 
-## Pre-commit check
+## Manual steps (for reference)
 
-```bash
-pre-commit run --all-files
-```
+The script runs these 5 steps in order:
 
-Run this last, immediately before `git commit`.
+1. **Build gateway** — `west build -b native_sim/native/64 apps/gateway`
+2. **Build sensor-node** — `west build -b native_sim/native/64 apps/sensor-node`
+3. **Shell smoke-test** — Pipe commands to gateway binary, verify `fake_sensors` appears
+4. **Twister** — `west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N`
+5. **Pre-commit** — `pre-commit run --all-files`
 
-## Gate order (non-negotiable)
+Use `--pristine` (or `-p always`) after any Kconfig, DTS overlay, or `.conf` change.
+The script auto-detects this from git diff.
 
-1. Build gateway — fix compile errors first
-2. Build sensor-node — fix compile errors
-3. Shell smoke-test — fix runtime issues
-4. Twister — fix failing tests
-5. pre-commit — fix lint / formatting
+## Gotchas
 
-Do not skip or reorder steps.
+- **ZEPHYR_BASE is stale.** The script always uses `ZEPHYR_BASE=/home/zephyr/workspace/zephyr` for twister.
+- **Pristine vs. incremental.** Kconfig/DTS/conf changes require `-p always`. The script auto-detects this.
+- **Mosquitto.** MQTT tests skip silently if no broker is running. Start `mosquitto -p 1883 -d` for full coverage.
+- **CMakeCache.txt.** If builds fail with a stale path, delete `CMakeCache.txt` and rebuild.
 
 ## Red Flags — STOP and re-run the failed step
 
@@ -105,15 +84,8 @@ Do not skip or reorder steps.
 | Proceeding past a pre-commit hook failure | Fix now or don't proceed |
 | Any wording implying success without having RUN the verification command | No evidence = no claim |
 
-## Gotchas
-
-- **ZEPHYR_BASE is stale.** Always prefix `west twister` with `ZEPHYR_BASE=/home/zephyr/workspace/zephyr`. `west build` is NOT affected.
-- **Pristine vs. incremental.** Kconfig/DTS/conf changes require `-p always`. When in doubt, pristine is always safe.
-- **Mosquitto.** MQTT tests skip silently if no broker is running. Start `mosquitto -p 1883 -d` for full coverage.
-- **CMakeCache.txt.** If builds fail with a stale path, delete `CMakeCache.txt` and rebuild.
-
 ## Binary path reference
 
 ```
-/home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe
+/home/zephyr/workspace/build/native_sim/native/64/gateway/zephyr/zephyr.exe
 ```
