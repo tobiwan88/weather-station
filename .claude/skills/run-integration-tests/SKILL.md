@@ -14,103 +14,57 @@ The integration test suite lives at `tests/integration/`. It uses Twister's
 then runs Python tests that interact via shell (UART), HTTP (`localhost:8080`),
 and MQTT (`localhost:1883`).
 
-## CRITICAL: pre-flight checks
+## Use the script
 
-Before running, verify:
-
-```bash
-# 1. Start Mosquitto if you want MQTT-marked tests to run.
-#    Otherwise those tests are skipped; the DUT does not exit at boot —
-#    the MQTT publisher thread keeps retrying the broker in the background.
-mosquitto -p 1883 -d 2>/dev/null || true
-# verify:
-netstat -tlnp 2>/dev/null | grep 1883 || ss -tlnp 2>/dev/null | grep 1883
-
-# 2. ZEPHYR_BASE must be set explicitly (see below)
-```
-
-## CRITICAL: ZEPHYR_BASE override
-
-The shell's `ZEPHYR_BASE` is stale. **Every** `west twister` invocation must
-be prefixed:
+Instead of constructing twister commands manually, use the test runner script:
 
 ```bash
-ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister ...
+scripts/run-tests.sh [options]
 ```
 
-`west build` is NOT affected — only `west twister`.
+**Options:**
+- `--marker MARKER` — Run tests matching marker (smoke|shell|http|mqtt|e2e|system)
+- `--test NAME` — Run a single test by name (substring match)
+- `--all` — Run all tests (unit + integration)
+- `--skip-mosquitto` — Skip mosquitto pre-flight (MQTT tests will be skipped)
+- `--quiet` — Suppress stderr progress output
 
----
-
-## Run all integration tests
-
+**Examples:**
 ```bash
-ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
-  west twister -p native_sim/native/64 -T tests/integration \
-  --inline-logs -v -N
+scripts/run-tests.sh                    # all integration tests
+scripts/run-tests.sh --marker smoke     # smoke tests only
+scripts/run-tests.sh --marker http      # HTTP tests only
+scripts/run-tests.sh --test test_http_api  # single test file
+scripts/run-tests.sh --all              # unit + integration
 ```
 
-## Run by marker
+**Output:** JSON to stdout with test counts, pass/fail/skip, and overall verdict. Human-readable progress goes to stderr.
 
-If argument `$0` is provided (one of: `smoke`, `shell`, `http`, `mqtt`, `e2e`, `system`):
-
-```bash
-ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
-  west twister -p native_sim/native/64 -T tests/integration \
-  --inline-logs -v -N \
-  --pytest-args="-m $0"
+**JSON output schema:**
+```json
+{
+  "script": "run-tests",
+  "timestamp": "2026-05-25T12:00:00Z",
+  "verdict": "PASS|FAIL",
+  "config": {
+    "marker": "smoke",
+    "test_filter": "none",
+    "test_dir": "tests/integration",
+    "mosquitto": "RUNNING|NOT_RUNNING|N/A"
+  },
+  "results": {
+    "passed": 5,
+    "failed": 0,
+    "skipped": 2,
+    "total": 7,
+    "duration_s": 45
+  },
+  "output": "...",
+  "summary": "All 5 tests passed."
+}
 ```
 
-## Run a single test by name (most useful for debugging)
-
-Use `-k <test_name>` to run exactly one test function. This is the fastest
-way to iterate on a failing test — Twister still builds once and boots one DUT,
-but pytest only executes the matched test.
-
-```bash
-ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
-  west twister -p native_sim/native/64 -T tests/integration \
-  --inline-logs -v -N \
-  --pytest-args='-k test_post_config_without_token_returns_401'
-```
-
-`-k` matches on the test function name (substring or exact). Examples:
-
-```bash
-# exact name
---pytest-args='-k test_token_rotation_invalidates_old_token'
-
-# substring — runs all tests whose name contains "token"
---pytest-args='-k token'
-
-# combine with a marker
---pytest-args='-m http -k rotation'
-```
-
-> **Tip for debugging crashes:** run the single failing test in isolation so
-> the DUT log (`handler.log`) and pytest output (`twister_harness.log`) contain
-> only that test's traffic, making the crash signal much easier to spot.
-> Log files are at:
-> `twister-out/native_sim_native_64/host/weather-station/tests/integration/weather_station.integration/`
-
-## Run a single test file
-
-```bash
-ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
-  west twister -p native_sim/native/64 -T tests/integration \
-  --inline-logs -v -N \
-  --pytest-args="-k test_http_api"
-```
-
-## Run all tests (unit + integration)
-
-```bash
-ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
-  west twister -p native_sim/native/64 -T tests/ \
-  --inline-logs -v -N
-```
-
----
+**Exit codes:** 0 = all PASS, 1 = FAIL, 2 = partial (some skipped)
 
 ## Available markers
 
@@ -123,13 +77,11 @@ ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
 | `e2e`    | Full end-to-end data-flow tests |
 | `system` | Multi-process tests (sensor-node subprocess → FIFO → gateway) |
 
-Multiple markers: `--pytest-args="-m 'smoke or http'"`
-
----
+Multiple markers: combine with `-m` in pytest args, e.g. `--pytest-args="-m 'smoke or http'"`
 
 ## Interpreting failures
 
-1. **Build failure** → check `prj.conf` or `boards/native_sim_native_64.overlay`
+1. **Build failure** → check `prj.conf` or `boards/native_sim.overlay`
    in `tests/integration/`. The integration test builds the same stack as the
    gateway app minus LVGL.
 
@@ -165,8 +117,6 @@ Multiple markers: `--pytest-args="-m 'smoke or http'"`
 9. **Extended debugging** → For better debugging increase the log level of involved
    modules, e.g. `CONFIG_NET_HTTP_SERVER_LOG_LEVEL_DBG=y` in `prj.conf`.
    Do not increase the generic log level.
-
----
 
 ## If tests fail
 
