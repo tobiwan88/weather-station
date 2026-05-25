@@ -82,21 +82,21 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l21">z_impl_k_condvar_init (kernel/condvar.c:21)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1972">called 1972 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1974">called 1974 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l44">z_impl_k_condvar_signal (kernel/condvar.c:44)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="915">called 915 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="914">called 914 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">88.9%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">88.9%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l114">z_impl_k_condvar_wait (kernel/condvar.c:114)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1609">called 1609 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1610">called 1610 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -273,7 +273,7 @@
         <td class="lineno"><a id="l21" href="#l21">21</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1972</td>
+        <td class="linecount coveredLine show_coveredLine">1974</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">z_impl_k_condvar_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_condvar</span><span class="w"> </span><span class="o">*</span><span class="n">condvar</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -287,14 +287,14 @@
         <td class="lineno"><a id="l23" href="#l23">23</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1972</td>
+        <td class="linecount coveredLine show_coveredLine">1974</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">z_waitq_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">condvar</span><span class="o">-&gt;</span><span class="n">wait_q</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l24" href="#l24">24</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1972</td>
+        <td class="linecount coveredLine show_coveredLine">1974</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_object_init</span><span class="p">(</span><span class="n">condvar</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -350,7 +350,7 @@
         <td class="lineno"><a id="l32" href="#l32">32</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1972</td>
+        <td class="linecount coveredLine show_coveredLine">1974</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -434,7 +434,7 @@
         <td class="lineno"><a id="l44" href="#l44">44</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">915</td>
+        <td class="linecount coveredLine show_coveredLine">914</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">z_impl_k_condvar_signal</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_condvar</span><span class="w"> </span><span class="o">*</span><span class="n">condvar</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -448,7 +448,7 @@
         <td class="lineno"><a id="l46" href="#l46">46</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">915</td>
+        <td class="linecount coveredLine show_coveredLine">914</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_spinlock_key_t</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -476,7 +476,7 @@
         <td class="lineno"><a id="l50" href="#l50">50</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">915</td>
+        <td class="linecount coveredLine show_coveredLine">914</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_unpend_first_thread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">condvar</span><span class="o">-&gt;</span><span class="n">wait_q</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -492,12 +492,12 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 915 times.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 914 times.</div>
               <div class="notTakenBranch">&cross; Branch 4 &rightarrow; 8 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">915</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">914</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">unlikely</span><span class="p">(</span><span class="kr">thread</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -518,21 +518,21 @@
         <td class="lineno"><a id="l55" href="#l55">55</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">915</td>
+        <td class="linecount coveredLine show_coveredLine">914</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">arch_thread_return_value_set</span><span class="p">(</span><span class="kr">thread</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l56" href="#l56">56</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">915</td>
+        <td class="linecount coveredLine show_coveredLine">914</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">z_ready_thread</span><span class="p">(</span><span class="kr">thread</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l57" href="#l57">57</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">915</td>
+        <td class="linecount coveredLine show_coveredLine">914</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">z_reschedule</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -581,7 +581,7 @@
         <td class="lineno"><a id="l64" href="#l64">64</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">915</td>
+        <td class="linecount coveredLine show_coveredLine">914</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -945,7 +945,7 @@
         <td class="lineno"><a id="l114" href="#l114">114</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1609</td>
+        <td class="linecount coveredLine show_coveredLine">1610</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">z_impl_k_condvar_wait</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_condvar</span><span class="w"> </span><span class="o">*</span><span class="n">condvar</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">k_mutex</span><span class="w"> </span><span class="o">*</span><span class="n">mutex</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -973,7 +973,7 @@
         <td class="lineno"><a id="l118" href="#l118">118</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1609</td>
+        <td class="linecount coveredLine show_coveredLine">1610</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">EAGAIN</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1003,19 +1003,19 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 690 times.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 5 taken 919 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 693 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 5 taken 917 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">1609</td>
+        <td class="linecount coveredLine show_coveredLine">1610</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">unlikely</span><span class="p">(</span><span class="n">K_TIMEOUT_EQ</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span><span class="w"> </span><span class="n">K_NO_WAIT</span><span class="p">)))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l123" href="#l123">123</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">690</td>
+        <td class="linecount coveredLine show_coveredLine">693</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">k_mutex_unlock</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1029,7 +1029,7 @@
         <td class="lineno"><a id="l125" href="#l125">125</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">690</td>
+        <td class="linecount coveredLine show_coveredLine">693</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1050,14 +1050,14 @@
         <td class="lineno"><a id="l128" href="#l128">128</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">919</td>
+        <td class="linecount coveredLine show_coveredLine">917</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l129" href="#l129">129</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">919</td>
+        <td class="linecount coveredLine show_coveredLine">917</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_mutex_unlock</span><span class="p">(</span><span class="n">mutex</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1071,7 +1071,7 @@
         <td class="lineno"><a id="l131" href="#l131">131</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">919</td>
+        <td class="linecount coveredLine show_coveredLine">917</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_pend_curr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">condvar</span><span class="o">-&gt;</span><span class="n">wait_q</span><span class="p">,</span><span class="w"> </span><span class="n">timeout</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1080,19 +1080,19 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 915 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 914 times.</div>
               <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 11 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">915</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">914</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l133" href="#l133">133</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">915</td>
+        <td class="linecount coveredLine show_coveredLine">914</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">k_mutex_lock</span><span class="p">(</span><span class="n">mutex</span><span class="p">,</span><span class="w"> </span><span class="n">K_FOREVER</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1127,7 +1127,7 @@
         <td class="lineno"><a id="l138" href="#l138">138</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">915</td>
+        <td class="linecount coveredLine show_coveredLine">914</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1375,7 +1375,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-05-23 05:26:41
+          at 2026-05-25 19:37:32
         </footer>
       </div>
     </div>

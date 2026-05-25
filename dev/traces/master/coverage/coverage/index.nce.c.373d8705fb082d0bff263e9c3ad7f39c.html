@@ -82,7 +82,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l185">nce_halt_cpu (scripts/native_simulator/common/src/nce.c:185)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="5681">called 5681 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="5683">called 5683 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">87.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">83.3%</div>
@@ -110,7 +110,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l209">nce_wake_cpu (scripts/native_simulator/common/src/nce.c:209)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="5688">called 5688 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="5690">called 5690 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">90.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">85.7%</div>
@@ -538,14 +538,14 @@
               <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 75 times.</div>
               <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 3 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 6 not taken.</div>
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 4 times.</div>
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 10 taken 11301 times.</div>
-              <div class="takenBranch">&check; Branch 9 &rightarrow; 7 taken 4 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 2 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 10 taken 11305 times.</div>
+              <div class="takenBranch">&check; Branch 9 &rightarrow; 7 taken 2 times.</div>
               <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 10 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">11448</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">11450</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">while</span><span class="w"> </span><span class="p">(((</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sem_wait</span><span class="p">(</span><span class="n">semaphore</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">errno</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">EINTR</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -566,7 +566,7 @@
         <td class="lineno"><a id="l58" href="#l58">58</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">11376</td>
+        <td class="linecount coveredLine show_coveredLine">11380</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1455,7 +1455,7 @@
         <td class="lineno"><a id="l185" href="#l185">185</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5681</td>
+        <td class="linecount coveredLine show_coveredLine">5683</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">nce_halt_cpu</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">this_arg</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -1469,7 +1469,7 @@
         <td class="lineno"><a id="l187" href="#l187">187</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5681</td>
+        <td class="linecount coveredLine show_coveredLine">5683</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">nce_status_t</span><span class="w"> </span><span class="o">*</span><span class="n">this</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">nce_status_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">this_arg</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1486,11 +1486,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 3 not taken.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 5681 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 5683 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">5681</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">5683</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">cpu_halted</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1518,7 +1518,7 @@
         <td class="lineno"><a id="l193" href="#l193">193</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5681</td>
+        <td class="linecount coveredLine show_coveredLine">5683</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">cpu_halted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1532,14 +1532,14 @@
         <td class="lineno"><a id="l195" href="#l195">195</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5681</td>
+        <td class="linecount coveredLine show_coveredLine">5683</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">NSI_SAFE_CALL</span><span class="p">(</span><span class="n">sem_post</span><span class="p">(</span><span class="o">&amp;</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">sem_hw</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l196" href="#l196">196</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">11294</td>
+        <td class="linecount coveredLine show_coveredLine">11298</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">NSI_SAFE_CALL</span><span class="p">(</span><span class="n">nce_sem_rewait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">sem_sw</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
@@ -1560,7 +1560,7 @@
         <td class="lineno"><a id="l199" href="#l199">199</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5613</td>
+        <td class="linecount coveredLine show_coveredLine">5615</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -1630,7 +1630,7 @@
         <td class="lineno"><a id="l209" href="#l209">209</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5688</td>
+        <td class="linecount coveredLine show_coveredLine">5690</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">nce_wake_cpu</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">this_arg</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -1644,7 +1644,7 @@
         <td class="lineno"><a id="l211" href="#l211">211</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5688</td>
+        <td class="linecount coveredLine show_coveredLine">5690</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">nce_status_t</span><span class="w"> </span><span class="o">*</span><span class="n">this</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">nce_status_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">this_arg</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1661,11 +1661,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 3 not taken.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 5688 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 5690 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">5688</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">5690</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">cpu_halted</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1700,7 +1700,7 @@
         <td class="lineno"><a id="l218" href="#l218">218</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5688</td>
+        <td class="linecount coveredLine show_coveredLine">5690</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">cpu_halted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1714,14 +1714,14 @@
         <td class="lineno"><a id="l220" href="#l220">220</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5688</td>
+        <td class="linecount coveredLine show_coveredLine">5690</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">NSI_SAFE_CALL</span><span class="p">(</span><span class="n">sem_post</span><span class="p">(</span><span class="o">&amp;</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">sem_sw</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l221" href="#l221">221</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">11376</td>
+        <td class="linecount coveredLine show_coveredLine">11380</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">NSI_SAFE_CALL</span><span class="p">(</span><span class="n">nce_sem_rewait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">sem_hw</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
@@ -1780,11 +1780,11 @@
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
               <div class="takenBranch">&check; Branch 13 &rightarrow; 14 taken 7 times.</div>
-              <div class="takenBranch">&check; Branch 13 &rightarrow; 15 taken 5681 times.</div>
+              <div class="takenBranch">&check; Branch 13 &rightarrow; 15 taken 5683 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">5688</td>
+        <td class="linecount coveredLine show_coveredLine">5690</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">terminate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1805,7 +1805,7 @@
         <td class="lineno"><a id="l232" href="#l232">232</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5681</td>
+        <td class="linecount coveredLine show_coveredLine">5683</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -1997,7 +1997,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-05-23 05:26:41
+          at 2026-05-25 19:37:32
         </footer>
       </div>
     </div>
