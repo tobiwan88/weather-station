@@ -46,6 +46,15 @@ files — the agents only need the patch + enough framing to understand it.
 Also read the project's architecture rules from CLAUDE.md (the "Architecture
 rules" and "Integration tests" sections) to include in agent prompts.
 
+Run pre-commit on changed files to gather SCA results:
+
+```bash
+git diff --name-only <range-or-flags> | xargs pre-commit run --files 2>&1
+```
+
+If pre-commit fails, note the failures — they will be included in agent prompts
+so agents don't waste tokens re-checking what the tool already caught.
+
 ---
 
 ## Step 3 — Spawn review agents in parallel
@@ -110,6 +119,10 @@ Agent({
 > and MQTT networking. Review ONLY for security concerns. Do NOT comment on
 > architecture, style, or tests — other reviewers handle those.
 >
+> Skip checks already covered by pre-commit: hardcoded secrets/key patterns
+> are caught by a pre-commit hook. Focus on security issues pre-commit can't
+> detect.
+>
 > **Focus areas:**
 > - Buffer overflows: fixed-size buffers, memcpy without bounds checks, stack buffers
 > - Format string vulnerabilities in LOG_* or shell_print/shell_error
@@ -118,7 +131,6 @@ Agent({
 > - Integer overflow/underflow in sensor value conversions (Q31 arithmetic)
 > - Race conditions: k_spinlock usage, zbus publish from ISR context
 > - Stack overflow risk: large local variables, recursive calls
-> - Secrets in code: hardcoded passwords, API keys, credentials
 >
 > **The patch:**
 > ```diff
@@ -145,6 +157,11 @@ Agent({
 > Review ONLY for coding quality and C language concerns. Do NOT comment on
 > architecture, security, or tests — other reviewers handle those.
 >
+> **SCA (pre-commit) results** (already checked — don't re-report these):
+> ```
+> <pre-commit output>
+> ```
+>
 > **Focus areas:**
 > - Zephyr API usage: correct use of k_spinlock, k_sem, zbus, LOG_* macros
 > - Error handling: unchecked return values from zbus_chan_pub, k_sem_take, etc.
@@ -154,6 +171,9 @@ Agent({
 > - Macro safety: missing parentheses, multiple evaluation of arguments
 > - Dead code, unreachable branches, redundant checks
 > - Logging: appropriate log levels (ERR vs WRN vs INF vs DBG)
+>
+> Skip checks already covered by pre-commit: trailing whitespace, end-of-file,
+> merge conflicts, line endings, clang-format, cmake-format, yamllint.
 >
 > **The patch:**
 > ```diff
@@ -184,6 +204,7 @@ Agent({
 > **Focus areas:**
 > - Stack usage: thread stack sizes, large local arrays, deep call chains
 > - Heap usage: any k_malloc, k_calloc — should be avoided where possible
+>   (pre-commit catches these; focus on identifying indirect heap patterns)
 > - ISR safety: blocking calls in interrupt/callback context (zbus listeners
 >   may run from ISR — no k_sleep, no mutex, no LOG in ISR)
 > - Timing: k_sleep in critical paths, busy-wait loops, missed deadlines
