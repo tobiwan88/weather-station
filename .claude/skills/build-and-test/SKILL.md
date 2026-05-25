@@ -1,12 +1,25 @@
 ---
 name: build-and-test
-description: Run the mandatory build and test gate for the weather-station project. Invoke after any code, Kconfig, DTS, or config change.
+description: Use after any code, Kconfig, DTS, or config change — before committing
 disable-model-invocation: false
 ---
 
 # Build and Test Gate
 
 Run the mandatory build + test gate for the weather-station project.
+
+## Verification Gate (non-negotiable)
+
+Before claiming any step passes:
+1. **IDENTIFY** what output proves it (exit code 0, "BUILD SUCCESS", "0 failed")
+2. **RUN** the full command fresh — never trust a previous run
+3. **READ** the full output, scan for errors, count failures
+4. **VERIFY** the output matches the success condition
+5. **ONLY THEN** claim the step passed and move to the next
+
+Never claim: "should pass", "probably fine", "looks correct", "built earlier."
+Each step's evidence must come from THIS invocation. If a step fails, fix it
+BEFORE moving on — do not proceed with known failures.
 
 ## When to use pristine vs. incremental
 
@@ -78,6 +91,16 @@ Run this last, immediately before `git commit`.
 5. pre-commit — fix lint / formatting
 
 Do not skip or reorder steps.
+
+## Red Flags — STOP and re-run the failed step
+
+- "Should pass" / "probably fine" / "looks correct" — you didn't verify
+- Trusting a build from an earlier session
+- Skipping sensor-node build because "only gateway changed"
+- Skipping shell smoke-test because "just a small change"
+- Proceeding past a test failure saying "will fix later"
+- Proceeding past a pre-commit hook failure
+- **Any wording implying success without having RUN the verification command**
 
 ## Binary path reference
 

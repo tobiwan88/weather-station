@@ -1,6 +1,6 @@
 ---
 name: new-sensor-type
-description: Add a new fake sensor driver and DT binding for a new physical quantity (e.g. CO₂, pressure, UV index). Accepts four arguments.
+description: Use when adding a new fake sensor type
 argument-hint: <type_name> "<description>" <initial_value_milli> <sensor_uid>
 ---
 

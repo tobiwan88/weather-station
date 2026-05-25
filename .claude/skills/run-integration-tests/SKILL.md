@@ -1,6 +1,6 @@
 ---
 name: run-integration-tests
-description: Run the pytest integration test suite for the weather-station gateway. Optionally filter by marker (smoke, shell, http, mqtt, e2e).
+description: Use when running the pytest integration test suite against a built gateway. Optionally filter by marker.
 argument-hint: "[marker]"
 allowed-tools: Bash
 ---
