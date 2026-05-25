@@ -1,6 +1,7 @@
 ---
 name: systematic-debug
-description: Use when encountering any Zephyr build failure, twister test failure, native_sim crash, or unexpected runtime behavior — before proposing fixes
+description: Use when encountering any Zephyr build failure, twister test failure, native_sim crash, or unexpected runtime behavior — before proposing fixes. Invoke when the user says "debug", "crash", "build fail", "test fail", "EEXIST", "EPOLL", or describes unexpected behavior.
+allowed-tools: Read, Bash, Grep, Glob
 ---
 
 # Systematic Debugging for Zephyr
@@ -32,14 +33,14 @@ Match the error against these common Zephyr patterns before forming hypotheses:
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| `Zephyr-sdk` version mismatch (e.g. "requires 1.0, found 0.17.4") | SDK not upgraded | `west update` or install SDK 1.0 |
+| `Zephyr-sdk` version mismatch | SDK not upgraded | `west update` or install SDK |
 | `ZEPHYR_BASE` points to wrong path | Stale env var | `export ZEPHYR_BASE=/home/zephyr/workspace/zephyr` |
-| CMake cache mismatch ("Build directory is for application X, but Y was specified") | Stale CMakeCache.txt | Delete `build/CMakeCache.txt` or use `-p always` |
+| CMake cache mismatch | Stale CMakeCache.txt | Delete `build/CMakeCache.txt` or use `-p always` |
 | `west update` fetch failures | `name-allowlist` changed | Run `west update --narrow` |
 | Patches not applied after `west update` | Forgot `west patch apply` | Run `west patch apply` |
-| `EPOLL_CTL_ADD: errno=17` (EEXIST) in handler.log | Concurrent epoll registration | Increase `CONFIG_SNTP_SYNC_PRESYNC_DELAY_MS`; add `k_sleep` before socket open in background threads |
+| `EPOLL_CTL_ADD: errno=17` (EEXIST) | Concurrent epoll registration | Increase `CONFIG_SNTP_SYNC_PRESYNC_DELAY_MS`; add `k_sleep` before socket open |
 | `CONFIG_ZVFS_POLL_MAX` exhaustion | HTTP server needs ≥ 5 poll slots | Set `CONFIG_ZVFS_POLL_MAX=8` |
-| `CONFIG_NET_MAX_CONTEXTS` exhaustion | HTTP + MQTT + SNTP together need ≥ 16 | Set `CONFIG_NET_MAX_CONTEXTS=16` |
+| `CONFIG_NET_MAX_CONTEXTS` exhaustion | HTTP + MQTT + SNTP need ≥ 16 | Set `CONFIG_NET_MAX_CONTEXTS=16` |
 | Twister test timeout | native_sim binary hang | Check if LVGL is enabled (must be `n` in test builds); check `CONFIG_ZVFS_POLL_MAX` |
 | MQTT tests skipped or fail | No mosquitto broker | `mosquitto -p 1883 -d 2>/dev/null` |
 | Undefined reference to `__device_dts_ord_...` | Missing DT node or overlay | Check `apps/gateway/boards/native_sim.overlay` |
@@ -80,7 +81,7 @@ Trigger sensor → check zbus publish succeeded → check MQTT subscriber queue 
 
 ### 2a. Find working examples
 
-Search cocoindex or the codebase for similar working code:
+Search the codebase for similar working code:
 - Same subsystem, different sensor? Find the sensor that works.
 - Same pattern in a different library? Find the reference implementation.
 - Same pattern in a Zephyr sample? Read `zephyr/samples/` for that subsystem.
@@ -141,17 +142,17 @@ Run the build test gate (`/build-and-test`). Don't claim fixed without fresh evi
 
 ## Red Flags — STOP and Follow Process
 
-- "Quick fix for now, investigate later"
-- "Just try changing X and see if it works"
-- Skipping Phase 1 because "I know what's wrong"
-- "It's probably just a config issue"
-- Proposing a fix without reading the error message fully
-- "One more fix attempt" (after already tried 3)
-- "The SDK version mismatch is unrelated" — it's always related
-- Trusting a build from before `west patch apply`
-- **Any fix proposed before completing Phase 1**
-
----
+| Feeling | Reality |
+|---------|---------|
+| "Quick fix for now, investigate later" | Symptom fix = technical debt |
+| "Just try changing X and see if it works" | That's not debugging, it's guessing |
+| Skipping Phase 1 because "I know what's wrong" | You don't. Read the full error. |
+| "It's probably just a config issue" | "Probably" ≠ root cause identified |
+| Proposing a fix without reading the error message fully | The answer is in the error |
+| "One more fix attempt" (after already tried 3) | Stop at 3. Escalate to human. |
+| "The SDK version mismatch is unrelated" | It's always related |
+| Trusting a build from before `west patch apply` | Re-apply patches and rebuild |
+| Any fix proposed before completing Phase 1 | No root cause = no fix |
 
 ## Rules
 
@@ -159,4 +160,4 @@ Run the build test gate (`/build-and-test`). Don't claim fixed without fresh evi
 - Never skip Phase 1 because the error "looks familiar"
 - After 3 failed fix attempts: STOP. Escalate to human.
 - This skill is about finding WHAT is wrong and WHY — NOT about implementing the fix
-- For implementation of the fix: follow the project's build-and-test gate
+- For implementation of the fix: follow the project's `/build-and-test` gate

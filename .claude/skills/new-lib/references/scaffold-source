@@ -1,0 +1,38 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/zbus/zbus.h>
+
+#include <sensor_event/sensor_event.h>   /* if consuming sensor events */
+#include <<lib_name>/<lib_name>.h>
+
+LOG_MODULE_REGISTER(<lib_name>, CONFIG_<KCONFIG_SYMBOL>_LOG_LEVEL);
+
+/* If this library defines a new channel: */
+/* ZBUS_CHAN_DEFINE(<lib_name>_chan, <msg_type>, NULL, NULL, ZBUS_OBSERVERS_EMPTY,
+ *                 ZBUS_MSG_INIT(0)); */
+
+/* zbus listener callback */
+static void <lib_name>_cb(const struct zbus_channel *chan)
+{
+	const struct env_sensor_data *evt = zbus_chan_const_msg(chan);
+	/* process evt */
+	ARG_UNUSED(evt);
+}
+
+ZBUS_LISTENER_DEFINE(<lib_name>_listener, <lib_name>_cb);
+
+static int <lib_name>_init(void)
+{
+	int rc = zbus_chan_add_obs(&sensor_event_chan, &<lib_name>_listener, K_NO_WAIT);
+	if (rc != 0) {
+		LOG_ERR("Failed to add observer: %d", rc);
+		return rc;
+	}
+	LOG_INF("<lib_name>: init done");
+	return 0;
+}
+
+SYS_INIT(<lib_name>_init, APPLICATION, <sys_init_priority>);

@@ -1,6 +1,6 @@
 ---
 name: run-integration-tests
-description: Use when running the pytest integration test suite against a built gateway. Optionally filter by marker.
+description: Use when running the pytest integration test suite against a built gateway. Optionally filter by marker. Invoke when the user says "run tests", "run integration tests", "test gateway", or "twister".
 argument-hint: "[marker]"
 allowed-tools: Bash
 ---
@@ -162,19 +162,19 @@ Multiple markers: `--pytest-args="-m 'smoke or http'"`
 8. **Regex parse failures in ShellHarness** → the shell output format changed.
    Fix the regex in `tests/integration/pytest/harnesses/shell_harness.py`.
 
-9. *** Extended debugging ***
-   For better debugging increase the log level of involved modules
-   e.g. CONFIG_NET_HTTP_SERVER_LOG_LEVEL_DBG=y in prj.conf
-   do not increase the generic log level!
+9. **Extended debugging** → For better debugging increase the log level of involved
+   modules, e.g. `CONFIG_NET_HTTP_SERVER_LOG_LEVEL_DBG=y` in `prj.conf`.
+   Do not increase the generic log level.
 
 ---
 
+## If tests fail
+
+If integration tests fail with a DUT crash or unexpected behavior, invoke `/systematic-debug` to investigate the root cause before attempting fixes.
+
 ## Do NOT
 
-- Do not pass `--build-only` for integration tests — the pytest phase is the
-  entire point.
-- Do not omit the `ZEPHYR_BASE` prefix — `west twister` will crash with
-  `ModuleNotFoundError: No module named 'twisterlib'`.
-- Do not run integration tests with `pytest` directly — Twister manages the
-  build, the DUT lifecycle, and the `twister_harness` plugin wiring.
-- Do not increase in the prj.conf CONFIG_LOG_DEFAULT_LEVEL=4 too many messages
+- **Do not** pass `--build-only` for integration tests — the pytest phase is the entire point.
+- **Do not** omit the `ZEPHYR_BASE` prefix — `west twister` will crash with `ModuleNotFoundError: No module named 'twisterlib'`.
+- **Do not** run integration tests with `pytest` directly — Twister manages the build, the DUT lifecycle, and the `twister_harness` plugin wiring.
+- **Do not** increase `CONFIG_LOG_DEFAULT_LEVEL=4` in prj.conf — too many messages.

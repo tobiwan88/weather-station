@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+
+if(CONFIG_<KCONFIG_SYMBOL>)
+
+  zephyr_library()
+  zephyr_library_sources(src/<lib_name>.c)
+  zephyr_library_include_directories(include)
+  zephyr_include_directories(include)
+
+endif()

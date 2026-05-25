@@ -2,6 +2,7 @@
 name: dev-plan
 description: Use when the user asks to create an implementation plan, decompose a feature into subtasks, or produce a development plan for a weather-station feature. Produces file-allowlisted subtasks for parallel execution. Does not write code.
 argument-hint: "[REQ-file-path or feature description]"
+allowed-tools: Read, Write, Bash, Glob, Grep
 ---
 
 # Decompose a Feature into Implementation Subtasks
@@ -62,45 +63,15 @@ Each subtask must:
 - Have a **single clear responsibility**
 - Be completable in **one agent session**
 
-For each subtask, produce a YAML block:
-
-```yaml
-- subtask_id: IMPL-001
-  title: "Short imperative description"
-  domain: "sensor|connectivity|display|config|test|build"
-  files_to_create:
-    - "lib/new_module/src/new_module.c"
-    - "lib/new_module/include/new_module/new_module.h"
-    - "tests/new_module/testcase.yaml"
-  files_to_modify:
-    - "apps/gateway/prj.conf"
-  depends_on: []            # IMPL-NNN IDs this must wait for
-  can_run_parallel_with: [] # IMPL-NNN IDs with no file overlap
-  dts_changes: |
-    // Board overlay node if needed
-    &i2c0 { new_sensor: newsensor@76 { }; };
-  kconfig_changes: |
-    config NEW_MODULE
-      bool "New module"
-      default y
-  public_api: |
-    // .h signatures other subtasks need to know about
-    int new_module_init(void);
-  acceptance_criteria_covered: ["AC-1", "AC-2"]
-  estimated_lines: 80
-```
+For each subtask, produce a YAML block. See [`references/subtask-yaml-format`](references/subtask-yaml-format) for the complete format specification and rules.
 
 **Rules:**
 - New files → `files_to_create`. Modifications to existing files → `files_to_modify`.
-- Unit tests (ztest, test_*.c under `tests/<module>/`) **may** be included — they are
-  part of the implementation and exercise internal APIs. Plan them alongside the code
-  they test (TDD: red → green cycle).
+- Unit tests (ztest) **may** be included in `files_to_create` alongside the code they test.
 - Integration/E2E/system-level tests (pytest, SIL, HIL) are **never** in either field —
-  they have a separate workflow. They test cross-subsystem behavior and don't belong
-  to a single implementation subtask.
+  they have a separate workflow.
 - If the feature requires a **new zbus channel**, flag it explicitly — this needs an ADR.
-- Keep subtask count **≤ 5** for a typical REQ. More than 5 means the REQ is too large;
-  suggest how to split it.
+- Keep subtask count **≤ 5** for a typical REQ.
 - File allowlists are **hard boundaries**. If a subtask needs a file not listed,
   the plan must be revised.
 
@@ -112,7 +83,7 @@ Produce a text-based graph:
 
 ```
 IMPL-001 (new module + unit tests) ──┐
-IMPL-002 (DT binding)               ──┤──► IMPL-004 (integration test)
+IMPL-002 (DT binding)               ──┼──► IMPL-004 (integration test)
 IMPL-003 (Kconfig wiring)            ──┘
 ```
 
@@ -133,48 +104,7 @@ If no files are touched by more than one subtask: "**No conflicts.**"
 
 ## Step 5 — Present the draft for discussion
 
-Present the complete plan in this format. Do **not** write to disk yet.
-
-```markdown
-# Implementation Plan — <Feature Name>
-> Generated from <REQ-ID or description> on YYYY-MM-DD
-
-## Feature Summary
-<One paragraph describing what the feature does and why>
-
-## ADR Constraints Applicable
-| ADR | Constraint | Impact on implementation |
-|---|---|---|
-| [ADR-003](../adr/ADR-003-sensor-event-data-model.md) | Flat struct, no heap pointers | New data must fit `env_sensor_data` fields |
-
-## Subtasks
-
-### IMPL-001: <Title>
-**Domain:** sensor
-**Files to create:** `lib/foo/src/foo.c`, `lib/foo/include/foo/foo.h`, `tests/foo/testcase.yaml`
-**Files to modify:** `apps/gateway/prj.conf`
-**Depends on:** none
-**Parallel with:** IMPL-003
-**Estimated:** 80 lines
-**Covers:** AC-1, AC-2
-
-<Repeat for each subtask>
-
-## Dependency Graph
-<Text graph from Step 3>
-
-## File Conflict Report
-<Conflicts from Step 4, or "No conflicts">
-
-## Acceptance Criteria Coverage
-| Criterion | Subtask | Status |
-|---|---|---|
-| AC-1 | IMPL-001 | Covered |
-| AC-3 | — | Deferred — needs hardware (HIL) |
-
-## Open Questions
-<List any unresolved ambiguities from Step 0 that could not be answered>
-```
+Present the complete plan using the template in [`references/plan-template`](references/plan-template). Do **not** write to disk yet.
 
 Ask:
 > "Does this plan look right? Anything to add, remove, reorder, or clarify before I
@@ -197,8 +127,6 @@ and hyphens.
 
 File path: `docs/plans/impl-plan-<feature-slug>-YYYY-MM-DD.md`
 
-Example: `docs/plans/impl-plan-bme680-sensor-driver-2026-05-24.md`
-
 Write the confirmed draft to disk.
 
 ---
@@ -213,20 +141,6 @@ Report the written plan path and suggest next steps:
 
 ---
 
-## Common mistakes to avoid
-
-- **Do not** write implementation code. This agent ONLY produces the plan.
-- **Do not** make all subtasks sequential. Sequential-only plans are a red flag —
-  push for parallelism.
-- **Do not** skip file allowlists. They are hard boundaries — if a subtask
-  needs a file not listed, the plan is wrong.
-- **Do not** include integration/E2E tests in `files_to_create` or `files_to_modify`.
-  Unit tests (ztest) are fine; pytest/HIL tests have a separate workflow.
-- **Do not** exceed 5 subtasks per REQ. Split the REQ into multiple plans.
-- **Do not** propose a new zbus channel without flagging the ADR requirement.
-- **Do not** write to disk before the user confirms the draft.
-- **Do not** ask clarifying questions one at a time — batch them all in one message.
-
 ## Red Flags — STOP and re-check
 
 | Feeling | Reality |
@@ -236,3 +150,9 @@ Report the written plan path and suggest next steps:
 | "I'll figure out the files as I go" | File allowlists are the core output. Without them, the plan is useless. |
 | "7 subtasks is fine, it's a big REQ" | A 7-subtask REQ contains hidden coupling. Split into two plans. |
 | "This feature doesn't need an ADR" | If it introduces a new channel, pattern, or library type, it likely does. Check the threshold rules. |
+
+## Next steps
+
+After the plan is confirmed and written:
+- If a new zbus channel or pattern is introduced → invoke `/adr` before implementation
+- When ready to implement → follow `/build-and-test` after each subtask

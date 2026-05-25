@@ -1,12 +1,12 @@
 ---
 name: arch-sync
-description: Use after any ADR status change or new ADR creation
-argument-hint: "[--dry-run]"
+description: Use after any ADR status change or new ADR creation to regenerate the machine-readable architecture constraints document from all ADRs.
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 # Architecture Sync
 
-Regenerate the machine-readable architecture constraints document from all ADRs. This is the bridge between ADRs (WHY decisions were made) and other agents that need to enforce those decisions (standards-checker, dev-plan, arch-validate).
+Regenerate the machine-readable architecture constraints document from all ADRs. This is the bridge between ADRs (WHY decisions were made) and other agents that need to enforce those decisions (standards-check, dev-plan, arch-validate).
 
 **Argument** (optional): `--dry-run` to preview changes without writing.
 
@@ -100,7 +100,15 @@ Group constraints by architectural concern for easy lookup by other agents:
 
 ---
 
-## Step 5 — Update the architecture index
+## Step 5 — Validate the output
+
+Count the ADRs in the generated file. The total must equal the number of ADRs found in the index. If the counts differ, re-read the ADRs and find the discrepancy.
+
+Check that every ADR referenced in the "Constraint reference by topic" section has a corresponding row in the "Active Constraints" table.
+
+---
+
+## Step 6 — Update the architecture index
 
 Edit `docs/architecture/README.md`. Add a row to the index table:
 
@@ -114,7 +122,7 @@ If the row already exists, leave it in place — the content is auto-generated s
 
 ---
 
-## Step 6 — Summary
+## Step 7 — Summary
 
 Print a one-line report:
 - Number of ADRs read
@@ -127,9 +135,19 @@ If `--dry-run`: display the generated content in chat. Do not write files. Do no
 
 ---
 
+## Red Flags — STOP and re-check
+
+| Feeling | Reality |
+|---------|---------|
+| "The index hasn't changed, skip it" | New ADRs change the constraint landscape. Always regenerate. |
+| "I remember what ADR-003 says" | Re-read it. ADRs may have been updated. |
+
 ## Rules
 
 - Never modify any ADR file — this skill is read-only on `docs/adr/`.
 - Only write `docs/architecture/architecture-constraints.md` and edit `docs/architecture/README.md`.
 - If an ADR has no Constrained items in Consequences (empty or only Easier/Harder), write "No explicit constraints" in the table. This is valid — some ADRs are enabling decisions, not constraining ones.
 - The "Constrained" extraction is mechanical — copy the bullets verbatim. Do not interpret or expand them.
+- After running this skill, other skills (`standards-check`, `explore-adrs`) can read the generated constraints file for up-to-date ADR information.
+
+**Terminal state:** `docs/architecture/architecture-constraints.md` regenerated, `docs/architecture/README.md` updated, counts validated.
