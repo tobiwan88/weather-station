@@ -1,0 +1,23 @@
+# Fake Sensor Driver Token Replacement Table
+
+Copy `lib/fake_sensors/src/fake_temperature.c` verbatim, then replace:
+
+| Old token | New token |
+|---|---|
+| `fake_temperature` | `fake_<type_name>` |
+| `DT_COMPAT fake_temperature` | `DT_COMPAT fake_<type_name>` |
+| `fake,temperature` | `fake,<type_name>` |
+| `FAKE_SENSOR_KIND_TEMPERATURE` | `FAKE_SENSOR_KIND_<TYPE_NAME>` |
+| `SENSOR_TYPE_TEMPERATURE` | `SENSOR_TYPE_<TYPE_NAME>` |
+| `temperature_c_to_q31` | `<type_name>_to_q31` |
+| `fake_temp_mdegc` | `fake_<type_name>_m<unit>` |
+| `initial_value_mdegc` | `initial_value_m<unit>` |
+| `SYS_INIT priority 90` | Use **91** (or next available ≥91 not already taken) |
+| Log string `"fake_temperature"` | `"fake_<type_name>"` |
+
+SYS_INIT priority map for reference:
+- 80 = sntp_sync
+- 90 = fake_temperature
+- 91 = fake_humidity, lvgl_display
+- 95 = gateway main
+- 99 = clock_display auto-timer, fake_temp auto-timer

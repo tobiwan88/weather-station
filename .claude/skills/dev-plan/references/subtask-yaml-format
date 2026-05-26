@@ -1,0 +1,43 @@
+# Subtask YAML Format
+
+Each subtask in the implementation plan uses this format:
+
+```yaml
+- subtask_id: IMPL-001
+  title: "Short imperative description"
+  domain: "sensor|connectivity|display|config|test|build"
+  files_to_create:
+    - "lib/new_module/src/new_module.c"
+    - "lib/new_module/include/new_module/new_module.h"
+    - "tests/new_module/testcase.yaml"
+  files_to_modify:
+    - "apps/gateway/prj.conf"
+  depends_on: []            # IMPL-NNN IDs this must wait for
+  can_run_parallel_with: [] # IMPL-NNN IDs with no file overlap
+  dts_changes: |
+    // Board overlay node if needed
+    &i2c0 { new_sensor: newsensor@76 { }; };
+  kconfig_changes: |
+    config NEW_MODULE
+      bool "New module"
+      default y
+  public_api: |
+    // .h signatures other subtasks need to know about
+    int new_module_init(void);
+  acceptance_criteria_covered: ["AC-1", "AC-2"]
+  estimated_lines: 80
+```
+
+**Rules:**
+- New files → `files_to_create`. Modifications to existing files → `files_to_modify`.
+- Unit tests (ztest, test_*.c under `tests/<module>/`) **may** be included — they are
+  part of the implementation and exercise internal APIs. Plan them alongside the code
+  they test (TDD: red → green cycle).
+- Integration/E2E/system-level tests (pytest, SIL, HIL) are **never** in either field —
+  they have a separate workflow. They test cross-subsystem behavior and don't belong
+  to a single implementation subtask.
+- If the feature requires a **new zbus channel**, flag it explicitly — this needs an ADR.
+- Keep subtask count **≤ 5** for a typical REQ. More than 5 means the REQ is too large;
+  suggest how to split it.
+- File allowlists are **hard boundaries**. If a subtask needs a file not listed,
+  the plan must be revised.

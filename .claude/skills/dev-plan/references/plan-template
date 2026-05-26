@@ -1,0 +1,38 @@
+# Implementation Plan — <Feature Name>
+> Generated from <REQ-ID or description> on YYYY-MM-DD
+
+## Feature Summary
+<One paragraph describing what the feature does and why>
+
+## ADR Constraints Applicable
+| ADR | Constraint | Impact on implementation |
+|---|---|---|
+| [ADR-003](../adr/ADR-003-sensor-event-data-model.md) | Flat struct, no heap pointers | New data must fit `env_sensor_data` fields |
+
+## Subtasks
+
+### IMPL-001: <Title>
+**Domain:** sensor
+**Files to create:** `lib/foo/src/foo.c`, `lib/foo/include/foo/foo.h`, `tests/foo/testcase.yaml`
+**Files to modify:** `apps/gateway/prj.conf`
+**Depends on:** none
+**Parallel with:** IMPL-003
+**Estimated:** 80 lines
+**Covers:** AC-1, AC-2
+
+<Repeat for each subtask>
+
+## Dependency Graph
+<Text graph showing parallel and sequential relationships>
+
+## File Conflict Report
+<Conflicts between subtasks, or "No conflicts">
+
+## Acceptance Criteria Coverage
+| Criterion | Subtask | Status |
+|---|---|---|
+| AC-1 | IMPL-001 | Covered |
+| AC-3 | — | Deferred — needs hardware (HIL) |
+
+## Open Questions
+<List any unresolved ambiguities that could not be answered>
