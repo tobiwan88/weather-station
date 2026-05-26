@@ -1,7 +1,8 @@
 ---
 name: new-sensor-type
-description: Use when adding a new fake sensor type
+description: Use when adding a new fake sensor type to the weather-station project — a new physical quantity with a Q31 encoding. Invoke when the user says "add sensor type", "new sensor", "fake sensor", or mentions a quantity not yet supported.
 argument-hint: <type_name> "<description>" <initial_value_milli> <sensor_uid>
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 # Add a New Fake Sensor Type
@@ -12,153 +13,75 @@ voltage).
 
 **Arguments received**: type_name=`$0` · description=`$1` · initial_value_milli=`$2` · sensor_uid=`$3`
 
----
+## Use the scaffold script
 
-## Step 0 — Branch
+Instead of creating files manually, use the scaffold script:
 
 ```bash
-git checkout master && git pull
-git checkout -b feat/fake-<type_name>
+scripts/scaffold-sensor.sh <type_name> "<description>" <value_milli> <uid> <range_min> <range_max> <unit>
 ```
 
----
+**Options:**
+- `--dry-run` — Show what would be created without writing files
+- `--skip-build` — Skip the build verification step
+- `--quiet` — Suppress stderr progress output
 
-## Step 1 — Derive the Q31 range formula
-
-Before writing any code, explicitly derive the encode/decode formulas.
-
-**Template** (fill in `range_min` and `range_span` for the new quantity):
-```
-range_min  = <lowest physical value>
-range_span = <highest physical value> - range_min
-
-encode: q31 = (value - range_min) / range_span * INT32_MAX
-decode: value = (double)q31 / INT32_MAX * range_span + range_min
+**Example:**
+```bash
+scripts/scaffold-sensor.sh co2 "CO2 concentration" 412000 0x0003 400.0 5000.0 ppm
+scripts/scaffold-sensor.sh co2 "CO2 concentration" 412000 0x0003 400.0 5000.0 ppm --dry-run
 ```
 
-**Example for CO₂ (400–5000 ppm, span = 4600):**
-```
-encode: q31 = (ppm - 400.0) / 4600.0 * INT32_MAX
-decode: ppm = (double)q31 / INT32_MAX * 4600.0 + 400.0
-```
+**Output:** JSON to stdout with created/modified files list, Q31 range info, build status, and overall verdict. Human-readable progress goes to stderr.
 
-Write these formulas down before proceeding — they drive the helper functions
-and the `initial-value-milli` DT property.
-
----
-
-## Step 2 — Add the Q31 helpers to `sensor_event.h`
-
-File: `lib/sensor_event/include/sensor_event/sensor_event.h`
-
-Add two `static inline` functions after the existing helpers (lines ~76–109):
-
-```c
-/** @brief Encode <description> to Q31. */
-static inline int32_t <type_name>_to_q31(double value)
+**JSON output schema:**
+```json
 {
-    return (int32_t)((value - <range_min>) / <range_span> * (double)INT32_MAX);
-}
-
-/** @brief Decode Q31 to <description>. */
-static inline double q31_to_<type_name>(int32_t q31)
-{
-    return (double)q31 / (double)INT32_MAX * <range_span> + <range_min>;
+  "script": "scaffold-sensor",
+  "timestamp": "2026-05-25T12:00:00Z",
+  "verdict": "PASS|FAIL|DRY_RUN",
+  "type_name": "co2",
+  "sensor_uid": "0x0003",
+  "q31_range": {
+    "min": 400.0,
+    "max": 5000.0,
+    "span": 4600.0,
+    "unit": "ppm"
+  },
+  "files_created": [
+    "dts/bindings/fake,co2.yaml",
+    "lib/fake_sensors/src/fake_co2.c"
+  ],
+  "files_modified": [
+    "lib/sensor_event/include/sensor_event/sensor_event.h",
+    "lib/fake_sensors/include/fake_sensors/fake_sensors.h",
+    "lib/fake_sensors/CMakeLists.txt",
+    "apps/gateway/boards/native_sim.overlay"
+  ],
+  "build_status": "PASS|FAIL|SKIPPED|N/A",
+  "build_output": "...",
+  "summary": "Created 2 files, modified 4 files for fake_co2."
 }
 ```
 
-Verify `SENSOR_TYPE_<TYPE_NAME>` already exists in `enum sensor_type` (lines ~26–34).
-If it is missing, add it — but **do not renumber** existing values.
+**Exit codes:** 0 = success, 1 = error (missing args, file exists, build failed)
 
----
+## Manual steps (for reference)
 
-## Step 3 — Add the `fake_sensor_kind` constant
+The script performs these steps:
 
-File: `lib/fake_sensors/include/fake_sensors/fake_sensors.h`
+1. **Branch** — `git checkout master && git pull && git checkout -b feat/fake-<type_name>`
+2. **Derive the Q31 range formula** — Compute `range_min`, `range_span`, encode/decode formulas. Validate with a round-trip test.
+3. **Add Q31 helpers** to `sensor_event.h` — `<type_name>_to_q31()` and `q31_to_<type_name>()`
+4. **Add `fake_sensor_kind` constant** to `fake_sensors.h`
+5. **Create DT binding** — `dts/bindings/fake,<type_name>.yaml`
+6. **Create fake driver** — Copy `fake_temperature.c` and replace tokens per [`references/token-replace-table`](references/token-replace-table)
+7. **Register in CMakeLists.txt** — Add `src/fake_<type_name>.c`
+8. **Add DT node to overlays** — Use UID allocation rules (0x0001–0x000F indoor, 0x0011–0x001F outdoor, 0x0021+ remote)
+9. **Verify the build** — Pristine rebuild required (DTS changed)
 
-Add `FAKE_SENSOR_KIND_<TYPE_NAME>` to the `fake_sensor_kind` enum, following the
-existing pattern for `FAKE_SENSOR_KIND_TEMPERATURE` and `FAKE_SENSOR_KIND_HUMIDITY`.
+## UID allocation rules
 
----
-
-## Step 4 — Add the DT binding
-
-File: `dts/bindings/fake,<type_name>.yaml`  (create new file)
-
-Model after `dts/bindings/fake,temperature.yaml`:
-```yaml
-description: Fake <type_name> sensor for native_sim testing
-
-compatible: "fake,<type_name>"
-
-properties:
-  sensor-uid:
-    type: int
-    required: true
-    description: Unique sensor identifier (matches sensor_registry UID)
-
-  location:
-    type: string
-    required: true
-    description: Human-readable location label
-
-  initial-value-m<unit>:
-    type: int
-    required: true
-    description: Initial <description> in milli-<unit>
-
-status:
-  required: false
-  default: okay
-```
-
----
-
-## Step 5 — Write the fake driver
-
-File: `lib/fake_sensors/src/fake_<type_name>.c`  (create new file)
-
-**Copy `lib/fake_sensors/src/fake_temperature.c` verbatim, then replace:**
-
-| Old token | New token |
-|---|---|
-| `fake_temperature` | `fake_<type_name>` |
-| `DT_COMPAT fake_temperature` | `DT_COMPAT fake_<type_name>` |
-| `fake,temperature` | `fake,<type_name>` |
-| `FAKE_SENSOR_KIND_TEMPERATURE` | `FAKE_SENSOR_KIND_<TYPE_NAME>` |
-| `SENSOR_TYPE_TEMPERATURE` | `SENSOR_TYPE_<TYPE_NAME>` |
-| `temperature_c_to_q31` | `<type_name>_to_q31` |
-| `fake_temp_mdegc` | `fake_<type_name>_m<unit>` |
-| `initial_value_mdegc` | `initial_value_m<unit>` |
-| `SYS_INIT priority 90` | Use **91** (or next available ≥91 not already taken) |
-| Log string `"fake_temperature"` | `"fake_<type_name>"` |
-
-SYS_INIT priority map for reference:
-- 80 = sntp_sync
-- 90 = fake_temperature
-- 91 = fake_humidity, lvgl_display
-- 95 = gateway main
-- 99 = clock_display auto-timer, fake_temp auto-timer
-
----
-
-## Step 6 — Register the new source in CMakeLists.txt
-
-File: `lib/fake_sensors/CMakeLists.txt`
-
-Add `src/fake_<type_name>.c` to the `zephyr_library_sources(...)` call:
-
-```cmake
-zephyr_library_sources(src/fake_temperature.c src/fake_humidity.c src/fake_<type_name>.c)
-```
-
----
-
-## Step 7 — Add a DT node to the gateway overlay
-
-File: `apps/gateway/boards/native_sim.overlay`
-
-UID allocation rules:
 - `0x0001–0x000F` → indoor / gateway-local sensors
 - `0x0011–0x001F` → outdoor sensors
 - `0x0021+` → remote sensor nodes
@@ -166,73 +89,17 @@ UID allocation rules:
 
 Always read the overlay first to find the next free UID in the correct range.
 
-```dts
-fake_<type_name>_indoor: fake-<type_name>-indoor {
-    compatible = "fake,<type_name>";
-    sensor-uid = <<sensor_uid>>;
-    location = "living_room";
-    initial-value-m<unit> = <<initial_value_milli>>;
-    status = "okay";
-};
-```
+## Red Flags — STOP and re-check
 
----
+| Feeling | Reality |
+|---------|---------|
+| "I need a sensor_manager to poll this sensor" | ADR-004: trigger-driven, not polled. Subscribe to `sensor_trigger_chan`. |
+| "I'll use `target_link_libraries()` in the app" | ADR-008: Kconfig-only composition. Never. |
+| "I can define `sensor_event_chan` in my driver" | Already defined in `lib/sensor_event/src/sensor_event.c`. Don't redefine. |
+| "I'll pick UID 0x0001" | Read the overlay first. UIDs must be unique across all overlays. |
+| "I'll hardcode the UID in the consumer" | Use `sensor_registry`. UIDs are DT-derived, not hardcoded. |
 
-## Step 8 — Add the sensor-node overlay (if applicable)
+## Next steps
 
-File: `apps/sensor-node/boards/native_sim.overlay`
-
-Follow the same pattern as the gateway overlay; use UIDs from the `0x0021+` range
-if this sensor is intended to be a remote node sensor.
-
----
-
-## Step 9 — Run the build gate
-
-```bash
-# Kconfig and DTS changed → pristine rebuild required
-west build -p always -b native_sim/native/64 apps/gateway
-west build -p always -b native_sim/native/64 apps/sensor-node
-
-# Shell smoke-test
-printf "help\nfake_sensors list\nkernel uptime\n" | \
-  timeout 10 /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe \
-  -uart_stdinout 2>&1
-
-# Verify the new sensor appears in fake_sensors list output
-
-ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
-  west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
-pre-commit run --all-files
-```
-
----
-
-## Step 10 — Commit
-
-```bash
-git add lib/sensor_event/include/sensor_event/sensor_event.h \
-        lib/fake_sensors/include/fake_sensors/fake_sensors.h \
-        lib/fake_sensors/src/fake_<type_name>.c \
-        lib/fake_sensors/CMakeLists.txt \
-        dts/bindings/fake,<type_name>.yaml \
-        apps/gateway/boards/native_sim.overlay \
-        apps/sensor-node/boards/native_sim.overlay
-
-git commit -m "feat(fake_sensors): add fake_<type_name> driver
-
-Add fake_<type_name>.c driver for SENSOR_TYPE_<TYPE_NAME>.
-Q31 range: <range_min>–<range_max> <unit>, span=<range_span>.
-UID <sensor_uid> assigned to living_room instance in gateway overlay.
-SYS_INIT priority <priority> (APPLICATION)."
-```
-
----
-
-## Common mistakes to avoid
-
-- **Do not** add a `sensor_manager` or polling loop — sensors are trigger-driven via `sensor_trigger_chan`
-- **Do not** use `target_link_libraries()` in any app `CMakeLists.txt`
-- **Do not** define `sensor_event_chan` in the new driver — it is already defined in `lib/sensor_event/src/sensor_event.c`
-- **Do not** reuse a UID that already appears in any overlay file
-- **Do not** hardcode UIDs in consumer libraries (display, MQTT) — use `sensor_registry`
+After completing this skill:
+- Invoke `/build-and-test` to run the full verification gate

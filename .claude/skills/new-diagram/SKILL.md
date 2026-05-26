@@ -1,6 +1,6 @@
 ---
 name: new-diagram
-description: Use when adding or updating architecture diagrams
+description: Use when adding or updating architecture diagrams, Mermaid charts, flow charts, sequence diagrams, or architecture visualization. Creates or edits .mmd files in docs/architecture/diagrams/.
 ---
 
 # Diagram Conventions Guide
@@ -57,6 +57,16 @@ Apply with `style <ID> fill:#..., stroke:#...` at the bottom of graph diagrams.
 
 Only embed where a visual genuinely clarifies structure or flow. Do not add diagrams to every section.
 
+## Validate the diagram
+
+After creating or editing a `.mmd` file, verify it renders correctly:
+
+```bash
+npx --yes @mermaid-js/mermaid-cli mmdc -i <file>.mmd -o /dev/null 2>&1
+```
+
+If `mmdc` is not available, paste the content into [Mermaid Live Editor](https://mermaid.live) and confirm it renders without errors. Do not proceed with a broken diagram.
+
 ## Style rules
 
 - **Subgraph labels:** ALL-CAPS SHORT name + `\n` detail line, e.g. `["LIBRARY LAYER (lib/)\nself-wired via SYS_INIT"]`
@@ -72,3 +82,5 @@ Only embed where a visual genuinely clarifies structure or flow. Do not add diag
 - Do not add diagrams to a page just because a diagram exists — only embed where it adds meaning
 - Do not use colours outside the project palette without a strong reason
 - Do not commit `.mmd` files with markdown code fences around the Mermaid source
+
+**Terminal state:** `.mmd` file created in `docs/architecture/diagrams/`, catalog entry added to `docs/architecture/diagrams.md`, diagram embedded in relevant arch page, rendering verified.

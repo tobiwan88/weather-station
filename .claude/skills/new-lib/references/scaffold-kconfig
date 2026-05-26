@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig <KCONFIG_SYMBOL>
+	bool "<description>"
+	help
+	  <One paragraph describing what this library does and when to enable it.>
+
+if <KCONFIG_SYMBOL>
+
+# Add sub-options here, e.g.:
+# config <KCONFIG_SYMBOL>_THREAD_STACK_SIZE
+# 	int "Thread stack size in bytes"
+# 	default 1024
+
+module = <KCONFIG_SYMBOL>
+module-str = <KCONFIG_SYMBOL>
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # <KCONFIG_SYMBOL>

@@ -1,7 +1,8 @@
 ---
 name: new-lib
-description: Use when adding a new library under lib/
+description: Use when adding a new library under lib/. Creates the full scaffold with Kconfig, CMakeLists.txt, header, source, and wires it into the build system. Invoke when the user says "add library", "new lib", "create library", or similar.
 argument-hint: <lib_name> "<description>" <kconfig_symbol> <sys_init_priority>
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 # Add a New Consumer or Utility Library
@@ -12,272 +13,86 @@ zbus channels.
 
 **Arguments received**: lib_name=`$0` · description=`$1` · kconfig_symbol=`$2` · sys_init_priority=`$3`
 
----
+## Use the scaffold script
 
-## Step 0 — Branch
+Instead of creating files manually, use the scaffold script:
 
 ```bash
-git checkout master && git pull
-git checkout -b feat/<lib_name>
+scripts/scaffold-lib.sh <lib_name> "<description>" <kconfig_symbol> <sys_init_priority>
 ```
 
----
+**Options:**
+- `--dry-run` — Show what would be created without writing files
+- `--skip-build` — Skip the build verification step
+- `--quiet` — Suppress stderr progress output
 
-## Step 1 — Decide zbus channel ownership
-
-Before writing any code, answer these questions:
-
-1. **Does this library define a new zbus channel?**
-   - If yes: `ZBUS_CHAN_DEFINE(...)` goes in exactly one `.c` file in this library.
-     `ZBUS_CHAN_DECLARE(...)` goes in the library's public header.
-   - If no: the library subscribes to an existing channel via `ZBUS_CHAN_DECLARE` +
-     `zbus_chan_add_obs()` in `SYS_INIT`.
-
-2. **Which existing channels does this library consume?**
-   - `sensor_event_chan` — carries `env_sensor_data` events
-   - `sensor_trigger_chan` — carries `sensor_trigger_event` (fire to trigger all sensors)
-   - Other channels: check `lib/*/include/*/` headers
-
-**Architecture rule**: `ZBUS_CHAN_DEFINE` in exactly one `.c` per channel.
-Never define a channel that is already defined elsewhere.
-
----
-
-## Step 2 — Choose SYS_INIT priority
-
-SYS_INIT priority map (APPLICATION level):
-
-| Priority | Module |
-|---|---|
-| 80 | `sntp_sync` |
-| 90 | `fake_temperature` |
-| 91 | `fake_humidity`, `lvgl_display` |
-| 95 | `gateway` main |
-| 99 | `clock_display` auto-timer, `fake_temp` auto-timer |
-
-Rules:
-- Consumers of `sensor_event_chan` must initialise **after** their producers (≥92).
-- If your library publishes to `sensor_trigger_chan`, stay below 90.
-- Pick the lowest available slot that satisfies the ordering constraint.
-
----
-
-## Step 3 — Create the directory structure
-
-```
-lib/<lib_name>/
-├── CMakeLists.txt
-├── Kconfig
-├── include/
-│   └── <lib_name>/
-│       └── <lib_name>.h
-└── src/
-    └── <lib_name>.c
+**Example:**
+```bash
+scripts/scaffold-lib.sh mqtt_publisher "MQTT telemetry publisher" MQTT_PUBLISHER 95
+scripts/scaffold-lib.sh mqtt_publisher "MQTT telemetry publisher" MQTT_PUBLISHER 95 --dry-run
 ```
 
----
+**Output:** JSON to stdout with created files list, build status, and overall verdict. Human-readable progress goes to stderr.
 
-## Step 4 — Write `lib/<lib_name>/Kconfig`
-
-```kconfig
-# SPDX-License-Identifier: Apache-2.0
-
-menuconfig <KCONFIG_SYMBOL>
-	bool "<description>"
-	help
-	  <One paragraph describing what this library does and when to enable it.>
-
-if <KCONFIG_SYMBOL>
-
-# Add sub-options here, e.g.:
-# config <KCONFIG_SYMBOL>_THREAD_STACK_SIZE
-# 	int "Thread stack size in bytes"
-# 	default 1024
-
-module = <KCONFIG_SYMBOL>
-module-str = <KCONFIG_SYMBOL>
-source "subsys/logging/Kconfig.template.log_config"
-
-endif # <KCONFIG_SYMBOL>
-```
-
-The log template generates `CONFIG_<KCONFIG_SYMBOL>_LOG_LEVEL` (defaults to `LOG_LEVEL_INF`)
-and exposes it in menuconfig under the library's menu. Use this symbol in the source file
-instead of a hardcoded level (see Step 7).
-
----
-
-## Step 5 — Write `lib/<lib_name>/CMakeLists.txt`
-
-```cmake
-# SPDX-License-Identifier: Apache-2.0
-
-if(CONFIG_<KCONFIG_SYMBOL>)
-
-  zephyr_library()
-  zephyr_library_sources(src/<lib_name>.c)
-  zephyr_library_include_directories(include)
-  zephyr_include_directories(include)
-
-endif()
-```
-
-Do **not** use `target_link_libraries()`. Zephyr's `zephyr_library_*` macros
-handle all linking. Apps enable this library via Kconfig only.
-
----
-
-## Step 6 — Write the public header `lib/<lib_name>/include/<lib_name>/<lib_name>.h`
-
-```c
-/* SPDX-License-Identifier: Apache-2.0 */
-#ifndef <LIB_NAME>_<LIB_NAME>_H_
-#define <LIB_NAME>_<LIB_NAME>_H_
-
-#include <zephyr/zbus/zbus.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/* If this library owns a new zbus channel, declare it here: */
-/* ZBUS_CHAN_DECLARE(<lib_name>_chan); */
-
-/* Public API (if any) */
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* <LIB_NAME>_<LIB_NAME>_H_ */
-```
-
----
-
-## Step 7 — Write `lib/<lib_name>/src/<lib_name>.c`
-
-Canonical structure:
-
-```c
-/* SPDX-License-Identifier: Apache-2.0 */
-
-#include <zephyr/init.h>
-#include <zephyr/kernel.h>
-#include <zephyr/logging/log.h>
-#include <zephyr/zbus/zbus.h>
-
-#include <sensor_event/sensor_event.h>   /* if consuming sensor events */
-#include <<lib_name>/<lib_name>.h>
-
-LOG_MODULE_REGISTER(<lib_name>, CONFIG_<KCONFIG_SYMBOL>_LOG_LEVEL);
-
-/* If this library defines a new channel: */
-/* ZBUS_CHAN_DEFINE(<lib_name>_chan, <msg_type>, NULL, NULL, ZBUS_OBSERVERS_EMPTY,
- *                 ZBUS_MSG_INIT(0)); */
-
-/* zbus listener callback */
-static void <lib_name>_cb(const struct zbus_channel *chan)
+**JSON output schema:**
+```json
 {
-	const struct env_sensor_data *evt = zbus_chan_const_msg(chan);
-	/* process evt */
-	ARG_UNUSED(evt);
+  "script": "scaffold-lib",
+  "timestamp": "2026-05-25T12:00:00Z",
+  "verdict": "PASS|FAIL|DRY_RUN",
+  "lib_name": "mqtt_publisher",
+  "kconfig_symbol": "CONFIG_MQTT_PUBLISHER",
+  "sys_init_priority": 95,
+  "files_created": [
+    "lib/mqtt_publisher/Kconfig",
+    "lib/mqtt_publisher/CMakeLists.txt",
+    "lib/mqtt_publisher/include/mqtt_publisher/mqtt_publisher.h",
+    "lib/mqtt_publisher/src/mqtt_publisher.c",
+    "lib/Kconfig (modified)",
+    "CMakeLists.txt (modified)",
+    "apps/gateway/prj.conf (modified)"
+  ],
+  "build_status": "PASS|FAIL|SKIPPED|N/A",
+  "build_output": "...",
+  "summary": "Created 7 files for lib/mqtt_publisher."
 }
-
-ZBUS_LISTENER_DEFINE(<lib_name>_listener, <lib_name>_cb);
-
-static int <lib_name>_init(void)
-{
-	int rc = zbus_chan_add_obs(&sensor_event_chan, &<lib_name>_listener, K_NO_WAIT);
-	if (rc != 0) {
-		LOG_ERR("Failed to add observer: %d", rc);
-		return rc;
-	}
-	LOG_INF("<lib_name>: init done");
-	return 0;
-}
-
-SYS_INIT(<lib_name>_init, APPLICATION, <sys_init_priority>);
 ```
 
----
+**Exit codes:** 0 = success, 1 = error (missing args, file exists, build failed)
 
-## Step 8 — Register the library in `lib/Kconfig`
+## Manual steps (for reference)
 
-File: `lib/Kconfig`
+The script performs these steps:
 
-Add one line **at the end** of the existing `rsource` list:
-```kconfig
-rsource "<lib_name>/Kconfig"
-```
+1. **Branch** — `git checkout master && git pull && git checkout -b feat/<lib_name>`
+2. **Decide zbus channel ownership** — Does this library define a new channel? If yes, `ZBUS_CHAN_DEFINE` in exactly one `.c`. If no, subscribe via `ZBUS_CHAN_DECLARE` + `zbus_chan_add_obs()`.
+3. **Choose SYS_INIT priority** — Consumers of `sensor_event_chan` must initialise **after** their producers (≥92). Publishers to `sensor_trigger_chan` stay below 90.
+4. **Create directory structure** — `lib/<lib_name>/{CMakeLists.txt, Kconfig, include/<lib_name>/<lib_name>.h, src/<lib_name>.c}`
+5. **Write files** — See reference templates in `references/`
+6. **Register in build system** — Add to `lib/Kconfig` and root `CMakeLists.txt`
+7. **Enable in app configs** — `CONFIG_<KCONFIG_SYMBOL>=y` in `apps/gateway/prj.conf`
+8. **Verify the build** — Pristine rebuild required (Kconfig changed)
 
----
+## Architecture rules
 
-## Step 9 — Register the library in root `CMakeLists.txt`
-
-File: `CMakeLists.txt` (project root)
-
-Add one line **at the end** of the existing `add_subdirectory_ifdef` list:
-```cmake
-add_subdirectory_ifdef(CONFIG_<KCONFIG_SYMBOL> lib/<lib_name>)
-```
-
----
-
-## Step 10 — Enable the library in the relevant app `.conf` file
-
-For the gateway app: `apps/gateway/prj.conf`
-```
-CONFIG_<KCONFIG_SYMBOL>=y
-```
-
-For sensor-node: `apps/sensor-node/prj.conf`
-```
-CONFIG_<KCONFIG_SYMBOL>=y
-```
-
-Only enable in the apps that need it.
-
----
-
-## Step 11 — Run the build gate
-
-```bash
-# Kconfig changed → pristine rebuild required
-west build -p always -b native_sim/native/64 apps/gateway
-west build -p always -b native_sim/native/64 apps/sensor-node
-
-# Shell smoke-test
-printf "help\nkernel uptime\n" | \
-  timeout 10 /home/zephyr/workspace/build/native_sim_native_64/gateway/zephyr/zephyr.exe \
-  -uart_stdinout 2>&1
-
-ZEPHYR_BASE=/home/zephyr/workspace/zephyr \
-  west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N
-pre-commit run --all-files
-```
-
----
-
-## Step 12 — Commit
-
-```bash
-git add lib/<lib_name>/ lib/Kconfig CMakeLists.txt apps/gateway/prj.conf
-git commit -m "feat(<lib_name>): add <description>
-
-New library lib/<lib_name>. Kconfig symbol CONFIG_<KCONFIG_SYMBOL>.
-Subscribes to sensor_event_chan via zbus listener at SYS_INIT priority <sys_init_priority>.
-Enabled in apps/gateway/prj.conf."
-```
-
----
-
-## Common mistakes to avoid
-
+- **Architecture rule**: `ZBUS_CHAN_DEFINE` in exactly one `.c` per channel. Never define a channel that is already defined elsewhere.
 - **Do not** add `target_link_libraries()` in any app `CMakeLists.txt` — use Kconfig only
-- **Do not** call `ZBUS_CHAN_DEFINE` for a channel already defined elsewhere
-  (`sensor_event_chan` is in `lib/sensor_event/src/sensor_event.c`,
-   `sensor_trigger_chan` is in `lib/sensor_trigger/src/sensor_trigger.c`)
 - **Do not** create a `sensor_manager` — sensors are trigger-driven, not polled
-- **Do not** put application logic in `main.c` — `main.c` should contain only
-  `LOG_MODULE_REGISTER` + optional `SYS_INIT` + `k_sleep(K_FOREVER)`
+- **Do not** put application logic in `main.c` — `main.c` should contain only `LOG_MODULE_REGISTER` + optional `SYS_INIT` + `k_sleep(K_FOREVER)`
 - **Do not** hardcode `sensor_uid` values in consumers — look them up via `sensor_registry`
+
+## Red Flags — STOP and re-check
+
+| Feeling | Reality |
+|---------|---------|
+| "I can use `target_link_libraries()` in the app" | Never. ADR-008: Kconfig-only composition. |
+| "This channel is already defined somewhere else" | Don't define it again. `ZBUS_CHAN_DEFINE` in exactly one `.c`. |
+| "I need a sensor_manager to poll sensors" | ADR-004: trigger-driven, not polled. Subscribe to channels. |
+| "I'll put logic in `main.c`" | ADR-008: main.c = `LOG_MODULE_REGISTER` + `return 0` only. |
+| "I'll hardcode sensor_uid in the consumer" | ADR-006: `sensor_uid` is the identity key. Use `sensor_registry`. |
+
+## Next steps
+
+After completing this skill:
+- Invoke `/build-and-test` to run the full verification gate
+- If the library introduces a new pattern or channel → invoke `/adr` to document the decision

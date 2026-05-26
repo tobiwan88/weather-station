@@ -1,7 +1,8 @@
 ---
 name: adr
-description: Use this skill when the user adds a new feature, makes an architectural decision, chooses a library/pattern/approach, or says "write an ADR", "add ADR", "document this decision", "record this decision", or "architecture decision record". Automatically invoked after implementing significant features or design choices.
+description: Use when the user adds a new feature, makes an architectural decision, chooses a library/pattern/approach, or says "write an ADR", "add ADR", "document this decision", "record this decision", or "architecture decision record". Automatically invoked after implementing significant features or design choices.
 argument-hint: "[decision topic or description]"
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 # Draft and Discuss an Architecture Decision Record
@@ -121,52 +122,7 @@ reference document for WHAT, only WHY.
 
 ## Step 4 — Present the draft for discussion
 
-Present the complete draft in the canonical format. Do NOT write to disk yet.
-
-```markdown
-# ADR-NNN — [Title]
-
-| Field | Value |
-|-------|-------|
-| **Status** | Proposed |
-| **Date** | YYYY-MM-DD |
-| **Deciders** | [role / person] |
-
----
-
-## Context
-
-[From 3a — forces and constraints, no code]
-
----
-
-## Decision
-
-[From 3b — choice + reasoning, no implementation details]
-
----
-
-## Consequences
-
-**Easier:** [From 3c]
-**Harder:** [From 3c]
-**Constrained:** [From 3c]
-
----
-
-## Alternatives considered
-
-| Alternative | Rejected because |
-|-------------|-----------------|
-[From 3d]
-
----
-
-## See also
-
-- Current implementation: [architecture doc or lib path from 3e]
-- Related ADRs: [from 3e]
-```
+Present the complete draft in the canonical format. See [`references/adr-template.md`](references/adr-template.md) for the full template structure. Do NOT write to disk yet.
 
 Ask:
 > "Does this capture the decision accurately? Anything to add, remove, or
@@ -183,9 +139,9 @@ and hyphens. No special characters.
 
 File path: `docs/adr/ADR-NNN-<kebab-title>.md`
 
-Example: `docs/adr/ADR-016-lora-proxy-agent.md`
-
 Write the confirmed draft to disk.
+
+**Validate:** Read the file back and confirm the Status, Date, and Decision fields are present and correct.
 
 ---
 
@@ -223,25 +179,43 @@ If no architecture doc exists yet for this decision area, note it to the user:
 
 ---
 
-## Conventions to enforce throughout
+## Step 8 — Regenerate architecture constraints
 
-**No implementation details in the ADR.** If the user wants to include struct
-definitions, config file contents, directory trees, code snippets, command
-examples, or byte-format tables — redirect: "That belongs in the architecture
-doc / header file. The ADR just needs the architectural choice and the reasoning.
-Add it to 'See also' instead."
+Invoke `/arch-sync` to update `docs/architecture/architecture-constraints.md`
+with the new ADR's constraints.
 
-**Context = forces and constraints.** Not "here is what we built." If the Context
-sounds like implementation description, ask what problem made the decision necessary.
+**Terminal state:** `docs/adr/ADR-NNN-<kebab-title>.md` written, `docs/adr/README.md` updated, relevant architecture docs have rationale callout, `docs/architecture/architecture-constraints.md` regenerated.
 
-**Decision = WHY chosen + WHAT was chosen.** Not HOW it is implemented.
+---
 
-**ADRs are frozen once Accepted.** If the user is attempting to update the
-Context, Decision, or Consequences of an existing Accepted ADR, stop and redirect:
-> "ADRs are frozen after Accepted. Create a new ADR that supersedes this one
-> instead, and update the old ADR's Status to 'Superseded by ADR-NNN'."
+## Red Flags — STOP and re-check
 
-**Status starts as Proposed.** The user or team reviews and changes it to
-Accepted. Do not mark it Accepted without explicit instruction.
+| Feeling | Reality |
+|---------|---------|
+| "This doesn't need an ADR" | Check the threshold rules above. New channels, patterns, or library types likely do. |
+| "I'll just include the implementation details" | Redirect to architecture doc / header file. ADR = WHY, not HOW. |
+| "I can mark it Accepted myself" | Status starts as Proposed. The user or team reviews. |
+| "The index update can wait" | Do it now. Stale indexes cause duplicate numbers. |
 
-**Date** is today's date in `YYYY-MM-DD` format.
+## Rules
+
+- **No implementation details in the ADR.** If the user wants to include struct
+  definitions, config file contents, directory trees, code snippets, command
+  examples, or byte-format tables — redirect: "That belongs in the architecture
+  doc / header file. The ADR just needs the architectural choice and the reasoning.
+  Add it to 'See also' instead."
+
+- **Context = forces and constraints.** Not "here is what we built." If the Context
+  sounds like implementation description, ask what problem made the decision necessary.
+
+- **Decision = WHY chosen + WHAT was chosen.** Not HOW it is implemented.
+
+- **ADRs are frozen once Accepted.** If the user is attempting to update the
+  Context, Decision, or Consequences of an existing Accepted ADR, stop and redirect:
+  > "ADRs are frozen after Accepted. Create a new ADR that supersedes this one
+  > instead, and update the old ADR's Status to 'Superseded by ADR-NNN'."
+
+- **Status starts as Proposed.** The user or team reviews and changes it to
+  Accepted. Do not mark it Accepted without explicit instruction.
+
+- **Date** is today's date in `YYYY-MM-DD` format.

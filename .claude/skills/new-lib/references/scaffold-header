@@ -1,0 +1,20 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+#ifndef <LIB_NAME>_<LIB_NAME>_H_
+#define <LIB_NAME>_<LIB_NAME>_H_
+
+#include <zephyr/zbus/zbus.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* If this library owns a new zbus channel, declare it here: */
+/* ZBUS_CHAN_DECLARE(<lib_name>_chan); */
+
+/* Public API (if any) */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* <LIB_NAME>_<LIB_NAME>_H_ */
