@@ -12,6 +12,7 @@
 #   --skip-smoke      Skip shell smoke-test step
 #   --skip-tests      Skip twister test step
 #   --skip-precommit  Skip pre-commit step
+#   --sca             Run CodeChecker static analysis (informational, never fails gate)
 #   --quiet           Suppress stderr progress output
 #
 # Exit codes:
@@ -32,6 +33,7 @@ PRISTINE=""
 SKIP_SMOKE=""
 SKIP_TESTS=""
 SKIP_PRECOMMIT=""
+RUN_SCA=""
 QUIET=""
 
 # Parse arguments
@@ -41,6 +43,7 @@ while [[ $# -gt 0 ]]; do
         --skip-smoke) SKIP_SMOKE="yes"; shift ;;
         --skip-tests) SKIP_TESTS="yes"; shift ;;
         --skip-precommit) SKIP_PRECOMMIT="yes"; shift ;;
+        --sca) RUN_SCA="yes"; shift ;;
         --quiet) QUIET="yes"; shift ;;
         *) echo "Unknown option: $1" >&2; exit 1 ;;
     esac
@@ -235,10 +238,10 @@ fi
 # Step 5: Pre-commit
 # ============================================================
 if [[ -n "$SKIP_PRECOMMIT" ]]; then
-    log "=== Step 5/5: Pre-commit (skipped) ==="
+    log "=== Step 5/N: Pre-commit (skipped) ==="
     add_step "Pre-commit" "SKIP" 0 "Skipped via --skip-precommit"
 else
-    log "=== Step 5/5: Pre-commit ==="
+    log "=== Step 5/N: Pre-commit ==="
     PRECOMMIT_OUTPUT=$(pre-commit run --all-files 2>&1 || true)
     PRECOMMIT_EXIT=$?
 
@@ -250,6 +253,32 @@ else
         add_step "Pre-commit" "FAIL" 0 "Hook failures detected" "\"$(json_escape "$PRECOMMIT_OUTPUT")\""
         OVERALL_EXIT=1
     fi
+fi
+
+# ============================================================
+# Step 6: CodeChecker SCA (optional, informational only)
+# ============================================================
+if [[ -z "$RUN_SCA" ]]; then
+    log "=== Step 6/N: CodeChecker SCA (skipped, use --sca to enable) ==="
+    add_step "CodeChecker SCA" "SKIP" 0 "Not requested (use --sca to enable)"
+else
+    log "=== Step 6/N: CodeChecker SCA ==="
+    SCA_START=$(date +%s)
+    SCA_OUTPUT=$("${SCRIPT_DIR}/run-codechecker.sh" --diff 2>&1 || true)
+    SCA_END=$(date +%s)
+    SCA_DURATION=$((SCA_END - SCA_START))
+
+    # Count findings from the diff output
+    NEW_FINDINGS=$(echo "$SCA_OUTPUT" | grep -c "^\[" || echo "0")
+
+    if [[ "$NEW_FINDINGS" -gt 0 ]]; then
+        log "CodeChecker SCA: ${NEW_FINDINGS} new finding(s) found (informational)"
+        add_step "CodeChecker SCA" "PASS" "$SCA_DURATION" "${NEW_FINDINGS} new finding(s) — informational only"
+    else
+        log "CodeChecker SCA: No new findings"
+        add_step "CodeChecker SCA" "PASS" "$SCA_DURATION" "No new findings vs baseline"
+    fi
+    # SCA never fails the gate (informational only)
 fi
 
 # ============================================================
