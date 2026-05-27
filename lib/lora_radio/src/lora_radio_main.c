@@ -219,6 +219,14 @@ static int lora_radio_init(void)
 	lora_session_init();
 	lora_session_restore();
 
+#ifdef CONFIG_PSA_CRYPTO
+	ret = lora_prov_init();
+	if (ret < 0) {
+		LOG_WRN("Ed25519 key cache init failed: %d", ret);
+		/* Continue without provisioning capability */
+	}
+#endif
+
 	k_thread_create(&lora_rx_thread_data, lora_rx_stack, CONFIG_LORA_RADIO_RX_THREAD_STACK_SIZE,
 			lora_rx_thread_fn, NULL, NULL, NULL, CONFIG_LORA_RADIO_RX_THREAD_PRIORITY,
 			0, K_NO_WAIT);
