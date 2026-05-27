@@ -196,6 +196,21 @@ Maintains per-node state:
 On reboot: restores all sessions from Settings. Invalidates sessions where
 GCM auth fails (the node was unpaired or key rotated).
 
+### Reliable TX (`lora_pending.c`)
+
+Shared reliable transmission subsystem used by RPC and FOTA:
+
+- Per-session pending-request slot (serialized per node)
+- `k_work_delayable` retry timer with randomized exponential backoff
+- ACK/RPC_RESP/FOTA_CHUNK_ACK matching via `(node_id, seq_num)`
+- `lora_pending_send()` — blocking (for thread callers)
+- `lora_pending_send_async()` — non-blocking (for zbus listeners)
+- `lora_pending_ack_match()` — called from RX thread dispatch
+- `lora_pending_cancel()` — called when session removed
+- Timeout scaling: SF-dependent base timeout with ±30% jitter
+- Max 3 retries, then `-ETIMEDOUT`
+- Result published on `lora_rpc_result_chan` for async callers
+
 ### Protocol Handlers (`lora_handler_*.c`)
 
 Dispatch table indexed by frame type byte. Each handler:
@@ -232,6 +247,7 @@ Runs on the dedicated LoRa RX thread.
 | `remote_peer_cmd_chan` | `remote_sensor` | Manager → Transports | `remote_peer_cmd_event` (PEER_ADD, PEER_REMOVE, SEND_TRIGGER) |
 | `lora_link_chan` | `lora_radio` | LoRa → Diagnostics | `lora_link_event` (RSSI, SNR, node_id, seq_num) |
 | `lora_fota_chan` | `lora_radio` | HTTP → LoRa | `lora_fota_event` (FOTA_START, FOTA_CANCEL, image_size, chunk data) |
+| `lora_rpc_result_chan` | `lora_radio` | LoRa → Consumers | `lora_rpc_result_event` (node_id, cmd_id, status, resp_data) |
 
 ### remote_peer_cmd_event
 
@@ -451,11 +467,15 @@ Bytes 2+:  response data
 
 ### Reliability
 
+- RPC uses `lora_pending.c` shared reliable TX subsystem
+- `lora_radio_rpc_send()` — blocking, waits for RPC_RESP or retries exhausted
+- `lora_radio_rpc_send_async()` — non-blocking, result on `lora_rpc_result_chan`
 - One pending RPC per node (serialized)
-- SF-dependent timeout: 5s at SF7, 30s at SF10
-- Up to 3 retries per command
-- Duplicate detection: sensor node checks seq_num, re-sends last response
-- RPC_RESP serves as implicit ACK — no separate ACK frame
+- SF-dependent timeout with ±30% randomization: 5s at SF7, 30s at SF12
+- Exponential backoff: 1×, 2×, 4× timeout multiplier
+- Up to 3 retries per command (Kconfig: `CONFIG_LORA_RADIO_RETRY_MAX`)
+- Duplicate detection: sensor node checks seq_num, re-sends cached response
+- RPC_RESP serves as implicit ACK — standalone ACK (0x8) also supported
 
 ---
 
@@ -491,12 +511,15 @@ Gateway (lora_radio)                       Sensor Node (STM32WLE5JC)
 
 ### Chunk protocol
 
-- Window size: 4–16 chunks in flight (Kconfig)
-- Retry timer: 2 seconds per chunk
-- Max retries: 3 per chunk
+- Windowed sender: 4–16 chunks in flight (Kconfig default 8)
+- Each chunk uses `lora_pending_send_async()` for per-chunk reliability
+- Retry timer: 2 seconds per chunk (Kconfig: `CONFIG_LORA_RADIO_FOTA_RETRY_MS`)
+- 3 retries per chunk before cooldown
 - Consecutive timeout cooldown: 30 seconds pause after 3 failures
+  (Kconfig: `CONFIG_LORA_RADIO_FOTA_COOLDOWN_S`)
 - Flash error: abort session immediately
-- ACK carries written offset → gateway skips completed chunks on retry
+- ACK carries written offset → gateway advances window
+- Receiver dedup: ignores duplicate/out-of-order chunks
 
 ### FOTA modes
 
