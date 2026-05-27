@@ -184,6 +184,9 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 		case LORA_FRAME_FOTA_CHUNK:
 			lora_handle_fota_chunk(src_node, payload, payload_len);
 			break;
+		case LORA_FRAME_FOTA_CHUNK_ACK:
+			lora_handle_fota_chunk_ack(src_node, payload, payload_len);
+			break;
 #endif
 		default:
 			LOG_DBG("unhandled frame type 0x%x from 0x%04x",

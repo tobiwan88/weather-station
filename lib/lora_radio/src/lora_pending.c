@@ -59,7 +59,7 @@ struct lora_pending_slot {
 };
 
 static struct lora_pending_slot pending_slots[CONFIG_LORA_RADIO_SESSION_MAX];
-static struct k_work_q pending_workq;
+struct k_work_q pending_workq;
 static K_THREAD_STACK_DEFINE(pending_wq_stack, 1024);
 
 /* --------------------------------------------------------------------------
