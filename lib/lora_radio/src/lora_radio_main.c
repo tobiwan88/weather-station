@@ -15,6 +15,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include "lora_radio_internal.h"
 #include <lora_radio/lora_chan.h>
 #include <lora_radio/lora_frame.h>
+#include <lora_radio/lora_pending.h>
 #include <lora_radio/lora_radio.h>
 #include <lora_radio/lora_session.h>
 
@@ -170,6 +171,12 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 		case LORA_FRAME_RPC_CMD:
 			lora_handle_rpc_cmd(src_node, payload, payload_len);
 			break;
+		case LORA_FRAME_RPC_RESP:
+			lora_handle_rpc_resp(src_node, payload, payload_len);
+			break;
+		case LORA_FRAME_ACK:
+			lora_handle_ack(src_node, payload, payload_len);
+			break;
 		case LORA_FRAME_PROV_BEACON:
 			lora_handle_prov_beacon(&hdr, payload, payload_len);
 			break;
@@ -218,6 +225,7 @@ static int lora_radio_init(void)
 
 	lora_session_init();
 	lora_session_restore();
+	lora_pending_init();
 
 #ifdef CONFIG_PSA_CRYPTO
 	ret = lora_prov_init();

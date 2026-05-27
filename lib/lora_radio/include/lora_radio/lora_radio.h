@@ -77,6 +77,21 @@ int lora_radio_publish_data(uint32_t uid, enum sensor_type type, int32_t q31_val
 int lora_radio_rpc_send(uint16_t node_id, uint8_t cmd_id, const uint8_t *params, uint8_t param_len);
 
 /**
+ * @brief Send an RPC command reliably (non-blocking).
+ *
+ * Enqueues the RPC for reliable transmission and returns immediately.
+ * Result published on lora_rpc_result_chan. Safe for zbus listener context.
+ *
+ * @param node_id    Target node identifier (0-255).
+ * @param cmd_id     RPC command ID (LORA_RPC_*).
+ * @param params     Command-specific parameter bytes (may be NULL).
+ * @param params_len Number of valid parameter bytes.
+ * @return 0 on success (enqueued), negative errno on failure.
+ */
+int lora_radio_rpc_send_async(uint16_t node_id, uint8_t cmd_id, const uint8_t *params,
+			      uint8_t param_len);
+
+/**
  * @brief Derive a stable sensor UID from a LoRa node_id.
  *
  * uid = (0x0200 << 16) | (node_id << 4) | (type & 0x0F)
