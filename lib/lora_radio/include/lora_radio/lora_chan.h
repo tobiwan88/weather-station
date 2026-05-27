@@ -24,8 +24,17 @@ struct lora_fota_event {
 	uint8_t fota_mode;
 };
 
+struct lora_rpc_result_event {
+	uint16_t node_id;
+	uint8_t cmd_id;
+	int status;
+	uint8_t resp_data[8];
+	uint8_t resp_len;
+};
+
 ZBUS_CHAN_DECLARE(lora_link_chan);
 ZBUS_CHAN_DECLARE(lora_fota_chan);
+ZBUS_CHAN_DECLARE(lora_rpc_result_chan);
 
 #ifdef __cplusplus
 }
