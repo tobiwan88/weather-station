@@ -7,7 +7,9 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
 #include <string.h>
 #include <zephyr/kernel.h>
-#include <zephyr/sys/reboot.h>
+#ifdef CONFIG_REBOOT
+#	include <zephyr/sys/reboot.h>
+#endif
 
 #include "lora_radio_internal.h"
 #include <lora_radio/lora_frame.h>
@@ -44,14 +46,15 @@ static int rpc_get_version(uint16_t src, uint8_t id, const uint8_t *p, uint8_t p
 	return 0;
 }
 
-static K_WORK_DELAYABLE_DEFINE(lora_reboot_work, NULL);
-
+#ifdef CONFIG_REBOOT
 static void lora_reboot_fn(struct k_work *work)
 {
 	(void)work;
 	LOG_INF("rebooting via RPC");
 	sys_reboot(SYS_REBOOT_COLD);
 }
+
+static K_WORK_DELAYABLE_DEFINE(lora_reboot_work, lora_reboot_fn);
 
 static int rpc_reboot(uint16_t src, uint8_t id, const uint8_t *p, uint8_t plen, uint8_t *r,
 		      uint8_t *rlen)
@@ -64,6 +67,20 @@ static int rpc_reboot(uint16_t src, uint8_t id, const uint8_t *p, uint8_t plen, 
 	k_work_schedule(&lora_reboot_work, K_MSEC(100));
 	return 0;
 }
+#else
+static int rpc_reboot(uint16_t src, uint8_t id, const uint8_t *p, uint8_t plen, uint8_t *r,
+		      uint8_t *rlen)
+{
+	(void)src;
+	(void)id;
+	(void)p;
+	(void)plen;
+	(void)r;
+	(void)rlen;
+	LOG_WRN("reboot via RPC not supported on this platform");
+	return -ENOTSUP;
+}
+#endif
 
 static const struct {
 	uint8_t cmd_id;

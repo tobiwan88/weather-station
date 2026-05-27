@@ -57,7 +57,7 @@ static void json_append_str(uint8_t *buf, int *pos, int *rem, const char *s)
 			}
 		} else if (c < 0x20) {
 			if (*rem >= 6) {
-				int n = snprintf((char *)buf + *pos, (size_t)(*rem + 1), "\\u%04x",
+				int n = snprintf((char *)buf + *pos, (size_t)*rem + 1, "\\u%04x",
 						 c);
 				if (n > 0) {
 					if (n > *rem) {
