@@ -125,6 +125,56 @@ config LORA_RADIO_SHELL
 	    lora send <node> ... — send a raw frame (debug)
 	    lora list            — list active sessions
 
+config LORA_RADIO_PENDING
+	bool "Reliable TX subsystem (retry + ACK matching)"
+	default y
+	help
+	  Shared reliable transmission subsystem. Provides per-session
+	  pending-request slots with retry timers, randomized exponential
+	  backoff, and ACK matching. Used by RPC and FOTA.
+
+config LORA_RADIO_RETRY_MAX
+	int "Max retries per pending request"
+	default 3
+	range 1 5
+	depends on LORA_RADIO_PENDING
+	help
+	  Maximum number of retransmission attempts before returning
+	  -ETIMEDOUT to the caller.
+
+config LORA_RADIO_RETRY_TIMEOUT_BASE_MS
+	int "Base retry timeout in milliseconds"
+	default 5000
+	depends on LORA_RADIO_PENDING
+	help
+	  Base timeout scaled by spreading factor. Actual timeout =
+	  BASE * SF_factor with ±30% randomization (jitter).
+	  SF7=1×, SF8=1.4×, SF9=2×, SF10=3×, SF11=4.4×, SF12=6×.
+
+config LORA_RADIO_RPC_RETRY
+	bool "Enable RPC retry"
+	default y
+	select LORA_RADIO_PENDING
+	help
+	  RPC commands use ACK-based delivery with up to 3 retries.
+	  Requires LORA_RADIO_PENDING.
+
+config LORA_RADIO_FOTA_RETRY_MS
+	int "FOTA chunk retry timer in milliseconds"
+	default 2000
+	depends on LORA_RADIO_FOTA
+	help
+	  Retry timer for individual FOTA chunks. Each unacknowledged
+	  chunk is retried after this delay.
+
+config LORA_RADIO_FOTA_COOLDOWN_S
+	int "Cooldown after 3 consecutive FOTA chunk timeouts (seconds)"
+	default 30
+	depends on LORA_RADIO_FOTA
+	help
+	  Pause duration after 3 consecutive chunk timeouts before
+	  resuming the FOTA transfer.
+
 module = LORA_RADIO
 module-str = LORA_RADIO
 source "subsys/logging/Kconfig.template.log_config"
