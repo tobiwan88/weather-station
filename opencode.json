@@ -5,6 +5,10 @@
     "cocoindex-code": {
       "type": "local",
       "command": ["ccc", "mcp"]
+    },
+    "cocoindex-zephyr": {
+      "type": "local",
+      "command": ["/home/zephyr/.local/share/pipx/venvs/cocoindex-code/bin/python", "scripts/cocoindex_zephyr_flow.py", "mcp"]
     }
   }
 }
