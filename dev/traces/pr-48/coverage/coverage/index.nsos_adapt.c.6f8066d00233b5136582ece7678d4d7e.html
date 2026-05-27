@@ -208,7 +208,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l1181">nsos_adapt_poll_triggered (drivers/net/nsos_adapt.c:1181)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="46072">called 46072 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="45962">called 45962 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">61.1%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">60.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">70.0%</div>
@@ -9177,7 +9177,7 @@
         <td class="lineno"><a id="l1181" href="#l1181">1181</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">46072</td>
+        <td class="linecount coveredLine show_coveredLine">45962</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">nsos_adapt_poll_triggered</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -9215,11 +9215,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 3 not taken.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 46072 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 45962 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">46072</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">45962</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">nsos_adapt_nfds</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -9254,7 +9254,7 @@
         <td class="lineno"><a id="l1191" href="#l1191">1191</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">46072</td>
+        <td class="linecount coveredLine show_coveredLine">45962</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">epoll_wait</span><span class="p">(</span><span class="n">nsos_epoll_fd</span><span class="p">,</span><span class="w"> </span><span class="n">events</span><span class="p">,</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">events</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -9264,11 +9264,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 6 not taken.</div>
-              <div class="takenBranch">&check; Branch 5 &rightarrow; 11 taken 46072 times.</div>
+              <div class="takenBranch">&check; Branch 5 &rightarrow; 11 taken 45962 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">46072</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">45962</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -9362,11 +9362,11 @@
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
               <div class="takenBranch">&check; Branch 14 &rightarrow; 12 taken 1198 times.</div>
-              <div class="takenBranch">&check; Branch 14 &rightarrow; 15 taken 46072 times.</div>
+              <div class="takenBranch">&check; Branch 14 &rightarrow; 15 taken 45962 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">47270</td>
+        <td class="linecount coveredLine show_coveredLine">47160</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -9411,11 +9411,11 @@
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
               <div class="takenBranch">&check; Branch 15 &rightarrow; 16 taken 1162 times.</div>
-              <div class="takenBranch">&check; Branch 15 &rightarrow; 19 taken 44910 times.</div>
+              <div class="takenBranch">&check; Branch 15 &rightarrow; 19 taken 44800 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">46072</td>
+        <td class="linecount coveredLine show_coveredLine">45962</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ret</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -9443,7 +9443,7 @@
         <td class="lineno"><a id="l1215" href="#l1215">1215</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">44910</td>
+        <td class="linecount coveredLine show_coveredLine">44800</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">nsos_adapt_poll_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nsi_hws_get_time</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">NSOS_EPOLL_WAIT_INTERVAL</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -9488,7 +9488,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-05-27 18:38:22
+          at 2026-05-27 18:43:05
         </footer>
       </div>
     </div>
