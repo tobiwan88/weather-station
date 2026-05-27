@@ -26,6 +26,10 @@ int lora_handle_sensor_data(uint16_t src_node, const uint8_t *payload, uint8_t p
 
 int lora_handle_rpc_cmd(uint16_t src_node, const uint8_t *payload, uint8_t payload_len);
 
+int lora_handle_rpc_resp(uint16_t src_node, const uint8_t *payload, uint8_t payload_len);
+
+int lora_handle_ack(uint16_t src_node, const uint8_t *payload, uint8_t payload_len);
+
 int lora_handle_fota_chunk(uint16_t src_node, const uint8_t *payload, uint8_t payload_len);
 
 int lora_handle_prov_beacon(const struct lora_l2_header *hdr, const uint8_t *payload,
