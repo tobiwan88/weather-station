@@ -208,7 +208,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l460">z_handle_obj_poll_events (kernel/poll.c:460)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="3352">called 3352 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="3355">called 3355 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">85.7%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">85.7%</div>
@@ -3673,7 +3673,7 @@
         <td class="lineno"><a id="l460" href="#l460">460</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3352</td>
+        <td class="linecount coveredLine show_coveredLine">3355</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">bool</span><span class="w"> </span><span class="n">z_handle_obj_poll_events</span><span class="p">(</span><span class="n">sys_dlist_t</span><span class="w"> </span><span class="o">*</span><span class="n">events</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">state</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -3694,7 +3694,7 @@
         <td class="lineno"><a id="l463" href="#l463">463</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3352</td>
+        <td class="linecount coveredLine show_coveredLine">3355</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_spinlock_key_t</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3708,7 +3708,7 @@
         <td class="lineno"><a id="l465" href="#l465">465</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3352</td>
+        <td class="linecount coveredLine show_coveredLine">3355</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">poll_event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_poll_event</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">sys_dlist_get</span><span class="p">(</span><span class="n">events</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3718,11 +3718,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 4 &rightarrow; 5 not taken.</div>
-              <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 3352 times.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 3355 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">3352</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">3355</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">poll_event</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3750,7 +3750,7 @@
         <td class="lineno"><a id="l470" href="#l470">470</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3352</td>
+        <td class="linecount coveredLine show_coveredLine">3355</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lock</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3764,7 +3764,7 @@
         <td class="lineno"><a id="l472" href="#l472">472</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3352</td>
+        <td class="linecount coveredLine show_coveredLine">3355</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">poll_event</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -6154,7 +6154,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-05-27 18:38:22
+          at 2026-05-27 18:43:05
         </footer>
       </div>
     </div>
