@@ -118,6 +118,16 @@ push / PR to master or feature branches
                    │
                    ▼
 ┌────────────────────────────────────────────────────────────┐
+│  job: sca                                                  │
+│  CodeChecker static analysis (Clang-Tidy, Clang SA)       │
+│  ├── Build gateway + sensor-node with ZEPHYR_SCA_VARIANT  │
+│  ├── Compare findings vs sca/codechecker.baseline          │
+│  └── Upload plist reports as artifact                      │
+│  (informational — never blocks merge)                      │
+└──────────────────┬─────────────────────────────────────────┘
+                   │
+                   ▼
+┌────────────────────────────────────────────────────────────┐
 │  job: test-native-sim                                      │
 │  ZEPHYR_BASE=.../zephyr west twister                       │
 │    -p native_sim/native/64 -T weather-station/tests/      │
@@ -170,9 +180,23 @@ push / PR to master or feature branches
 | `clang-format` | `.clang-format` | C code formatting (Zephyr style, 8-space tabs, 100-col) |
 | `checkpatch.pl` | (Zephyr built-in) | Zephyr coding style, commit format |
 | `yamllint` | `.yamllint.yml` | west.yml, CI workflows, DT bindings |
+| `CodeChecker` | `sca/codechecker.skip`, `sca/codechecker.baseline` | Static analysis (Clang-Tidy, Clang SA, Cppcheck) |
 | `pre-commit` | `.pre-commit-config.yaml` | Runs all above + file hygiene hooks |
 
-Pre-commit runs on every `git commit` locally (installed by devcontainer `postCreateCommand`) and on every push in CI. The same checks, same config.
+Pre-commit runs on every `git commit` locally (installed by devcontainer `postCreateCommand`) and on every push in CI. CodeChecker runs as a dedicated CI job and locally via `scripts/run-codechecker.sh`. The same checks, same config.
+
+### CodeChecker workflow
+
+CodeChecker uses Zephyr's built-in SCA integration (`ZEPHYR_SCA_VARIANT=codechecker`) to analyze `lib/` and `apps/` source files. Results are compared against a version-controlled baseline (`sca/codechecker.baseline`) to track new findings over time.
+
+```bash
+scripts/run-codechecker.sh              # Run analysis, print summary
+scripts/run-codechecker.sh --diff       # Show NEW findings vs baseline
+scripts/run-codechecker.sh --rebaseline # Regenerate baseline (after fixes or config changes)
+scripts/run-codechecker.sh --html       # Generate browsable HTML report
+```
+
+The CI `sca` job runs `--diff` on every PR, reporting new findings without blocking the merge.
 
 ---
 
