@@ -202,17 +202,6 @@ int io_stream_buffer_init(struct io_stream *s, void *buf, size_t capacity);
  * @return 0 on success, negative errno on error.
  */
 int io_stream_flash_init(struct io_stream *s, uint32_t partition_id);
-
-/**
- * @brief Initialize a flash stream by DTS label.
- *
- * Convenience wrapper that resolves the partition ID from a DTS label.
- *
- * @param s     Stream instance to initialize.
- * @param label DTS partition label (e.g., "image-1").
- * @return 0 on success, negative errno on error.
- */
-int io_stream_flash_init_by_label(struct io_stream *s, const char *label);
 #endif
 
 #ifdef __cplusplus
