@@ -6,3 +6,14 @@ tests:
     tags:
       - io_stream
       - weather_station
+  weather_station.io_stream_flash:
+    platform_allow:
+      - native_sim/native/64
+    harness: ztest
+    extra_args:
+      - OVERLAY_CONFIG=prj_flash.conf
+      - OVERLAY_CONFIG+=overlay_flash_sim.dts
+    tags:
+      - io_stream
+      - io_stream_flash
+      - weather_station

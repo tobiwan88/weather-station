@@ -1,0 +1,25 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+
+/ {
+	chosen {
+		zephyr,flash = &flash_sim0;
+	};
+
+	flash_sim0: flash_sim0 {
+		compatible = "zephyr,flash-simulator";
+		reg = <0x0 0x100000>;
+		erase-block-size = <4096>;
+		write-block-size = <4>;
+	};
+
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		test_partition: partition@0 {
+			label = "test_partition";
+			reg = <0x0 0x100000>;
+		};
+	};
+};
