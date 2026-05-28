@@ -1,0 +1,8 @@
+tests:
+  weather_station.io_stream:
+    platform_allow:
+      - native_sim/native/64
+    harness: ztest
+    tags:
+      - io_stream
+      - weather_station

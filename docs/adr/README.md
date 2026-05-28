@@ -32,6 +32,7 @@ Use these documents when:
 | [ADR-014](ADR-014-mcuboot-fota.md) | MCUboot FOTA and Secure Firmware Update | Accepted |
 | [ADR-015](ADR-015-lora-protocol.md) | LoRa Protocol Architecture | Accepted |
 | [ADR-016](ADR-016-trace-recorder.md) | Thread Trace Recorder and Renode Performance Analysis | Proposed |
+| [ADR-017](ADR-017-io-stream-abstraction.md) | Generic I/O Stream Abstraction | Proposed |
 
 ---
 

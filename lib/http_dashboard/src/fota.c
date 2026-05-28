@@ -1,13 +1,14 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 #include <string.h>
 
-#include <zephyr/dfu/flash_img.h>
 #include <zephyr/dfu/mcuboot.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/net/http/server.h>
 #include <zephyr/storage/flash_map.h>
 #include <zephyr/sys/reboot.h>
+
+#include <io_stream/io_stream.h>
 
 #include "auth.h"
 #include "fota.h"
@@ -38,7 +39,10 @@ static void respond_401(struct http_response_ctx *rsp)
 
 /* ── POST /api/fota/upload ───────────────────────────────────────────────── */
 
-static struct flash_img_context fota_img_ctx;
+static struct io_stream fota_upload_stream;
+#if defined(CONFIG_IO_STREAM_FLASH)
+static struct io_stream_flash_data fota_upload_stream_data;
+#endif
 static atomic_t fota_in_progress = ATOMIC_INIT(0);
 /* Serialises reads and writes of the non-atomic upload-state variables below.
  * The HTTP server is single-threaded, but the ABORTED/COMPLETE callback may
@@ -120,9 +124,14 @@ int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_st
 			return 0;
 		}
 		fota_upload_bytes = 0;
-		int rc = flash_img_init_id(&fota_img_ctx, FIXED_PARTITION_ID(slot1_partition));
+#if defined(CONFIG_IO_STREAM_FLASH)
+		int rc = io_stream_flash_init(&fota_upload_stream,
+					      FIXED_PARTITION_ID(slot1_partition));
+#else
+		int rc = -ENODEV;
+#endif
 		if (rc != 0) {
-			LOG_ERR("flash_img_init_id failed: %d", rc);
+			LOG_ERR("stream init failed: %d", rc);
 			/* Only arm the drain flag when there are more chunks coming. */
 			K_SPINLOCK(&fota_upload_lock)
 			{
@@ -153,21 +162,22 @@ int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_st
 		return 0;
 	}
 
-	/* Stream chunk into flash.
-	 * NOTE: flash_img_buffered_write() flushes its internal buffer in
-	 * CONFIG_IMG_BLOCK_BUF_SIZE-sized blocks.  With IMG_ERASE_PROGRESSIVELY
-	 * each flush may trigger a NOR sector erase (30-400 ms on real hardware),
-	 * blocking the HTTP server thread and stalling all other HTTP clients for
-	 * that duration.  CONFIG_HTTP_SERVER_STACK_SIZE must be large enough for
-	 * the full flash_img → stream_flash → flash_area call chain.
+	/* Stream chunk into flash via io_stream.
+	 * NOTE: The flash backend uses flash_img internally for buffered writes
+	 * with progressive erase. With IMG_ERASE_PROGRESSIVELY each flush may
+	 * trigger a NOR sector erase (30-400 ms on real hardware), blocking the
+	 * HTTP server thread and stalling all other HTTP clients for that
+	 * duration. CONFIG_HTTP_SERVER_STACK_SIZE must be large enough for the
+	 * full io_stream → flash_img → stream_flash → flash_area call chain.
 	 */
 	bool last = (status == HTTP_SERVER_REQUEST_DATA_FINAL);
 
 	if (request_ctx->data_len > 0 || last) {
-		int rc = flash_img_buffered_write(&fota_img_ctx, request_ctx->data,
-						  request_ctx->data_len, last);
-		if (rc != 0) {
-			LOG_ERR("flash_img_buffered_write failed: %d", rc);
+		ssize_t written = io_stream_write(&fota_upload_stream, request_ctx->data,
+						  request_ctx->data_len);
+		if (written < 0) {
+			int rc = (int)written;
+			LOG_ERR("stream write failed: %d", rc);
 			K_SPINLOCK(&fota_upload_lock)
 			{
 				atomic_set(&fota_in_progress, 0);
@@ -183,10 +193,29 @@ int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_st
 			}
 			return 0;
 		}
+
+		if (last) {
+			int rc = io_stream_flush(&fota_upload_stream);
+			if (rc < 0) {
+				LOG_ERR("stream flush failed: %d", rc);
+				K_SPINLOCK(&fota_upload_lock)
+				{
+					atomic_set(&fota_in_progress, 0);
+					fota_auth_ok = false;
+					fota_write_failed = true;
+					fota_upload_bytes = 0;
+				}
+				response_ctx->status = HTTP_500_INTERNAL_SERVER_ERROR;
+				response_ctx->headers = json_ct_hdr;
+				response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
+				response_ctx->final_chunk = true;
+				return 0;
+			}
+		}
 	}
 
 	if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
-		size_t written = flash_img_bytes_written(&fota_img_ctx);
+		size_t written = io_stream_size(&fota_upload_stream);
 
 		LOG_INF("FOTA upload complete: %zu bytes written to slot 1", written);
 		K_SPINLOCK(&fota_upload_lock)
