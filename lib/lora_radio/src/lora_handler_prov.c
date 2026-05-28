@@ -28,7 +28,30 @@ static const uint8_t gateway_ed25519_pk[32] = {
 	0xd3, 0xc9, 0x64, 0x07, 0x3a, 0x0e, 0xe1, 0x72, 0xf3, 0xda, 0xa6,
 	0x23, 0x25, 0xaf, 0x02, 0x1a, 0x68, 0xf7, 0x07, 0x51, 0x1a,
 };
+static psa_key_id_t s_ed25519_key_id;
 #endif /* CONFIG_PSA_CRYPTO */
+
+int lora_prov_init(void)
+{
+#ifndef CONFIG_PSA_CRYPTO
+	return 0;
+#else
+	psa_key_attributes_t attr = PSA_KEY_ATTRIBUTES_INIT;
+
+	psa_set_key_usage_flags(&attr, PSA_KEY_USAGE_SIGN_MESSAGE);
+	psa_set_key_algorithm(&attr, PSA_ALG_ED25519);
+	psa_set_key_type(&attr, PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_TWISTED_EDWARDS));
+
+	psa_status_t s = psa_import_key(&attr, gateway_ed25519_sk, 32, &s_ed25519_key_id);
+	if (s != PSA_SUCCESS) {
+		LOG_ERR("Ed25519 key import failed: %d", s);
+		return -EIO;
+	}
+
+	LOG_INF("Ed25519 key cached (id=%u)", s_ed25519_key_id);
+	return 0;
+#endif
+}
 
 int lora_handle_prov_beacon(const struct lora_l2_header *hdr, const uint8_t *payload,
 			    uint8_t payload_len)
@@ -69,33 +92,22 @@ int lora_handle_prov_beacon(const struct lora_l2_header *hdr, const uint8_t *pay
 	memcpy(resp.session_key, session_key, 16);
 	memcpy(resp.gateway_pubkey, gateway_ed25519_pk, 32);
 
-	psa_key_attributes_t sign_attr = PSA_KEY_ATTRIBUTES_INIT;
-	psa_key_id_t sign_key_id;
-	psa_set_key_usage_flags(&sign_attr, PSA_KEY_USAGE_SIGN_MESSAGE);
-	psa_set_key_algorithm(&sign_attr, PSA_ALG_ED25519);
-	psa_set_key_type(&sign_attr, PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_TWISTED_EDWARDS));
-
-	psa_status_t s = psa_import_key(&sign_attr, gateway_ed25519_sk, 32, &sign_key_id);
-	if (s != PSA_SUCCESS) {
-		LOG_ERR("Ed25519 key import failed: %d", s);
-		return -EIO;
-	}
-
 	struct lora_l2_header resp_hdr;
+
 	memset(&resp_hdr, 0, sizeof(resp_hdr));
 	resp_hdr.type_ver = (LORA_FRAME_PROV_RESPONSE << 4) | 0x01;
 	resp_hdr.dst_node[0] = (uint8_t)(node_id & 0xFF);
 	resp_hdr.dst_node[1] = (uint8_t)((node_id >> 8) & 0xFF);
 
 	uint8_t sign_buf[sizeof(struct lora_l2_header) + sizeof(struct lora_prov_response)];
+
 	memcpy(sign_buf, &resp_hdr, sizeof(resp_hdr));
 	memcpy(sign_buf + sizeof(resp_hdr), &resp, sizeof(resp));
 
 	size_t sig_len;
-	s = psa_sign_message(&sign_key_id, PSA_ALG_ED25519, sign_buf, sizeof(sign_buf),
-			     resp.signature, sizeof(resp.signature), &sig_len);
-	psa_destroy_key(sign_key_id);
-
+	psa_status_t s =
+		psa_sign_message(s_ed25519_key_id, PSA_ALG_ED25519, sign_buf, sizeof(sign_buf),
+				 resp.signature, sizeof(resp.signature), &sig_len);
 	if (s != PSA_SUCCESS) {
 		LOG_ERR("Ed25519 signing failed: %d", s);
 		return -EIO;
@@ -127,6 +139,7 @@ int lora_handle_prov_beacon(const struct lora_l2_header *hdr, const uint8_t *pay
 	}
 
 	LOG_INF("paired node 0x%04x (%d capabilities)", node_id, caps_count);
+	lora_session_persist();
 	return 0;
 #endif /* CONFIG_PSA_CRYPTO */
 }
