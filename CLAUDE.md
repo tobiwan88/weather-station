@@ -38,6 +38,11 @@ ZEPHYR_BASE=/home/zephyr/workspace/zephyr west twister -p native_sim/native/64 -
 
 # Lint
 pre-commit run --all-files
+
+# Static analysis (CodeChecker)
+scripts/run-codechecker.sh              # Run analysis, print summary
+scripts/run-codechecker.sh --diff       # Compare against baseline
+scripts/run-codechecker.sh --rebaseline # Regenerate baseline after fixes
 ```
 
 **Gate order:** Build gateway → build sensor-node → shell smoke-test → twister → pre-commit.
@@ -53,6 +58,7 @@ Do not skip or reorder. Run `/build-and-test` after every change.
 | Before merge | `/review` (5 parallel sub-agents) |
 | New ADR or status change | `/arch-sync` |
 | Audit subtask code | `/standards-check` |
+| After fixing SCA findings | `/sca --diff` to verify no new issues |
 | New library | `/new-lib <name> "<desc>" <kconfig> <priority>` |
 | New fake sensor | `/new-sensor-type <type> "<desc>" <value_milli> <uid>` |
 | Branch/commit/PR | See "Agent workflow" below |
