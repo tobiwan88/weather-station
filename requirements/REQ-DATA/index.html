@@ -5,7 +5,7 @@
       
       
       
-        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/requirements/PLAN-requirements-and-cocoindex/">
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/requirements/REQ-DATA/">
       
       
       
@@ -18,7 +18,7 @@
     
     
       
-        <title>PLAN — Requirements Ingestion &amp; CocoIndex Corpus Setup - Weather Station Documentation</title>
+        <title>REQ-DATA — Data Bus and Event Requirements - Weather Station Documentation</title>
       
     
     
@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#plan-requirements-ingestion-cocoindex-corpus-setup" class="md-skip">
+        <a href="#req-data-data-bus-and-event-requirements" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              PLAN — Requirements Ingestion &amp; CocoIndex Corpus Setup
+              REQ-DATA — Data Bus and Event Requirements
             
           </span>
         </div>
@@ -868,10 +868,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#status" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Status
       
     </span>
   </a>
@@ -879,22 +879,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-state-before" class="md-nav__link">
+  <a href="#version" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. State Before
+        Version
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. State Before">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functional-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Functional Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Functional Requirements">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#layer-1-project-code-done" class="md-nav__link">
+  <a href="#req-data-001-zbus-channel-ownership" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Layer 1 (project code) — Done
+        REQ-DATA-001 — zbus Channel Ownership
       
     </span>
   </a>
@@ -902,10 +924,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#layer-2-zephyr-corpus-missing" class="md-nav__link">
+  <a href="#req-data-002-sensor-event-struct" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Layer 2 (Zephyr corpus) — Missing
+        REQ-DATA-002 — Sensor Event Struct
       
     </span>
   </a>
@@ -913,10 +935,120 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#req-files-missing" class="md-nav__link">
+  <a href="#req-data-003-ring-buffer-snapshot-pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ files — Missing
+        REQ-DATA-003 — Ring Buffer Snapshot Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-data-004-listener-non-blocking-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DATA-004 — Listener Non-Blocking Contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-data-005-sequential-listener-dispatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DATA-005 — Sequential Listener Dispatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-data-006-copyable-message-structs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DATA-006 — Copyable Message Structs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-data-007-subscriber-queue-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DATA-007 — Subscriber Queue Depth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-data-008-library-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DATA-008 — Library Isolation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-data-009-displayconnectivity-separation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DATA-009 — Display/Connectivity Separation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-data-010-producer-consumer-decoupling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DATA-010 — Producer-Consumer Decoupling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-data-011-channel-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DATA-011 — Channel Map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-data-012-flat-struct-size-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DATA-012 — Flat Struct Size Limit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-data-013-protobuf-wire-format-deferred" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-DATA-013 — Protobuf Wire Format (Deferred)
       
     </span>
   </a>
@@ -929,121 +1061,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-cocoindex-layer-2-zephyr-corpus-indexer" class="md-nav__link">
+  <a href="#dependencies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. CocoIndex Layer 2 — Zephyr Corpus Indexer
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. CocoIndex Layer 2 — Zephyr Corpus Indexer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mcp-config-updates" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MCP config updates
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#initial-run" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Initial run
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verification-queries" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verification queries
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-req-file-ingestion" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. REQ File Ingestion
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. REQ File Ingestion">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#directory" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Directory
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#template" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Template
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#domains" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Domains
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#acceptance-criteria-tagging" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Acceptance criteria tagging
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-execution-order" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Execution Order
+        Dependencies
       
     </span>
   </a>
@@ -1051,10 +1072,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-risks" class="md-nav__link">
+  <a href="#constraints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. Risks
+        Constraints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acceptance-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acceptance Criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-adrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related ADRs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-zephyr-subsystems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Zephyr subsystems
       
     </span>
   </a>
@@ -1081,257 +1135,89 @@
   
 
 
-<h1 id="plan-requirements-ingestion-cocoindex-corpus-setup">PLAN — Requirements Ingestion &amp; CocoIndex Corpus Setup</h1>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Status</strong></td>
-<td>Implemented</td>
-</tr>
-<tr>
-<td><strong>Date</strong></td>
-<td>2026-05-24</td>
-</tr>
-<tr>
-<td><strong>Version</strong></td>
-<td>1.0</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h2 id="overview">Overview</h2>
-<p>This plan covers two complementary workstreams:</p>
-<ol>
-<li><strong>CocoIndex Layer 2</strong> — a Zephyr corpus indexer giving agents semantic search over Zephyr's public API, samples, subsystems, DTS bindings, and board files.</li>
-<li><strong>REQ file ingestion</strong> — structured requirements documents for the weather-station codebase, seeded from existing ADRs and architecture docs.</li>
-</ol>
-<hr>
-<h2 id="1-state-before">1. State Before</h2>
-<h3 id="layer-1-project-code-done">Layer 1 (project code) — Done</h3>
+<h1 id="req-data-data-bus-and-event-requirements">REQ-DATA — Data Bus and Event Requirements</h1>
+<h2 id="status">Status</h2>
+<p>review</p>
+<h2 id="version">Version</h2>
+<p>0.1</p>
+<h2 id="context">Context</h2>
+<p>The data bus (zbus) is the system-wide publish/subscribe fabric connecting all subsystems. This document defines the channel ownership rules, event struct contracts, and data flow patterns that all libraries must follow.</p>
+<h2 id="functional-requirements">Functional Requirements</h2>
+<h3 id="req-data-001-zbus-channel-ownership">REQ-DATA-001 — zbus Channel Ownership</h3>
+<p>The system shall define each zbus channel (<code>ZBUS_CHAN_DEFINE</code>) in exactly one <code>.c</code> file. Public headers shall contain only <code>ZBUS_CHAN_DECLARE</code> for consumer use.</p>
+<h3 id="req-data-002-sensor-event-struct">REQ-DATA-002 — Sensor Event Struct</h3>
+<p>The system shall use <code>env_sensor_data</code> as the sensor event struct — a flat 20-byte structure with Q31 fixed-point values, sensor_uid, timestamp, and measurement type. No heap pointers.</p>
+<h3 id="req-data-003-ring-buffer-snapshot-pattern">REQ-DATA-003 — Ring Buffer Snapshot Pattern</h3>
+<p>The system shall protect shared data structures (sensor data ring buffer) with <code>k_spinlock</code>, copying snapshots within the lock and processing outside the lock. JSON serialization shall occur outside the lock.</p>
+<h3 id="req-data-004-listener-non-blocking-contract">REQ-DATA-004 — Listener Non-Blocking Contract</h3>
+<p>The system shall ensure zbus listeners do not block or sleep, as they run in the publisher's thread context. Heavy work shall be deferred to subscriber threads.</p>
+<h3 id="req-data-005-sequential-listener-dispatch">REQ-DATA-005 — Sequential Listener Dispatch</h3>
+<p>The system shall dispatch zbus listeners sequentially in registration order. A blocking listener stalls all subsequent listeners.</p>
+<h3 id="req-data-006-copyable-message-structs">REQ-DATA-006 — Copyable Message Structs</h3>
+<p>The system shall ensure all zbus message structs are copyable (no pointers to heap memory).</p>
+<h3 id="req-data-007-subscriber-queue-depth">REQ-DATA-007 — Subscriber Queue Depth</h3>
+<p>The system shall tune subscriber queue depth to prevent missed messages under load. Queue depth shall be configurable via Kconfig.</p>
+<h3 id="req-data-008-library-isolation">REQ-DATA-008 — Library Isolation</h3>
+<p>The system shall enforce zero <code>#include</code> dependencies between library internal headers. Libraries communicate only via zbus channels, with two exceptions:
+- <code>sensor_registry</code> and <code>location_registry</code> expose public read-only APIs
+- Integration files compiled conditionally when two CONFIG symbols are both set</p>
+<h3 id="req-data-009-displayconnectivity-separation">REQ-DATA-009 — Display/Connectivity Separation</h3>
+<p>The system shall maintain zero <code>#include</code> dependencies between <code>lib/lvgl_display/</code> and <code>lib/connectivity/</code> libraries, enforced by CI include-path checks.</p>
+<h3 id="req-data-010-producer-consumer-decoupling">REQ-DATA-010 — Producer-Consumer Decoupling</h3>
+<p>The system shall ensure producers never know about consumers. Adding a new consumer shall not require changes to producer code.</p>
+<h3 id="req-data-011-channel-map">REQ-DATA-011 — Channel Map</h3>
+<p>The system shall maintain the following zbus channels:
+| Channel | Owner | Direction |
+|---|---|---|
+| <code>sensor_trigger_chan</code> | <code>lib/sensor_trigger</code> | trigger sources → sensor drivers |
+| <code>sensor_event_chan</code> | <code>lib/sensor_event</code> | sensor drivers → consumers |
+| <code>config_cmd_chan</code> | <code>lib/config_cmd</code> | config producers → config consumers |
+| <code>remote_scan_ctrl_chan</code> | <code>lib/remote_sensor</code> | manager/shell → transport adapters |
+| <code>remote_discovery_chan</code> | <code>lib/remote_sensor</code> | transport adapters → manager |
+| <code>remote_peer_cmd_chan</code> | <code>remote_sensor</code> | Manager → Transports |
+| <code>lora_link_chan</code> | <code>lora_radio</code> | LoRa → Diagnostics |
+| <code>lora_fota_chan</code> | <code>lora_radio</code> | HTTP → LoRa |</p>
+<h3 id="req-data-012-flat-struct-size-limit">REQ-DATA-012 — Flat Struct Size Limit</h3>
+<p>The system shall enforce <code>sizeof(env_sensor_data) &lt;= 32</code> via <code>BUILD_ASSERT</code> at compile time. Actual size: 20 bytes on 32-bit target.</p>
+<h3 id="req-data-013-protobuf-wire-format-deferred">REQ-DATA-013 — Protobuf Wire Format (Deferred)</h3>
+<p>The system shall define a protobuf wire format for cross-device communication (sensor node → gateway, gateway → cloud). This is a deferred requirement tracked in backlog as <code>[SERIALIZATION]</code>.</p>
+<h2 id="dependencies">Dependencies</h2>
 <ul>
-<li><code>ccc</code> CLI at <code>/home/zephyr/.local/bin/ccc</code>, Python <code>cocoindex</code> 1.0.6</li>
-<li><code>.cocoindex_code/settings.yml</code> covers all file types</li>
-<li><code>opencode.json</code> + <code>.mcp.json</code> have <code>cocoindex-code</code> MCP (<code>ccc mcp</code>)</li>
-<li>Index: 1797 chunks across 269 files (markdown, C, Python, C++, YAML, etc.)</li>
+<li>REQ-SENSORS-001: Flat event data model</li>
+<li>REQ-SENSORS-002: Q31 encoding contract</li>
+<li>All subsystem requirements depend on zbus channel contracts</li>
 </ul>
-<h3 id="layer-2-zephyr-corpus-missing">Layer 2 (Zephyr corpus) — Missing</h3>
-<p>No Zephyr-side index exists. Agent searches are limited to the project tree.</p>
-<h3 id="req-files-missing">REQ files — Missing</h3>
-<p>No <code>docs/requirements/</code> directory. Requirements exist implicitly in ADRs, architecture docs, and the backlog.</p>
-<hr>
-<h2 id="2-cocoindex-layer-2-zephyr-corpus-indexer">2. CocoIndex Layer 2 — Zephyr Corpus Indexer</h2>
-<p><strong>File:</strong> <code>scripts/cocoindex_zephyr_flow.py</code></p>
-<p>Scopes (future-proof — all Zephyr features indexed):</p>
-<table>
-<thead>
-<tr>
-<th>Flow name</th>
-<th>Path</th>
-<th>Patterns</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>includes</code></td>
-<td><code>ZEPHYR/include/zephyr/</code></td>
-<td><code>*.h</code></td>
-<td>All public API headers, recursive</td>
-</tr>
-<tr>
-<td><code>samples</code></td>
-<td><code>ZEPHYR/samples/</code></td>
-<td><code>*.c</code>, <code>*.h</code>, <code>CMakeLists.txt</code>, <code>prj.conf</code>, <code>*.overlay</code>, <code>*.dts</code>, <code>*.conf</code>, <code>Kconfig*</code>, <code>*.yaml</code></td>
-<td>All samples for extensibility</td>
-</tr>
-<tr>
-<td><code>subsys</code></td>
-<td><code>ZEPHYR/subsys/</code></td>
-<td><code>*.h</code>, <code>Kconfig*</code></td>
-<td>Subsystem headers and Kconfig</td>
-</tr>
-<tr>
-<td><code>dts_bindings</code></td>
-<td><code>ZEPHYR/dts/bindings/</code></td>
-<td><code>*.yaml</code></td>
-<td>All DTS bindings</td>
-</tr>
-<tr>
-<td><code>drivers</code></td>
-<td><code>ZEPHYR/drivers/</code></td>
-<td><code>include/**/*.h</code>, <code>Kconfig*</code>, <code>*/Kconfig</code></td>
-<td>Driver headers and Kconfig</td>
-</tr>
-<tr>
-<td><code>boards_mcxn947</code></td>
-<td><code>ZEPHYR/boards/</code></td>
-<td><code>frdm_mcxn947*/**/*.dts</code>, <code>frdm_mcxn947*/**/*.h</code>, <code>frdm_mcxn947*/**/Kconfig*</code>, <code>nxp/mcxn947*/**</code></td>
-<td>Main hardware target</td>
-</tr>
-<tr>
-<td><code>hal_nxp</code></td>
-<td><code>modules/hal/nxp/</code></td>
-<td><code>*.h</code>, <code>Kconfig*</code></td>
-<td>NXP MCXN947 HAL</td>
-</tr>
-</tbody>
-</table>
-<p><code>ZEPHYR_BASE</code> auto-detected from env or defaults to <code>/home/zephyr/workspace/zephyr</code>.</p>
-<h3 id="mcp-config-updates">MCP config updates</h3>
-<p><strong><code>opencode.json</code>:</strong>
-</p><div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">"mcp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"cocoindex-code"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ccc"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">"cocoindex-zephyr"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"python"</span><span class="p">,</span><span class="w"> </span><span class="s2">"scripts/cocoindex_zephyr_flow.py"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p></p>
-<p><strong><code>.mcp.json</code>:</strong>
-</p><div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"cocoindex-code"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ccc"</span><span class="p">,</span><span class="w"> </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"mcp"</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">"cocoindex-zephyr"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"python"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"scripts/cocoindex_zephyr_flow.py"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p></p>
-<h3 id="initial-run">Initial run</h3>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
-python<span class="w"> </span>scripts/cocoindex_zephyr_flow.py<span class="w"> </span>update<span class="w">   </span><span class="c1"># ~5-10 min first run</span>
-ccc<span class="w"> </span>index
-</code></pre></div>
-<h3 id="verification-queries">Verification queries</h3>
+<h2 id="constraints">Constraints</h2>
 <ul>
-<li>"How does Zephyr sensor driver API work" → surfaces <code>include/zephyr/drivers/sensor.h</code></li>
-<li>"MCUboot FOTA confirm" → surfaces <code>subsys/dfu/</code> + board overlay files</li>
-<li>"Zephyr MQTT publish example" → surfaces <code>samples/net/mqtt_publisher/</code></li>
-<li>"FRDM-MCXN947 DTS" → surfaces MCXN947 board files</li>
+<li><code>env_sensor_data</code> size: 20 bytes, BUILD_ASSERT &lt;= 32</li>
+<li>zbus listeners must not block or acquire mutexes</li>
+<li>No heap allocation in message structs</li>
+<li>Subscriber queue depth must prevent message loss</li>
 </ul>
-<hr>
-<h2 id="3-req-file-ingestion">3. REQ File Ingestion</h2>
-<h3 id="directory">Directory</h3>
-<p><code>docs/requirements/</code></p>
-<h3 id="template">Template</h3>
-<div class="highlight"><pre><span></span><code><span class="gh"># REQ-DOMAIN-NNN — Title</span>
-
-<span class="gu">## Status</span>
-draft | review | approved | deprecated
-
-<span class="gu">## Version</span>
-0.1
-
-<span class="gu">## Context</span>
-Why this feature/constraint exists.
-
-<span class="gu">## Functional requirement</span>
-The system shall [verb] [object] [condition].
-
-<span class="gu">## Dependencies</span>
-<span class="k">-</span><span class="w"> </span>REQ-DOMAIN-NNN: [reason]
-<span class="k">-</span><span class="w"> </span>(or "none yet")
-
-<span class="gu">## Constraints</span>
-<span class="k">-</span><span class="w"> </span>Power: ≤ [X] µA average during [mode]
-<span class="k">-</span><span class="w"> </span>Latency: ≤ [X] ms [from event to output]
-<span class="k">-</span><span class="w"> </span>Memory: ≤ [X] KB [SRAM/flash]
-
-<span class="gu">## Acceptance criteria</span>
-Each criterion tagged with how it can be verified:
-
-<span class="k">- [ ]</span> [native_sim] ztest: [description]
-<span class="k">- [ ]</span> [renode] Integration: [description]
-<span class="k">- [ ]</span> [hil] Power test: [description]
-<span class="k">- [ ]</span> [manual] Board: [description]
-
-<span class="gu">## Related ADRs</span>
-<span class="k">-</span><span class="w"> </span>ADR-NNNN (if exists, else "none yet")
-
-<span class="gu">## Related Zephyr subsystems</span>
-<span class="k">-</span><span class="w"> </span>CONFIG_*, etc.
-</code></pre></div>
-<h3 id="domains">Domains</h3>
-<table>
-<thead>
-<tr>
-<th>REQ File</th>
-<th>Scope</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>REQ-SENSORS-*.md</code></td>
-<td>Temp, humidity, pressure, CO2, VOC, PM2.5/PM10, gas resistance. Q31 encode/decode, trigger-driven sampling, BME680 forced-mode timing, SEN0460 settle time, fake sensor DT instantiation</td>
-</tr>
-<tr>
-<td><code>REQ-LORA-*.md</code></td>
-<td>Packet format (magic + CRC8), provisioning handshake, RPC retry, FOTA window protocol, session persistence, Ed25519 key caching</td>
-</tr>
-<tr>
-<td><code>REQ-MQTT-*.md</code></td>
-<td>Broker auth, topic hierarchy, QoS, runtime reconfiguration, self-heal reconnect</td>
-</tr>
-<tr>
-<td><code>REQ-HTTP-*.md</code></td>
-<td>Dashboard on port 8080, Chart.js timeseries, REST API, session auth + bearer token, FOTA upload endpoint</td>
-</tr>
-<tr>
-<td><code>REQ-DISPLAY-*.md</code></td>
-<td>LVGL 320x240 SDL window, analog clock, sensor cards, sensor event subscription, ADR-008 compliance</td>
-</tr>
-<tr>
-<td><code>REQ-FOTA-*.md</code></td>
-<td>MCUboot dual-image, signed updates, health-check confirm, HTTP transport, manual recovery path, key secrecy in CI</td>
-</tr>
-<tr>
-<td><code>REQ-POWER-*.md</code></td>
-<td>Sleep states, wake sources, BME680/SEN0460 PM integration, outdoor sensor node duty cycle</td>
-</tr>
-<tr>
-<td><code>REQ-TIME-*.md</code></td>
-<td>SNTP sync at boot + periodic, resync on config command, timestamp contract (ms granularity), native_sim pre-sync delay</td>
-</tr>
-<tr>
-<td><code>REQ-CONFIG-*.md</code></td>
-<td><code>config_cmd</code> channel contract, supported commands, settings persistence, shell interface parity</td>
-</tr>
-<tr>
-<td><code>REQ-LOCATION-*.md</code></td>
-<td>Named location CRUD, settings persistence, uid-independent metadata</td>
-</tr>
-<tr>
-<td><code>REQ-DATA-*.md</code></td>
-<td>zbus channel ownership, event bus contract, sensor event struct (flat, 20-24B), protobuf wire format, ring buffer snapshot pattern</td>
-</tr>
-</tbody>
-</table>
-<h3 id="acceptance-criteria-tagging">Acceptance criteria tagging</h3>
-<p>Every criterion receives one of: <code>[native_sim]</code>, <code>[renode]</code>, <code>[hil]</code>, <code>[manual]</code>.</p>
-<p>This prevents CI from reporting green while leaving the hardest constraints (power, timing, real hardware) silently unverified. The test runner in Phase 2+ uses these tags to produce a "deferred verification" report separately from the test pass/fail count.</p>
-<hr>
-<h2 id="4-execution-order">4. Execution Order</h2>
-<ol>
-<li>Create <code>scripts/cocoindex_zephyr_flow.py</code> → index → verify search quality</li>
-<li>Create REQ template file: <code>docs/requirements/TEMPLATE.md</code></li>
-<li>Create REQ files per domain (one session per domain with Claude/OpenCode)</li>
-<li>Re-index after REQ ingestion: <code>ccc index &amp;&amp; python scripts/cocoindex_zephyr_flow.py update</code></li>
-<li>Add <code>ccc index</code> + flow update to pre-commit or a cron/alias for periodic refresh</li>
-</ol>
-<hr>
-<h2 id="5-risks">5. Risks</h2>
+<h2 id="acceptance-criteria">Acceptance Criteria</h2>
 <ul>
-<li><strong>CocoIndex dependency:</strong> If <code>ccc</code> breaks, agents lose search. Fallback: raw <code>rg</code> on project + Zephyr trees.</li>
-<li><strong>Zephyr upstream churn:</strong> Board/DTS paths can change between releases, silently dropping index coverage. Mitigation: add a smoke check that warns if indexed file count drops &gt;20%.</li>
-<li><strong>REQ staleness:</strong> REQ files can drift from implementation. Mitigation: cross-reference ADRs and <code>## Related ADRs</code> field keeps them traceable.</li>
+<li>[ ] [native_sim] ztest: ZBUS_CHAN_DEFINE in one .c, ZBUS_CHAN_DECLARE in header</li>
+<li>[ ] [native_sim] ztest: env_sensor_data struct size &lt;= 32 bytes</li>
+<li>[ ] [native_sim] ztest: Message struct is copyable (no heap pointers)</li>
+<li>[ ] [native_sim] Integration: Adding new subscriber does not require producer changes</li>
+<li>[ ] [native_sim] Integration: Ring buffer snapshot completes within spinlock</li>
+<li>[ ] [native_sim] Integration: Blocking listener stalls subsequent listeners</li>
+<li>[ ] [native_sim] ztest: No #include of connectivity headers in display source</li>
+<li>[ ] [native_sim] ztest: No #include of display headers in connectivity source</li>
+<li>[ ] [renode] Integration: zbus events flow correctly across simulated subsystems</li>
+</ul>
+<h2 id="related-adrs">Related ADRs</h2>
+<ul>
+<li>ADR-002: zbus as System-Wide Communication Fabric</li>
+<li>ADR-003: Sensor Event Data Model (flat struct + Q31)</li>
+<li>ADR-007: Gateway and Display as One Device (library isolation)</li>
+<li>ADR-008: Kconfig-Only App Composition</li>
+</ul>
+<h2 id="related-zephyr-subsystems">Related Zephyr subsystems</h2>
+<ul>
+<li>CONFIG_ZBUS</li>
+<li>CONFIG_ZBUS_CHAN_STATIC</li>
+<li>CONFIG_ZBUS_SUBSCRIBER_QUEUE</li>
 </ul>
 
 

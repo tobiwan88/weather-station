@@ -5,7 +5,7 @@
       
       
       
-        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/requirements/PLAN-requirements-and-cocoindex/">
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/requirements/REQ-HTTP/">
       
       
       
@@ -18,7 +18,7 @@
     
     
       
-        <title>PLAN — Requirements Ingestion &amp; CocoIndex Corpus Setup - Weather Station Documentation</title>
+        <title>REQ-HTTP — HTTP Dashboard Requirements - Weather Station Documentation</title>
       
     
     
@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#plan-requirements-ingestion-cocoindex-corpus-setup" class="md-skip">
+        <a href="#req-http-http-dashboard-requirements" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              PLAN — Requirements Ingestion &amp; CocoIndex Corpus Setup
+              REQ-HTTP — HTTP Dashboard Requirements
             
           </span>
         </div>
@@ -868,10 +868,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#status" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Status
       
     </span>
   </a>
@@ -879,22 +879,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-state-before" class="md-nav__link">
+  <a href="#version" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. State Before
+        Version
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. State Before">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functional-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Functional Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Functional Requirements">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#layer-1-project-code-done" class="md-nav__link">
+  <a href="#req-http-001-dashboard-server" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Layer 1 (project code) — Done
+        REQ-HTTP-001 — Dashboard Server
       
     </span>
   </a>
@@ -902,10 +924,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#layer-2-zephyr-corpus-missing" class="md-nav__link">
+  <a href="#req-http-002-chartjs-timeseries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Layer 2 (Zephyr corpus) — Missing
+        REQ-HTTP-002 — Chart.js Timeseries
       
     </span>
   </a>
@@ -913,10 +935,76 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#req-files-missing" class="md-nav__link">
+  <a href="#req-http-003-rest-api-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REQ files — Missing
+        REQ-HTTP-003 — REST API Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-http-004-session-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-HTTP-004 — Session Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-http-005-configuration-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-HTTP-005 — Configuration Form
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-http-006-fota-upload-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-HTTP-006 — FOTA Upload Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-http-007-self-contained-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-HTTP-007 — Self-Contained Assets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-http-008-ring-buffer-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-HTTP-008 — Ring Buffer Snapshot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#req-http-009-kconfig-opt-in" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REQ-HTTP-009 — Kconfig Opt-In
       
     </span>
   </a>
@@ -929,121 +1017,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-cocoindex-layer-2-zephyr-corpus-indexer" class="md-nav__link">
+  <a href="#dependencies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. CocoIndex Layer 2 — Zephyr Corpus Indexer
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. CocoIndex Layer 2 — Zephyr Corpus Indexer">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mcp-config-updates" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MCP config updates
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#initial-run" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Initial run
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#verification-queries" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Verification queries
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-req-file-ingestion" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. REQ File Ingestion
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. REQ File Ingestion">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#directory" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Directory
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#template" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Template
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#domains" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Domains
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#acceptance-criteria-tagging" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Acceptance criteria tagging
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-execution-order" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Execution Order
+        Dependencies
       
     </span>
   </a>
@@ -1051,10 +1028,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-risks" class="md-nav__link">
+  <a href="#constraints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. Risks
+        Constraints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acceptance-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acceptance Criteria
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-adrs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related ADRs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-zephyr-subsystems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Zephyr subsystems
       
     </span>
   </a>
@@ -1081,257 +1091,83 @@
   
 
 
-<h1 id="plan-requirements-ingestion-cocoindex-corpus-setup">PLAN — Requirements Ingestion &amp; CocoIndex Corpus Setup</h1>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Status</strong></td>
-<td>Implemented</td>
-</tr>
-<tr>
-<td><strong>Date</strong></td>
-<td>2026-05-24</td>
-</tr>
-<tr>
-<td><strong>Version</strong></td>
-<td>1.0</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h2 id="overview">Overview</h2>
-<p>This plan covers two complementary workstreams:</p>
-<ol>
-<li><strong>CocoIndex Layer 2</strong> — a Zephyr corpus indexer giving agents semantic search over Zephyr's public API, samples, subsystems, DTS bindings, and board files.</li>
-<li><strong>REQ file ingestion</strong> — structured requirements documents for the weather-station codebase, seeded from existing ADRs and architecture docs.</li>
-</ol>
-<hr>
-<h2 id="1-state-before">1. State Before</h2>
-<h3 id="layer-1-project-code-done">Layer 1 (project code) — Done</h3>
+<h1 id="req-http-http-dashboard-requirements">REQ-HTTP — HTTP Dashboard Requirements</h1>
+<h2 id="status">Status</h2>
+<p>review</p>
+<h2 id="version">Version</h2>
+<p>0.1</p>
+<h2 id="context">Context</h2>
+<p>The HTTP dashboard provides a web interface for live sensor data visualization (Chart.js timeseries), runtime configuration, authentication, and FOTA image upload. It runs on port 8080 and is Kconfig-opt-in.</p>
+<h2 id="functional-requirements">Functional Requirements</h2>
+<h3 id="req-http-001-dashboard-server">REQ-HTTP-001 — Dashboard Server</h3>
+<p>The system shall serve an HTTP dashboard on port 8080 (configurable via <code>HTTP_DASHBOARD_PORT</code>), self-initialized via <code>SYS_INIT</code> at priority 97.</p>
+<h3 id="req-http-002-chartjs-timeseries">REQ-HTTP-002 — Chart.js Timeseries</h3>
+<p>The system shall display live sensor data as Chart.js timeseries on the dashboard homepage (<code>GET /</code>), polling <code>/api/data</code> every 1 second.</p>
+<h3 id="req-http-003-rest-api-endpoints">REQ-HTTP-003 — REST API Endpoints</h3>
+<p>The system shall provide the following REST API endpoints:
+- <code>GET /api/data</code> — JSON snapshot of ring buffer
+- <code>GET/POST /api/config</code> — Read/update runtime config
+- <code>POST /api/login</code> — Authenticate, return session cookie
+- <code>POST /api/logout</code> — Invalidate session
+- <code>POST /api/change-credentials</code> — Update username/password
+- <code>POST /api/token/rotate</code> — Rotate API bearer token
+- <code>GET /api/locations</code> — JSON list of locations</p>
+<h3 id="req-http-004-session-authentication">REQ-HTTP-004 — Session Authentication</h3>
+<p>The system shall require session-cookie or API bearer-token authentication for <code>/api/*</code> endpoints. Unauthenticated requests shall return 401.</p>
+<h3 id="req-http-005-configuration-form">REQ-HTTP-005 — Configuration Form</h3>
+<p>The system shall serve an HTML configuration form at <code>GET /config</code> for runtime configuration of MQTT, locations, and other settings.</p>
+<h3 id="req-http-006-fota-upload-endpoint">REQ-HTTP-006 — FOTA Upload Endpoint</h3>
+<p>The system shall accept firmware image uploads via <code>POST /api/fota/upload</code>, streaming to flash slot 1. Additional endpoints:
+- <code>POST /api/fota/apply</code> — Mark slot 1 pending + reboot
+- <code>GET /api/fota/status</code> — Return slot versions and state
+- <code>POST /api/fota/sensor/&lt;uid&gt;/apply</code> — Trigger sensor-node FOTA over LoRa</p>
+<h3 id="req-http-007-self-contained-assets">REQ-HTTP-007 — Self-Contained Assets</h3>
+<p>The system shall serve HTML/CSS/JS as self-contained content with no CDN dependencies. Assets shall be embedded as C string literals (prototype) or served from LittleFS (target architecture).</p>
+<h3 id="req-http-008-ring-buffer-snapshot">REQ-HTTP-008 — Ring Buffer Snapshot</h3>
+<p>The system shall protect the sensor data ring buffer with <code>k_spinlock</code>, copying the snapshot within the lock and serializing to JSON outside the lock.</p>
+<h3 id="req-http-009-kconfig-opt-in">REQ-HTTP-009 — Kconfig Opt-In</h3>
+<p>The system shall be enabled via <code>CONFIG_HTTP_DASHBOARD=y</code> and disabled by default.</p>
+<h2 id="dependencies">Dependencies</h2>
 <ul>
-<li><code>ccc</code> CLI at <code>/home/zephyr/.local/bin/ccc</code>, Python <code>cocoindex</code> 1.0.6</li>
-<li><code>.cocoindex_code/settings.yml</code> covers all file types</li>
-<li><code>opencode.json</code> + <code>.mcp.json</code> have <code>cocoindex-code</code> MCP (<code>ccc mcp</code>)</li>
-<li>Index: 1797 chunks across 269 files (markdown, C, Python, C++, YAML, etc.)</li>
+<li>REQ-FOTA-001: MCUboot slot management for FOTA upload</li>
+<li>REQ-CONFIG-001: config_cmd channel for runtime config</li>
+<li>REQ-LOCATION-001: location registry for <code>/api/locations</code></li>
+<li>REQ-DATA-003: ring buffer snapshot pattern</li>
 </ul>
-<h3 id="layer-2-zephyr-corpus-missing">Layer 2 (Zephyr corpus) — Missing</h3>
-<p>No Zephyr-side index exists. Agent searches are limited to the project tree.</p>
-<h3 id="req-files-missing">REQ files — Missing</h3>
-<p>No <code>docs/requirements/</code> directory. Requirements exist implicitly in ADRs, architecture docs, and the backlog.</p>
-<hr>
-<h2 id="2-cocoindex-layer-2-zephyr-corpus-indexer">2. CocoIndex Layer 2 — Zephyr Corpus Indexer</h2>
-<p><strong>File:</strong> <code>scripts/cocoindex_zephyr_flow.py</code></p>
-<p>Scopes (future-proof — all Zephyr features indexed):</p>
-<table>
-<thead>
-<tr>
-<th>Flow name</th>
-<th>Path</th>
-<th>Patterns</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>includes</code></td>
-<td><code>ZEPHYR/include/zephyr/</code></td>
-<td><code>*.h</code></td>
-<td>All public API headers, recursive</td>
-</tr>
-<tr>
-<td><code>samples</code></td>
-<td><code>ZEPHYR/samples/</code></td>
-<td><code>*.c</code>, <code>*.h</code>, <code>CMakeLists.txt</code>, <code>prj.conf</code>, <code>*.overlay</code>, <code>*.dts</code>, <code>*.conf</code>, <code>Kconfig*</code>, <code>*.yaml</code></td>
-<td>All samples for extensibility</td>
-</tr>
-<tr>
-<td><code>subsys</code></td>
-<td><code>ZEPHYR/subsys/</code></td>
-<td><code>*.h</code>, <code>Kconfig*</code></td>
-<td>Subsystem headers and Kconfig</td>
-</tr>
-<tr>
-<td><code>dts_bindings</code></td>
-<td><code>ZEPHYR/dts/bindings/</code></td>
-<td><code>*.yaml</code></td>
-<td>All DTS bindings</td>
-</tr>
-<tr>
-<td><code>drivers</code></td>
-<td><code>ZEPHYR/drivers/</code></td>
-<td><code>include/**/*.h</code>, <code>Kconfig*</code>, <code>*/Kconfig</code></td>
-<td>Driver headers and Kconfig</td>
-</tr>
-<tr>
-<td><code>boards_mcxn947</code></td>
-<td><code>ZEPHYR/boards/</code></td>
-<td><code>frdm_mcxn947*/**/*.dts</code>, <code>frdm_mcxn947*/**/*.h</code>, <code>frdm_mcxn947*/**/Kconfig*</code>, <code>nxp/mcxn947*/**</code></td>
-<td>Main hardware target</td>
-</tr>
-<tr>
-<td><code>hal_nxp</code></td>
-<td><code>modules/hal/nxp/</code></td>
-<td><code>*.h</code>, <code>Kconfig*</code></td>
-<td>NXP MCXN947 HAL</td>
-</tr>
-</tbody>
-</table>
-<p><code>ZEPHYR_BASE</code> auto-detected from env or defaults to <code>/home/zephyr/workspace/zephyr</code>.</p>
-<h3 id="mcp-config-updates">MCP config updates</h3>
-<p><strong><code>opencode.json</code>:</strong>
-</p><div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">"mcp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"cocoindex-code"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ccc"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">"cocoindex-zephyr"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"python"</span><span class="p">,</span><span class="w"> </span><span class="s2">"scripts/cocoindex_zephyr_flow.py"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p></p>
-<p><strong><code>.mcp.json</code>:</strong>
-</p><div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">"cocoindex-code"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ccc"</span><span class="p">,</span><span class="w"> </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"mcp"</span><span class="p">]</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">"cocoindex-zephyr"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"python"</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"scripts/cocoindex_zephyr_flow.py"</span><span class="p">,</span><span class="w"> </span><span class="s2">"mcp"</span><span class="p">]</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p></p>
-<h3 id="initial-run">Initial run</h3>
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>/home/zephyr/workspace/weather-station
-python<span class="w"> </span>scripts/cocoindex_zephyr_flow.py<span class="w"> </span>update<span class="w">   </span><span class="c1"># ~5-10 min first run</span>
-ccc<span class="w"> </span>index
-</code></pre></div>
-<h3 id="verification-queries">Verification queries</h3>
+<h2 id="constraints">Constraints</h2>
 <ul>
-<li>"How does Zephyr sensor driver API work" → surfaces <code>include/zephyr/drivers/sensor.h</code></li>
-<li>"MCUboot FOTA confirm" → surfaces <code>subsys/dfu/</code> + board overlay files</li>
-<li>"Zephyr MQTT publish example" → surfaces <code>samples/net/mqtt_publisher/</code></li>
-<li>"FRDM-MCXN947 DTS" → surfaces MCXN947 board files</li>
+<li>HTTP server needs ~1 second after boot to bind port 8080</li>
+<li><code>k_spinlock</code> callbacks must not sleep or block</li>
+<li>HTML embedded in C strings is a prototype limitation; target is LittleFS</li>
+<li>Cross-subsystem coupling: prefer zbus publish; conditional integration files acceptable</li>
 </ul>
-<hr>
-<h2 id="3-req-file-ingestion">3. REQ File Ingestion</h2>
-<h3 id="directory">Directory</h3>
-<p><code>docs/requirements/</code></p>
-<h3 id="template">Template</h3>
-<div class="highlight"><pre><span></span><code><span class="gh"># REQ-DOMAIN-NNN — Title</span>
-
-<span class="gu">## Status</span>
-draft | review | approved | deprecated
-
-<span class="gu">## Version</span>
-0.1
-
-<span class="gu">## Context</span>
-Why this feature/constraint exists.
-
-<span class="gu">## Functional requirement</span>
-The system shall [verb] [object] [condition].
-
-<span class="gu">## Dependencies</span>
-<span class="k">-</span><span class="w"> </span>REQ-DOMAIN-NNN: [reason]
-<span class="k">-</span><span class="w"> </span>(or "none yet")
-
-<span class="gu">## Constraints</span>
-<span class="k">-</span><span class="w"> </span>Power: ≤ [X] µA average during [mode]
-<span class="k">-</span><span class="w"> </span>Latency: ≤ [X] ms [from event to output]
-<span class="k">-</span><span class="w"> </span>Memory: ≤ [X] KB [SRAM/flash]
-
-<span class="gu">## Acceptance criteria</span>
-Each criterion tagged with how it can be verified:
-
-<span class="k">- [ ]</span> [native_sim] ztest: [description]
-<span class="k">- [ ]</span> [renode] Integration: [description]
-<span class="k">- [ ]</span> [hil] Power test: [description]
-<span class="k">- [ ]</span> [manual] Board: [description]
-
-<span class="gu">## Related ADRs</span>
-<span class="k">-</span><span class="w"> </span>ADR-NNNN (if exists, else "none yet")
-
-<span class="gu">## Related Zephyr subsystems</span>
-<span class="k">-</span><span class="w"> </span>CONFIG_*, etc.
-</code></pre></div>
-<h3 id="domains">Domains</h3>
-<table>
-<thead>
-<tr>
-<th>REQ File</th>
-<th>Scope</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>REQ-SENSORS-*.md</code></td>
-<td>Temp, humidity, pressure, CO2, VOC, PM2.5/PM10, gas resistance. Q31 encode/decode, trigger-driven sampling, BME680 forced-mode timing, SEN0460 settle time, fake sensor DT instantiation</td>
-</tr>
-<tr>
-<td><code>REQ-LORA-*.md</code></td>
-<td>Packet format (magic + CRC8), provisioning handshake, RPC retry, FOTA window protocol, session persistence, Ed25519 key caching</td>
-</tr>
-<tr>
-<td><code>REQ-MQTT-*.md</code></td>
-<td>Broker auth, topic hierarchy, QoS, runtime reconfiguration, self-heal reconnect</td>
-</tr>
-<tr>
-<td><code>REQ-HTTP-*.md</code></td>
-<td>Dashboard on port 8080, Chart.js timeseries, REST API, session auth + bearer token, FOTA upload endpoint</td>
-</tr>
-<tr>
-<td><code>REQ-DISPLAY-*.md</code></td>
-<td>LVGL 320x240 SDL window, analog clock, sensor cards, sensor event subscription, ADR-008 compliance</td>
-</tr>
-<tr>
-<td><code>REQ-FOTA-*.md</code></td>
-<td>MCUboot dual-image, signed updates, health-check confirm, HTTP transport, manual recovery path, key secrecy in CI</td>
-</tr>
-<tr>
-<td><code>REQ-POWER-*.md</code></td>
-<td>Sleep states, wake sources, BME680/SEN0460 PM integration, outdoor sensor node duty cycle</td>
-</tr>
-<tr>
-<td><code>REQ-TIME-*.md</code></td>
-<td>SNTP sync at boot + periodic, resync on config command, timestamp contract (ms granularity), native_sim pre-sync delay</td>
-</tr>
-<tr>
-<td><code>REQ-CONFIG-*.md</code></td>
-<td><code>config_cmd</code> channel contract, supported commands, settings persistence, shell interface parity</td>
-</tr>
-<tr>
-<td><code>REQ-LOCATION-*.md</code></td>
-<td>Named location CRUD, settings persistence, uid-independent metadata</td>
-</tr>
-<tr>
-<td><code>REQ-DATA-*.md</code></td>
-<td>zbus channel ownership, event bus contract, sensor event struct (flat, 20-24B), protobuf wire format, ring buffer snapshot pattern</td>
-</tr>
-</tbody>
-</table>
-<h3 id="acceptance-criteria-tagging">Acceptance criteria tagging</h3>
-<p>Every criterion receives one of: <code>[native_sim]</code>, <code>[renode]</code>, <code>[hil]</code>, <code>[manual]</code>.</p>
-<p>This prevents CI from reporting green while leaving the hardest constraints (power, timing, real hardware) silently unverified. The test runner in Phase 2+ uses these tags to produce a "deferred verification" report separately from the test pass/fail count.</p>
-<hr>
-<h2 id="4-execution-order">4. Execution Order</h2>
-<ol>
-<li>Create <code>scripts/cocoindex_zephyr_flow.py</code> → index → verify search quality</li>
-<li>Create REQ template file: <code>docs/requirements/TEMPLATE.md</code></li>
-<li>Create REQ files per domain (one session per domain with Claude/OpenCode)</li>
-<li>Re-index after REQ ingestion: <code>ccc index &amp;&amp; python scripts/cocoindex_zephyr_flow.py update</code></li>
-<li>Add <code>ccc index</code> + flow update to pre-commit or a cron/alias for periodic refresh</li>
-</ol>
-<hr>
-<h2 id="5-risks">5. Risks</h2>
+<h2 id="acceptance-criteria">Acceptance Criteria</h2>
 <ul>
-<li><strong>CocoIndex dependency:</strong> If <code>ccc</code> breaks, agents lose search. Fallback: raw <code>rg</code> on project + Zephyr trees.</li>
-<li><strong>Zephyr upstream churn:</strong> Board/DTS paths can change between releases, silently dropping index coverage. Mitigation: add a smoke check that warns if indexed file count drops &gt;20%.</li>
-<li><strong>REQ staleness:</strong> REQ files can drift from implementation. Mitigation: cross-reference ADRs and <code>## Related ADRs</code> field keeps them traceable.</li>
+<li>[ ] [native_sim] Integration: HTTP server binds port 8080 within 1s of boot</li>
+<li>[ ] [native_sim] Integration: GET / returns HTML page with Chart.js</li>
+<li>[ ] [native_sim] Integration: GET /api/data returns JSON sensor data snapshot</li>
+<li>[ ] [native_sim] Integration: POST /api/login returns session cookie</li>
+<li>[ ] [native_sim] Integration: Unauthenticated GET /api/data returns 401</li>
+<li>[ ] [native_sim] Integration: Authenticated GET /api/data returns 200 with data</li>
+<li>[ ] [native_sim] Integration: POST /api/fota/upload streams image to flash</li>
+<li>[ ] [native_sim] Integration: GET /api/config returns configuration form</li>
+<li>[ ] [native_sim] Integration: POST /api/config updates runtime config</li>
+<li>[ ] [renode] Integration: HTTP endpoints functional over simulated network</li>
+<li>[ ] [manual] Board: Dashboard accessible from browser on local network</li>
+</ul>
+<h2 id="related-adrs">Related ADRs</h2>
+<ul>
+<li>ADR-011: HTTP Dashboard Web Interface</li>
+<li>ADR-014: MCUboot FOTA and Secure Firmware Update</li>
+<li>ADR-002: zbus as System-Wide Communication Fabric</li>
+</ul>
+<h2 id="related-zephyr-subsystems">Related Zephyr subsystems</h2>
+<ul>
+<li>CONFIG_HTTP_SERVER</li>
+<li>CONFIG_NET_TCP</li>
+<li>CONFIG_NET_SOCKETS</li>
+<li>CONFIG_FLASH</li>
+<li>CONFIG_LITTLEFS</li>
 </ul>
 
 

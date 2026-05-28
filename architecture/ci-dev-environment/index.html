@@ -931,6 +931,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Code quality tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#codechecker-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CodeChecker workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1101,6 +1118,16 @@ git clone → open in VS Code → "Reopen in Container"
                    │
                    ▼
 ┌────────────────────────────────────────────────────────────┐
+│  job: sca                                                  │
+│  CodeChecker static analysis (Clang-Tidy, Clang SA)       │
+│  ├── Build gateway + sensor-node with ZEPHYR_SCA_VARIANT  │
+│  ├── Compare findings vs sca/codechecker.baseline          │
+│  └── Upload plist reports as artifact                      │
+│  (informational — never blocks merge)                      │
+└──────────────────┬─────────────────────────────────────────┘
+                   │
+                   ▼
+┌────────────────────────────────────────────────────────────┐
 │  job: test-native-sim                                      │
 │  ZEPHYR_BASE=.../zephyr west twister                       │
 │    -p native_sim/native/64 -T weather-station/tests/      │
@@ -1170,13 +1197,26 @@ git clone → open in VS Code → "Reopen in Container"
 <td>west.yml, CI workflows, DT bindings</td>
 </tr>
 <tr>
+<td><code>CodeChecker</code></td>
+<td><code>sca/codechecker.skip</code>, <code>sca/codechecker.baseline</code></td>
+<td>Static analysis (Clang-Tidy, Clang SA, Cppcheck)</td>
+</tr>
+<tr>
 <td><code>pre-commit</code></td>
 <td><code>.pre-commit-config.yaml</code></td>
 <td>Runs all above + file hygiene hooks</td>
 </tr>
 </tbody>
 </table>
-<p>Pre-commit runs on every <code>git commit</code> locally (installed by devcontainer <code>postCreateCommand</code>) and on every push in CI. The same checks, same config.</p>
+<p>Pre-commit runs on every <code>git commit</code> locally (installed by devcontainer <code>postCreateCommand</code>) and on every push in CI. CodeChecker runs as a dedicated CI job and locally via <code>scripts/run-codechecker.sh</code>. The same checks, same config.</p>
+<h3 id="codechecker-workflow">CodeChecker workflow</h3>
+<p>CodeChecker uses Zephyr's built-in SCA integration (<code>ZEPHYR_SCA_VARIANT=codechecker</code>) to analyze <code>lib/</code> and <code>apps/</code> source files. Results are compared against a version-controlled baseline (<code>sca/codechecker.baseline</code>) to track new findings over time.</p>
+<div class="highlight"><pre><span></span><code>scripts/run-codechecker.sh<span class="w">              </span><span class="c1"># Run analysis, print summary</span>
+scripts/run-codechecker.sh<span class="w"> </span>--diff<span class="w">       </span><span class="c1"># Show NEW findings vs baseline</span>
+scripts/run-codechecker.sh<span class="w"> </span>--rebaseline<span class="w"> </span><span class="c1"># Regenerate baseline (after fixes or config changes)</span>
+scripts/run-codechecker.sh<span class="w"> </span>--html<span class="w">       </span><span class="c1"># Generate browsable HTML report</span>
+</code></pre></div>
+<p>The CI <code>sca</code> job runs <code>--diff</code> on every PR, reporting new findings without blocking the merge.</p>
 <hr>
 <h2 id="adding-a-missing-tool-to-the-container">Adding a missing tool to the container</h2>
 <p>If a tool is missing from <code>tobiwan88/zephyr_docker</code>:</p>
