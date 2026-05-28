@@ -324,3 +324,106 @@ ZTEST(io_stream_suite, test_buffer_interleaved_rw)
 
 	zassert_mem_equal(read_buf, "AAAAABBBBB", 10, "interleaved data mismatch");
 }
+
+/* --------------------------------------------------------------------------
+ * Flash stream tests (only when CONFIG_IO_STREAM_FLASH is enabled)
+ * -------------------------------------------------------------------------- */
+
+#if defined(CONFIG_IO_STREAM_FLASH)
+#	include <zephyr/storage/flash_map.h>
+
+/**
+ * @brief Flash stream initializes correctly by partition ID.
+ */
+ZTEST(io_stream_suite, test_flash_init_by_id)
+{
+	struct io_stream stream;
+	uint32_t part_id = FIXED_PARTITION_ID(test_partition);
+
+	int ret = io_stream_flash_init(&stream, part_id);
+	zassert_equal(ret, 0, "flash init failed: %d", ret);
+	zassert_not_null(stream.read, "read should be set");
+	zassert_not_null(stream.write, "write should be set");
+	zassert_not_null(stream.seek, "seek should be set");
+	zassert_not_null(stream.tell, "tell should be set");
+	zassert_not_null(stream.size, "size should be set");
+	zassert_not_null(stream.flush, "flush should be set");
+	zassert_not_null(stream.close, "close should be set");
+
+	io_stream_close(&stream);
+}
+
+/**
+ * @brief Write, flush, seek, and read back from flash.
+ */
+ZTEST(io_stream_suite, test_flash_write_and_read)
+{
+	struct io_stream stream;
+	uint32_t part_id = FIXED_PARTITION_ID(test_partition);
+
+	int ret = io_stream_flash_init(&stream, part_id);
+	zassert_equal(ret, 0, "init failed: %d", ret);
+
+	const uint8_t data[] = "Hello, flash!";
+	ssize_t written = io_stream_write(&stream, data, sizeof(data));
+	zassert_equal(written, sizeof(data), "write returned %zd", written);
+
+	ret = io_stream_flush(&stream);
+	zassert_equal(ret, 0, "flush failed: %d", ret);
+
+	size_t size = io_stream_size(&stream);
+	zassert_equal(size, sizeof(data), "size returned %zu", size);
+
+	ret = io_stream_seek(&stream, 0, IO_STREAM_SEEK_SET);
+	zassert_equal(ret, 0, "seek failed: %d", ret);
+
+	uint8_t read_buf[32];
+	ssize_t read = io_stream_read(&stream, read_buf, sizeof(read_buf));
+	zassert_equal(read, sizeof(data), "read returned %zd", read);
+	zassert_mem_equal(read_buf, data, sizeof(data), "data mismatch");
+
+	io_stream_close(&stream);
+}
+
+/**
+ * @brief Non-sequential write is rejected with -ENOTSUP.
+ */
+ZTEST(io_stream_suite, test_flash_non_sequential_write_rejected)
+{
+	struct io_stream stream;
+	uint32_t part_id = FIXED_PARTITION_ID(test_partition);
+
+	int ret = io_stream_flash_init(&stream, part_id);
+	zassert_equal(ret, 0, "init failed: %d", ret);
+
+	const uint8_t data[] = "test";
+	io_stream_write(&stream, data, sizeof(data));
+
+	ret = io_stream_seek(&stream, 0, IO_STREAM_SEEK_SET);
+	zassert_equal(ret, 0, "seek failed: %d", ret);
+
+	ssize_t written = io_stream_write(&stream, data, sizeof(data));
+	zassert_equal(written, -ENOTSUP, "non-sequential write returned %zd, expected -ENOTSUP",
+		      written);
+
+	io_stream_close(&stream);
+}
+
+/**
+ * @brief Double init is rejected with -EBUSY.
+ */
+ZTEST(io_stream_suite, test_flash_double_init_rejected)
+{
+	struct io_stream stream;
+	uint32_t part_id = FIXED_PARTITION_ID(test_partition);
+
+	int ret = io_stream_flash_init(&stream, part_id);
+	zassert_equal(ret, 0, "first init failed: %d", ret);
+
+	ret = io_stream_close(&stream);
+	zassert_equal(ret, 0, "close failed: %d", ret);
+
+	ret = io_stream_flash_init(&stream, part_id);
+	zassert_equal(ret, -EBUSY, "double init returned %d, expected -EBUSY", ret);
+}
+#endif /* CONFIG_IO_STREAM_FLASH */
