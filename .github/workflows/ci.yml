@@ -382,6 +382,7 @@ jobs:
             --coverage \
             --coverage-tool gcovr \
             --coverage-formats html,xml \
+            --coverage-basedir "${WEST_ROOT}" \
             --inline-logs \
             -v -N \
             --outdir "${GITHUB_WORKSPACE}/twister-out"
@@ -393,9 +394,9 @@ jobs:
           mkdir -p "${GITHUB_WORKSPACE}/twister-out/coverage"
           gcovr \
             --add-tracefile "${GITHUB_WORKSPACE}/twister-out/coverage.json" \
-            --filter ".*/weather-station/.*" \
-            --exclude ".*/zephyr/.*" \
-            --exclude ".*/modules/.*" \
+            --filter "(.*/)?weather-station/.*" \
+            --exclude "(.*/)?zephyr/.*" \
+            --exclude "(.*/)?modules/.*" \
             --exclude ".*/tests/.*" \
             --html-details "${GITHUB_WORKSPACE}/twister-out/coverage/index.html" \
             --xml "${GITHUB_WORKSPACE}/twister-out/coverage.xml" \
@@ -406,9 +407,9 @@ jobs:
           source /home/zephyr/.venv/bin/activate
           gcovr \
             --add-tracefile "${GITHUB_WORKSPACE}/twister-out/coverage.json" \
-            --filter ".*/weather-station/.*" \
-            --exclude ".*/zephyr/.*" \
-            --exclude ".*/modules/.*" \
+            --filter "(.*/)?weather-station/.*" \
+            --exclude "(.*/)?zephyr/.*" \
+            --exclude "(.*/)?modules/.*" \
             --exclude ".*/tests/.*" \
             --fail-under-line 35 \
             --print-summary
