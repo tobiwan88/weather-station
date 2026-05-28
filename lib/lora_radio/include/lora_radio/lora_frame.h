@@ -183,6 +183,38 @@ struct lora_ack {
 /* System (0xF0-0xFF) */
 #define LORA_RPC_REBOOT 0xFF
 
+/* --------------------------------------------------------------------------
+ * Packet encode/decode
+ * -------------------------------------------------------------------------- */
+
+/**
+ * @brief Encode a LoRa packet: header + payload + optional encryption + CRC16.
+ *
+ * @param hdr          L2 header (will be modified if encrypted).
+ * @param payload      Frame-type-specific payload data.
+ * @param payload_len  Number of payload bytes.
+ * @param session_key  AES-128 key (NULL for unencrypted).
+ * @param out_buf      Output buffer (must hold at least LORA_MAX_PACKET_SF7).
+ * @param out_len      Output: total encoded bytes (header + payload + tag + CRC).
+ * @return 0 on success, negative errno on failure.
+ */
+int lora_packet_encode(struct lora_l2_header *hdr, const void *payload, uint8_t payload_len,
+		       const uint8_t session_key[16], uint8_t *out_buf, uint8_t *out_len);
+
+/**
+ * @brief Decode a LoRa packet: verify CRC16 + optional decryption.
+ *
+ * @param in_buf       Encoded packet bytes.
+ * @param in_len       Number of encoded bytes.
+ * @param session_key  AES-128 key (NULL for unencrypted frames).
+ * @param hdr          Output: decoded L2 header.
+ * @param payload      Output buffer for decrypted payload.
+ * @param payload_len  Output: number of payload bytes.
+ * @return 0 on success, negative errno on failure.
+ */
+int lora_packet_decode(const uint8_t *in_buf, uint8_t in_len, const uint8_t session_key[16],
+		       struct lora_l2_header *hdr, uint8_t *payload, uint8_t *payload_len);
+
 #ifdef __cplusplus
 }
 #endif
