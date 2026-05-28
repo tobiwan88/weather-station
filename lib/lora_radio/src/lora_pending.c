@@ -46,6 +46,8 @@ static int sf_timeout_factor(int sf)
 struct lora_pending_slot {
 	struct k_work_delayable retry_work;
 	struct k_sem *done_sem; /* NULL for async, non-NULL for blocking */
+	lora_pending_cb_t cb;
+	void *user_data;
 	uint16_t node_id;
 	uint16_t seq_num;
 	uint8_t frame_type;
@@ -128,15 +130,8 @@ static void retry_work_fn(struct k_work *work)
 		/* ACK received — signal completion */
 		if (slot->done_sem) {
 			k_sem_give(slot->done_sem);
-		} else {
-			/* Async: publish result on zbus channel */
-			struct lora_rpc_result_event evt = {
-				.node_id = slot->node_id,
-				.cmd_id = 0,
-				.status = slot->response_status,
-				.resp_len = 0,
-			};
-			(void)zbus_chan_pub(&lora_rpc_result_chan, &evt, K_NO_WAIT);
+		} else if (slot->cb) {
+			slot->cb(slot->node_id, slot->response_status, slot->user_data);
 		}
 		slot->active = false;
 		return;
@@ -160,14 +155,8 @@ static void retry_work_fn(struct k_work *work)
 
 		if (slot->done_sem) {
 			k_sem_give(slot->done_sem);
-		} else {
-			struct lora_rpc_result_event evt = {
-				.node_id = slot->node_id,
-				.cmd_id = 0,
-				.status = -ETIMEDOUT,
-				.resp_len = 0,
-			};
-			(void)zbus_chan_pub(&lora_rpc_result_chan, &evt, K_NO_WAIT);
+		} else if (slot->cb) {
+			slot->cb(slot->node_id, -ETIMEDOUT, slot->user_data);
 		}
 		slot->active = false;
 	}
@@ -237,7 +226,8 @@ int lora_pending_send(uint16_t node_id, uint16_t seq_num, uint8_t frame_type, co
 }
 
 int lora_pending_send_async(uint16_t node_id, uint16_t seq_num, uint8_t frame_type,
-			    const uint8_t *tx_buf, uint8_t tx_len)
+			    const uint8_t *tx_buf, uint8_t tx_len, int32_t timeout_ms,
+			    lora_pending_cb_t cb, void *user_data)
 {
 	struct lora_pending_slot *slot = slot_find(node_id);
 	if (slot) {
@@ -250,11 +240,13 @@ int lora_pending_send_async(uint16_t node_id, uint16_t seq_num, uint8_t frame_ty
 	}
 
 	slot->done_sem = NULL;
+	slot->cb = cb;
+	slot->user_data = user_data;
 	slot->node_id = node_id;
 	slot->seq_num = seq_num;
 	slot->frame_type = frame_type;
 	slot->retries_left = CONFIG_LORA_RADIO_RETRY_MAX;
-	slot->base_timeout_ms = CONFIG_LORA_RADIO_RETRY_TIMEOUT_BASE_MS;
+	slot->base_timeout_ms = timeout_ms;
 	slot->tx_len = tx_len;
 	slot->response_received = false;
 	slot->response_status = 0;
@@ -305,5 +297,7 @@ void lora_pending_cancel(uint16_t node_id)
 		slot->response_status = -ECANCELED;
 		slot->response_received = true;
 		k_sem_give(slot->done_sem);
+	} else if (slot->cb) {
+		slot->cb(slot->node_id, -ECANCELED, slot->user_data);
 	}
 }

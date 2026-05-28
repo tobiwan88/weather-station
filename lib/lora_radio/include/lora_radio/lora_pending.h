@@ -10,6 +10,19 @@ extern "C" {
 #endif
 
 /**
+ * @brief Callback invoked when a pending async operation completes.
+ *
+ * Called from the pending workqueue context when the frame is ACKed,
+ * retries are exhausted, or the slot is cancelled.
+ *
+ * @param node_id   Target node of the pending request.
+ * @param status    0 on success, negative errno on failure
+ *                  (-ETIMEDOUT, -ECANCELED, etc.).
+ * @param user_data Caller-provided context pointer.
+ */
+typedef void (*lora_pending_cb_t)(uint16_t node_id, int status, void *user_data);
+
+/**
  * @brief Initialize the reliable TX subsystem.
  *
  * Creates the pending workqueue and zeros all pending slots.
@@ -38,7 +51,7 @@ int lora_pending_send(uint16_t node_id, uint16_t seq_num, uint8_t frame_type, co
  * @brief Send a frame reliably (non-blocking).
  *
  * Enqueues the frame for reliable transmission and returns immediately.
- * The result is published on lora_rpc_result_chan when resolved.
+ * The result is delivered via the provided callback when resolved.
  * Safe for zbus listener context.
  *
  * @param node_id     Target LoRa node.
@@ -46,10 +59,15 @@ int lora_pending_send(uint16_t node_id, uint16_t seq_num, uint8_t frame_type, co
  * @param frame_type  Frame type.
  * @param tx_buf      Encoded frame.
  * @param tx_len      Frame length.
+ * @param timeout_ms  Base timeout in milliseconds (SF-scaled with jitter).
+ * @param cb          Callback invoked on completion (ACK, timeout, or cancel).
+ *                    May be NULL for fire-and-forget (no completion notification).
+ * @param user_data   Opaque pointer passed to cb.
  * @return 0 on success (enqueued), negative errno if no slot available.
  */
 int lora_pending_send_async(uint16_t node_id, uint16_t seq_num, uint8_t frame_type,
-			    const uint8_t *tx_buf, uint8_t tx_len);
+			    const uint8_t *tx_buf, uint8_t tx_len, int32_t timeout_ms,
+			    lora_pending_cb_t cb, void *user_data);
 
 /**
  * @brief Match a received ACK/RESP to a pending request.
