@@ -401,6 +401,18 @@ jobs:
             --print-summary \
             2>/dev/null || true
 
+      - name: Check coverage threshold
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          gcovr \
+            --root "${GITHUB_WORKSPACE}/.." \
+            --filter ".*/weather-station/.*" \
+            --exclude ".*/zephyr/.*" \
+            --exclude ".*/modules/.*" \
+            --exclude ".*/tests/.*" \
+            --fail-under-line 35 \
+            --print-summary
+
       - name: Upload Twister results
         if: always()
         uses: actions/upload-artifact@v4
