@@ -15,6 +15,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include "lora_radio_internal.h"
 #include <lora_radio/lora_chan.h>
 #include <lora_radio/lora_frame.h>
+#include <lora_radio/lora_pending.h>
 #include <lora_radio/lora_radio.h>
 #include <lora_radio/lora_session.h>
 
@@ -170,12 +171,21 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 		case LORA_FRAME_RPC_CMD:
 			lora_handle_rpc_cmd(src_node, payload, payload_len);
 			break;
+		case LORA_FRAME_RPC_RESP:
+			lora_handle_rpc_resp(src_node, payload, payload_len);
+			break;
+		case LORA_FRAME_ACK:
+			lora_handle_ack(src_node, payload, payload_len);
+			break;
 		case LORA_FRAME_PROV_BEACON:
 			lora_handle_prov_beacon(&hdr, payload, payload_len);
 			break;
 #ifdef CONFIG_LORA_RADIO_FOTA
 		case LORA_FRAME_FOTA_CHUNK:
 			lora_handle_fota_chunk(src_node, payload, payload_len);
+			break;
+		case LORA_FRAME_FOTA_CHUNK_ACK:
+			lora_handle_fota_chunk_ack(src_node, payload, payload_len);
 			break;
 #endif
 		default:
@@ -218,6 +228,15 @@ static int lora_radio_init(void)
 
 	lora_session_init();
 	lora_session_restore();
+	lora_pending_init();
+
+#ifdef CONFIG_PSA_CRYPTO
+	ret = lora_prov_init();
+	if (ret < 0) {
+		LOG_WRN("Ed25519 key cache init failed: %d", ret);
+		/* Continue without provisioning capability */
+	}
+#endif
 
 	k_thread_create(&lora_rx_thread_data, lora_rx_stack, CONFIG_LORA_RADIO_RX_THREAD_STACK_SIZE,
 			lora_rx_thread_fn, NULL, NULL, NULL, CONFIG_LORA_RADIO_RX_THREAD_PRIORITY,

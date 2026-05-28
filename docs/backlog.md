@@ -6,8 +6,41 @@ See plan: [`docs/requirements/PLAN-requirements-and-cocoindex.md`](requirements/
 
 Tracks: CocoIndex Layer 2 (Zephyr corpus indexer), REQ file creation per domain (SENSORS, LORA, MQTT, HTTP, DISPLAY, FOTA, POWER, TIME, CONFIG, LOCATION, DATA), MCP config updates.
 
-## [Lora SENSOR] Do we support RCP/FOTA coommands?
-- review and adjust
+## [LORA-SECURITY-KEY-CACHE] Security review of cached Ed25519 key in PSA Crypto
+
+The Ed25519 gateway signing key is cached as a persistent `psa_key_id_t` after import-at-init. This review assesses the security implications:
+
+- Does PSA Crypto isolate the key material sufficiently when the handle is held open for the device lifetime vs. the previous import→use→destroy pattern?
+- Is the static development key (`gateway_ed25519_sk`) acceptable to hold in flash, and what is the path to production key rotation?
+- Audit: no key material leaks via logs or zbus channels.
+
+Reference: ADR-015 §Security.
+
+---
+
+## [LORA-RPC-COMMANDS] Implement remaining RPC commands
+
+The RPC dispatch table in `lora_handler_rpc.c` handles ping/version/reboot. The following commands defined in ADR-015 are not yet implemented on either side:
+
+| Command | Gateway sender | Sensor receiver |
+|---------|---------------|-----------------|
+| GET_STATUS (0x02) | Not implemented | Not implemented |
+| SET_PUBLISH_INTERVAL (0x10) | Not implemented | Not implemented |
+| SET_SPREADING (0x11) | Not implemented | Not implemented |
+| SET_TX_POWER (0x12) | Not implemented | Not implemented |
+| SET_KEEPALIVE (0x13) | Not implemented | Not implemented |
+| SET_CHANGE_THRESHOLD (0x14) | Not implemented | Not implemented |
+| TRIGGER_SAMPLE (0x20) | Not implemented | Not implemented |
+| FOTA_START (0x30) | Not implemented | Not implemented |
+| FOTA_CANCEL (0x31) | Not implemented | Not implemented |
+
+**Prerequisite:** LoRa reliable TX (Phases 2-4 from `docs/superpowers/specs/2026-05-27-lora-reliable-tx-design.md`) must be complete so these commands can use `lora_radio_rpc_send()` / `lora_radio_rpc_send_async()`.
+
+**Acceptance:** All 9 commands implemented on both gateway and sensor sides. Each command has a unit test. Integration test validates end-to-end PING → GET_STATUS → SET_PUBLISH_INTERVAL → TRIGGER_SAMPLE → FOTA_START → FOTA_CANCEL → REBOOT.
+
+Reference: ADR-015 §RPC command set.
+
+---
 
 ## [ADR-008-RULE4] Move lvgl_display_run() out of gateway/main.c
 
@@ -202,6 +235,179 @@ Reference: ADR-014 §Image confirmation; ADR-008 §iterable sections pattern.
 
 ---
 
+## [FOTA-STREAM] Create generic upstreamable stream abstraction
+
+The FOTA sender hardcodes `PM_MCUBOOT_SECONDARY` as the firmware source. This
+blocks native_sim testing (no flash partitions) and prevents sensor-specific
+firmware images from being stored independently.
+
+**Goal:** A generic, reusable stream vtable that any module can use to read
+from flash, RAM, or any other backing store. Designed for upstreamability to
+Zephyr.
+
+**Implementation:**
+- `lib/fota_stream/` — new library, Kconfig-gated, SYS_INIT-wired, no heap.
+- Vtable interface:
+  ```c
+  struct fota_stream {
+      int    (*read)(struct fota_stream *s, uint32_t offset, uint8_t *buf, size_t len);
+      size_t (*size)(struct fota_stream *s);
+      int    (*write)(struct fota_stream *s, uint32_t offset, const uint8_t *data, size_t len);
+      int    (*flush)(struct fota_stream *s);
+      void   (*close)(struct fota_stream *s);
+  };
+  ```
+- Backends:
+  - `fota_stream_flash` — wraps `FIXED_PARTITION_ID()` + `flash_area_read/write()`.
+    Configurable partition via Kconfig.
+  - `fota_stream_ram` — wraps a static `uint8_t buf[N]` where N =
+    `CONFIG_FOTA_STREAM_RAM_SIZE`. For native_sim testing and small images.
+- Kconfig: `CONFIG_FOTA_STREAM`, `CONFIG_FOTA_STREAM_FLASH`,
+  `CONFIG_FOTA_STREAM_RAM`, `CONFIG_FOTA_STREAM_RAM_SIZE`.
+
+**Acceptance:**
+- Both backends compile and pass unit tests on native_sim.
+- `lora_handler_fota.c` sender uses `fota_stream->read()` instead of
+  `flash_area_read()`.
+- FOTA sender testable on native_sim using RAM backend.
+
+Reference: PR #49 FIXME comments at `flash_area_read` and `flash_img_init` in
+`lora_handler_fota.c`.
+
+---
+
+## [FOTA-IMAGE-REGISTRY] Create image registry mapping sensor UIDs to firmware streams
+
+Different sensor nodes (different hardware, sensor types) need different
+firmware images. Currently there is no way to associate a specific firmware
+image with a specific target sensor UID.
+
+**Goal:** A static registry that maps sensor UIDs to `fota_stream` instances,
+tracking upload state (empty/uploading/ready).
+
+**Implementation:**
+- `lib/fota_image_registry/` — new library, Kconfig-gated.
+- Static array sized by `CONFIG_FOTA_IMAGE_REGISTRY_MAX` (default 4).
+- Entry:
+  ```c
+  struct fota_image_entry {
+      uint8_t  label[16];           /* e.g. "STM32WLE5-v1.2" */
+      uint32_t target_uid;          /* 0 = any, otherwise must match sensor UID */
+      enum fota_image_state state;  /* EMPTY, UPLOADING, READY */
+      size_t   image_size;
+      struct   fota_stream *stream;
+  };
+  ```
+- API: `upload_start`, `upload_chunk`, `upload_finish`, `get(index)`,
+  `find_for_uid(uid)`.
+
+**Acceptance:**
+- Multiple images can be uploaded and stored independently.
+- `fota_image_registry_find_for_uid(uid)` returns the best-matching image.
+- Unit test: upload two images, verify lookup by UID.
+
+Reference: `lora_fota_event.image_index` field added in PR #49.
+
+---
+
+## [FOTA-SENDER-STREAM] Refactor FOTA sender to use fota_stream + image registry
+
+Replace hardcoded `PM_MCUBOOT_SECONDARY` in `lora_handler_fota.c` sender with
+stream-based image selection from the registry.
+
+**Goal:** FOTA sender reads from a `fota_stream` selected by `image_index` from
+the event, enabling sensor-specific firmware and native_sim testing.
+
+**Implementation:**
+- `fota_start_handler` looks up stream from `fota_image_registry_get(image_index)`.
+- Replace `flash_area_read(fota_sender.fota_ctx.fap, ...)` with
+  `stream->read(stream, ...)`.
+- Remove `struct flash_img_context fota_ctx` from `fota_sender` (no longer needed
+  for reading).
+- `image_index=0` defaults to the first image in the registry (backward compat).
+
+**Acceptance:**
+- FOTA sender works with both flash and RAM backends.
+- `lora_fota_event.image_index` correctly selects the target image.
+- Native_sim integration test passes with RAM backend.
+
+Depends on: [FOTA-STREAM], [FOTA-IMAGE-REGISTRY].
+
+---
+
+## [FOTA-HTTP-SENSOR-UPLOAD] Add HTTP endpoints for sensor firmware image management
+
+Add authenticated HTTP endpoints to `lib/http_dashboard` for uploading and
+managing sensor firmware images.
+
+**Goal:** Browser/CLI can upload sensor firmware images to the gateway, list
+stored images, and trigger FOTA to specific sensor nodes.
+
+**Implementation:**
+- `POST /api/fota/sensor/upload` — streams image data to a new registry entry.
+  Auth: same session/bearer pattern as gateway FOTA upload.
+- `GET /api/fota/sensor/images` — returns JSON list of stored images
+  (label, target_uid, state, image_size).
+- `POST /api/fota/sensor/<uid>/apply` — publishes `FOTA_START` on
+  `lora_fota_chan` with the matching `image_index` from the registry.
+
+**Acceptance:**
+- End-to-end: upload image → list shows it → apply triggers FOTA → sensor ACKs.
+- Auth: unauthenticated requests rejected with 401.
+- Concurrent uploads serialised (one at a time, like gateway FOTA upload).
+
+Depends on: [FOTA-IMAGE-REGISTRY].
+
+---
+
+## [FOTA-PIPELINE] Enable true window pipelining (>1 chunk in flight)
+
+The current `lora_pending.c` allows only one pending slot per node. This caps
+the FOTA window at 1 (sequential ACK per chunk) even though the protocol
+supports 4–16 chunks in flight.
+
+**Goal:** Enable true window pipelining for faster FOTA transfers.
+
+**Options:**
+- **A:** Expand `lora_pending.c` to support N slots per node (FOTA_WINDOW).
+  Higher complexity — changes to core pending subsystem.
+- **B:** FOTA sender manages its own retry ring, bypassing pending subsystem
+  for chunk delivery. Medium complexity — some code duplication.
+
+**Acceptance:**
+- Window size > 1 confirmed working (e.g., 4 chunks in flight).
+- FOTA transfer time reduced proportionally.
+- Unit test validates pipelined ACK processing.
+
+Depends on: [FOTA-STREAM] (for native_sim testing).
+
+---
+
+## [FOTA-INTEGRATION-TEST] End-to-end FOTA relay integration test
+
+Pytest-based integration test exercising the full FOTA relay path: gateway
+sends chunks → sensor node receives, writes, ACKs → gateway advances.
+
+**Goal:** Automated CI test validating the FOTA protocol end-to-end using the
+fake LoRa driver loopback and RAM-backed stream.
+
+**Implementation:**
+- `tests/integration/pytest/test_lora_fota.py` — new test file.
+- Tests:
+  - `fota_chunk_receive_and_ack` — single chunk round-trip.
+  - `fota_full_transfer_small` — small image (1 KB) fully transferred.
+  - `fota_chunk_timeout_retry` — retry on missing ACK.
+  - `fota_cancel_mid_transfer` — cancel aborts sender, resets receiver.
+- Requires sensor node subprocess (like `test_sensor_node_gateway.py`).
+
+**Acceptance:**
+- All 4 tests pass on native_sim.
+- FOTA completes within timeout (≤30s for 1 KB image).
+
+Depends on: [FOTA-STREAM].
+
+---
+
 ## [RENODE-CI-DOCKER] Pre-built CI Docker image with Renode
 
 The `renode` CI job downloads the portable Renode tarball each run (~30 s).
@@ -260,66 +466,6 @@ Renode without workarounds.
 
 **Acceptance:** Gateway firmware builds without the Renode-specific workarounds
 and boots to shell in Renode, with external flash accessible via FlexSPI.
-
----
-
-## [ADR-015-LORA-RPC-RETRY] Implement RPC command retry logic
-
-ADR-015 requires ACK-based RPC delivery with up to 3 retries and SF-dependent
-timeout (5s at SF7, 30s at SF10). Currently `lora_radio_rpc_send()` sends a
-single frame with `LORA_FLAG_ACK_REQ` but has no retry loop or response listener.
-
-**Acceptance:**
-- `lora_radio_rpc_send()` blocks until RPC_RESP received or retries exhausted
-- Retry count configurable via Kconfig (default 3)
-- Timeout per retry based on spreading factor
-- One pending RPC per node (serialized)
-
-Reference: ADR-015 §Reliability model.
-
----
-
-## [ADR-015-LORA-FOTA-WINDOW] Implement windowed FOTA chunk protocol
-
-ADR-015 requires a windowed ACK protocol with 4–16 chunks in flight, 2s retry
-timer, and 3 retries per chunk. Currently `lora_handle_fota_chunk()` processes
-one chunk at a time with a broken ACK (offset mismatch reports success).
-
-**Acceptance:**
-- Gateway sends 4–16 FOTA_CHUNK frames before waiting for ACKs
-- ACK carries written offset, expected offset, and status
-- Retry timer (2s) resends unacknowledged chunks
-- 3 retries per chunk before aborting
-
-Reference: ADR-015 §Reliability model, §FOTA over LoRa.
-
----
-
-## [ADR-015-LORA-PERSIST] Persist session immediately after pairing
-
-After `lora_session_add()` in `lora_handle_prov_beacon()`, the session exists
-only in RAM. A reboot before the next `settings_save()` call loses the pairing.
-
-**Acceptance:**
-- `lora_session_persist()` called after successful pairing
-- Sensor node can communicate after gateway reboot without re-pairing
-
-Reference: ADR-015 §Security, §Provisioning.
-
----
-
-## [ADR-015-LORA-ED25519-CACHE] Cache Ed25519 PSA key instead of import/destroy per beacon
-
-The gateway's Ed25519 private key is imported into PSA Crypto on every
-PROV_BEACON reception and destroyed after signing. For a static key, this
-should be imported once at init and cached as a `psa_key_id_t`.
-
-**Acceptance:**
-- Ed25519 key imported once in `lora_radio_init()` or prov handler init
-- `psa_key_id_t` cached as static variable
-- `psa_destroy_key()` only called on shutdown (if at all)
-
-Reference: ADR-015 §Security.
 
 ---
 

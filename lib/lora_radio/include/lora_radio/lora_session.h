@@ -24,6 +24,9 @@ struct lora_session {
 	uint16_t last_seq_tx;
 	uint8_t retry_count;
 	int64_t last_rx_ms;
+	uint16_t last_rpc_seq;
+	uint8_t last_rpc_resp[130];
+	uint8_t last_rpc_resp_len;
 };
 
 void lora_session_init(void);
