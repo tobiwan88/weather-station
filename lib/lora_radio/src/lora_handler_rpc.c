@@ -48,6 +48,19 @@ static int rpc_get_version(uint16_t src, uint8_t id, const uint8_t *p, uint8_t p
 	return 0;
 }
 
+static void rpc_async_cb(uint16_t node_id, int status, void *user_data)
+{
+	uint8_t cmd_id = (uint8_t)(uintptr_t)user_data;
+
+	struct lora_rpc_result_event evt = {
+		.node_id = node_id,
+		.cmd_id = cmd_id,
+		.status = status,
+		.resp_len = 0,
+	};
+	(void)zbus_chan_pub(&lora_rpc_result_chan, &evt, K_NO_WAIT);
+}
+
 #ifdef CONFIG_REBOOT
 static void lora_reboot_fn(struct k_work *work)
 {
@@ -251,7 +264,9 @@ int lora_radio_rpc_send_async(uint16_t node_id, uint8_t cmd_id, const uint8_t *p
 		return ret;
 	}
 
-	ret = lora_pending_send_async(node_id, s->last_seq_tx, LORA_FRAME_RPC_CMD, tx_buf, tx_len);
+	ret = lora_pending_send_async(node_id, s->last_seq_tx, LORA_FRAME_RPC_CMD, tx_buf, tx_len,
+				      CONFIG_LORA_RADIO_RETRY_TIMEOUT_BASE_MS, rpc_async_cb,
+				      (void *)(uintptr_t)cmd_id);
 	if (ret == 0) {
 		s->last_seq_tx++;
 	}

@@ -20,6 +20,7 @@ struct lora_link_event {
 struct lora_fota_event {
 	enum { LORA_FOTA_START, LORA_FOTA_CANCEL } action;
 	uint32_t target_uid;
+	uint8_t image_index; /* 0 = default image (PM_MCUBOOT_SECONDARY) */
 	uint32_t image_size;
 	uint8_t fota_mode;
 };
