@@ -6,6 +6,9 @@
  * Wraps a caller-provided buffer with full read/write/seek/tell support.
  * Write beyond capacity returns -ENOSPC. Read past valid data returns 0 (EOF).
  *
+ * Backend state is managed in an internal pool — consumers only see
+ * `struct io_stream` and the vtable wrapper functions.
+ *
  * Constrained by ADR-017 (Generic I/O Stream Abstraction).
  */
 
@@ -18,9 +21,46 @@
 
 LOG_MODULE_REGISTER(io_stream_buffer, CONFIG_IO_STREAM_LOG_LEVEL);
 
+/* --------------------------------------------------------------------------
+ * Private state type (not exposed in header)
+ * -------------------------------------------------------------------------- */
+
+struct buffer_state {
+	uint8_t *buf;
+	size_t capacity;
+	int32_t pos;
+	size_t data_len;
+	bool in_use;
+};
+
+/* --------------------------------------------------------------------------
+ * Internal pool
+ * -------------------------------------------------------------------------- */
+
+#if CONFIG_IO_STREAM_BUFFER_MAX > 0
+static struct buffer_state buffer_pool[CONFIG_IO_STREAM_BUFFER_MAX];
+#endif
+
+static struct buffer_state *buffer_alloc(void)
+{
+#if CONFIG_IO_STREAM_BUFFER_MAX > 0
+	for (size_t i = 0; i < ARRAY_SIZE(buffer_pool); i++) {
+		if (!buffer_pool[i].in_use) {
+			buffer_pool[i].in_use = true;
+			return &buffer_pool[i];
+		}
+	}
+#endif
+	return NULL;
+}
+
+/* --------------------------------------------------------------------------
+ * Implementation functions (called through vtable)
+ * -------------------------------------------------------------------------- */
+
 static ssize_t buffer_read(struct io_stream *s, uint8_t *buf, size_t len)
 {
-	struct io_stream_buffer_state *d = (struct io_stream_buffer_state *)s->user_data;
+	struct buffer_state *d = (struct buffer_state *)s->context;
 
 	if (d->pos >= (int32_t)d->data_len) {
 		return 0; /* EOF */
@@ -38,7 +78,7 @@ static ssize_t buffer_read(struct io_stream *s, uint8_t *buf, size_t len)
 
 static ssize_t buffer_write(struct io_stream *s, const uint8_t *data, size_t len)
 {
-	struct io_stream_buffer_state *d = (struct io_stream_buffer_state *)s->user_data;
+	struct buffer_state *d = (struct buffer_state *)s->context;
 
 	if (d->pos < 0) {
 		return -EINVAL;
@@ -65,7 +105,7 @@ static ssize_t buffer_write(struct io_stream *s, const uint8_t *data, size_t len
 
 static int buffer_seek(struct io_stream *s, int32_t offset, int whence)
 {
-	struct io_stream_buffer_state *d = (struct io_stream_buffer_state *)s->user_data;
+	struct buffer_state *d = (struct buffer_state *)s->context;
 	int32_t new_pos;
 
 	switch (whence) {
@@ -93,13 +133,13 @@ static int buffer_seek(struct io_stream *s, int32_t offset, int whence)
 
 static int32_t buffer_tell(struct io_stream *s)
 {
-	struct io_stream_buffer_state *d = (struct io_stream_buffer_state *)s->user_data;
+	struct buffer_state *d = (struct buffer_state *)s->context;
 	return d->pos;
 }
 
 static size_t buffer_size(struct io_stream *s)
 {
-	struct io_stream_buffer_state *d = (struct io_stream_buffer_state *)s->user_data;
+	struct buffer_state *d = (struct buffer_state *)s->context;
 	return d->data_len;
 }
 
@@ -111,33 +151,55 @@ static int buffer_flush(struct io_stream *s)
 
 static int buffer_close(struct io_stream *s)
 {
-	struct io_stream_buffer_state *d = (struct io_stream_buffer_state *)s->user_data;
+	struct buffer_state *d = (struct buffer_state *)s->context;
 	d->pos = 0;
 	d->data_len = 0;
+	d->in_use = false;
+	s->vtable = NULL;
+	s->context = NULL;
 	LOG_DBG("buffer closed");
 	return 0;
 }
 
-int io_stream_buffer_init(struct io_stream *s, struct io_stream_buffer_state *state, void *buf,
-			  size_t capacity)
+/* --------------------------------------------------------------------------
+ * Shared vtable (stored in ROM)
+ * -------------------------------------------------------------------------- */
+
+static const struct io_stream_vtable buffer_vtable = {
+	.read = buffer_read,
+	.write = buffer_write,
+	.seek = buffer_seek,
+	.tell = buffer_tell,
+	.size = buffer_size,
+	.flush = buffer_flush,
+	.close = buffer_close,
+};
+
+/* --------------------------------------------------------------------------
+ * Constructor
+ * -------------------------------------------------------------------------- */
+
+int io_stream_buffer_init(struct io_stream *s, void *buf, size_t capacity)
 {
-	if (!s || !state || !buf || capacity == 0) {
+	if (!s || !buf || capacity == 0) {
 		return -EINVAL;
 	}
+	if (s->vtable != NULL) {
+		return -EBUSY;
+	}
 
-	state->buf = (uint8_t *)buf;
-	state->capacity = capacity;
-	state->pos = 0;
-	state->data_len = 0;
+	struct buffer_state *d = buffer_alloc();
+	if (!d) {
+		return -ENOMEM;
+	}
 
-	s->read = buffer_read;
-	s->write = buffer_write;
-	s->seek = buffer_seek;
-	s->tell = buffer_tell;
-	s->size = buffer_size;
-	s->flush = buffer_flush;
-	s->close = buffer_close;
-	s->user_data = state;
+	d->buf = (uint8_t *)buf;
+	d->capacity = capacity;
+	d->pos = 0;
+	d->data_len = 0;
+
+	s->vtable = &buffer_vtable;
+	s->context = d;
 
 	LOG_INF("buffer stream initialized: %zu bytes", capacity);
 	return 0;
