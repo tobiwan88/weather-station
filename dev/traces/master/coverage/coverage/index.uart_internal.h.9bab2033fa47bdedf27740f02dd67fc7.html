@@ -159,14 +159,14 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l154">z_impl_uart_poll_in (include/zephyr/drivers/uart/uart_internal.h:154)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="6760">called 6760 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="6744">called 6744 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l182">z_impl_uart_poll_out (include/zephyr/drivers/uart/uart_internal.h:182)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="175494">called 175494 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="176180">called 176180 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -1288,7 +1288,7 @@
         <td class="lineno"><a id="l154" href="#l154">154</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">6760</td>
+        <td class="linecount coveredLine show_coveredLine">6744</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">z_impl_uart_poll_in</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">p_char</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -1302,7 +1302,7 @@
         <td class="lineno"><a id="l156" href="#l156">156</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">6760</td>
+        <td class="linecount coveredLine show_coveredLine">6744</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">uart_driver_api</span><span class="w"> </span><span class="o">*</span><span class="n">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">uart_driver_api</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">api</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1319,11 +1319,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 3 not taken.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 6760 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 6744 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">6760</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">6744</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">api</span><span class="o">-&gt;</span><span class="n">poll_in</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1351,7 +1351,7 @@
         <td class="lineno"><a id="l162" href="#l162">162</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">6760</td>
+        <td class="linecount coveredLine show_coveredLine">6744</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">api</span><span class="o">-&gt;</span><span class="n">poll_in</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">p_char</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1491,7 +1491,7 @@
         <td class="lineno"><a id="l182" href="#l182">182</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">175494</td>
+        <td class="linecount coveredLine show_coveredLine">176180</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">z_impl_uart_poll_out</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">out_char</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -1505,7 +1505,7 @@
         <td class="lineno"><a id="l184" href="#l184">184</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">175494</td>
+        <td class="linecount coveredLine show_coveredLine">176180</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">uart_driver_api</span><span class="w"> </span><span class="o">*</span><span class="n">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">uart_driver_api</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">api</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1519,14 +1519,14 @@
         <td class="lineno"><a id="l186" href="#l186">186</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">175494</td>
+        <td class="linecount coveredLine show_coveredLine">176180</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">api</span><span class="o">-&gt;</span><span class="n">poll_out</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">out_char</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l187" href="#l187">187</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">175494</td>
+        <td class="linecount coveredLine show_coveredLine">176180</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -4987,7 +4987,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-05-28 05:55:25
+          at 2026-05-28 08:26:27
         </footer>
       </div>
     </div>
