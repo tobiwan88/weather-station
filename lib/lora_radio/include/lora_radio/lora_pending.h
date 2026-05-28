@@ -31,8 +31,8 @@ void lora_pending_init(void);
  * @param tx_len      Frame length.
  * @return 0 on success, negative errno on failure (-ETIMEDOUT on retry exhaustion).
  */
-int lora_pending_send(uint16_t node_id, uint16_t seq_num, uint8_t frame_type,
-		      const uint8_t *tx_buf, uint8_t tx_len);
+int lora_pending_send(uint16_t node_id, uint16_t seq_num, uint8_t frame_type, const uint8_t *tx_buf,
+		      uint8_t tx_len);
 
 /**
  * @brief Send a frame reliably (non-blocking).

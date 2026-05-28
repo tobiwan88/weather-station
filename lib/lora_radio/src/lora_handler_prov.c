@@ -139,6 +139,7 @@ int lora_handle_prov_beacon(const struct lora_l2_header *hdr, const uint8_t *pay
 	}
 
 	LOG_INF("paired node 0x%04x (%d capabilities)", node_id, caps_count);
+	lora_session_persist();
 	return 0;
 #endif /* CONFIG_PSA_CRYPTO */
 }
