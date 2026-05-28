@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig IO_STREAM
+	bool "I/O Stream abstraction"
+	help
+	  Generic stream vtable for reading/writing data from pluggable
+	  backends (flash, RAM buffer, file, network). Provides Unix-style
+	  sequential I/O with seek, tell, size, flush, and close operations.
+
+if IO_STREAM
+
+config IO_STREAM_FLASH
+	bool "Flash stream backend"
+	depends on FLASH_MAP && IMG_MANAGER
+	help
+	  Stream backed by an MCUboot flash partition. Uses flash_img
+	  for buffered writes with progressive erase.
+
+config IO_STREAM_FLASH_PARTITION_LABEL
+	string "Flash partition label for stream"
+	default "image-1"
+	depends on IO_STREAM_FLASH
+	help
+	  Default DTS partition label used when creating a flash stream
+	  without an explicit partition ID.
+
+config IO_STREAM_BUFFER
+	bool "Buffer stream backend"
+	help
+	  Stream backed by a caller-provided RAM buffer. For testing
+	  and small data transfers. No hardware dependencies.
+
+module = IO_STREAM
+module-str = IO_STREAM
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # IO_STREAM

@@ -72,7 +72,9 @@ endif # HTTP_DASHBOARD_AUTH
 config HTTP_DASHBOARD_FOTA
 	bool "FOTA firmware upload endpoints (/api/fota/*)"
 	depends on HTTP_DASHBOARD && HTTP_DASHBOARD_AUTH
-	depends on BOOTLOADER_MCUBOOT && IMG_MANAGER && STREAM_FLASH && FLASH_MAP
+	depends on BOOTLOADER_MCUBOOT && IMG_MANAGER
+	select IO_STREAM
+	select IO_STREAM_FLASH
 	select REBOOT
 	help
 	  Adds three auth-gated endpoints to the HTTP dashboard:
