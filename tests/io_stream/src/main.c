@@ -21,12 +21,11 @@ ZTEST_SUITE(io_stream_suite, NULL, NULL, NULL, NULL, NULL);
 ZTEST(io_stream_suite, test_buffer_write_then_read)
 {
 	uint8_t buf[64];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	const uint8_t test_data[] = "Hello, io_stream!";
 	uint8_t read_buf[32];
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	ssize_t written = io_stream_write(&stream, test_data, sizeof(test_data) - 1);
@@ -38,6 +37,8 @@ ZTEST(io_stream_suite, test_buffer_write_then_read)
 	ssize_t read = io_stream_read(&stream, read_buf, sizeof(read_buf));
 	zassert_equal(read, sizeof(test_data) - 1, "read returned %zd", read);
 	zassert_mem_equal(read_buf, test_data, sizeof(test_data) - 1, "data mismatch");
+
+	io_stream_close(&stream);
 }
 
 /**
@@ -46,11 +47,10 @@ ZTEST(io_stream_suite, test_buffer_write_then_read)
 ZTEST(io_stream_suite, test_buffer_seek_set)
 {
 	uint8_t buf[64];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	const uint8_t data[] = "0123456789";
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	ssize_t written = io_stream_write(&stream, data, sizeof(data));
@@ -66,6 +66,8 @@ ZTEST(io_stream_suite, test_buffer_seek_set)
 	ssize_t read = io_stream_read(&stream, &ch, 1);
 	zassert_equal(read, 1, "read failed");
 	zassert_equal(ch, '5', "read '0x%02x', expected '5'", ch);
+
+	io_stream_close(&stream);
 }
 
 /**
@@ -74,11 +76,10 @@ ZTEST(io_stream_suite, test_buffer_seek_set)
 ZTEST(io_stream_suite, test_buffer_seek_cur)
 {
 	uint8_t buf[64];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	const uint8_t data[] = "ABCDEFGHIJ";
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	ssize_t written = io_stream_write(&stream, data, sizeof(data));
@@ -97,6 +98,8 @@ ZTEST(io_stream_suite, test_buffer_seek_cur)
 	ssize_t read = io_stream_read(&stream, &ch, 1);
 	zassert_equal(read, 1, "read failed");
 	zassert_equal(ch, 'D', "read '0x%02x', expected 'D'", ch);
+
+	io_stream_close(&stream);
 }
 
 /**
@@ -105,11 +108,10 @@ ZTEST(io_stream_suite, test_buffer_seek_cur)
 ZTEST(io_stream_suite, test_buffer_seek_end)
 {
 	uint8_t buf[64];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	const uint8_t data[] = "0123456789"; /* 11 bytes including null terminator */
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	ssize_t written = io_stream_write(&stream, data, sizeof(data));
@@ -121,6 +123,8 @@ ZTEST(io_stream_suite, test_buffer_seek_end)
 	int32_t pos = io_stream_tell(&stream);
 	/* data_len = 11, seek(-3, END) = 11 - 3 = 8 */
 	zassert_equal(pos, 8, "tell returned %d, expected 8", pos);
+
+	io_stream_close(&stream);
 }
 
 /**
@@ -129,11 +133,10 @@ ZTEST(io_stream_suite, test_buffer_seek_end)
 ZTEST(io_stream_suite, test_buffer_read_eof)
 {
 	uint8_t buf[64];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	const uint8_t data[] = "ABC"; /* 4 bytes including null terminator */
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	ssize_t written = io_stream_write(&stream, data, sizeof(data));
@@ -148,6 +151,8 @@ ZTEST(io_stream_suite, test_buffer_read_eof)
 
 	read = io_stream_read(&stream, read_buf, sizeof(read_buf));
 	zassert_equal(read, 0, "read past EOF returned %zd, expected 0", read);
+
+	io_stream_close(&stream);
 }
 
 /**
@@ -156,11 +161,10 @@ ZTEST(io_stream_suite, test_buffer_read_eof)
 ZTEST(io_stream_suite, test_buffer_write_full)
 {
 	uint8_t buf[8];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	const uint8_t data[16] = {0};
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	ssize_t written = io_stream_write(&stream, data, sizeof(buf));
@@ -169,6 +173,8 @@ ZTEST(io_stream_suite, test_buffer_write_full)
 	written = io_stream_write(&stream, data, 1);
 	zassert_equal(written, -ENOSPC, "write past capacity returned %zd, expected -ENOSPC",
 		      written);
+
+	io_stream_close(&stream);
 }
 
 /**
@@ -177,10 +183,9 @@ ZTEST(io_stream_suite, test_buffer_write_full)
 ZTEST(io_stream_suite, test_buffer_seek_invalid)
 {
 	uint8_t buf[16];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	ret = io_stream_seek(&stream, -1, IO_STREAM_SEEK_SET);
@@ -191,6 +196,8 @@ ZTEST(io_stream_suite, test_buffer_seek_invalid)
 
 	ret = io_stream_seek(&stream, 0, 99);
 	zassert_equal(ret, -EINVAL, "invalid whence returned %d, expected -EINVAL", ret);
+
+	io_stream_close(&stream);
 }
 
 /**
@@ -199,11 +206,10 @@ ZTEST(io_stream_suite, test_buffer_seek_invalid)
 ZTEST(io_stream_suite, test_buffer_size)
 {
 	uint8_t buf[64];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	const uint8_t data[] = "12345";
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	zassert_equal(io_stream_size(&stream), 0, "initial size should be 0");
@@ -213,6 +219,8 @@ ZTEST(io_stream_suite, test_buffer_size)
 
 	zassert_equal(io_stream_size(&stream), sizeof(data), "size returned %zu, expected %zu",
 		      io_stream_size(&stream), sizeof(data));
+
+	io_stream_close(&stream);
 }
 
 /**
@@ -221,11 +229,10 @@ ZTEST(io_stream_suite, test_buffer_size)
 ZTEST(io_stream_suite, test_buffer_close)
 {
 	uint8_t buf[64];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	const uint8_t data[] = "test";
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	io_stream_write(&stream, data, sizeof(data));
@@ -233,8 +240,8 @@ ZTEST(io_stream_suite, test_buffer_close)
 	ret = io_stream_close(&stream);
 	zassert_equal(ret, 0, "close failed: %d", ret);
 
-	zassert_equal(io_stream_tell(&stream), 0, "tell after close should be 0");
-	zassert_equal(io_stream_size(&stream), 0, "size after close should be 0");
+	zassert_equal(io_stream_tell(&stream), -ENOSYS, "tell after close should return -ENOSYS");
+	zassert_equal(io_stream_size(&stream), 0, "size after close should return 0");
 }
 
 /**
@@ -243,10 +250,9 @@ ZTEST(io_stream_suite, test_buffer_close)
 ZTEST(io_stream_suite, test_buffer_flush)
 {
 	uint8_t buf[64];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	ret = io_stream_flush(&stream);
@@ -273,7 +279,7 @@ ZTEST(io_stream_suite, test_null_stream)
 }
 
 /**
- * @brief Stream with null vtable entries returns -ENOSYS/-ENOSYS/0.
+ * @brief Stream with null vtable returns -ENOSYS/-ENOSYS/0.
  */
 ZTEST(io_stream_suite, test_null_vtable)
 {
@@ -281,15 +287,15 @@ ZTEST(io_stream_suite, test_null_vtable)
 	uint8_t buf[8];
 
 	zassert_equal(io_stream_read(&stream, buf, sizeof(buf)), -ENOSYS,
-		      "null read fn should return -ENOSYS");
+		      "null vtable read should return -ENOSYS");
 	zassert_equal(io_stream_write(&stream, buf, sizeof(buf)), -ENOSYS,
-		      "null write fn should return -ENOSYS");
+		      "null vtable write should return -ENOSYS");
 	zassert_equal(io_stream_seek(&stream, 0, IO_STREAM_SEEK_SET), -ENOSYS,
-		      "null seek fn should return -ENOSYS");
-	zassert_equal(io_stream_tell(&stream), -ENOSYS, "null tell fn should return -ENOSYS");
-	zassert_equal(io_stream_size(&stream), 0, "null size fn should return 0");
-	zassert_equal(io_stream_flush(&stream), 0, "null flush fn should return 0");
-	zassert_equal(io_stream_close(&stream), 0, "null close fn should return 0");
+		      "null vtable seek should return -ENOSYS");
+	zassert_equal(io_stream_tell(&stream), -ENOSYS, "null vtable tell should return -ENOSYS");
+	zassert_equal(io_stream_size(&stream), 0, "null vtable size should return 0");
+	zassert_equal(io_stream_flush(&stream), 0, "null vtable flush should return 0");
+	zassert_equal(io_stream_close(&stream), 0, "null vtable close should return 0");
 }
 
 /**
@@ -298,10 +304,9 @@ ZTEST(io_stream_suite, test_null_vtable)
 ZTEST(io_stream_suite, test_buffer_interleaved_rw)
 {
 	uint8_t buf[64];
-	struct io_stream_buffer_state state;
-	struct io_stream stream;
+	struct io_stream stream = {0};
 
-	int ret = io_stream_buffer_init(&stream, &state, buf, sizeof(buf));
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
 	zassert_equal(ret, 0, "init failed: %d", ret);
 
 	const uint8_t data1[] = "AAAAA";
@@ -323,6 +328,45 @@ ZTEST(io_stream_suite, test_buffer_interleaved_rw)
 	zassert_equal(r, 10, "read failed");
 
 	zassert_mem_equal(read_buf, "AAAAABBBBB", 10, "interleaved data mismatch");
+
+	io_stream_close(&stream);
+}
+
+/**
+ * @brief Double init without close returns -EBUSY.
+ */
+ZTEST(io_stream_suite, test_buffer_double_init_rejected)
+{
+	uint8_t buf[64];
+	struct io_stream stream = {0};
+
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
+	zassert_equal(ret, 0, "first init failed: %d", ret);
+
+	ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
+	zassert_equal(ret, -EBUSY, "double init returned %d, expected -EBUSY", ret);
+
+	io_stream_close(&stream);
+}
+
+/**
+ * @brief Re-init after close succeeds (pool slot reused).
+ */
+ZTEST(io_stream_suite, test_buffer_reuse_after_close)
+{
+	uint8_t buf[64];
+	struct io_stream stream = {0};
+
+	int ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
+	zassert_equal(ret, 0, "first init failed: %d", ret);
+
+	ret = io_stream_close(&stream);
+	zassert_equal(ret, 0, "close failed: %d", ret);
+
+	ret = io_stream_buffer_init(&stream, buf, sizeof(buf));
+	zassert_equal(ret, 0, "re-init after close failed: %d", ret);
+
+	io_stream_close(&stream);
 }
 
 /* --------------------------------------------------------------------------
@@ -337,18 +381,19 @@ ZTEST(io_stream_suite, test_buffer_interleaved_rw)
  */
 ZTEST(io_stream_suite, test_flash_init_by_id)
 {
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	uint32_t part_id = FIXED_PARTITION_ID(test_partition);
 
 	int ret = io_stream_flash_init(&stream, part_id);
 	zassert_equal(ret, 0, "flash init failed: %d", ret);
-	zassert_not_null(stream.read, "read should be set");
-	zassert_not_null(stream.write, "write should be set");
-	zassert_not_null(stream.seek, "seek should be set");
-	zassert_not_null(stream.tell, "tell should be set");
-	zassert_not_null(stream.size, "size should be set");
-	zassert_not_null(stream.flush, "flush should be set");
-	zassert_not_null(stream.close, "close should be set");
+	zassert_not_null(stream.vtable, "vtable should be set");
+	zassert_not_null(stream.vtable->read, "read should be set");
+	zassert_not_null(stream.vtable->write, "write should be set");
+	zassert_not_null(stream.vtable->seek, "seek should be set");
+	zassert_not_null(stream.vtable->tell, "tell should be set");
+	zassert_not_null(stream.vtable->size, "size should be set");
+	zassert_not_null(stream.vtable->flush, "flush should be set");
+	zassert_not_null(stream.vtable->close, "close should be set");
 
 	io_stream_close(&stream);
 }
@@ -358,7 +403,7 @@ ZTEST(io_stream_suite, test_flash_init_by_id)
  */
 ZTEST(io_stream_suite, test_flash_write_and_read)
 {
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	uint32_t part_id = FIXED_PARTITION_ID(test_partition);
 
 	int ret = io_stream_flash_init(&stream, part_id);
@@ -390,7 +435,7 @@ ZTEST(io_stream_suite, test_flash_write_and_read)
  */
 ZTEST(io_stream_suite, test_flash_non_sequential_write_rejected)
 {
-	struct io_stream stream;
+	struct io_stream stream = {0};
 	uint32_t part_id = FIXED_PARTITION_ID(test_partition);
 
 	int ret = io_stream_flash_init(&stream, part_id);
@@ -410,11 +455,28 @@ ZTEST(io_stream_suite, test_flash_non_sequential_write_rejected)
 }
 
 /**
- * @brief Double init is rejected with -EBUSY.
+ * @brief Double init without close is rejected with -EBUSY.
  */
 ZTEST(io_stream_suite, test_flash_double_init_rejected)
 {
-	struct io_stream stream;
+	struct io_stream stream = {0};
+	uint32_t part_id = FIXED_PARTITION_ID(test_partition);
+
+	int ret = io_stream_flash_init(&stream, part_id);
+	zassert_equal(ret, 0, "first init failed: %d", ret);
+
+	ret = io_stream_flash_init(&stream, part_id);
+	zassert_equal(ret, -EBUSY, "double init returned %d, expected -EBUSY", ret);
+
+	io_stream_close(&stream);
+}
+
+/**
+ * @brief Re-init after close succeeds (pool slot reused).
+ */
+ZTEST(io_stream_suite, test_flash_reuse_after_close)
+{
+	struct io_stream stream = {0};
 	uint32_t part_id = FIXED_PARTITION_ID(test_partition);
 
 	int ret = io_stream_flash_init(&stream, part_id);
@@ -424,6 +486,8 @@ ZTEST(io_stream_suite, test_flash_double_init_rejected)
 	zassert_equal(ret, 0, "close failed: %d", ret);
 
 	ret = io_stream_flash_init(&stream, part_id);
-	zassert_equal(ret, -EBUSY, "double init returned %d, expected -EBUSY", ret);
+	zassert_equal(ret, 0, "re-init after close failed: %d", ret);
+
+	io_stream_close(&stream);
 }
 #endif /* CONFIG_IO_STREAM_FLASH */

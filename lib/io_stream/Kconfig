@@ -16,6 +16,15 @@ config IO_STREAM_FLASH
 	  Stream backed by an MCUboot flash partition. Uses flash_img
 	  for buffered writes with progressive erase.
 
+config IO_STREAM_FLASH_MAX
+	int "Max concurrent flash streams"
+	default 2
+	depends on IO_STREAM_FLASH
+	range 1 4
+	help
+	  Maximum number of flash stream instances that can be active
+	  simultaneously. Each instance consumes a static pool slot.
+
 config IO_STREAM_FLASH_PARTITION_LABEL
 	string "Flash partition label for stream"
 	default "image-1"
@@ -29,6 +38,15 @@ config IO_STREAM_BUFFER
 	help
 	  Stream backed by a caller-provided RAM buffer. For testing
 	  and small data transfers. No hardware dependencies.
+
+config IO_STREAM_BUFFER_MAX
+	int "Max concurrent buffer streams"
+	default 2
+	depends on IO_STREAM_BUFFER
+	range 1 8
+	help
+	  Maximum number of buffer stream instances that can be active
+	  simultaneously. Each instance consumes a static pool slot.
 
 module = IO_STREAM
 module-str = IO_STREAM

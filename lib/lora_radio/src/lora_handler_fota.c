@@ -46,9 +46,6 @@ static struct {
 	uint8_t chunk_data[CONFIG_LORA_RADIO_FOTA_CHUNK_SIZE];
 	struct k_work_delayable work;
 	struct io_stream src_stream;
-#	if defined(CONFIG_IO_STREAM_FLASH)
-	struct io_stream_flash_data src_stream_data;
-#	endif
 } fota_sender;
 
 /* --------------------------------------------------------------------------
@@ -316,9 +313,6 @@ int lora_handle_fota_chunk_ack(uint16_t src_node, const uint8_t *payload, uint8_
  * -------------------------------------------------------------------------- */
 
 static struct io_stream fota_rx_stream;
-#	if defined(CONFIG_IO_STREAM_FLASH)
-static struct io_stream_flash_data fota_rx_stream_data;
-#	endif
 static uint32_t fota_rx_expected_offset;
 static bool fota_rx_active;
 

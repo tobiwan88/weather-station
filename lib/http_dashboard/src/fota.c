@@ -40,9 +40,6 @@ static void respond_401(struct http_response_ctx *rsp)
 /* ── POST /api/fota/upload ───────────────────────────────────────────────── */
 
 static struct io_stream fota_upload_stream;
-#if defined(CONFIG_IO_STREAM_FLASH)
-static struct io_stream_flash_data fota_upload_stream_data;
-#endif
 static atomic_t fota_in_progress = ATOMIC_INIT(0);
 /* Serialises reads and writes of the non-atomic upload-state variables below.
  * The HTTP server is single-threaded, but the ABORTED/COMPLETE callback may
