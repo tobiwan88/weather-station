@@ -158,7 +158,71 @@ jobs:
             build/${{ matrix.app }}/mcuboot/zephyr/zephyr.elf
           retention-days: 7
 
-  # ── 3. Renode ─────────────────────────────────────────────────────────────────
+  # ── 3. SCA (CodeChecker) ─────────────────────────────────────────────────────
+  sca:
+    name: SCA (CodeChecker)
+    runs-on: ubuntu-latest
+    needs: lint
+    container:
+      image: ghcr.io/tobiwan88/zephyr_docker:arm
+      options: --user root
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Mark workspace safe for git
+        run: git config --global --add safe.directory '*'
+
+      - name: Configure git user
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "CI Bot"
+
+      - name: Cache west modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/../zephyr
+            ${{ github.workspace }}/../modules
+          key: west-${{ hashFiles('west.yml') }}
+          restore-keys: west-
+
+      - name: West init + update
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          west init -l . 2>/dev/null || true
+          west update --narrow
+
+      - name: Apply out-of-tree patches
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          west patch apply
+
+      - name: Install CodeChecker
+        run: source /home/zephyr/.venv/bin/activate && pip install codechecker --quiet
+
+      - name: Install build dependencies
+        run: apt-get update -qq && apt-get install -y --no-install-recommends pkgconf libsdl2-dev
+
+      - name: Run CodeChecker analysis
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          WEST_ROOT=$(west topdir)
+          export ZEPHYR_BASE="${WEST_ROOT}/zephyr"
+          export ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station"
+          "${WEST_ROOT}/weather-station/scripts/run-codechecker.sh" --diff
+
+      - name: Upload SCA reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sca-reports
+          path: |
+            build/native_sim_native_64/gateway/sca/
+            build/native_sim_native_64/sensor-node/sca/
+          retention-days: 14
+
+  # ── 4. Renode ─────────────────────────────────────────────────────────────────
   renode:
     name: Renode (${{ matrix.test }})
     runs-on: ubuntu-latest
@@ -260,7 +324,7 @@ jobs:
             build/renode/gateway/zephyr/zephyr.elf
           retention-days: 14
 
-  # ── 4. Test + Coverage ───────────────────────────────────────────────────────
+  # ── 5. Test + Coverage ───────────────────────────────────────────────────────
   test-and-coverage:
     name: Test + Coverage
     runs-on: ubuntu-latest
@@ -364,7 +428,7 @@ jobs:
           reporter: java-junit
           fail-on-error: false
 
-  # ── 5. Docs (MkDocs build) ───────────────────────────────────────────────────
+  # ── 6. Docs (MkDocs build) ───────────────────────────────────────────────────
   docs:
     name: Docs (MkDocs build)
     runs-on: ubuntu-latest
@@ -386,12 +450,12 @@ jobs:
           path: site/
           retention-days: 14
 
-  # ── 6. Snapshot (PR only) ────────────────────────────────────────────────────
+  # ── 7. Snapshot (PR only) ────────────────────────────────────────────────────
   snapshot:
     name: Publish PR snapshot
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
-    needs: [build, test-and-coverage, docs]
+    needs: [build, sca, test-and-coverage, docs]
 
     steps:
       - name: Download gateway binary
@@ -443,7 +507,7 @@ jobs:
           path: snapshot/
           retention-days: 30
 
-  # ── 7. Deploy results to gh-pages ──────────────────────────────────────────
+  # ── 8. Deploy results to gh-pages ──────────────────────────────────────────
   deploy-results:
     name: Deploy results to gh-pages
     runs-on: ubuntu-latest

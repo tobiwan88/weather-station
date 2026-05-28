@@ -2,9 +2,9 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | Planned |
+| **Status** | Implemented |
 | **Date** | 2026-05-24 |
-| **Version** | 0.1 |
+| **Version** | 1.0 |
 
 ---
 

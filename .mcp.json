@@ -3,6 +3,10 @@
     "cocoindex-code": {
       "command": "ccc",
       "args": ["mcp"]
+    },
+    "cocoindex-zephyr": {
+      "command": "/home/zephyr/.local/share/pipx/venvs/cocoindex-code/bin/python",
+      "args": ["scripts/cocoindex_zephyr_flow.py", "mcp"]
     }
   }
 }
