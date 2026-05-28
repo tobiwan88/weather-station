@@ -61,7 +61,7 @@ static struct flash_state *flash_alloc(void)
  * Implementation functions (called through vtable)
  * -------------------------------------------------------------------------- */
 
-static ssize_t flash_read(struct io_stream *s, uint8_t *buf, size_t len)
+static ssize_t flash_stream_read(struct io_stream *s, uint8_t *buf, size_t len)
 {
 	struct flash_state *d = (struct flash_state *)s->context;
 
@@ -84,7 +84,7 @@ static ssize_t flash_read(struct io_stream *s, uint8_t *buf, size_t len)
 	return (ssize_t)to_read;
 }
 
-static ssize_t flash_write(struct io_stream *s, const uint8_t *data, size_t len)
+static ssize_t flash_stream_write(struct io_stream *s, const uint8_t *data, size_t len)
 {
 	struct flash_state *d = (struct flash_state *)s->context;
 
@@ -198,8 +198,8 @@ static int flash_close(struct io_stream *s)
  * -------------------------------------------------------------------------- */
 
 static const struct io_stream_vtable flash_vtable = {
-	.read = flash_read,
-	.write = flash_write,
+	.read = flash_stream_read,
+	.write = flash_stream_write,
 	.seek = flash_seek,
 	.tell = flash_tell,
 	.size = flash_size,
@@ -249,22 +249,5 @@ static int flash_init_ctx(struct io_stream *s, uint32_t partition_id)
 
 int io_stream_flash_init(struct io_stream *s, uint32_t partition_id)
 {
-	return flash_init_ctx(s, partition_id);
-}
-
-int io_stream_flash_init_by_label(struct io_stream *s, const char *label)
-{
-	uint32_t partition_id;
-
-	if (!s || !label) {
-		return -EINVAL;
-	}
-
-	partition_id = (uint32_t)DT_FIXED_PARTITION_ID(DT_NODELABEL(label));
-	if (partition_id == 0) {
-		LOG_ERR("unknown partition label: %s", label);
-		return -EINVAL;
-	}
-
 	return flash_init_ctx(s, partition_id);
 }
