@@ -381,6 +381,8 @@ jobs:
             -T "${WEST_ROOT}/weather-station/tests/" \
             --coverage \
             --coverage-tool gcovr \
+            --coverage-formats html,xml \
+            --coverage-basedir "${WEST_ROOT}" \
             --inline-logs \
             -v -N \
             --outdir "${GITHUB_WORKSPACE}/twister-out"
@@ -390,16 +392,29 @@ jobs:
         run: |
           source /home/zephyr/.venv/bin/activate
           mkdir -p "${GITHUB_WORKSPACE}/twister-out/coverage"
+          cd "${GITHUB_WORKSPACE}/.."
           gcovr \
-            --root "${GITHUB_WORKSPACE}/.." \
-            --filter ".*/weather-station/.*" \
-            --exclude ".*/zephyr/.*" \
-            --exclude ".*/modules/.*" \
+            --add-tracefile "${GITHUB_WORKSPACE}/twister-out/coverage.json" \
+            --filter "(.*/)?weather-station/.*" \
+            --exclude "(.*/)?zephyr/.*" \
+            --exclude "(.*/)?modules/.*" \
             --exclude ".*/tests/.*" \
             --html-details "${GITHUB_WORKSPACE}/twister-out/coverage/index.html" \
             --xml "${GITHUB_WORKSPACE}/twister-out/coverage.xml" \
-            --print-summary \
-            2>/dev/null || true
+            --print-summary
+
+      - name: Check coverage threshold
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          cd "${GITHUB_WORKSPACE}/.."
+          gcovr \
+            --add-tracefile "${GITHUB_WORKSPACE}/twister-out/coverage.json" \
+            --filter "(.*/)?weather-station/.*" \
+            --exclude "(.*/)?zephyr/.*" \
+            --exclude "(.*/)?modules/.*" \
+            --exclude ".*/tests/.*" \
+            --fail-under-line 35 \
+            --print-summary
 
       - name: Upload Twister results
         if: always()

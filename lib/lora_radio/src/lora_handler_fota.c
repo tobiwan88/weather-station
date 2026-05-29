@@ -5,18 +5,21 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
+#include <errno.h>
 #include <string.h>
 #include <zephyr/kernel.h>
-#include <zephyr/storage/flash_map.h>
 
 #include "lora_radio_internal.h"
+#include <io_stream/io_stream.h>
 #include <lora_radio/lora_chan.h>
 #include <lora_radio/lora_frame.h>
 #include <lora_radio/lora_radio.h>
 #include <lora_radio/lora_session.h>
 
-#if defined(CONFIG_IMG_MANAGER) && defined(CONFIG_FLASH_MAP)
-#	include <zephyr/dfu/flash_img.h>
+#if defined(CONFIG_IO_STREAM)
+#	if defined(CONFIG_IO_STREAM_FLASH)
+#		include <zephyr/storage/flash_map.h>
+#	endif
 
 /* --------------------------------------------------------------------------
  * FOTA sender state machine
@@ -42,7 +45,7 @@ static struct {
 	uint8_t consecutive_timeouts;
 	uint8_t chunk_data[CONFIG_LORA_RADIO_FOTA_CHUNK_SIZE];
 	struct k_work_delayable work;
-	struct flash_img_context fota_ctx;
+	struct io_stream src_stream;
 } fota_sender;
 
 /* --------------------------------------------------------------------------
@@ -143,17 +146,26 @@ static void fota_send_next_chunk(struct k_work *work)
 	uint32_t remaining = fota_sender.image_size - offset;
 	uint8_t chunk_size = (uint8_t)MIN(remaining, (uint32_t)CONFIG_LORA_RADIO_FOTA_CHUNK_SIZE);
 
-	/* FIXME [FOTA-STREAM]: replace flash_area_read with fota_stream->read() once
-	 * lib/fota_stream is available. Hardcoded PM_MCUBOOT_SECONDARY blocks
-	 * native_sim testing and sensor-specific firmware images.
-	 */
-	int ret = flash_area_read(fota_sender.fota_ctx.fap, offset, fota_sender.chunk_data,
-				  chunk_size);
+	int ret = io_stream_seek(&fota_sender.src_stream, (int32_t)offset, IO_STREAM_SEEK_SET);
 	if (ret < 0) {
-		LOG_ERR("FOTA flash read failed at offset %u: %d", offset, ret);
+		LOG_ERR("FOTA stream seek failed at offset %u: %d", offset, ret);
 		fota_sender.state = FOTA_STATE_FAILED;
 		return;
 	}
+
+	ssize_t bytes_read =
+		io_stream_read(&fota_sender.src_stream, fota_sender.chunk_data, chunk_size);
+	if (bytes_read < 0) {
+		LOG_ERR("FOTA stream read failed at offset %u: %zd", offset, bytes_read);
+		fota_sender.state = FOTA_STATE_FAILED;
+		return;
+	}
+	if (bytes_read == 0) {
+		LOG_ERR("FOTA stream returned EOF at offset %u", offset);
+		fota_sender.state = FOTA_STATE_FAILED;
+		return;
+	}
+	chunk_size = (uint8_t)bytes_read;
 
 	ret = fota_send_chunk(fota_sender.target_node_id, offset, fota_sender.chunk_data,
 			      chunk_size);
@@ -229,11 +241,19 @@ static void fota_start_handler(uint16_t node_id, uint32_t image_size, uint8_t fo
 	fota_sender.window_sent = 0;
 	fota_sender.consecutive_timeouts = 0;
 
-	/* FIXME [FOTA-STREAM]: replace flash_img_init with fota_stream selection from
-	 * fota_image_registry once available. Hardcoded PM_MCUBOOT_SECONDARY blocks
-	 * native_sim testing and sensor-specific firmware images.
-	 */
-	flash_img_init(&fota_sender.fota_ctx, FIXED_PARTITION_ID(PM_MCUBOOT_SECONDARY));
+#	if defined(CONFIG_IO_STREAM_FLASH)
+	int rc = io_stream_flash_init(&fota_sender.src_stream,
+				      FIXED_PARTITION_ID(PM_MCUBOOT_SECONDARY));
+	if (rc < 0) {
+		LOG_ERR("FOTA stream init failed: %d", rc);
+		fota_sender.state = FOTA_STATE_IDLE;
+		return;
+	}
+#	else
+	LOG_ERR("FOTA sender requires CONFIG_IO_STREAM_FLASH");
+	fota_sender.state = FOTA_STATE_IDLE;
+	return;
+#	endif
 
 	LOG_INF("FOTA start for node 0x%04x (%u bytes, mode=0x%02x)", node_id, image_size,
 		fota_mode);
@@ -292,7 +312,7 @@ int lora_handle_fota_chunk_ack(uint16_t src_node, const uint8_t *payload, uint8_
  * FOTA receiver — process incoming chunk (sensor node side)
  * -------------------------------------------------------------------------- */
 
-static struct flash_img_context fota_rx_ctx;
+static struct io_stream fota_rx_stream;
 static uint32_t fota_rx_expected_offset;
 static bool fota_rx_active;
 
@@ -310,11 +330,17 @@ int lora_handle_fota_chunk(uint16_t src_node, const uint8_t *payload, uint8_t pa
 	int ret = 0;
 
 	if (!fota_rx_active) {
-		/* FIXME [FOTA-STREAM]: replace flash_img_init with fota_stream->write() once
-		 * lib/fota_stream is available. Hardcoded PM_MCUBOOT_SECONDARY blocks
-		 * native_sim testing of the FOTA receiver path.
-		 */
-		flash_img_init(&fota_rx_ctx, FIXED_PARTITION_ID(PM_MCUBOOT_SECONDARY));
+#	if defined(CONFIG_IO_STREAM_FLASH)
+		ret = io_stream_flash_init(&fota_rx_stream,
+					   FIXED_PARTITION_ID(PM_MCUBOOT_SECONDARY));
+		if (ret < 0) {
+			LOG_ERR("FOTA RX stream init failed: %d", ret);
+			return ret;
+		}
+#	else
+		LOG_ERR("FOTA receiver requires CONFIG_IO_STREAM_FLASH");
+		return -ENODEV;
+#	endif
 		fota_rx_active = true;
 		fota_rx_expected_offset = 0;
 	}
@@ -325,11 +351,12 @@ int lora_handle_fota_chunk(uint16_t src_node, const uint8_t *payload, uint8_t pa
 			offset);
 		ret = -EINVAL;
 	} else {
-		ret = flash_img_buffered_write(&fota_rx_ctx, data, data_len, false);
-		if (ret < 0) {
-			LOG_ERR("flash write failed at offset %u: %d", offset, ret);
+		ssize_t written = io_stream_write(&fota_rx_stream, data, data_len);
+		if (written < 0) {
+			ret = (int)written;
+			LOG_ERR("stream write failed at offset %u: %d", offset, ret);
 		} else {
-			fota_rx_expected_offset = offset + data_len;
+			fota_rx_expected_offset = offset + (uint32_t)written;
 		}
 	}
 
@@ -410,8 +437,10 @@ static int lora_fota_init(void)
 	fota_sender.state = FOTA_STATE_IDLE;
 	fota_rx_active = false;
 	k_work_init_delayable(&fota_sender.work, fota_advance_window);
+	memset(&fota_sender.src_stream, 0, sizeof(fota_sender.src_stream));
+	memset(&fota_rx_stream, 0, sizeof(fota_rx_stream));
 	return 0;
 }
 
 SYS_INIT(lora_fota_init, APPLICATION, 85);
-#endif /* CONFIG_IMG_MANAGER && CONFIG_FLASH_MAP */
+#endif /* CONFIG_IO_STREAM */
