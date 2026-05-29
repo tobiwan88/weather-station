@@ -392,6 +392,7 @@ jobs:
         run: |
           source /home/zephyr/.venv/bin/activate
           mkdir -p "${GITHUB_WORKSPACE}/twister-out/coverage"
+          cd "${GITHUB_WORKSPACE}/.."
           gcovr \
             --add-tracefile "${GITHUB_WORKSPACE}/twister-out/coverage.json" \
             --filter "(.*/)?weather-station/.*" \
@@ -405,6 +406,7 @@ jobs:
       - name: Check coverage threshold
         run: |
           source /home/zephyr/.venv/bin/activate
+          cd "${GITHUB_WORKSPACE}/.."
           gcovr \
             --add-tracefile "${GITHUB_WORKSPACE}/twister-out/coverage.json" \
             --filter "(.*/)?weather-station/.*" \
