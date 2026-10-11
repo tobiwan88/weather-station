@@ -28,7 +28,7 @@ The system shall provide the following REST API endpoints:
 - `GET /api/locations` — JSON list of locations
 
 ### REQ-HTTP-004 — Session Authentication
-The system shall require session-cookie or API bearer-token authentication for `/api/*` endpoints. Unauthenticated requests shall return 401.
+The system shall require session-cookie or API bearer-token authentication for `/api/*` endpoints. Unauthenticated requests shall return 401. While first-boot credentials are unchanged, authenticated APIs other than login/logout/change-credentials shall return 403 `password_change_required`. After `HTTP_DASHBOARD_AUTH_MAX_FAILS` consecutive failed logins `/api/login` shall return 429 with `Retry-After`. `GET /api/config` shall not expose the API token.
 
 ### REQ-HTTP-005 — Configuration Form
 The system shall serve an HTML configuration form at `GET /config` for runtime configuration of MQTT, locations, and other settings.
@@ -40,7 +40,7 @@ The system shall accept firmware image uploads via `POST /api/fota/upload`, stre
 - `POST /api/fota/sensor/<uid>/apply` — Trigger sensor-node FOTA over LoRa
 
 ### REQ-HTTP-007 — Self-Contained Assets
-The system shall serve HTML/CSS/JS as self-contained content with no CDN dependencies. Assets shall be embedded as C string literals (prototype) or served from LittleFS (target architecture).
+The system shall serve HTML/CSS/JS as self-contained content with no CDN dependencies. Assets are separate source files bundled into generated `.inc` headers at build time.
 
 ### REQ-HTTP-008 — Ring Buffer Snapshot
 The system shall protect the sensor data ring buffer with `k_spinlock`, copying the snapshot within the lock and serializing to JSON outside the lock.
@@ -57,7 +57,7 @@ The system shall be enabled via `CONFIG_HTTP_DASHBOARD=y` and disabled by defaul
 ## Constraints
 - HTTP server needs ~1 second after boot to bind port 8080
 - `k_spinlock` callbacks must not sleep or block
-- HTML embedded in C strings is a prototype limitation; target is LittleFS
+- Assets bundled at build time; LittleFS is optional future work
 - Cross-subsystem coupling: prefer zbus publish; conditional integration files acceptable
 
 ## Acceptance Criteria
@@ -70,6 +70,7 @@ The system shall be enabled via `CONFIG_HTTP_DASHBOARD=y` and disabled by defaul
 - [ ] [native_sim] Integration: POST /api/fota/upload streams image to flash
 - [ ] [native_sim] Integration: GET /api/config returns configuration form
 - [ ] [native_sim] Integration: POST /api/config updates runtime config
+- [x] [native_sim] Integration: forced password change and 429 lockout (`test_http_force_pw.py`)
 - [ ] [renode] Integration: HTTP endpoints functional over simulated network
 - [ ] [manual] Board: Dashboard accessible from browser on local network
 

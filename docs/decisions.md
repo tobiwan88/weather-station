@@ -58,7 +58,10 @@ snapshot under the lock and serialise outside it. Needs the
 `http_dashboard_sections.ld` linker fragment. Talk to other subsystems via zbus
 (or a dedicated file compiled only when both are enabled), not direct calls.
 Auth: session cookie for browsers, bearer token for automation
-(`CONFIG_HTTP_DASHBOARD_AUTH`). HTML is still embedded as C strings (see backlog).
+(`CONFIG_HTTP_DASHBOARD_AUTH`). HTML/JS/CSS are separate files in `src/`, bundled into
+generated `.inc` headers at build time. First boot forces a credential change
+(`HTTP_DASHBOARD_AUTH_FORCE_PW_CHANGE`); repeated failed logins return 429
+(`HTTP_DASHBOARD_AUTH_MAX_FAILS`).
 
 ## ADR-012 Pytest integration tests
 `pytest-twister-harness` runs tests against the built binary. Tests use harness
@@ -84,9 +87,11 @@ with the gateway clock). Frame: 10-byte header (type+version, flags, src, dst,
 32-bit seq) plus a 12-byte AES-128-GCM tag (header = AAD; nonce = node id |
 direction | seq32, built in `lib/lora_proto`) and CRC16. Sensor data is fire and
 forget; RPC and FOTA chunks use ACK plus retry (3 retries, one RPC pending per
-node). Pairing is button-triggered with a 30 s window and an Ed25519-signed
-response; session keys persist in Settings/NVS. Respect EU868 1 % duty cycle
-(publish interval at least 60 s). Wire details: `architecture/lora-protocol.md`.
+node). Nodes use pre-shared per-node keys entered via shell (`lora provision <id>`
+on the gateway, `lora_node provision <id> <hex>` on the node); there is no
+over-the-air pairing. Keys persist in Settings/NVS; the gateway drops plaintext
+and replayed frames, and TX counters are persisted write-ahead so nonces never
+repeat. Respect EU868 1 % duty cycle (publish interval at least 60 s). Wire details: `architecture/lora-protocol.md`.
 
 ## ADR-016 Trace recorder
 `lib/trace_recorder` overrides Zephyr's `CONFIG_TRACING_USER` hooks to write
@@ -97,3 +102,9 @@ response; session keys persist in Settings/NVS. Respect EU868 1 % duty cycle
 `lib/io_stream` is a vtable (read/write/seek/tell/size/flush/close) with flash
 and RAM-buffer backends so FOTA code runs on native_sim. Static instances only.
 Flash backend is sequential-write (non-sequential writes return `-ENOTSUP`).
+
+## ADR-018 Time sync
+Wall-clock time comes from Zephyr's `net_config` SNTP client (boot sync, async
+resync on the socket service, server changeable at runtime with
+`net_config_sntp_set_server()`). There is no project SNTP library; consumers
+read `sys_clock_gettime(SYS_CLOCK_REALTIME)`.

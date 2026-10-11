@@ -15,11 +15,13 @@
 | `GET /login` | Login page (public, no auth required) |
 | `GET /api/data` | JSON snapshot of the ring buffer (last N readings per sensor) |
 | `GET /api/config` / `POST /api/config` | Read or update runtime config: `trigger_interval_ms`, `sntp_server`, `action=sntp_resync`, sensor metadata, location management, MQTT settings |
-| `POST /api/login` | Authenticate with username/password; returns session cookie |
+| `POST /api/login` | Authenticate with username/password; returns session cookie. Returns 429 + Retry-After after `HTTP_DASHBOARD_AUTH_MAX_FAILS` consecutive failures |
 | `POST /api/logout` | Invalidate current session |
 | `POST /api/change-credentials` | Update username and password (authenticated) |
 | `POST /api/token/rotate` | Rotate the API bearer token (authenticated) |
 | `GET /api/locations` | JSON list of registered locations (authenticated) |
+
+`sntp_server` is applied via `net_config_sntp_set_server()`; `action=sntp_resync` starts an upstream async resync. `GET /api/config` does not return the API token.
 
 The split between a human UI (`/`, `/config`) and a data API (`/api/*`) keeps the API stable even if the HTML changes.
 
@@ -64,20 +66,12 @@ When `CONFIG_HTTP_DASHBOARD_AUTH=y`:
 - Both mechanisms guard all `/api/*` and `/config` endpoints.
 - Credentials and the API token are persisted in Zephyr settings under `dash/user`, `dash/pass`, and `dash/token`.
 - First-boot defaults are set via Kconfig (`lib/http_dashboard/Kconfig`).
+- `CONFIG_HTTP_DASHBOARD_AUTH_FORCE_PW_CHANGE` (default y) forces a credential change while first-boot defaults are in use.
+- `CONFIG_HTTP_DASHBOARD_AUTH_MAX_FAILS` (default 5) sets the consecutive failed logins before throttling.
 
 When `CONFIG_HTTP_DASHBOARD_AUTH=n` all endpoints remain open — suitable for local development without credentials. Integration tests that exercise authenticated endpoints must use the `authed_harness` fixture or supply a bearer token.
 
 ---
 
-## HTML/JS embedded as C strings
-
-The Chart.js page and config form are stored as C string literals inside `http_dashboard.c`. This works with zero filesystem dependency on `native_sim` and requires no build-time asset pipeline. It is a known prototype limitation — editing HTML inside a C string is error-prone and prevents live-reload workflows.
-
-The intended target architecture is to serve web assets from LittleFS:
-
-1. Web assets (HTML, CSS, JS) live in a dedicated source directory.
-2. At build time they are compiled into a LittleFS filesystem image.
-3. The C layer becomes an HTTP router only — no HTML in `.c` files.
-4. Live-reload becomes possible by re-flashing only the filesystem partition.
-
-This work is deferred to a future iteration (see backlog: `[HTTP-DASHBOARD] Decouple HTML/JS from C source via LittleFS`).
+## Web assets
+`src/*.html`, `*.js`, `*.css` are bundled into generated `.inc` headers at build time and served from flash. LittleFS is optional future work.

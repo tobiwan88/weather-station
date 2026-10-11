@@ -4,16 +4,14 @@ Open work only. Done items live in git history.
 
 ## LoRa
 
-- **LORA-RELIABLE-TX**: reliable RPC send (`lora_radio_rpc_send()` / `_async()`) with
-  ACK, retry and one pending RPC per node. Prerequisite for the RPC commands below.
-- **LORA-RPC-COMMANDS**: `lora_handler_rpc.c` only handles ping/version/reboot. Missing on
+- **LORA-RPC-COMMANDS**: `lora_handler_rpc.c` only handles PING/GET_VERSION/REBOOT (reliable
+  send exists). Missing on
   both sides: GET_STATUS (0x02), SET_PUBLISH_INTERVAL (0x10), SET_SPREADING (0x11),
   SET_TX_POWER (0x12), SET_KEEPALIVE (0x13), SET_CHANGE_THRESHOLD (0x14),
   TRIGGER_SAMPLE (0x20), FOTA_START (0x30), FOTA_CANCEL (0x31). Each needs a unit test
   plus one end-to-end integration test.
-- **LORA-SECURITY-KEY-CACHE**: review the cached Ed25519 gateway key (persistent
-  `psa_key_id_t`): isolation, static dev key in flash, production rotation path, no key
-  material in logs or zbus.
+- **LORA-SECURITY-KEYS**: pre-shared per-node keys sit in Settings/NVS unencrypted; review
+  flash protection and a key-rotation procedure, and keep keys out of logs and zbus.
 - **LORA-BRIDGE-HW**: bring up `apps/lora_bridge` (Wio-E5 Mini co-processor) and
   `lib/uart_lora_sender` on real hardware; board definition and Renode model exist or are
   planned under `boards/` and `simulation/renode/`.
@@ -46,8 +44,8 @@ Open work only. Done items live in git history.
 - **SENSOR-REGISTRY-SCALING**: carry per-UID Q31 range (`range_min`/`range_max`) in
   `sensor_registry` with `sensor_registry_get_scaling(uid)`, so decode no longer assumes
   one global formula; fake sensors register defaults; add a unit test.
-- **HTTP-DASHBOARD-ASSETS**: move embedded HTML/JS out of C string literals (LittleFS image
-  or generated header) so `http_dashboard.c` is routing only.
+- **HTTP-DASHBOARD-ASSETS** (optional): serve assets from LittleFS instead of build-time
+  `.inc` bundles.
 - **HTTP-DASHBOARD-COUPLING**: remove direct calls from `http_dashboard.c` into other
   subsystems' APIs; use zbus channels or a dedicated conditional file.
 
@@ -56,10 +54,9 @@ Open work only. Done items live in git history.
 - **DEVCONTAINER-IMAGE** (blocked: remote image build broken): make devcontainer and CI use
   `ghcr.io/tobiwan88/zephyr_docker`. Also add a `zephyr-checkpatch-diff` pre-commit hook and
   a `ci-success` aggregator job.
-- **REQ-INGESTION**: create remaining REQ files per domain and a CocoIndex Zephyr corpus
-  indexer (Layer 2) plus MCP config.
 - **DOCS-DIAGRAMS**: make mermaid diagrams more interactive and include them inline on the
   matching pages.
+- **COVERAGE**: raise unit coverage for lora_pending and the FOTA handlers.
 
 ## Renode
 

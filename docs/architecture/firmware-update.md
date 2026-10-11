@@ -296,15 +296,14 @@ Rollback path (if not confirmed):
 
 ---
 
-## Sensor-node relay (stub — not implemented)
+## Sensor-node relay (partially implemented)
 
-**Not yet implemented.** This feature depends on the LoRa library (ADR-015) and the
+**Partially implemented (`lib/fota_relay`, `lora_handler_fota.c`).** This feature depends on the LoRa library (ADR-015) and the
 UART proxy agent for the STM32WLE5JC co-processor. See backlog items
 [FOTA-REMOVE-UART-MCUMGR] and [RENODE-PHASE2] for the related infrastructure work.
 
 The gateway will eventually relay firmware to remote sensor nodes (e.g., STM32WLE5JC
-via LoRa). The interface is defined here as a placeholder; implementation is deferred
-to a future ADR (depends on ADR-006 LoRa implementation).
+via LoRa). The interface is defined here as a placeholder; LoRa FOTA chunking lives in `lib/lora_radio/src/lora_handler_fota.c` (see lora-protocol.md).
 
 ```c
 /**
@@ -325,7 +324,7 @@ struct fota_relay_transport_api {
 };
 ```
 
-Key design constraints for the LoRa relay (to be resolved in the future ADR):
+Key design constraints for the LoRa relay (see lora-protocol.md):
 
 - STM32WLE5JC (Cortex-M4, no TrustZone) → MCUboot + ED25519, software keys only
 - LoRa EU868 duty cycle (~1%) limits throughput; a 128 KB image takes hours

@@ -51,11 +51,11 @@ These two goals drive every structural choice in the codebase.
 | `sensor_trigger` | Owns the trigger event type and the channel all trigger sources publish to |
 | `sensor_registry` | Runtime mapping of sensor UID → rich user-editable metadata; sensors self-register at boot |
 | `fake_sensors` | Emulated local sensor drivers (temp, humidity, CO2, VOC); subscribes to trigger channel, publishes to event channel |
-| `sntp_sync` | Maintains wall-clock time via SNTP; provides a single authoritative `get_epoch_ms()` |
+| (Zephyr net_config SNTP) | Upstream SNTP client: boot sync at SYS_INIT 95 and async resync; consumers read sys_clock_gettime(SYS_CLOCK_REALTIME) |
 | `clock_display` | Reads wall-clock time every 60 s and logs it; depends on nothing else |
 | `http_dashboard` | Web dashboard and config API; subscribes to event channel, publishes on config_cmd_chan |
 | `lvgl_display` | LVGL render loop; runs on the main thread because SDL requires it |
-| `config_cmd` | Owns the `config_cmd_chan` zbus channel; decouples config producers (HTTP) from consumers (fake_sensors, sntp_sync, mqtt_publisher) |
+| `config_cmd` | Owns the `config_cmd_chan` zbus channel; decouples config producers (HTTP) from consumers (fake_sensors, mqtt_publisher) |
 | `location_registry` | Runtime CRUD for named physical locations; replaces compile-time DT location properties |
 | `sensor_event_log` | Self-registering zbus listener that logs every sensor event to console; no public API |
 | `mqtt_publisher` | Subscribes to `sensor_event_chan`; publishes readings to an MQTT broker under `{gw}/{location}/{name}/{type}` |
@@ -134,12 +134,16 @@ weather-station/               ← git repo root, also west manifest
 │   ├── sensor_trigger/        ← sensor_trigger_event struct, zbus channel
 │   ├── sensor_registry/       ← uid → label/location/scaling metadata
 │   ├── fake_sensors/          ← DT-instantiated fake drivers + auto-publish timer
-│   ├── sntp_sync/             ← SNTP time sync with runtime resync
 │   ├── clock_display/         ← wall-clock widget for LVGL display
 │   ├── lvgl_display/          ← LVGL display manager (sensor tiles)
 │   ├── http_dashboard/        ← Chart.js timeseries + config REST API
 │   ├── uart_lora_bridge/      ← gateway-side UART receiver (24-byte wire → zbus)
 │   ├── uart_lora_sender/      ← co-processor-side UART sender (zbus → 24-byte wire)
+│   ├── lora_proto/                ← shared LoRa packet codec (AES-GCM)
+│   ├── lora_node/
+│   ├── sensor_node_tx/
+│   ├── pipe_transport/
+│   ├── pipe_publisher/
 │   └── lora_radio/            ← LoRa bounded context (SX126x, sessions, FOTA)
 │
 ├── include/common/            ← shared headers (zbus channel declarations,

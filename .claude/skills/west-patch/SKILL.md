@@ -14,6 +14,8 @@ Patches are `git format-patch` files in `zephyr/patches/<module>/`, listed in
 whose sha256sum differs from its entry. Run every command through `scripts/ws.sh`, which
 runs from the west workspace root.
 
+No patches are applied today (`patches: []`); create `zephyr/patches/zephyr/` when adding the first one.
+
 ## Steps
 
 1. Commit the fix in the module repo:

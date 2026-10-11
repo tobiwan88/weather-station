@@ -18,7 +18,6 @@ graph TB
             SR["sensor_registry\nuid → metadata"]
         end
         subgraph SERVICES["Services"]
-            SNTP["sntp_sync\nwall-clock SNTP"]
             HTTP["http_dashboard\nChart.js + config API\nport 8080"]
             CLK["clock_display\nHH:MM UTC ticker"]
             LVGL["lvgl_display\nSDL window (native_sim)"]
@@ -55,7 +54,6 @@ graph TB
     HTTP -->|reads| LOC
     HTTP -->|publishes| CC
     FS -->|registers| SR
-    SNTP -->|subscribes| CC
     SEL -->|subscribes| SEC
     RS -->|publishes| SEC
     RS -->|subscribes| STC
@@ -68,10 +66,8 @@ graph TB
 
     SEC --> ZBUS
     STC --> ZBUS
-    SNTP --> NET
     HTTP --> HTTPD
     CLK --> KWORK
-    SNTP --> KWORK
     FS --> KTIMER
     HTTP --> KSPIN
     SR --> KMUX

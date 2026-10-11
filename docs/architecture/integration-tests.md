@@ -170,7 +170,10 @@ tests/integration/
     ├── test_config.py         ← [http, shell] trigger interval, SNTP resync
     ├── test_sensor_flow.py    ← [e2e] trigger→HTTP, trigger→MQTT, value propagation
     ├── test_mqtt_config.py    ← [http, shell, mqtt, e2e] MQTT runtime config via HTTP/shell
-    └── test_sensor_node_gateway.py ← [system, http, shell] sensor-node subprocess → FIFO → gateway
+    ├── test_http_force_pw.py  ← [http] forced first-boot password change, 429 lockout
+    ├── test_sen0460.py        ← [smoke, shell] SEN0460 PM2.5 sensor (CONFIG_SEN0460_SENSOR=y only)
+    ├── test_sensor_node_tx.py ← sensor node TX: periodic TX, FORCE_TX, buffer overflow
+    └── test_sensor_node_gateway.py ← [system, http, shell] sensor-node subprocess → FIFO pipe transport (non-blocking open)
 ```
 
 ---
