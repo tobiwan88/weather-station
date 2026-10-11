@@ -240,6 +240,17 @@ if [[ -z "$DRY_RUN" ]]; then
         # Copy from temperature template and replace tokens
         TEMPLATE="$REPO_ROOT/lib/fake_sensors/src/fake_temperature.c"
         if [[ -f "$TEMPLATE" ]]; then
+            # First SYS_INIT priority in 90..98 not used by another fake sensor
+            USED=$(grep -rhoE 'SYS_INIT\(fake_[a-z0-9_]+, APPLICATION, [0-9]+\)' \
+                "$REPO_ROOT/lib/fake_sensors/src" | grep -oE '[0-9]+\)$' | tr -d ')')
+            INIT_PRIO=""
+            for p in 90 91 92 93 94 96 97 98; do
+                grep -qx "$p" <<<"$USED" || { INIT_PRIO=$p; break; }
+            done
+            if [[ -z "$INIT_PRIO" ]]; then
+                echo '{"verdict": "FAIL", "error": "No free SYS_INIT priority in 90..98"}' >&2
+                exit 1
+            fi
             sed \
                 -e "s/fake_temperature/fake_${TYPE_NAME}/g" \
                 -e "s/fake,temperature/fake,${TYPE_NAME}/g" \
@@ -248,7 +259,8 @@ if [[ -z "$DRY_RUN" ]]; then
                 -e "s/temperature_c_to_q31/${TYPE_NAME}_to_q31/g" \
                 -e "s/fake_temp_mdegc/fake_${TYPE_NAME}_m${UNIT}/g" \
                 -e "s/initial_value_mdegc/initial_value_m${UNIT}/g" \
-                -e "s/SYS_INIT(fake_temperature_init, APPLICATION, 90)/SYS_INIT(fake_${TYPE_NAME}_init, APPLICATION, 91)/g" \
+                -e "s/fake_temp_init/fake_${TYPE_NAME}_init/g" \
+                -e "s/SYS_INIT(fake_${TYPE_NAME}_init, APPLICATION, 90)/SYS_INIT(fake_${TYPE_NAME}_init, APPLICATION, ${INIT_PRIO})/g" \
                 -e "s/\"fake_temperature\"/\"fake_${TYPE_NAME}\"/g" \
                 "$TEMPLATE" > "$REPO_ROOT/$DRIVER_FILE"
             log "Created $DRIVER_FILE (from template)"
