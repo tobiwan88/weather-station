@@ -101,10 +101,10 @@ and must be unique across all overlay files in the project.
 
 | Range | Purpose |
 |---|---|
-| `0x0001–0x000F` | Gateway-local / indoor sensors |
-| `0x0011–0x001F` | Gateway outdoor sensors |
-| `0x0021–0x00FF` | Remote sensor nodes (LoRa, BLE, etc.) |
-| `0x0101+` | Test-only instances |
+| `0x00000001–0x000000FF` | Fake sensors (native_sim and tests only) |
+| `0x00000100–0x00000FFF` | Gateway-local hardware sensors (Kconfig fallbacks: BME680 `0x0101`, SEN0460 `0x0111`; set `sensor-uid` in DT) |
+| `(prefix << 16) \| (node << 4) \| type` | Remote node sensors, derived by `remote_sensor` (e.g. `0x0F001D50`); see `remote_sensor.h` |
+| `0xFFFFFFFF` | Broadcast trigger target |
 
 Use the lowest free UID in the appropriate range. Never reuse a UID — UIDs are
 the identity key for `sensor_registry`, LVGL display cards, and MQTT topic paths.

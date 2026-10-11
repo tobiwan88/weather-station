@@ -38,13 +38,15 @@ void lora_pending_init(void);
  * a zbus listener).
  *
  * @param node_id     Target LoRa node.
- * @param seq_num     Sequence number of the sent frame.
+ * @param seq_num     Sequence number of the sent frame. Every retransmission is
+ *                    re-encoded with a fresh seq (new nonce); the slot tracks it.
+ *                    One request per node is in flight (window size 1).
  * @param frame_type  Frame type (LORA_FRAME_RPC_CMD or LORA_FRAME_FOTA_CHUNK).
  * @param tx_buf      Encoded frame (L2 header + encrypted payload).
  * @param tx_len      Frame length.
  * @return 0 on success, negative errno on failure (-ETIMEDOUT on retry exhaustion).
  */
-int lora_pending_send(uint16_t node_id, uint16_t seq_num, uint8_t frame_type, const uint8_t *tx_buf,
+int lora_pending_send(uint16_t node_id, uint32_t seq_num, uint8_t frame_type, const uint8_t *tx_buf,
 		      uint8_t tx_len);
 
 /**
@@ -55,7 +57,9 @@ int lora_pending_send(uint16_t node_id, uint16_t seq_num, uint8_t frame_type, co
  * Safe for zbus listener context.
  *
  * @param node_id     Target LoRa node.
- * @param seq_num     Sequence number of the sent frame.
+ * @param seq_num     Sequence number of the sent frame. Every retransmission is
+ *                    re-encoded with a fresh seq (new nonce); the slot tracks it.
+ *                    One request per node is in flight (window size 1).
  * @param frame_type  Frame type.
  * @param tx_buf      Encoded frame.
  * @param tx_len      Frame length.
@@ -65,7 +69,7 @@ int lora_pending_send(uint16_t node_id, uint16_t seq_num, uint8_t frame_type, co
  * @param user_data   Opaque pointer passed to cb.
  * @return 0 on success (enqueued), negative errno if no slot available.
  */
-int lora_pending_send_async(uint16_t node_id, uint16_t seq_num, uint8_t frame_type,
+int lora_pending_send_async(uint16_t node_id, uint32_t seq_num, uint8_t frame_type,
 			    const uint8_t *tx_buf, uint8_t tx_len, int32_t timeout_ms,
 			    lora_pending_cb_t cb, void *user_data);
 
@@ -73,14 +77,30 @@ int lora_pending_send_async(uint16_t node_id, uint16_t seq_num, uint8_t frame_ty
  * @brief Match a received ACK/RESP to a pending request.
  *
  * Called from the RX thread dispatch when an ACK, RPC_RESP, or
- * FOTA_CHUNK_ACK is received. Signals the pending slot if seq_num
- * and node_id match.
+ * FOTA_CHUNK_ACK is received. Signals the pending slot if node_id
+ * matches and seq_num equals the seq of any copy transmitted for the request
+ * (initial frame or a re-encoded retransmission), so an ACK of an earlier
+ * copy still completes it.
  *
  * @param node_id   Source node of the ACK.
  * @param seq_num   Sequence number from the ACK.
  * @param status    0=OK, positive error code from ACK payload.
  */
-void lora_pending_ack_match(uint16_t node_id, uint16_t seq_num, int status);
+void lora_pending_ack_match(uint16_t node_id, uint32_t seq_num, int status);
+
+/**
+ * @brief Complete the pending request of a node by frame type.
+ *
+ * For responses that do not echo the request seq (the ACK carries the
+ * responder's own seq): the caller validates the response content (e.g. the
+ * FOTA chunk offset), this then completes the single in-flight request of
+ * @p node_id if it is of type @p frame_type. Completion runs immediately.
+ *
+ * @param node_id    Source node of the response.
+ * @param frame_type Frame type of the pending request.
+ * @param status     0=OK, negative errno on failure.
+ */
+void lora_pending_complete(uint16_t node_id, uint8_t frame_type, int status);
 
 /**
  * @brief Cancel all pending requests for a node.

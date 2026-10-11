@@ -250,9 +250,23 @@ def api_token_harness(http_harness, shell_harness):
 
 @pytest.fixture()
 def sensor_node_harness():
+    """Start a sensor-node process for two-process system tests.
+
+    Locally a missing SENSOR_NODE_EXE skips the test. In CI (``CI`` set) it
+    fails instead, so a broken build artifact cannot turn into a green run.
+    """
     exe = os.environ.get("SENSOR_NODE_EXE", "")
+    in_ci = "CI" in os.environ
     if not exe:
-        pytest.skip("SENSOR_NODE_EXE not set — skipping system test")
+        msg = "SENSOR_NODE_EXE not set — system test cannot run"
+        if in_ci:
+            pytest.fail(msg)
+        pytest.skip(msg + " — skipping system test")
+    if not Path(exe).exists():
+        msg = f"SENSOR_NODE_EXE does not exist: {exe}"
+        if in_ci:
+            pytest.fail(msg)
+        pytest.skip(msg + " — skipping system test")
     harness = SensorNodeHarness(exe)
     harness.start()
     harness.wait_for_ready()

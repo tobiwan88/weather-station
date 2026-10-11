@@ -14,7 +14,8 @@ extern "C" {
  *
  * Configures the radio with the default SF, BW, frequency, and TX power.
  * Loads the session (node_id, session_key) from NVS settings. If no session
- * is found, the node operates in unpaired mode (unencrypted transmissions).
+ * is found, the node is unpaired and transmit returns -EACCES unless
+ * LORA_NODE_ALLOW_PLAINTEXT is set.
  *
  * @return 0 on success, negative errno on failure.
  */

@@ -18,6 +18,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #include <zephyr/net/http/server.h>
 
@@ -61,9 +62,23 @@ bool auth_session_check(const struct http_request_ctx *request_ctx);
  *
  * @return 0 on success.
  * @return -EACCES on wrong credentials.
+ * @return -EAGAIN when throttled after repeated failures (see
+ *         auth_login_retry_after()); the credentials are not checked.
  * @return negative errno on CSPRNG failure.
  */
 int auth_login(const char *username, const char *password, char *token_out, size_t token_out_len);
+
+/**
+ * @brief Seconds (rounded up) until login attempts are accepted again; 0 if not throttled.
+ */
+uint32_t auth_login_retry_after(void);
+
+/**
+ * @brief True while the stored credentials are still the unchanged first-boot defaults.
+ *
+ * Persisted as dash/must_change; cleared by a successful auth_change_credentials().
+ */
+bool auth_must_change(void);
 
 /**
  * @brief Invalidate the session identified by the cookie in the request.
@@ -87,6 +102,16 @@ void auth_logout(const struct http_request_ctx *request_ctx);
  */
 bool auth_api_check(const struct http_request_ctx *request_ctx);
 
+/**
+ * @brief auth_api_check() plus the forced-password-change gate.
+ *
+ * @return 0 when the request may proceed.
+ * @return -EACCES not authenticated (respond 401).
+ * @return -EPERM  authenticated but first-boot credentials must be changed
+ *                 first (respond 403 password_change_required).
+ */
+int auth_api_authorize(const struct http_request_ctx *request_ctx);
+
 /* -------------------------------------------------------------------------- */
 /* Credentials management                                                      */
 /* -------------------------------------------------------------------------- */
@@ -99,6 +124,9 @@ bool auth_api_check(const struct http_request_ctx *request_ctx);
  *
  * @return 0 on success.
  * @return -EACCES if old credentials do not match.
+ * @return -EPERM if the new credentials equal the first-boot defaults (or the
+ *         new password equals the old one) while a change is still forced.
+ * @return -EIO if persisting failed.
  */
 int auth_change_credentials(const char *old_user, const char *old_pass, const char *new_user,
 			    const char *new_pass);

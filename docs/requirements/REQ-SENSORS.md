@@ -30,12 +30,10 @@ The system shall sample sensors via `sensor_trigger_chan` zbus channel — no po
 The system shall publish exactly one zbus event per individual measurement. Correlated readings (e.g., temperature + humidity from BME680) are published as separate events with the same sensor_uid.
 
 ### REQ-SENSORS-005 — Sensor UID Identity
-The system shall use `sensor_uid` (16-bit) as the unique identity key for every sensor. UIDs shall never be hardcoded in consumer code — use `sensor_registry` for lookup.
-- Fake sensor UIDs: 0x0001–0x00FF
-- Real hardware UIDs: 0x0100+
-- Gateway-local/indoor: 0x0001–0x000F
-- Gateway outdoor: 0x0011–0x001F
-- Remote nodes: 0x0021–0x00FF
+The system shall use `sensor_uid` (32-bit) as the unique identity key for every sensor. UIDs shall never be hardcoded in consumer code — use `sensor_registry` for lookup.
+- Fake sensors: 0x00000001–0x000000FF
+- Gateway-local hardware: 0x00000100–0x00000FFF
+- Remote node sensors: `(prefix << 16) | (node_id << 4) | type`, derived by `remote_sensor`
 
 ### REQ-SENSORS-006 — Fake Sensor Subsystem
 The system shall provide fake sensors as a production-quality library (`lib/fake_sensors/`) that is devicetree-defined, shell-interactive, trigger-driven, and self-registering via `STRUCT_SECTION_ITERABLE`.

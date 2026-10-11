@@ -1,4 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
+#include <errno.h>
 #include <string.h>
 
 #include <zephyr/dfu/mcuboot.h>
@@ -34,6 +35,23 @@ static void respond_401(struct http_response_ctx *rsp)
 	rsp->header_count = ARRAY_SIZE(json_ct_hdr);
 	rsp->body = (const uint8_t *)unauth_body;
 	rsp->body_len = sizeof(unauth_body) - 1;
+	rsp->final_chunk = true;
+}
+
+/* Reject with 401 (not authenticated) or 403 (forced password change pending). */
+static void respond_denied(struct http_response_ctx *rsp, int rc)
+{
+	static const char pw_body[] = "{\"error\":\"password_change_required\"}";
+
+	if (rc != -EPERM) {
+		respond_401(rsp);
+		return;
+	}
+	rsp->status = HTTP_403_FORBIDDEN;
+	rsp->headers = json_ct_hdr;
+	rsp->header_count = ARRAY_SIZE(json_ct_hdr);
+	rsp->body = (const uint8_t *)pw_body;
+	rsp->body_len = sizeof(pw_body) - 1;
 	rsp->final_chunk = true;
 }
 
@@ -102,9 +120,11 @@ int fota_upload_handler(struct http_client_ctx *client, enum http_transaction_st
 
 	/* First invocation for this request: auth + flash init. */
 	if (!fota_auth_ok && !atomic_get(&fota_in_progress)) {
-		if (!auth_api_check(request_ctx)) {
+		int arc = auth_api_authorize(request_ctx);
+
+		if (arc != 0) {
 			if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
-				respond_401(response_ctx);
+				respond_denied(response_ctx, arc);
 			}
 			return 0;
 		}
@@ -266,8 +286,10 @@ int fota_apply_handler(struct http_client_ctx *client, enum http_transaction_sta
 		return 0;
 	}
 
-	if (!auth_api_check(request_ctx)) {
-		respond_401(response_ctx);
+	int arc = auth_api_authorize(request_ctx);
+
+	if (arc != 0) {
+		respond_denied(response_ctx, arc);
 		return 0;
 	}
 
@@ -355,8 +377,10 @@ int fota_status_handler(struct http_client_ctx *client, enum http_transaction_st
 		return 0;
 	}
 
-	if (!auth_api_check(request_ctx)) {
-		respond_401(response_ctx);
+	int arc = auth_api_authorize(request_ctx);
+
+	if (arc != 0) {
+		respond_denied(response_ctx, arc);
 		return 0;
 	}
 
