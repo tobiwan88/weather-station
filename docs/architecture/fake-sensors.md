@@ -1,6 +1,6 @@
 # Fake Sensor Subsystem
 
-> Design rationale: [ADR-005](../adr/ADR-005-fake-sensor-subsystem.md).
+> Design rationale: [decisions](../decisions.md).
 
 The fake sensor subsystem is a first-class library module in `lib/fake_sensors/`. It is not a test stub — it is the primary sensor backend for `native_sim` development and CI. Fake sensors are indistinguishable from real sensor drivers from the perspective of all consumers (display, MQTT, HTTP dashboard).
 

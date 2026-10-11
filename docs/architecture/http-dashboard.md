@@ -1,6 +1,6 @@
 # HTTP Dashboard
 
-> Design rationale: [ADR-011](../adr/ADR-011-http-dashboard.md).
+> Design rationale: [decisions](../decisions.md).
 
 `lib/http_dashboard` is a self-contained Zephyr library enabled by `CONFIG_HTTP_DASHBOARD=y`. When disabled it contributes zero code or RAM. The dashboard listens on port 8080 (configurable via `HTTP_DASHBOARD_PORT`) and provides a browser-based interface to live sensor data and runtime configuration.
 

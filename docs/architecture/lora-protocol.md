@@ -2,7 +2,7 @@
 
 This document covers the detailed architecture for the LoRa wireless communication subsystem.
 
-> Design rationale: [ADR-006](../adr/ADR-006-lora-channel-boundary.md), [ADR-015](../adr/ADR-015-lora-protocol.md).
+> Design rationale: [decisions](../decisions.md).
 
 ---
 
@@ -577,8 +577,7 @@ CONFIG_LORA_RADIO_SESSION_MAX      — Max paired nodes (default 16)
 
 ## Related
 
-- [ADR-015](../adr/ADR-015-lora-protocol.md) — architectural decision record
-- [ADR-006](../adr/ADR-006-lora-channel-boundary.md) — bounded context (superseded)
-- [ADR-014](../adr/ADR-014-mcuboot-fota.md) — MCUboot FOTA
+- [ADR-015](../decisions.md) — architectural decision record
+- [ADR-014](../decisions.md) — MCUboot FOTA
 - [event-bus.md](event-bus.md) — zbus channel architecture
 - [system-overview.md](system-overview.md) — system layers and library roles

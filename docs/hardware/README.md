@@ -34,7 +34,7 @@ This document describes the physical hardware for the Weather Station project �
                        └─────────────────────────────────────────┘
 ```
 
-The topology follows [ADR-015](../adr/ADR-015-lora-protocol.md): the gateway uses a dedicated STM32WLE5JC LoRa co-processor connected via UART. The outdoor sensor node is a self-contained Zephyr device that reads sensors and transmits compact 5-byte readings over LoRa P2P. The gateway and display are combined in a single firmware image per [ADR-007](../adr/ADR-007-gateway-display-combined.md).
+The topology follows ADR-015 (see [decisions](../decisions.md)): the gateway uses a dedicated STM32WLE5JC LoRa co-processor connected via UART. The outdoor sensor node is a self-contained Zephyr device that reads sensors and transmits compact 5-byte readings over LoRa P2P. The gateway and display are combined in a single firmware image per [ADR-007](../decisions.md).
 
 ---
 
@@ -170,7 +170,7 @@ Zephyr upstream provides `CONFIG_BME680` which covers BME688 in compatibility mo
 
 ## Gateway — Wio-E5 Mini LoRa Co-Processor
 
-**Seeed Studio Wio-E5 Mini** (STM32WLE5JC) — dedicated LoRa radio co-processor, running custom Zephyr firmware with `lib/lora_radio/`. Role defined in [ADR-015](../adr/ADR-015-lora-protocol.md).
+**Seeed Studio Wio-E5 Mini** (STM32WLE5JC) — dedicated LoRa radio co-processor, running custom Zephyr firmware with `lib/lora_radio/`. Role defined in ADR-015 (see [decisions](../decisions.md)).
 
 | Parameter | Value |
 |---|---|
@@ -228,7 +228,7 @@ RF switch control for high-power TX: PA4=0, PA5=1. Only RFO_HP supported — no 
 
 ## Outdoor Sensor Node 1 — Wio-E5 Mini
 
-The outdoor sensor node is a self-contained Zephyr device built around the Wio-E5 Mini module. It reads local sensors, encodes readings in the compact 5-byte wire format defined in [ADR-015](../adr/ADR-015-lora-protocol.md), and transmits them over LoRa P2P to the gateway.
+The outdoor sensor node is a self-contained Zephyr device built around the Wio-E5 Mini module. It reads local sensors, encodes readings in the compact 5-byte wire format defined in ADR-015 (see [decisions](../decisions.md)), and transmits them over LoRa P2P to the gateway.
 
 **MCU and radio:** same Wio-E5 Mini module as the gateway co-processor (see specs above).
 
@@ -410,6 +410,5 @@ Additional: antennae (included with Wio-E5), STEMMA QT / Qwiic cables (Adafruit 
 - [Seeed Wio-E5 Mini](https://wiki.seeedstudio.com/LoRa_E5_mini/) — module wiki
 - [STM32WLE5JC Datasheet](https://www.st.com/en/microcontrollers-microprocessors/stm32wle5jc.html) — STM32WL series
 - [DFRobot SEN0460](https://wiki.dfrobot.com/SKU_SEN0460_Gravity_PM2.5_Air_Quality_Sensor) — PM2.5 sensor wiki
-- [ADR-006](../adr/ADR-006-lora-channel-boundary.md) — LoRa bounded context (superseded)
-- [ADR-007](../adr/ADR-007-gateway-display-combined.md) — combined gateway + display
-- [ADR-015](../adr/ADR-015-lora-protocol.md) — LoRa protocol architecture (superseding)
+- [ADR-007](../decisions.md) — combined gateway + display
+- ADR-015 (see [decisions](../decisions.md)) — LoRa protocol architecture (superseding)
