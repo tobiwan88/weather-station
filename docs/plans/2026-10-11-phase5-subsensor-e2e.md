@@ -23,32 +23,34 @@ Sonnet), reviewed by the `reviewer` agent.
 
 ## Wave 1 (parallel)
 
-- [ ] **S1** lora_e5_mini `&rng` enabled; hardware sensor UID fallbacks moved out of the fake
+- [x] **S1** lora_e5_mini `&rng` enabled; hardware sensor UID fallbacks moved out of the fake
       range (BME680 0x0101, SEN0460 0x0111)
-- [ ] **S2** native_sim e2e: non-blocking FIFO open in `pipe_transport`; enable it on the
+- [x] **S2** native_sim e2e: non-blocking FIFO open in `pipe_transport`; enable it on the
       gateway and the integration DUT; CI builds sensor-node and sets `SENSOR_NODE_EXE`
-- [ ] **S3** `SENSOR_NODE_TX` selects `CONFIG_CMD` (nodes never transmitted); send batches in
+- [x] **S3** node apps enable `CONFIG_CMD` (a `select` caused a Kconfig loop) and the TX listeners
+      are attached (nodes never transmitted); send batches in
       ≤ 5-reading chunks and requeue unsent readings; force-TX via work item
-- [ ] **S4** `uart_lora_sender`: msg subscriber instead of re-reading the channel
-- [ ] **S5** `remote_sensor_manager`: k_msgq instead of a single pending slot and a mutex in the
+- [x] **S4** `uart_lora_sender`: listener + k_msgq instead of re-reading the channel (msg
+      subscribers rejected: heap-backed net_buf per publish)
+- [x] **S5** `remote_sensor_manager`: k_msgq instead of a single pending slot and a mutex in the
       listener
 
 ## Wave 2
 
-- [ ] **S6** (Sonnet) `lib/lora_proto` shared codec + tests (tampering, wrong key, size limits)
-- [ ] **S9** dashboard: forced password change on first boot (off for the integration DUT),
+- [x] **S6** (Sonnet) `lib/lora_proto` shared codec + tests (tampering, wrong key, size limits)
+- [x] **S9** dashboard: forced password change on first boot (off for the integration DUT),
       login lockout with backoff and `429 Retry-After`
 
 ## Wave 3 (after S6)
 
-- [ ] **S7** (Sonnet) node: persisted counter, radio `tx=true`, no plaintext by default
-- [ ] **S10** (Sonnet) gateway: persisted TX counter, replay/dedup, require encryption,
+- [x] **S7** (Sonnet) node: persisted counter, radio `tx=true`, no plaintext by default
+- [x] **S10** (Sonnet) gateway: persisted TX counter, replay/dedup, require encryption,
       frequency/power from Kconfig, `lora_radio_send()` toggling TX config; archived-branch fixes
 
 ## Wave 4
 
-- [ ] **S8** (Sonnet) pre-shared key provisioning shells; delete OTA pairing
-- [ ] **S11** FOTA/RPC: real sequence numbers (every chunk reused one nonce), ACK matching,
+- [x] **S8** (Sonnet) pre-shared key provisioning shells; delete OTA pairing
+- [x] **S11** FOTA/RPC: real sequence numbers (every chunk reused one nonce), ACK matching,
       immediate completion on ACK; window size 1 documented
 
 ## Done when

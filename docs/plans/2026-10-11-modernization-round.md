@@ -65,19 +65,19 @@ Local build env: Apple `container` running `ghcr.io/tobiwan88/zephyr_docker:arm`
       | dashboard `fota.c` | mcumgr `img_mgmt` | defer: changes upload protocol and UI |
       | `fake_sensors` | sensor emulators | keep: trigger/Q31 model is the point |
       | sensors, HTTP server, MQTT, settings | — | already upstream APIs |
-- [ ] remote_sensor_manager: discovery/scan listeners keep one pending slot → back-to-back events are lost; use a small k_msgq
+- [x] remote_sensor_manager: discovery/scan listeners keep one pending slot → back-to-back events are lost; use a small k_msgq
 
 ## Phase 5 — Sub-sensor end-to-end + gateway hardening
-- [ ] `SENSOR_NODE_TX` silently resolves to n on outdoor_sensor_node and sensor-node (`depends on CONFIG_CMD`,
+- [x] `SENSOR_NODE_TX` silently resolves to n on outdoor_sensor_node and sensor-node (`depends on CONFIG_CMD`,
       which no node app enables) → the nodes never transmit. Use `select CONFIG_CMD`.
-- [ ] lora_e5_mini: `ENTROPY_STM32_RNG=y` resolves to n (`&rng` disabled in DT) → no entropy for PSA
-- [ ] native_sim: enable `PIPE_TRANSPORT` on gateway, make node→gateway test non-skipping
-- [ ] LoRa batching: split batches to ≤ 5 readings, requeue on failure
-- [ ] Single LoRa packet codec shared by node and gateway, unit-tested
-- [ ] Crypto: one tag length, reboot-safe nonce, reject plaintext from unpaired nodes;
+- [x] lora_e5_mini: `ENTROPY_STM32_RNG=y` resolves to n (`&rng` disabled in DT) → no entropy for PSA
+- [x] native_sim: enable `PIPE_TRANSPORT` on gateway, make node→gateway test non-skipping
+- [x] LoRa batching: split batches to ≤ 5 readings, requeue on failure
+- [x] Single LoRa packet codec shared by node and gateway, unit-tested
+- [x] Crypto: one tag length, reboot-safe nonce, reject plaintext from unpaired nodes;
       `PSA_ALG_ED25519` → `PSA_ALG_PURE_EDDSA` (TF-PSA-Crypto 1.1), `&key_id` passed by pointer in lora_packet.c
-- [ ] Integration tests: local `CONFIG_SNTP_SERVER` instead of a public NTP IP (hermetic tests)
-- [ ] Pairing on the node side; dev key out of source
-- [ ] ACK-request + seq dedup; FOTA seq/window fixes
-- [ ] Dashboard: force password change on first boot, login throttling
-- [ ] Hardware sensor UID fallbacks (BME680 0x0011, SEN0460 0x0021) overlap the fake range 0x0001–0x00FF
+- [x] Integration tests: local `CONFIG_SNTP_SERVER` instead of a public NTP IP (hermetic tests)
+- [x] Pairing on the node side; dev key out of source
+- [x] ACK-request + seq dedup; FOTA seq/window fixes
+- [x] Dashboard: force password change on first boot, login throttling
+- [x] Hardware sensor UID fallbacks (BME680 0x0011, SEN0460 0x0021) overlap the fake range 0x0001–0x00FF
