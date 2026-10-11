@@ -75,7 +75,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l349">broker_resolve (weather-station/lib/mqtt_publisher/src/mqtt_publisher.c:349)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="51">called 51 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="62">called 62 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">83.3%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">64.0%</div>
@@ -243,7 +243,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l374">try_connect (weather-station/lib/mqtt_publisher/src/mqtt_publisher.c:374)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="51">called 51 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="62">called 62 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">67.3%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">25.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">51.2%</div>
@@ -2716,7 +2716,7 @@
         <td class="lineno"><a id="l349" href="#l349">349</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">broker_resolve</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">connect_cfg</span><span class="w"> </span><span class="o">*</span><span class="n">cfg</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -2730,7 +2730,7 @@
         <td class="lineno"><a id="l351" href="#l351">351</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">zsock_addrinfo</span><span class="w"> </span><span class="n">hints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -2779,14 +2779,14 @@
         <td class="lineno"><a id="l358" href="#l358">358</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">snprintf</span><span class="p">(</span><span class="n">port_str</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">port_str</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;%u&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">port</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l359" href="#l359">359</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">LOG_DBG</span><span class="p">(</span><span class="s">&quot;resolving %s:%s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port_str</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -2800,7 +2800,7 @@
         <td class="lineno"><a id="l361" href="#l361">361</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zsock_getaddrinfo</span><span class="p">(</span><span class="n">cfg</span><span class="o">-&gt;</span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port_str</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">hints</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">res</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -2817,11 +2817,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 10 not taken.</div>
-              <div class="takenBranch">&check; Branch 9 &rightarrow; 17 taken 51 times.</div>
+              <div class="takenBranch">&check; Branch 9 &rightarrow; 17 taken 62 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">51</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">62</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -2856,28 +2856,28 @@
         <td class="lineno"><a id="l368" href="#l368">368</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_broker_addr</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="o">-&gt;</span><span class="n">ai_addr</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="o">-&gt;</span><span class="n">ai_addrlen</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l369" href="#l369">369</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">zsock_freeaddrinfo</span><span class="p">(</span><span class="n">res</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l370" href="#l370">370</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">LOG_DBG</span><span class="p">(</span><span class="s">&quot;broker resolved&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l371" href="#l371">371</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -2898,7 +2898,7 @@
         <td class="lineno"><a id="l374" href="#l374">374</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">try_connect</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -2926,84 +2926,84 @@
         <td class="lineno"><a id="l378" href="#l378">378</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_cfg_mutex</span><span class="p">,</span><span class="w"> </span><span class="n">K_FOREVER</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l379" href="#l379">379</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">strncpy</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">s_broker_host</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">host</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l380" href="#l380">380</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">cfg</span><span class="p">.</span><span class="n">host</span><span class="p">[</span><span class="k">sizeof</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">host</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l381" href="#l381">381</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">cfg</span><span class="p">.</span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s_broker_port</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l382" href="#l382">382</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">cfg</span><span class="p">.</span><span class="n">keepalive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s_keepalive</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l383" href="#l383">383</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">strncpy</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">gateway_name</span><span class="p">,</span><span class="w"> </span><span class="n">s_gateway_name</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">gateway_name</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l384" href="#l384">384</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">cfg</span><span class="p">.</span><span class="n">gateway_name</span><span class="p">[</span><span class="k">sizeof</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">gateway_name</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l385" href="#l385">385</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">strncpy</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">username</span><span class="p">,</span><span class="w"> </span><span class="n">s_username</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">username</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l386" href="#l386">386</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">cfg</span><span class="p">.</span><span class="n">username</span><span class="p">[</span><span class="k">sizeof</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">username</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l387" href="#l387">387</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">strncpy</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">password</span><span class="p">,</span><span class="w"> </span><span class="n">s_password_plain</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">password</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l388" href="#l388">388</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">cfg</span><span class="p">.</span><span class="n">password</span><span class="p">[</span><span class="k">sizeof</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">password</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l389" href="#l389">389</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_cfg_mutex</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3020,11 +3020,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 6 not taken.</div>
-              <div class="takenBranch">&check; Branch 5 &rightarrow; 7 taken 51 times.</div>
+              <div class="takenBranch">&check; Branch 5 &rightarrow; 7 taken 62 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">51</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">62</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">broker_resolve</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cfg</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3052,7 +3052,7 @@
         <td class="lineno"><a id="l395" href="#l395">395</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">mqtt_client_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_client</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3066,77 +3066,77 @@
         <td class="lineno"><a id="l397" href="#l397">397</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">broker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">s_broker_addr</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l398" href="#l398">398</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">evt_cb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mqtt_evt_handler</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l399" href="#l399">399</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">client_id</span><span class="p">.</span><span class="n">utf8</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">cfg</span><span class="p">.</span><span class="n">gateway_name</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l400" href="#l400">400</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">client_id</span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">strlen</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">gateway_name</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l401" href="#l401">401</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">protocol_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MQTT_VERSION_3_1_1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l402" href="#l402">402</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">rx_buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s_rx_buf</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l403" href="#l403">403</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">rx_buf_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">s_rx_buf</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l404" href="#l404">404</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">tx_buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s_tx_buf</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l405" href="#l405">405</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">tx_buf_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">s_tx_buf</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l406" href="#l406">406</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">transport</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MQTT_TRANSPORT_NON_SECURE</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l407" href="#l407">407</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_client</span><span class="p">.</span><span class="n">keepalive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cfg</span><span class="p">.</span><span class="n">keepalive</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3153,11 +3153,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 9 not taken.</div>
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 10 taken 51 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 10 taken 62 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">51</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">62</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">username</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="sc">&#39;\0&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3227,21 +3227,21 @@
         <td class="lineno"><a id="l419" href="#l419">419</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">s_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MQTT_PUB_CONNECTING</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l420" href="#l420">420</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_sem_reset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_connack_sem</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l421" href="#l421">421</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">LOG_DBG</span><span class="p">(</span><span class="s">&quot;mqtt_connect: opening TCP socket&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3255,7 +3255,7 @@
         <td class="lineno"><a id="l423" href="#l423">423</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mqtt_connect</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_client</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3271,33 +3271,33 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 18 &rightarrow; 19 taken 51 times.</div>
+              <div class="takenBranch">&check; Branch 18 &rightarrow; 19 taken 62 times.</div>
               <div class="notTakenBranch">&cross; Branch 18 &rightarrow; 26 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">51</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">62</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l426" href="#l426">426</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">LOG_ERR</span><span class="p">(</span><span class="s">&quot;mqtt_connect failed: %d&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rc</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l427" href="#l427">427</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">s_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MQTT_PUB_DISCONNECTED</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l428" href="#l428">428</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -3619,21 +3619,21 @@
         <td class="lineno"><a id="l473" href="#l473">473</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">k_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_cfg_mutex</span><span class="p">,</span><span class="w"> </span><span class="n">K_FOREVER</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l474" href="#l474">474</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="kt">bool</span><span class="w"> </span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s_enabled</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l475" href="#l475">475</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">k_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_cfg_mutex</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3652,11 +3652,11 @@
               <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 6 not taken.</div>
               <div class="takenBranch">&check; Branch 5 &rightarrow; 9 taken 1 time.</div>
               <div class="notTakenBranch">&cross; Branch 13 &rightarrow; 14 not taken.</div>
-              <div class="takenBranch">&check; Branch 13 &rightarrow; 17 taken 50 times.</div>
+              <div class="takenBranch">&check; Branch 13 &rightarrow; 17 taken 61 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">51</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">62</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">enabled</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -3705,21 +3705,21 @@
         <td class="lineno"><a id="l484" href="#l484">484</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">k_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_cfg_mutex</span><span class="p">,</span><span class="w"> </span><span class="n">K_FOREVER</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l485" href="#l485">485</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">LOG_INF</span><span class="p">(</span><span class="s">&quot;connecting to %s:%u ...&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">s_broker_host</span><span class="p">,</span><span class="w"> </span><span class="n">s_broker_port</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l486" href="#l486">486</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">k_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s_cfg_mutex</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3744,19 +3744,19 @@
             <div class="linebranchContents">
               <div class="takenBranch">&check; Branch 18 &rightarrow; 19 taken 1 time.</div>
               <div class="notTakenBranch">&cross; Branch 18 &rightarrow; 28 not taken.</div>
-              <div class="takenBranch">&check; Branch 26 &rightarrow; 27 taken 50 times.</div>
+              <div class="takenBranch">&check; Branch 26 &rightarrow; 27 taken 61 times.</div>
               <div class="notTakenBranch">&cross; Branch 26 &rightarrow; 36 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">51</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">62</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">try_connect</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l490" href="#l490">490</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">LOG_DBG</span><span class="p">(</span><span class="s">&quot;connect failed, waiting %d ms before retry&quot;</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -3770,7 +3770,7 @@
         <td class="lineno"><a id="l492" href="#l492">492</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">51</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">k_sleep</span><span class="p">(</span><span class="n">K_MSEC</span><span class="p">(</span><span class="n">CONFIG_MQTT_PUBLISHER_RECONNECT_MS</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
@@ -6411,7 +6411,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:58:17
+          at 2026-10-11 08:02:55
         </footer>
       </div>
     </div>

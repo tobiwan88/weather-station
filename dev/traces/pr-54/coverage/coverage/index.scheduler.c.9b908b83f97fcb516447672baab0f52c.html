@@ -96,7 +96,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l70">z_impl_k_sched_current_thread_query (zephyr/kernel/scheduler.c:70)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="2440">called 2440 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="2480">called 2480 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -117,7 +117,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l84">z_sched_waitq_walk (zephyr/kernel/scheduler.c:84)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="126198">called 126198 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="132416">called 132416 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">66.7%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
@@ -648,7 +648,7 @@
         <td class="lineno"><a id="l70" href="#l70">70</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">2440</td>
+        <td class="linecount coveredLine show_coveredLine">2480</td>
         <td class="src  coveredLine show_coveredLine"><span class="n">k_tid_t</span><span class="w"> </span><span class="nf">z_impl_k_sched_current_thread_query</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -662,7 +662,7 @@
         <td class="lineno"><a id="l72" href="#l72">72</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">2440</td>
+        <td class="linecount coveredLine show_coveredLine">2480</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">_current</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -746,7 +746,7 @@
         <td class="lineno"><a id="l84" href="#l84">84</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">126198</td>
+        <td class="linecount coveredLine show_coveredLine">132416</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">z_sched_waitq_walk</span><span class="p">(</span><span class="n">_wait_q_t</span><span class="w"> </span><span class="o">*</span><span class="n">wait_q</span><span class="p">,</span><span class="w"> </span><span class="n">_waitq_walk_cb_t</span><span class="w"> </span><span class="n">walk_func</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -774,7 +774,7 @@
         <td class="lineno"><a id="l88" href="#l88">88</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">126198</td>
+        <td class="linecount coveredLine show_coveredLine">132416</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="kt">int</span><span class="w">  </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -790,12 +790,12 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 31 &rightarrow; 3 taken 126198 times.</div>
-              <div class="takenBranch">&check; Branch 31 &rightarrow; 32 taken 126198 times.</div>
+              <div class="takenBranch">&check; Branch 31 &rightarrow; 3 taken 132416 times.</div>
+              <div class="takenBranch">&check; Branch 31 &rightarrow; 32 taken 132416 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">252396</td>
+        <td class="linecount coveredLine show_coveredLine">264832</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">Z_SCHED_SPINLOCK</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -825,22 +825,22 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">8/12</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 90931 times.</div>
-              <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 35267 times.</div>
-              <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 90931 times.</div>
-              <div class="takenBranch">&check; Branch 7 &rightarrow; 13 taken 35267 times.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 88333 times.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 44083 times.</div>
+              <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 88333 times.</div>
+              <div class="takenBranch">&check; Branch 7 &rightarrow; 13 taken 44083 times.</div>
               <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 10 not taken.</div>
-              <div class="takenBranch">&check; Branch 9 &rightarrow; 11 taken 90931 times.</div>
+              <div class="takenBranch">&check; Branch 9 &rightarrow; 11 taken 88333 times.</div>
               <div class="notTakenBranch">&cross; Branch 18 &rightarrow; 19 not taken.</div>
-              <div class="takenBranch">&check; Branch 18 &rightarrow; 24 taken 90931 times.</div>
+              <div class="takenBranch">&check; Branch 18 &rightarrow; 24 taken 88333 times.</div>
               <div class="notTakenBranch">&cross; Branch 20 &rightarrow; 21 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 20 &rightarrow; 22 not taken.</div>
-              <div class="takenBranch">&check; Branch 26 &rightarrow; 15 taken 90931 times.</div>
-              <div class="takenBranch">&check; Branch 26 &rightarrow; 27 taken 126198 times.</div>
+              <div class="takenBranch">&check; Branch 26 &rightarrow; 15 taken 88333 times.</div>
+              <div class="takenBranch">&check; Branch 26 &rightarrow; 27 taken 132416 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">217129</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">220749</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="n">_WAIT_Q_FOR_EACH_SAFE</span><span class="p">(</span><span class="n">wait_q</span><span class="p">,</span><span class="w"> </span><span class="kr">thread</span><span class="p">,</span><span class="w"> </span><span class="n">tmp</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -924,7 +924,7 @@
         <td class="lineno"><a id="l106" href="#l106">106</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">90931</td>
+        <td class="linecount coveredLine show_coveredLine">88333</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">walk_func</span><span class="p">(</span><span class="kr">thread</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -934,11 +934,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 16 &rightarrow; 17 not taken.</div>
-              <div class="takenBranch">&check; Branch 16 &rightarrow; 18 taken 90931 times.</div>
+              <div class="takenBranch">&check; Branch 16 &rightarrow; 18 taken 88333 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">90931</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">88333</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1011,11 +1011,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 27 &rightarrow; 28 not taken.</div>
-              <div class="takenBranch">&check; Branch 27 &rightarrow; 29 taken 126198 times.</div>
+              <div class="takenBranch">&check; Branch 27 &rightarrow; 29 taken 132416 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">126198</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">132416</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">post_func</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1050,7 +1050,7 @@
         <td class="lineno"><a id="l122" href="#l122">122</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">126198</td>
+        <td class="linecount coveredLine show_coveredLine">132416</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">status</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1193,7 +1193,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:58:06
+          at 2026-10-11 08:02:38
         </footer>
       </div>
     </div>

@@ -1,22 +1,22 @@
 <testsuites>
-	<testsuite name="native_sim/native/64" timestamp="2026-10-11T07:56:03.615200" time="52.089999999999996" tests="15" failures="0" errors="0" skipped="0">
+	<testsuite name="native_sim/native/64" timestamp="2026-10-11T07:59:54.277251" time="54.81" tests="15" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 		</properties>
-		<testcase classname="native_sim/native/64:weather_station.mqtt_publisher" name="weather_station.mqtt_publisher" time="0.02" />
-		<testcase classname="native_sim/native/64:weather_station.sensor_event" name="weather_station.sensor_event" time="0.01" />
-		<testcase classname="native_sim/native/64:weather_station.trace_recorder" name="weather_station.trace_recorder" time="0.02" />
-		<testcase classname="native_sim/native/64:weather_station.trace_recorder_shell" name="weather_station.trace_recorder_shell" time="0.01" />
-		<testcase classname="native_sim/native/64:weather_station.io_stream" name="weather_station.io_stream" time="0.01" />
+		<testcase classname="native_sim/native/64:weather_station.mqtt_publisher" name="weather_station.mqtt_publisher" time="0.03" />
+		<testcase classname="native_sim/native/64:weather_station.sensor_event" name="weather_station.sensor_event" time="0.02" />
+		<testcase classname="native_sim/native/64:weather_station.trace_recorder" name="weather_station.trace_recorder" time="0.01" />
+		<testcase classname="native_sim/native/64:weather_station.trace_recorder_shell" name="weather_station.trace_recorder_shell" time="0.02" />
+		<testcase classname="native_sim/native/64:weather_station.io_stream" name="weather_station.io_stream" time="0.02" />
 		<testcase classname="native_sim/native/64:weather_station.io_stream_flash" name="weather_station.io_stream_flash" time="0.02" />
 		<testcase classname="native_sim/native/64:weather_station.fake_sensors" name="weather_station.fake_sensors" time="0.01" />
-		<testcase classname="native_sim/native/64:weather_station.remote_sensor_uid" name="weather_station.remote_sensor_uid" time="0.05" />
-		<testcase classname="native_sim/native/64:weather_station.remote_sensor_manager" name="weather_station.remote_sensor_manager" time="0.06" />
-		<testcase classname="native_sim/native/64:weather_station.integration" name="weather_station.integration" time="51.76" />
-		<testcase classname="native_sim/native/64:weather_station.lora_session" name="weather_station.lora_session" time="0.05" />
-		<testcase classname="native_sim/native/64:weather_station.sensor_registry" name="weather_station.sensor_registry" time="0.01" />
-		<testcase classname="native_sim/native/64:weather_station.sensor_registry.user_meta" name="weather_station.sensor_registry.user_meta" time="0.02" />
-		<testcase classname="native_sim/native/64:weather_station.lora_packet" name="weather_station.lora_packet" time="0.01" />
-		<testcase classname="native_sim/native/64:weather_station.location_registry" name="weather_station.location_registry" time="0.03" />
+		<testcase classname="native_sim/native/64:weather_station.remote_sensor_uid" name="weather_station.remote_sensor_uid" time="0.07" />
+		<testcase classname="native_sim/native/64:weather_station.remote_sensor_manager" name="weather_station.remote_sensor_manager" time="0.05" />
+		<testcase classname="native_sim/native/64:weather_station.integration" name="weather_station.integration" time="54.36" />
+		<testcase classname="native_sim/native/64:weather_station.lora_session" name="weather_station.lora_session" time="0.06" />
+		<testcase classname="native_sim/native/64:weather_station.sensor_registry" name="weather_station.sensor_registry" time="0.03" />
+		<testcase classname="native_sim/native/64:weather_station.sensor_registry.user_meta" name="weather_station.sensor_registry.user_meta" time="0.04" />
+		<testcase classname="native_sim/native/64:weather_station.lora_packet" name="weather_station.lora_packet" time="0.03" />
+		<testcase classname="native_sim/native/64:weather_station.location_registry" name="weather_station.location_registry" time="0.04" />
 	</testsuite>
 </testsuites>

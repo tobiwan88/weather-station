@@ -82,14 +82,14 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l204">k_sleep (zephyr/include/zephyr/sleep.h:204)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="412">called 412 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="423">called 423 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l102">z_sleep_ticks_to_int32_ms (zephyr/include/zephyr/sleep.h:102)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="287">called 287 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="298">called 298 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
@@ -833,7 +833,7 @@
         <td class="lineno"><a id="l102" href="#l102">102</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">298</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="n">ALWAYS_INLINE</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">z_sleep_ticks_to_int32_ms</span><span class="p">(</span><span class="n">k_ticks_t</span><span class="w"> </span><span class="n">ticks</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -847,7 +847,7 @@
         <td class="lineno"><a id="l104" href="#l104">104</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">298</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">ticks</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -899,11 +899,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 4 not taken.</div>
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 287 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 298 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">287</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">298</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Z_SLEEP_MAX_TICKS</span><span class="p">(</span><span class="n">MSEC_PER_SEC</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="n">INT32_MAX</span><span class="w"> </span><span class="o">&amp;&amp;</span></td>
       </tr>
       <tr class="source-line">
@@ -987,7 +987,7 @@
         <td class="lineno"><a id="l123" href="#l123">123</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">298</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">int32_t</span><span class="p">)(</span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">z_tmcvt_divisor</span><span class="p">(</span><span class="n">MSEC_PER_SEC</span><span class="p">,</span><span class="w"> </span><span class="n">Z_SLEEP_TICK_HZ</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
@@ -1554,7 +1554,7 @@
         <td class="lineno"><a id="l204" href="#l204">204</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">412</td>
+        <td class="linecount coveredLine show_coveredLine">423</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="n">ALWAYS_INLINE</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">k_sleep</span><span class="p">(</span><span class="n">k_timeout_t</span><span class="w"> </span><span class="n">timeout</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -1568,7 +1568,7 @@
         <td class="lineno"><a id="l206" href="#l206">206</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">412</td>
+        <td class="linecount coveredLine show_coveredLine">423</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_ticks_t</span><span class="w"> </span><span class="n">ticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_sleep_ticks</span><span class="p">(</span><span class="n">timeout</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1592,11 +1592,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 4 not taken.</div>
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 287 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 298 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">287</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">298</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">K_TIMEOUT_EQ</span><span class="p">(</span><span class="n">timeout</span><span class="p">,</span><span class="w"> </span><span class="n">Z_FOREVER</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1624,7 +1624,7 @@
         <td class="lineno"><a id="l213" href="#l213">213</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">287</td>
+        <td class="linecount coveredLine show_coveredLine">298</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">z_sleep_ticks_to_int32_ms</span><span class="p">(</span><span class="n">ticks</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1991,7 +1991,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:58:06
+          at 2026-10-11 08:02:38
         </footer>
       </div>
     </div>

@@ -117,7 +117,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l484">zsock_freeaddrinfo (zephyr/subsys/net/lib/sockets/getaddrinfo.c:484)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="116">called 116 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="127">called 127 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">83.3%</div>
@@ -131,7 +131,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l444">zsock_getaddrinfo (zephyr/subsys/net/lib/sockets/getaddrinfo.c:444)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="121">called 121 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="132">called 132 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">93.3%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">81.2%</div>
@@ -3469,7 +3469,7 @@
         <td class="lineno"><a id="l444" href="#l444">444</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">121</td>
+        <td class="linecount coveredLine show_coveredLine">132</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">zsock_getaddrinfo</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">service</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -3499,19 +3499,19 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 119 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 130 times.</div>
               <div class="takenBranch">&check; Branch 3 &rightarrow; 6 taken 2 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">121</td>
+        <td class="linecount coveredLine show_coveredLine">132</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">socket_offload_dns_is_enabled</span><span class="p">())</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l449" href="#l449">449</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">119</td>
+        <td class="linecount coveredLine show_coveredLine">130</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">socket_offload_getaddrinfo</span><span class="p">(</span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">service</span><span class="p">,</span><span class="w"> </span><span class="n">hints</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -3784,7 +3784,7 @@
         <td class="lineno"><a id="l484" href="#l484">484</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">116</td>
+        <td class="linecount coveredLine show_coveredLine">127</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">zsock_freeaddrinfo</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">zsock_addrinfo</span><span class="w"> </span><span class="o">*</span><span class="n">ai</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -3800,26 +3800,26 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 115 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 126 times.</div>
               <div class="takenBranch">&check; Branch 3 &rightarrow; 6 taken 1 time.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">116</td>
+        <td class="linecount coveredLine show_coveredLine">127</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">socket_offload_dns_is_enabled</span><span class="p">())</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l487" href="#l487">487</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">115</td>
+        <td class="linecount coveredLine show_coveredLine">126</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">socket_offload_freeaddrinfo</span><span class="p">(</span><span class="n">ai</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l488" href="#l488">488</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">115</td>
+        <td class="linecount coveredLine show_coveredLine">126</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">return</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -4060,7 +4060,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:58:06
+          at 2026-10-11 08:02:38
         </footer>
       </div>
     </div>
