@@ -1,158 +1,70 @@
 ---
 name: dev-plan
-description: Use when the user asks to create an implementation plan, decompose a feature into subtasks, or produce a development plan for a weather-station feature. Produces file-allowlisted subtasks for parallel execution. Does not write code.
+description: Use when the user asks for an implementation plan, task breakdown or development plan for a weather-station feature. Writes a checkbox plan to docs/plans/ with file-allowlisted subtasks for implementer agents. Writes no code.
 argument-hint: "[REQ-file-path or feature description]"
 allowed-tools: Read, Write, Bash, Glob, Grep
 ---
 
-# Decompose a Feature into Implementation Subtasks
+# Plan a Feature as File-Allowlisted Subtasks
 
-Use this skill to **plan** a feature by decomposing it into independent,
-file-allowlisted subtasks that can execute in parallel. This agent does NOT
-write code — it only produces the plan.
+Plan only. Do not write code. Output: `docs/plans/YYYY-MM-DD-<slug>.md`, shaped by
+[`references/plan-template.md`](references/plan-template.md).
 
-The plan is consumed by `/dev-coordinate` (future) to dispatch each subtask.
+**Argument** (optional): `$0`, a REQ file path or a free-text description.
 
-**Argument received** (optional): `$0` — a REQ file path or free-text feature description.
+## 1. Clarify
 
----
+Read `$0` if it is a path. Find gaps: budgets (power, latency, memory), protocol choices,
+module boundaries (existing lib or new lib), error handling, init order. Ask all questions
+in ONE message and wait for answers before planning.
 
-## Step 0 — Understand the feature
+## 2. Read the code
 
-Read `$0`. If it's a file path, read the file. If it's free-text, use it directly.
+Ground the plan in the repo, not memory:
 
-Before building the plan, identify **ambiguities** and **missing constraints**:
+- `lib/` and `apps/`: existing code in the same domain; follow its Kconfig, SYS_INIT and zbus pattern.
+- `dts/bindings/`, `boards/`: DT nodes and overlays. `tests/`: the suite each subtask will run.
+- `CLAUDE.md`: banned patterns and the channel list. `docs/backlog.md` if the feature touches a deferred item.
+- `docs/adr/` only if a past decision seems relevant.
 
-- Power, latency, memory budgets
-- API / protocol choices not specified
-- Module boundaries (existing lib vs. new lib)
-- Error handling, edge cases, timing, initialization order
-- Conflicts with existing ADR constraints (check `docs/architecture/architecture-constraints.md`)
+## 3. Decompose
 
-Ask clarifying questions for anything underspecified. Ask **all questions in ONE message**.
-Do not produce a plan until questions are answered.
+A subtask is independent when no other subtask touches its files and it has no compile-time
+dependency on another's output. Each subtask:
 
----
+- Touches 1–5 files, has one goal, and fits one implementer session.
+- Lists its files exactly. The allowlist is a hard boundary; needing another file means revising the plan.
+- Puts ztest unit tests in its own files. Pytest, SIL and HIL tests are never in a subtask.
+- Has an acceptance command run through `scripts/ws.sh`, for example:
+  - build: `scripts/ws.sh 'west build -b native_sim/native/64 -d build/native_sim_native_64/gateway weather-station/apps/gateway'`
+  - suite: `scripts/ws.sh 'west twister -p native_sim/native/64 -T weather-station/tests/<module> --inline-logs -v -N'`
+- Is self-contained, because the implementer receives only that subtask block.
+- Keeps the plan to ≤ 5 subtasks. A new zbus channel needs an ADR first (`/adr`).
 
-## Step 1 — Load context
+Draw a dependency graph (`──►` waits for, `──` runs in parallel). List every file touched by
+more than one subtask; each one forces a dependency or a reshuffle. Otherwise write "No conflicts".
 
-Read these in parallel:
+## 4. Review the draft
 
-1. The REQ file (if `$0` is a path)
-2. `docs/architecture/architecture-constraints.md` — ADR-derived implementation constraints
-3. All ADRs referenced from the REQ — read the full `.md` file from `docs/adr/`
-4. `docs/architecture/README.md` — jump to relevant architecture docs for the feature domain
-5. `CLAUDE.md` — coding conventions, banned patterns, library catalog
-6. Search `lib/` for existing code in the same domain (e.g., for a new sensor driver,
-   search for existing I2C or fake sensor patterns to follow)
-7. Search `dts/bindings/` for relevant DTS bindings
+Show the full plan in chat and ask: "Anything to add, remove, reorder or clarify before I
+write it to disk?" Do not write before confirmation.
 
----
-
-## Step 2 — Decompose into independent subtasks
-
-A subtask is **independent** if it meets **all** of:
-
-- Touches **different files** from other subtasks
-- Has **no compile-time dependency** on another subtask's output
-- Has no runtime dependency (it can be written/coded independently — runtime integration
-  is verified later)
-
-Each subtask must:
-- Touch **1–5 files** max
-- Have a **single clear responsibility**
-- Be completable in **one agent session**
-
-For each subtask, produce a YAML block. See [`references/subtask-yaml-format`](references/subtask-yaml-format) for the complete format specification and rules.
-
-**Rules:**
-- New files → `files_to_create`. Modifications to existing files → `files_to_modify`.
-- Unit tests (ztest) **may** be included in `files_to_create` alongside the code they test.
-- Integration/E2E/system-level tests (pytest, SIL, HIL) are **never** in either field —
-  they have a separate workflow.
-- If the feature requires a **new zbus channel**, flag it explicitly — this needs an ADR.
-- Keep subtask count **≤ 5** for a typical REQ.
-- File allowlists are **hard boundaries**. If a subtask needs a file not listed,
-  the plan must be revised.
-
----
-
-## Step 3 — Generate dependency graph
-
-Produce a text-based graph:
-
-```
-IMPL-001 (new module + unit tests) ──┐
-IMPL-002 (DT binding)               ──┼──► IMPL-004 (integration test)
-IMPL-003 (Kconfig wiring)            ──┘
-```
-
-- `──►` means "must wait for"
-- `──` means "can run in parallel with the adjacent node(s)"
-
----
-
-## Step 4 — Flag file conflicts
-
-List any files touched by more than one subtask. These **must** become sequential
-dependencies or the plan must be reshuffled. Include the conflicting subtask IDs
-and the shared file path.
-
-If no files are touched by more than one subtask: "**No conflicts.**"
-
----
-
-## Step 5 — Present the draft for discussion
-
-Present the complete plan using the template in [`references/plan-template`](references/plan-template). Do **not** write to disk yet.
-
-Ask:
-> "Does this plan look right? Anything to add, remove, reorder, or clarify before I
-> write it to disk?"
-
-Incorporate changes. Repeat until the user confirms.
-
----
-
-## Step 6 — Write the plan file
-
-Create the `docs/plans/` directory if it doesn't exist:
+## 5. Write the plan
 
 ```bash
-mkdir -p docs/plans
+mkdir -p docs/plans && date +%F
 ```
 
-Derive a **kebab-case feature slug** from the title. Use only lowercase letters, digits,
-and hyphens.
+File: `docs/plans/YYYY-MM-DD-<slug>.md`, with `<slug>` in lowercase letters, digits and hyphens.
+Use `- [ ]` checkboxes on every subtask and done-criterion so progress can be ticked in place.
 
-File path: `docs/plans/impl-plan-<feature-slug>-YYYY-MM-DD.md`
+## 6. Hand off
 
-Write the confirmed draft to disk.
+Report the path. Run each subtask in this loop:
 
----
+1. Give the subtask block to the `implementer` agent (Haiku). It edits only the listed files and runs the acceptance command.
+2. Run the acceptance command yourself and confirm the result.
+3. Give the diff to the `reviewer` agent (Sonnet, read-only).
+4. Fix the findings, re-run the acceptance command, then tick the checkbox.
 
-## Step 7 — Notify the user
-
-Report the written plan path and suggest next steps:
-
-> "Plan written to `docs/plans/impl-plan-<slug>-YYYY-MM-DD.md`. When ready,
-> `/dev-coordinate` will dispatch each subtask. Run `/build-and-test` after each
-> subtask completes."
-
----
-
-## Red Flags — STOP and re-check
-
-| Feeling | Reality |
-|---------|---------|
-| "This is simple, I can plan it in my head" | Without a written plan, subtasks will overlap files and cause merge pain. Write it. |
-| "All subtasks are sequential anyway" | Almost always false. Look harder for independent slices (DT binding vs. test vs. Kconfig). |
-| "I'll figure out the files as I go" | File allowlists are the core output. Without them, the plan is useless. |
-| "7 subtasks is fine, it's a big REQ" | A 7-subtask REQ contains hidden coupling. Split into two plans. |
-| "This feature doesn't need an ADR" | If it introduces a new channel, pattern, or library type, it likely does. Check the threshold rules. |
-
-## Next steps
-
-After the plan is confirmed and written:
-- If a new zbus channel or pattern is introduced → invoke `/adr` before implementation
-- When ready to implement → follow `/build-and-test` after each subtask
+After all subtasks pass, run `/build-and-test` and commit per CLAUDE.md.

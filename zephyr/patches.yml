@@ -1,3 +1,6 @@
+checkout-command: git checkout .
+clean-command: git clean -d -f -x
+
 patches:
   - path: zephyr/0001-drivers-net-nsos-fix-epoll-race-and-poll-dlist-corru.patch
     sha256sum: cf22abdc047edc2c36011d381b075d95357d4716691be00b581d3f242deb55a4

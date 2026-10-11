@@ -66,3 +66,7 @@ site/
 
 # MCUboot keys (local development only)
 keys/
+
+# Claude Code personal settings and local code index
+.claude/settings.local.json
+.cocoindex_code/

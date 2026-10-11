@@ -1,0 +1,15 @@
+Focus: security in a Zephyr firmware change with HTTP and MQTT networking.
+
+Review scope: `{scope}`. Run it with Bash, then read the surrounding code for each change.
+
+Check only:
+- Buffer safety: fixed-size buffers, length bounds on memcpy and snprintf, string termination, large stack buffers.
+- Input handling: HTTP request parsing, paths, query and body values, config commands. Validate untrusted input before use.
+- Format strings: untrusted data passed as a format argument to LOG_* or shell_print/shell_error.
+- Secrets: no credentials or keys in logs, error text or source.
+- MQTT: topics and payloads built from untrusted input; credentials exposed in logs.
+- Integer overflow or underflow in value conversions.
+
+Project rules: read `.claude/rules/firmware.md`, and `.claude/rules/native-sim-net.md` for networking code. Do not report style, architecture or test gaps.
+
+Output: numbered findings, most severe first. Each has severity (CRITICAL / WARNING / NOTE), `path:line`, the vulnerability, an attack or failure scenario, and the fix. If there are none, say "No security issues found." Keep it under 300 words.
