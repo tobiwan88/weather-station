@@ -36,8 +36,7 @@ nav:
     - Firmware Update: architecture/firmware-update.md
     - LoRa Protocol: architecture/lora-protocol.md
     - Diagrams: architecture/diagrams.md
-  - ADR:
-    - adr/README.md
+  - Decisions: decisions.md
   - Backlog: backlog.md
   - Footprint: https://tobiwan88.github.io/weather-station/dev/bench/
 

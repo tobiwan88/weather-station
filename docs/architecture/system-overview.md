@@ -1,6 +1,6 @@
 # System Overview
 
-> Design rationale: [ADR-001](../adr/ADR-001-repo-and-workspace-structure.md), [ADR-007](../adr/ADR-007-gateway-display-combined.md), [ADR-008](../adr/ADR-008-kconfig-app-composition.md), [ADR-009](../adr/ADR-009-native-sim-first.md).
+> Design rationale: [decisions](../decisions.md).
 
 ## Goals
 
