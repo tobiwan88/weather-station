@@ -114,11 +114,20 @@ const char *sensor_type_to_unit(enum sensor_type t);
 
 /**
  * @brief Encode a temperature in degrees Celsius to Q31.
+ *
+ * Out-of-range and NaN inputs are clamped to the encoding ends (0 or INT32_MAX).
+ *
  * @param t_c Temperature in °C (range -40 .. +85).
  * @return Q31 encoded value.
  */
 static inline int32_t temperature_c_to_q31(double t_c)
 {
+	if (!(t_c >= -40.0)) {
+		return 0;
+	}
+	if (t_c >= 85.0) {
+		return INT32_MAX;
+	}
 	return (int32_t)((t_c + 40.0) / 125.0 * (double)INT32_MAX);
 }
 
@@ -134,11 +143,20 @@ static inline double q31_to_temperature_c(int32_t q31)
 
 /**
  * @brief Encode a relative humidity percentage to Q31.
+ *
+ * Out-of-range and NaN inputs are clamped to the encoding ends (0 or INT32_MAX).
+ *
  * @param h_pct Humidity in %RH (range 0 .. 100).
  * @return Q31 encoded value.
  */
 static inline int32_t humidity_pct_to_q31(double h_pct)
 {
+	if (!(h_pct >= 0.0)) {
+		return 0;
+	}
+	if (h_pct >= 100.0) {
+		return INT32_MAX;
+	}
 	return (int32_t)(h_pct / 100.0 * (double)INT32_MAX);
 }
 
@@ -232,8 +250,8 @@ static inline double q31_to_voc_iaq(int32_t q31)
  */
 static inline int32_t pressure_hpa_to_q31(double hpa)
 {
-	if (hpa <= 300.0) {
-		return INT32_MIN;
+	if (!(hpa > 300.0)) { /* also catches NaN */
+		return 0;
 	}
 	if (hpa >= 1100.0) {
 		return INT32_MAX;
@@ -264,8 +282,8 @@ static inline double q31_to_pressure_hpa(int32_t q31)
  */
 static inline int32_t gas_resistance_ohm_to_q31(double ohms)
 {
-	if (ohms <= 1000.0) {
-		return INT32_MIN;
+	if (!(ohms > 1000.0)) { /* also catches NaN */
+		return 0;
 	}
 	if (ohms >= 10000000.0) {
 		return INT32_MAX;

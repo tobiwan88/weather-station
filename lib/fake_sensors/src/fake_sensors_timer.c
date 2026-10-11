@@ -21,17 +21,32 @@
 LOG_MODULE_REGISTER(fake_sensors_timer, CONFIG_FAKE_SENSORS_LOG_LEVEL);
 
 static void auto_timer_cb(struct k_timer *timer);
+static void auto_work_fn(struct k_work *work);
 
 K_TIMER_DEFINE(g_auto_timer, auto_timer_cb, NULL);
+static K_WORK_DEFINE(g_auto_work, auto_work_fn);
 
+/* Timer expiry runs in ISR/system-clock context. zbus listeners run in the
+ * publisher's context, so the publish is deferred to the system workqueue.
+ */
 static void auto_timer_cb(struct k_timer *timer)
 {
 	ARG_UNUSED(timer);
+	k_work_submit(&g_auto_work);
+}
+
+static void auto_work_fn(struct k_work *work)
+{
+	ARG_UNUSED(work);
 	struct sensor_trigger_event trig = {
 		.source = TRIGGER_SOURCE_TIMER,
 		.target_uid = 0,
 	};
-	zbus_chan_pub(&sensor_trigger_chan, &trig, K_NO_WAIT);
+	int rc = zbus_chan_pub(&sensor_trigger_chan, &trig, K_MSEC(100));
+
+	if (rc != 0) {
+		LOG_WRN("auto-publish failed: %d", rc);
+	}
 }
 
 void fake_sensors_set_auto_publish_ms(uint32_t ms)
@@ -41,6 +56,9 @@ void fake_sensors_set_auto_publish_ms(uint32_t ms)
 		LOG_INF("auto-publish interval set to %u ms", ms);
 	} else {
 		k_timer_stop(&g_auto_timer);
+		struct k_work_sync sync;
+
+		k_work_cancel_sync(&g_auto_work, &sync);
 		LOG_INF("auto-publish disabled");
 	}
 }

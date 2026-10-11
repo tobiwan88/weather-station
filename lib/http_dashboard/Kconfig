@@ -31,6 +31,19 @@ config HTTP_DASHBOARD_MAX_SENSORS
 	default 16
 	depends on HTTP_DASHBOARD
 
+config HTTP_DASHBOARD_JSON_BUF_SIZE
+	int "Output buffer for GET /api/data (bytes)"
+	default 30720
+	range 2048 65536
+	depends on HTTP_DASHBOARD
+	help
+	  Worst-case /api/data size with the default MAX_SENSORS (16) and
+	  HISTORY_SIZE (20), with user metadata enabled:
+	    per slot = 95 + 6 * (NAME_LEN + LOCATION_LEN + DESC_LEN) + HISTORY_SIZE * 48
+	             = 95 + 6 * (32 + 32 + 64) + 20 * 48 = 1823 bytes
+	    total    = MAX_SENSORS * per_slot + 15      = 29183 bytes
+	  Rounded up to 30 KiB. Responses that do not fit return HTTP 500.
+
 config HTTP_DASHBOARD_AUTH
 	bool "Enable username/password login and bearer token authentication"
 	depends on HTTP_DASHBOARD

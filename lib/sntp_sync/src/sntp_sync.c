@@ -15,6 +15,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/net/sntp.h>
 #include <zephyr/sys/clock.h>
+#include <zephyr/sys/time_units.h>
 
 #include <sntp_sync/sntp_sync.h>
 
@@ -62,7 +63,7 @@ static int do_sntp_sync(void)
 
 	struct timespec ts = {
 		.tv_sec = (time_t)sntp_time.seconds,
-		.tv_nsec = ((long)sntp_time.fraction * 1000000000LL) >> 32,
+		.tv_nsec = (long)(((uint64_t)sntp_time.fraction * NSEC_PER_SEC) >> 32),
 	};
 
 	rc = sys_clock_settime(SYS_CLOCK_REALTIME, &ts);

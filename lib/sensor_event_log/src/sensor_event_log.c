@@ -23,6 +23,17 @@
 
 LOG_MODULE_REGISTER(sensor_event_log, CONFIG_SENSOR_EVENT_LOG_LOG_LEVEL);
 
+/*
+ * The gateway build does not enable FP printf for logs, so values are
+ * converted to scaled integers here and printed with integer formats only.
+ */
+static int32_t scaled_round(double v, double scale)
+{
+	double s = v * scale;
+
+	return (int32_t)(s >= 0.0 ? s + 0.5 : s - 0.5);
+}
+
 static void sensor_event_log_cb(const struct zbus_channel *chan)
 {
 	const struct env_sensor_data *evt = zbus_chan_const_msg(chan);
@@ -33,24 +44,36 @@ static void sensor_event_log_cb(const struct zbus_channel *chan)
 	int ms = (int)(ts % 1000);
 
 	switch (evt->type) {
-	case SENSOR_TYPE_TEMPERATURE:
-		LOG_INF("[%02d:%02d:%02d.%03d]  0x%04x  TEMP  %7.2f °C", hh, mm, ss, ms,
-			evt->sensor_uid, q31_to_temperature_c(evt->q31_value));
+	case SENSOR_TYPE_TEMPERATURE: {
+		int32_t centi = scaled_round(q31_to_temperature_c(evt->q31_value), 100.0);
+		uint32_t a = (uint32_t)(centi < 0 ? -centi : centi);
+
+		LOG_INF("[%02d:%02d:%02d.%03d]  0x%08x  TEMP  %s%u.%02u °C", hh, mm, ss, ms,
+			evt->sensor_uid, centi < 0 ? "-" : "", a / 100U, a % 100U);
 		break;
-	case SENSOR_TYPE_HUMIDITY:
-		LOG_INF("[%02d:%02d:%02d.%03d]  0x%04x  HUM   %6.1f %%RH", hh, mm, ss, ms,
-			evt->sensor_uid, q31_to_humidity_pct(evt->q31_value));
+	}
+	case SENSOR_TYPE_HUMIDITY: {
+		int32_t deci = scaled_round(q31_to_humidity_pct(evt->q31_value), 10.0);
+		uint32_t a = (uint32_t)(deci < 0 ? -deci : deci);
+
+		LOG_INF("[%02d:%02d:%02d.%03d]  0x%08x  HUM   %s%u.%u %%RH", hh, mm, ss, ms,
+			evt->sensor_uid, deci < 0 ? "-" : "", a / 10U, a % 10U);
 		break;
+	}
 	case SENSOR_TYPE_CO2:
-		LOG_INF("[%02d:%02d:%02d.%03d]  0x%08x  CO2   %6.0f ppm", hh, mm, ss, ms,
-			evt->sensor_uid, q31_to_co2_ppm(evt->q31_value));
+		LOG_INF("[%02d:%02d:%02d.%03d]  0x%08x  CO2   %d ppm", hh, mm, ss, ms,
+			evt->sensor_uid, scaled_round(q31_to_co2_ppm(evt->q31_value), 1.0));
 		break;
-	case SENSOR_TYPE_VOC:
-		LOG_INF("[%02d:%02d:%02d.%03d]  0x%08x  VOC   %6.1f IAQ", hh, mm, ss, ms,
-			evt->sensor_uid, q31_to_voc_iaq(evt->q31_value));
+	case SENSOR_TYPE_VOC: {
+		int32_t deci = scaled_round(q31_to_voc_iaq(evt->q31_value), 10.0);
+		uint32_t a = (uint32_t)(deci < 0 ? -deci : deci);
+
+		LOG_INF("[%02d:%02d:%02d.%03d]  0x%08x  VOC   %s%u.%u IAQ", hh, mm, ss, ms,
+			evt->sensor_uid, deci < 0 ? "-" : "", a / 10U, a % 10U);
 		break;
+	}
 	default:
-		LOG_INF("[%02d:%02d:%02d.%03d]  0x%04x  type=%-3d  q31=0x%08x", hh, mm, ss, ms,
+		LOG_INF("[%02d:%02d:%02d.%03d]  0x%08x  type=%-3d  q31=0x%08x", hh, mm, ss, ms,
 			evt->sensor_uid, evt->type, (uint32_t)evt->q31_value);
 		break;
 	}

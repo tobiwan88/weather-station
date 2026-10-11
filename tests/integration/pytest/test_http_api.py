@@ -255,12 +255,10 @@ def test_api_config_endpoint_returns_json(authed_harness):
 
 
 @pytest.mark.http
-def test_api_config_includes_api_token(authed_harness):
-    """``GET /api/config`` must include the ``api_token`` field (32 hex chars)."""
+def test_api_config_omits_api_token(authed_harness):
+    """``GET /api/config`` must not leak the bearer token (rotate/shell only)."""
     config = authed_harness.get_config()
-    assert "api_token" in config, f"Missing 'api_token' in /api/config: {config}"
-    assert len(config["api_token"]) == 32, (
-        f"Unexpected api_token length: {len(config['api_token'])}")
+    assert "api_token" not in config, f"'api_token' must not be served by /api/config: {config}"
 
 
 @pytest.mark.http
