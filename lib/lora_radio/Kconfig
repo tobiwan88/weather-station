@@ -38,7 +38,8 @@ config LORA_RADIO_DEV_NAME
 config LORA_RADIO_FOTA
 	bool "FOTA over LoRa"
 	depends on IMG_MANAGER
-	depends on FLASH_MAP
+	select IO_STREAM
+	select IO_STREAM_FLASH
 	help
 	  Relays sensor-node firmware images over LoRa using windowed ACK
 	  protocol. Sensor node stores received image in MCUboot slot 1.
