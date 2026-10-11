@@ -131,7 +131,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l311">net_route_table_init (zephyr/subsys/net/ip/route.c:311)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="136">called 136 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="148">called 148 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -2450,7 +2450,7 @@
         <td class="lineno"><a id="l311" href="#l311">311</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">net_route_table_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_route_table</span><span class="w"> </span><span class="o">*</span><span class="n">table</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -2485,14 +2485,14 @@
         <td class="lineno"><a id="l316" href="#l316">316</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">memset</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">entries</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">entry_count</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l317" href="#l317">317</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">memset</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">table</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
@@ -2506,42 +2506,42 @@
         <td class="lineno"><a id="l319" href="#l319">319</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">table</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l320" href="#l320">320</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_work_init_delayable</span><span class="p">(</span><span class="o">&amp;</span><span class="n">table</span><span class="o">-&gt;</span><span class="n">route_lifetime_timer</span><span class="p">,</span><span class="w"> </span><span class="n">route_lifetime_timeout</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l321" href="#l321">321</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">table</span><span class="o">-&gt;</span><span class="n">entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entries</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l322" href="#l322">322</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">table</span><span class="o">-&gt;</span><span class="n">entry_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entry_count</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l323" href="#l323">323</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">table</span><span class="o">-&gt;</span><span class="n">ops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ops</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l324" href="#l324">324</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -4735,7 +4735,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 08:56:26
+          at 2026-10-11 12:10:25
         </footer>
       </div>
     </div>

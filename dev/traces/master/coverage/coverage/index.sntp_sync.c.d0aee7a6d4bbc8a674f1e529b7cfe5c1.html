@@ -75,7 +75,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l52">do_sntp_sync (weather-station/lib/sntp_sync/src/sntp_sync.c:52)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="69">called 69 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="75">called 75 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">86.7%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">46.4%</div>
@@ -103,7 +103,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l88">sntp_thread_fn (weather-station/lib/sntp_sync/src/sntp_sync.c:88)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="68">called 68 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="74">called 74 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">54.5%</div>
@@ -497,7 +497,7 @@
         <td class="lineno"><a id="l52" href="#l52">52</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">75</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">do_sntp_sync</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -532,7 +532,7 @@
         <td class="lineno"><a id="l57" href="#l57">57</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">75</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sntp_simple</span><span class="p">(</span><span class="n">CONFIG_SNTP_SYNC_SERVER</span><span class="p">,</span><span class="w"> </span><span class="n">CONFIG_SNTP_SYNC_TIMEOUT_MS</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sntp_time</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -542,11 +542,11 @@
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
               <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 1 time.</div>
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 11 taken 64 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 11 taken 72 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">73</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -588,21 +588,21 @@
         <td class="lineno"><a id="l64" href="#l64">64</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">64</td>
+        <td class="linecount coveredLine show_coveredLine">72</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">timespec</span><span class="w"> </span><span class="n">ts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l65" href="#l65">65</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">64</td>
+        <td class="linecount coveredLine show_coveredLine">72</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="p">.</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">time_t</span><span class="p">)</span><span class="n">sntp_time</span><span class="p">.</span><span class="n">seconds</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l66" href="#l66">66</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">64</td>
+        <td class="linecount coveredLine show_coveredLine">72</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="p">.</span><span class="n">tv_nsec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">long</span><span class="p">)(((</span><span class="kt">uint64_t</span><span class="p">)</span><span class="n">sntp_time</span><span class="p">.</span><span class="n">fraction</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">NSEC_PER_SEC</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">32</span><span class="p">),</span></td>
       </tr>
       <tr class="source-line">
@@ -623,7 +623,7 @@
         <td class="lineno"><a id="l69" href="#l69">69</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">64</td>
+        <td class="linecount coveredLine show_coveredLine">72</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sys_clock_settime</span><span class="p">(</span><span class="n">SYS_CLOCK_REALTIME</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ts</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -633,11 +633,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 12 &rightarrow; 13 not taken.</div>
-              <div class="takenBranch">&check; Branch 12 &rightarrow; 20 taken 64 times.</div>
+              <div class="takenBranch">&check; Branch 12 &rightarrow; 20 taken 72 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">64</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">72</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -672,14 +672,14 @@
         <td class="lineno"><a id="l75" href="#l75">75</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">64</td>
+        <td class="linecount coveredLine show_coveredLine">72</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">atomic_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">synced</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l76" href="#l76">76</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">64</td>
+        <td class="linecount coveredLine show_coveredLine">72</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">LOG_INF</span><span class="p">(</span><span class="s">&quot;sntp_sync: synced to %s, epoch=%lld&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">CONFIG_SNTP_SYNC_SERVER</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -693,7 +693,7 @@
         <td class="lineno"><a id="l78" href="#l78">78</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">64</td>
+        <td class="linecount coveredLine show_coveredLine">72</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -763,7 +763,7 @@
         <td class="lineno"><a id="l88" href="#l88">88</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">sntp_thread_fn</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">p3</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -812,7 +812,7 @@
         <td class="lineno"><a id="l95" href="#l95">95</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">do_sntp_sync</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
@@ -861,7 +861,7 @@
         <td class="lineno"><a id="l102" href="#l102">102</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">73</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">k_sem_take</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sntp_trigger_sem</span><span class="p">,</span><span class="w"> </span><span class="n">K_SECONDS</span><span class="p">(</span><span class="n">CONFIG_SNTP_SYNC_RESYNC_INTERVAL_S</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
@@ -1074,7 +1074,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 08:56:43
+          at 2026-10-11 12:10:38
         </footer>
       </div>
     </div>

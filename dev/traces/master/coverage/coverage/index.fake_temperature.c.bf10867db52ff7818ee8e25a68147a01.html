@@ -75,7 +75,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l142">fake_temp_init (weather-station/lib/fake_sensors/src/fake_temperature.c:142)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="69">called 69 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="75">called 75 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">13.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">42.9%</div>
@@ -96,7 +96,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l102">fake_temp_trigger_cb (weather-station/lib/fake_sensors/src/fake_temperature.c:102)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="85">called 85 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="91">called 91 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">88.9%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">46.9%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">64.0%</div>
@@ -890,7 +890,7 @@
         <td class="lineno"><a id="l102" href="#l102">102</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">85</td>
+        <td class="linecount coveredLine show_coveredLine">91</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">fake_temp_trigger_cb</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">zbus_channel</span><span class="w"> </span><span class="o">*</span><span class="n">chan</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -904,7 +904,7 @@
         <td class="lineno"><a id="l104" href="#l104">104</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">85</td>
+        <td class="linecount coveredLine show_coveredLine">91</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_trigger_event</span><span class="w"> </span><span class="o">*</span><span class="n">trig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zbus_chan_const_msg</span><span class="p">(</span><span class="n">chan</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -922,8 +922,8 @@
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 24 &rightarrow; 25 not taken.</div>
               <div class="takenBranch">&check; Branch 24 &rightarrow; 26 taken 18 times.</div>
-              <div class="takenBranch">&check; Branch 25 &rightarrow; 4 taken 456 times.</div>
-              <div class="takenBranch">&check; Branch 25 &rightarrow; 26 taken 76 times.</div>
+              <div class="takenBranch">&check; Branch 25 &rightarrow; 4 taken 492 times.</div>
+              <div class="takenBranch">&check; Branch 25 &rightarrow; 26 taken 82 times.</div>
               <div class="takenBranch">&check; Branch 25 &rightarrow; 27 taken 9 times.</div>
               <div class="takenBranch">&check; Branch 26 &rightarrow; 4 taken 12 times.</div>
               <div class="takenBranch">&check; Branch 26 &rightarrow; 27 taken 6 times.</div>
@@ -932,7 +932,7 @@
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">559</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">601</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="n">STRUCT_SECTION_FOREACH</span><span class="p">(</span><span class="n">fake_sensor_entry</span><span class="p">,</span><span class="w"> </span><span class="n">entry</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -948,19 +948,19 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 313 times.</div>
-              <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 161 times.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 337 times.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 6 taken 173 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">474</td>
+        <td class="linecount coveredLine show_coveredLine">510</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">entry</span><span class="o">-&gt;</span><span class="n">kind</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">FAKE_SENSOR_KIND_TEMPERATURE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l109" href="#l109">109</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">313</td>
+        <td class="linecount coveredLine show_coveredLine">337</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="k">continue</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -977,13 +977,13 @@
             <summary class="linebranchSummary">1/4</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 6 &rightarrow; 7 not taken.</div>
-              <div class="takenBranch">&check; Branch 6 &rightarrow; 9 taken 161 times.</div>
+              <div class="takenBranch">&check; Branch 6 &rightarrow; 9 taken 173 times.</div>
               <div class="notTakenBranch">&cross; Branch 7 &rightarrow; 8 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 7 &rightarrow; 9 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">161</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">173</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">trig</span><span class="o">-&gt;</span><span class="n">target_uid</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">trig</span><span class="o">-&gt;</span><span class="n">target_uid</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">entry</span><span class="o">-&gt;</span><span class="n">uid</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1008,13 +1008,13 @@
             <div class="linebranchContents">
               <div class="takenBranch">&check; Branch 9 &rightarrow; 10 taken 6 times.</div>
               <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 11 not taken.</div>
-              <div class="takenBranch">&check; Branch 10 &rightarrow; 11 taken 155 times.</div>
+              <div class="takenBranch">&check; Branch 10 &rightarrow; 11 taken 167 times.</div>
               <div class="notTakenBranch">&cross; Branch 10 &rightarrow; 12 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 15 &rightarrow; 16 not taken.</div>
               <div class="takenBranch">&check; Branch 15 &rightarrow; 22 taken 6 times.</div>
               <div class="notTakenBranch">&cross; Branch 16 &rightarrow; 17 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 16 &rightarrow; 18 not taken.</div>
-              <div class="takenBranch">&check; Branch 16 &rightarrow; 23 taken 155 times.</div>
+              <div class="takenBranch">&check; Branch 16 &rightarrow; 23 taken 167 times.</div>
               <div class="notTakenBranch">&cross; Branch 17 &rightarrow; 18 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 17 &rightarrow; 19 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 17 &rightarrow; 23 not taken.</div>
@@ -1026,7 +1026,7 @@
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">161</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">173</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="n">FAKE_TEMP_PUBLISH</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1040,7 +1040,7 @@
         <td class="lineno"><a id="l116" href="#l116">116</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">85</td>
+        <td class="linecount coveredLine show_coveredLine">91</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -1222,7 +1222,7 @@
         <td class="lineno"><a id="l142" href="#l142">142</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">75</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fake_temp_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -1243,7 +1243,7 @@
         <td class="lineno"><a id="l145" href="#l145">145</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">75</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zbus_chan_add_obs</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sensor_trigger_chan</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fake_temp_listener</span><span class="p">,</span><span class="w"> </span><span class="n">K_NO_WAIT</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1260,11 +1260,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 4 not taken.</div>
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 11 taken 69 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 11 taken 75 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">69</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">75</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1309,7 +1309,7 @@
             <summary class="linebranchSummary">2/21</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 12 &rightarrow; 13 not taken.</div>
-              <div class="takenBranch">&check; Branch 12 &rightarrow; 20 taken 69 times.</div>
+              <div class="takenBranch">&check; Branch 12 &rightarrow; 20 taken 75 times.</div>
               <div class="notTakenBranch">&cross; Branch 13 &rightarrow; 14 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 13 &rightarrow; 20 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 14 &rightarrow; 15 not taken.</div>
@@ -1320,7 +1320,7 @@
               <div class="notTakenBranch">&cross; Branch 16 &rightarrow; 17 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 16 &rightarrow; 18 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 21 &rightarrow; 22 not taken.</div>
-              <div class="takenBranch">&check; Branch 21 &rightarrow; 29 taken 67 times.</div>
+              <div class="takenBranch">&check; Branch 21 &rightarrow; 29 taken 73 times.</div>
               <div class="notTakenBranch">&cross; Branch 22 &rightarrow; 23 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 22 &rightarrow; 29 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 23 &rightarrow; 24 not taken.</div>
@@ -1332,7 +1332,7 @@
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">69</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">75</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="n">LISTIFY</span><span class="p">(</span><span class="n">NUM_TEMP_INST</span><span class="p">,</span><span class="w"> </span><span class="n">FAKE_TEMP_REGISTRY_REGISTER</span><span class="p">,</span><span class="w"> </span><span class="p">())</span></td>
       </tr>
       <tr class="source-line">
@@ -1353,7 +1353,7 @@
         <td class="lineno"><a id="l156" href="#l156">156</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">75</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_trigger_event</span><span class="w"> </span><span class="n">startup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1381,7 +1381,7 @@
         <td class="lineno"><a id="l160" href="#l160">160</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">75</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">zbus_chan_pub</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sensor_trigger_chan</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">startup</span><span class="p">,</span><span class="w"> </span><span class="n">K_MSEC</span><span class="p">(</span><span class="mi">100</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
@@ -1395,14 +1395,14 @@
         <td class="lineno"><a id="l162" href="#l162">162</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">75</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">LOG_INF</span><span class="p">(</span><span class="s">&quot;fake_temperature: init done&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l163" href="#l163">163</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">75</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1440,7 +1440,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 08:56:43
+          at 2026-10-11 12:10:38
         </footer>
       </div>
     </div>

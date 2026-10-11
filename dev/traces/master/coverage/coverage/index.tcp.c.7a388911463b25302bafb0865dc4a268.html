@@ -215,7 +215,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l4902">net_tcp_init (zephyr/subsys/net/ip/tcp.c:4902)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="67">called 67 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="73">called 73 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">37.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">57.1%</div>
@@ -35252,7 +35252,7 @@
         <td class="lineno"><a id="l4902" href="#l4902">4902</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">67</td>
+        <td class="linecount coveredLine show_coveredLine">73</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">net_tcp_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -35343,7 +35343,7 @@
         <td class="lineno"><a id="l4915" href="#l4915">4915</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">67</td>
+        <td class="linecount coveredLine show_coveredLine">73</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_work_queue_start</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tcp_work_q</span><span class="p">,</span><span class="w"> </span><span class="n">work_q_stack</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -35378,14 +35378,14 @@
         <td class="lineno"><a id="l4920" href="#l4920">4920</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">67</td>
+        <td class="linecount coveredLine show_coveredLine">73</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">tcp_max_timeout_ms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l4921" href="#l4921">4921</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">67</td>
+        <td class="linecount coveredLine show_coveredLine">73</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">rto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tcp_rto</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -35394,26 +35394,26 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 5 &rightarrow; 4 taken 603 times.</div>
-              <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 67 times.</div>
+              <div class="takenBranch">&check; Branch 5 &rightarrow; 4 taken 657 times.</div>
+              <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 73 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">670</td>
+        <td class="linecount coveredLine show_coveredLine">730</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">tcp_retries</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l4923" href="#l4923">4923</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">603</td>
+        <td class="linecount coveredLine show_coveredLine">657</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">tcp_max_timeout_ms</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">rto</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l4924" href="#l4924">4924</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">603</td>
+        <td class="linecount coveredLine show_coveredLine">657</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">rto</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">rto</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -35434,7 +35434,7 @@
         <td class="lineno"><a id="l4927" href="#l4927">4927</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">67</td>
+        <td class="linecount coveredLine show_coveredLine">73</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">tcp_max_timeout_ms</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">tcp_rto</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -35462,7 +35462,7 @@
         <td class="lineno"><a id="l4931" href="#l4931">4931</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">67</td>
+        <td class="linecount coveredLine show_coveredLine">73</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">tcp_max_timeout_ms</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">tcp_max_timeout_ms</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -35483,7 +35483,7 @@
         <td class="lineno"><a id="l4934" href="#l4934">4934</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">67</td>
+        <td class="linecount coveredLine show_coveredLine">73</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_thread_name_set</span><span class="p">(</span><span class="n">tcp_work_q</span><span class="p">.</span><span class="n">thread_id</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tcp_work&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -35493,7 +35493,7 @@
             <summary class="linebranchSummary">1/6</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 9 not taken.</div>
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 15 taken 67 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 15 taken 73 times.</div>
               <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 10 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 15 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 10 &rightarrow; 11 not taken.</div>
@@ -35501,14 +35501,14 @@
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">67</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">73</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="n">NET_DBG</span><span class="p">(</span><span class="s">&quot;Workq started. Thread ID: %p&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tcp_work_q</span><span class="p">.</span><span class="n">thread_id</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l4936" href="#l4936">4936</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">67</td>
+        <td class="linecount coveredLine show_coveredLine">73</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -35525,7 +35525,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 08:56:26
+          at 2026-10-11 12:10:25
         </footer>
       </div>
     </div>

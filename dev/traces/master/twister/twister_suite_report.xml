@@ -1,5 +1,5 @@
 <testsuites>
-	<testsuite name="weather_station.mqtt_publisher" timestamp="2026-10-11T08:53:40.510293" time="0.03" tests="32" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.mqtt_publisher" timestamp="2026-10-11T12:08:04.529950" time="0.01" tests="32" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -38,7 +38,7 @@
 		<testcase classname="weather_station.mqtt_publisher" name="weather_station.mqtt_publisher.integration_suite.trigger_enqueues_events" time="0.32" />
 		<testcase classname="weather_station.mqtt_publisher" name="weather_station.mqtt_publisher.integration_suite.disabled_drops_events" time="0.38" />
 	</testsuite>
-	<testsuite name="weather_station.sensor_event" timestamp="2026-10-11T08:53:40.510293" time="0.02" tests="17" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.sensor_event" timestamp="2026-10-11T12:08:04.529950" time="0.02" tests="17" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -62,7 +62,7 @@
 		<testcase classname="weather_station.sensor_event" name="weather_station.sensor_event.sensor_event_suite.env_sensor_data_memcpy" time="0.00" />
 		<testcase classname="weather_station.sensor_event" name="weather_station.sensor_event.sensor_event_suite.q31_pressure_gas_low_clamp" time="0.00" />
 	</testsuite>
-	<testsuite name="weather_station.trace_recorder" timestamp="2026-10-11T08:53:40.510293" time="0.01" tests="6" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.trace_recorder" timestamp="2026-10-11T12:08:04.529950" time="0.01" tests="6" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -75,7 +75,7 @@
 		<testcase classname="weather_station.trace_recorder" name="weather_station.trace_recorder.trace_recorder_suite.idle_event" time="0.00" />
 		<testcase classname="weather_station.trace_recorder" name="weather_station.trace_recorder.trace_recorder_suite.switched_in_priority" time="0.00" />
 	</testsuite>
-	<testsuite name="weather_station.trace_recorder_shell" timestamp="2026-10-11T08:53:40.510293" time="0.02" tests="6" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.trace_recorder_shell" timestamp="2026-10-11T12:08:04.529950" time="0.01" tests="6" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -88,7 +88,7 @@
 		<testcase classname="weather_station.trace_recorder_shell" name="weather_station.trace_recorder_shell.trace_recorder_suite.idle_event" time="0.00" />
 		<testcase classname="weather_station.trace_recorder_shell" name="weather_station.trace_recorder_shell.trace_recorder_suite.switched_in_priority" time="0.00" />
 	</testsuite>
-	<testsuite name="weather_station.io_stream" timestamp="2026-10-11T08:53:40.510293" time="0.03" tests="15" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.io_stream" timestamp="2026-10-11T12:08:04.529950" time="0.01" tests="15" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -110,7 +110,7 @@
 		<testcase classname="weather_station.io_stream" name="weather_station.io_stream.io_stream_suite.buffer_double_init_rejected" time="0.00" />
 		<testcase classname="weather_station.io_stream" name="weather_station.io_stream.io_stream_suite.buffer_reuse_after_close" time="0.00" />
 	</testsuite>
-	<testsuite name="weather_station.io_stream_flash" timestamp="2026-10-11T08:53:40.510293" time="0.03" tests="15" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.io_stream_flash" timestamp="2026-10-11T12:08:04.529950" time="0.02" tests="15" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -132,7 +132,7 @@
 		<testcase classname="weather_station.io_stream_flash" name="weather_station.io_stream_flash.io_stream_suite.buffer_double_init_rejected" time="0.00" />
 		<testcase classname="weather_station.io_stream_flash" name="weather_station.io_stream_flash.io_stream_suite.buffer_reuse_after_close" time="0.00" />
 	</testsuite>
-	<testsuite name="weather_station.fake_sensors" timestamp="2026-10-11T08:53:40.510293" time="0.01" tests="3" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.fake_sensors" timestamp="2026-10-11T12:08:04.529950" time="0.01" tests="3" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -142,7 +142,7 @@
 		<testcase classname="weather_station.fake_sensors" name="weather_station.fake_sensors.fake_sensors_suite.trigger_produces_event" time="0.00" />
 		<testcase classname="weather_station.fake_sensors" name="weather_station.fake_sensors.fake_sensors_suite.auto_publish_enable_disable" time="0.58" />
 	</testsuite>
-	<testsuite name="weather_station.remote_sensor_uid" timestamp="2026-10-11T08:53:40.510293" time="0.06" tests="11" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.remote_sensor_uid" timestamp="2026-10-11T12:08:04.529950" time="0.01" tests="11" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -160,7 +160,7 @@
 		<testcase classname="weather_station.remote_sensor_uid" name="weather_station.remote_sensor_uid.remote_sensor_uid_suite.uid_from_node_id_different_types_differ" time="0.00" />
 		<testcase classname="weather_station.remote_sensor_uid" name="weather_station.remote_sensor_uid.remote_sensor_uid_suite.uid_no_cross_protocol_collision" time="0.00" />
 	</testsuite>
-	<testsuite name="weather_station.remote_sensor_manager" timestamp="2026-10-11T08:53:40.510293" time="0.1" tests="5" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.remote_sensor_manager" timestamp="2026-10-11T12:08:04.529950" time="0.01" tests="6" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -171,49 +171,50 @@
 		<testcase classname="weather_station.remote_sensor_manager" name="weather_station.remote_sensor_manager.remote_sensor_manager_suite.publish_produces_event" time="0.27" />
 		<testcase classname="weather_station.remote_sensor_manager" name="weather_station.remote_sensor_manager.remote_sensor_manager_suite.trigger_routing" time="0.27" />
 		<testcase classname="weather_station.remote_sensor_manager" name="weather_station.remote_sensor_manager.remote_sensor_manager_suite.event_uid_in_registry" time="0.27" />
+		<testcase classname="weather_station.remote_sensor_manager" name="weather_station.remote_sensor_manager.remote_sensor_manager_suite.back_to_back_discovery_both_registered" time="0.21" />
 	</testsuite>
-	<testsuite name="weather_station.integration" timestamp="2026-10-11T08:53:40.510293" time="54.1" tests="68" failures="0" errors="0" skipped="21">
+	<testsuite name="weather_station.integration" timestamp="2026-10-11T12:08:04.529950" time="55.06" tests="68" failures="0" errors="0" skipped="18">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
 			<property name="architecture" value="posix" />
 		</properties>
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_set_trigger_interval_via_http" time="1.40" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_trigger_interval_bounds_accepted" time="3.58" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_sntp_resync_accepted" time="2.18" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_page_is_public" time="0.30" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_unauthenticated_page_redirects" time="0.33" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_unauthenticated_api_returns_401" time="0.33" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_bad_credentials" time="0.45" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_success_sets_cookie" time="0.47" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_without_auth_returns_401" time="1.46" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_with_wrong_bearer_token_returns_401" time="1.42" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_logout_invalidates_session" time="1.18" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_change_credentials_wrong_old_pass" time="1.05" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_change_credentials_success" time="2.44" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_bearer_token_accesses_api" time="0.25" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_token_rotate" time="6.65" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_dashboard_page_reachable" time="0.47" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_endpoint_returns_json" time="0.46" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_has_sensor_entries" time="0.47" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_sensor_schema" time="0.45" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_reading_schema" time="0.47" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_has_all_sensor_uids" time="0.45" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_config_endpoint_returns_json" time="0.48" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_config_omits_api_token" time="0.50" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_locations_endpoint_returns_json" time="0.48" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_trigger_interval_accepted" time="1.41" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_returns_ok_json" time="0.64" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_two_back_to_back_posts" time="4.77" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_config_in_get_api" time="0.41" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_broker_via_http" time="2.12" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_gateway_via_http" time="2.12" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_set_trigger_interval_via_http" time="1.41" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_trigger_interval_bounds_accepted" time="3.48" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_sntp_resync_accepted" time="2.05" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_page_is_public" time="0.24" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_unauthenticated_page_redirects" time="0.24" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_unauthenticated_api_returns_401" time="0.24" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_bad_credentials" time="0.39" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_login_success_sets_cookie" time="0.44" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_without_auth_returns_401" time="1.45" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_with_wrong_bearer_token_returns_401" time="1.46" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_logout_invalidates_session" time="1.23" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_change_credentials_wrong_old_pass" time="1.11" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_change_credentials_success" time="2.47" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_bearer_token_accesses_api" time="0.23" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_token_rotate" time="6.62" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_dashboard_page_reachable" time="0.42" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_endpoint_returns_json" time="0.44" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_has_sensor_entries" time="0.55" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_sensor_schema" time="0.47" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_reading_schema" time="0.50" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_data_has_all_sensor_uids" time="0.48" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_config_endpoint_returns_json" time="0.46" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_config_omits_api_token" time="0.45" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_api_locations_endpoint_returns_json" time="0.45" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_trigger_interval_accepted" time="1.28" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_post_config_returns_ok_json" time="0.55" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_two_back_to_back_posts" time="4.70" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_config_in_get_api" time="0.39" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_broker_via_http" time="2.11" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_gateway_via_http" time="2.15" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_keepalive_via_http" time="2.12" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_auth_via_http" time="2.14" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_status_shows_config" time="0.25" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_enable_disable" time="0.28" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_set_server" time="1.22" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_set_gateway" time="1.21" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_set_auth_via_http" time="2.11" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_status_shows_config" time="0.22" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_enable_disable" time="0.25" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_set_server" time="1.17" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_pub_set_gateway" time="1.17" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_disabled_stops_publishing" time="0">
 			<skipped type="skipped" message="MQTT broker not available on localhost:1883" />
 		</testcase>
@@ -229,9 +230,9 @@
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_sen0460_not_in_sensor_registry" time="0">
 			<skipped type="skipped" message="CONFIG_SEN0460_SENSOR not enabled in this build" />
 		</testcase>
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_trigger_propagates_to_http" time="0.44" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_indoor_temp_value_in_http" time="0.43" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_set_value_reflected_in_http" time="0.45" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_trigger_propagates_to_http" time="0.40" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_indoor_temp_value_in_http" time="0.40" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_set_value_reflected_in_http" time="0.42" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_trigger_publishes_to_mqtt" time="0">
 			<skipped type="skipped" message="MQTT broker not available on localhost:1883" />
 		</testcase>
@@ -241,15 +242,9 @@
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_mqtt_payload_has_required_fields" time="0">
 			<skipped type="skipped" message="MQTT broker not available on localhost:1883" />
 		</testcase>
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_node_reading_appears_in_gateway" time="0">
-			<skipped type="skipped" message="SENSOR_NODE_EXE not set &#8212; skipping system test" />
-		</testcase>
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_node_value_reflected_in_gateway" time="0">
-			<skipped type="skipped" message="SENSOR_NODE_EXE not set &#8212; skipping system test" />
-		</testcase>
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_node_uid_registered_in_gateway" time="0">
-			<skipped type="skipped" message="SENSOR_NODE_EXE not set &#8212; skipping system test" />
-		</testcase>
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_node_reading_appears_in_gateway" time="0.90" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_node_value_reflected_in_gateway" time="0.91" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_node_uid_registered_in_gateway" time="0.73" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_timer_tx_emits_log_after_trigger" time="0">
 			<skipped type="skipped" message="CONFIG_SENSOR_NODE_TX not enabled in this build" />
 		</testcase>
@@ -280,16 +275,28 @@
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_node_tx_lib_initialized" time="0">
 			<skipped type="skipped" message="CONFIG_SENSOR_NODE_TX not enabled in this build" />
 		</testcase>
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_help_lists_fake_sensors" time="0.23" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_help_lists_fake_sensors" time="0.22" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_device_is_alive" time="0.22" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_zephyr_version_reported" time="0.22" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_list_has_all_sensors" time="0.23" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_list_has_all_sensors" time="0.22" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_kinds_are_correct" time="0.22" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_sensor_initial_values" time="0.22" />
-		<testcase classname="weather_station.integration" name="weather_station.integration.test_manual_trigger_fires" time="0.23" />
+		<testcase classname="weather_station.integration" name="weather_station.integration.test_manual_trigger_fires" time="0.22" />
 		<testcase classname="weather_station.integration" name="weather_station.integration.test_set_temperature_via_shell" time="0.24" />
 	</testsuite>
-	<testsuite name="weather_station.lora_session" timestamp="2026-10-11T08:53:40.510293" time="0.07" tests="5" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.integration.force_pw" timestamp="2026-10-11T12:08:04.529950" time="6.73" tests="5" failures="0" errors="0" skipped="0">
+		<properties>
+			<property name="version" value="fa4f8fb0e470" />
+			<property name="platform" value="native_sim/native/64" />
+			<property name="architecture" value="posix" />
+		</properties>
+		<testcase classname="weather_station.integration.force_pw" name="weather_station.integration.force_pw.test_default_login_works_but_api_is_blocked" time="0.45" />
+		<testcase classname="weather_station.integration.force_pw" name="weather_station.integration.force_pw.test_change_credentials_unblocks_api" time="1.39" />
+		<testcase classname="weather_station.integration.force_pw" name="weather_station.integration.force_pw.test_login_lockout_returns_429_with_retry_after" time="3.25" />
+		<testcase classname="weather_station.integration.force_pw" name="weather_station.integration.force_pw.test_change_to_default_credentials_rejected" time="1.36" />
+		<testcase classname="weather_station.integration.force_pw" name="weather_station.integration.force_pw.test_bearer_token_is_gated_too" time="0.23" />
+	</testsuite>
+	<testsuite name="weather_station.lora_session" timestamp="2026-10-11T12:08:04.529950" time="0.09" tests="12" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -299,9 +306,26 @@
 		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.get_nonexistent" time="0.00" />
 		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.duplicate_add_creates_second_entry" time="0.00" />
 		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.node_id_allocation" time="0.00" />
+		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.remove_memmove_guard" time="0.00" />
+		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.table_full" time="0.00" />
+		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.replay_drop" time="0.00" />
+		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.first_frame_seq_zero" time="0.00" />
+		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.counter_reservation" time="0.00" />
+		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.counter_persist_failure" time="0.00" />
+		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.counter_overflow" time="0.00" />
 		<testcase classname="weather_station.lora_session" name="weather_station.lora_session.lora_session_suite.session_struct_size" time="0.00" />
 	</testsuite>
-	<testsuite name="weather_station.sensor_registry" timestamp="2026-10-11T08:53:40.510293" time="0.02" tests="9" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.sensor_node_tx" timestamp="2026-10-11T12:08:04.529950" time="0.06" tests="3" failures="0" errors="0" skipped="0">
+		<properties>
+			<property name="version" value="fa4f8fb0e470" />
+			<property name="platform" value="native_sim/native/64" />
+			<property name="architecture" value="posix" />
+		</properties>
+		<testcase classname="weather_station.sensor_node_tx" name="weather_station.sensor_node_tx.sensor_node_tx.batch_split_into_packets" time="0.28" />
+		<testcase classname="weather_station.sensor_node_tx" name="weather_station.sensor_node_tx.sensor_node_tx.failed_chunk_is_requeued" time="0.23" />
+		<testcase classname="weather_station.sensor_node_tx" name="weather_station.sensor_node_tx.sensor_node_tx.overflow_drops_oldest" time="0.17" />
+	</testsuite>
+	<testsuite name="weather_station.sensor_registry" timestamp="2026-10-11T12:08:04.529950" time="0.03" tests="9" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -317,7 +341,7 @@
 		<testcase classname="weather_station.sensor_registry" name="weather_station.sensor_registry.sensor_registry_suite.foreach_early_exit" time="0.00" />
 		<testcase classname="weather_station.sensor_registry" name="weather_station.sensor_registry.sensor_registry_suite.z_register_full_registry_returns_enomem" time="0.00" />
 	</testsuite>
-	<testsuite name="weather_station.sensor_registry.user_meta" timestamp="2026-10-11T08:53:40.510293" time="0.03" tests="15" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.sensor_registry.user_meta" timestamp="2026-10-11T12:08:04.529950" time="0.02" tests="15" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -339,7 +363,7 @@
 		<testcase classname="weather_station.sensor_registry.user_meta" name="weather_station.sensor_registry.user_meta.sensor_registry_suite.copy_invalid_args_return_einval" time="0.00" />
 		<testcase classname="weather_station.sensor_registry.user_meta" name="weather_station.sensor_registry.user_meta.sensor_registry_suite.z_register_full_registry_returns_enomem" time="0.00" />
 	</testsuite>
-	<testsuite name="weather_station.lora_packet" timestamp="2026-10-11T08:53:40.510293" time="0.04" tests="11" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.lora_packet" timestamp="2026-10-11T12:08:04.529950" time="0.03" tests="21" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />
@@ -349,7 +373,17 @@
 		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.frame_version_extract" time="0.00" />
 		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.frame_type_version_pack" time="0.00" />
 		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.header_size" time="0.00" />
-		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.encode_decode_unencrypted" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.seq_helpers" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.plaintext_round_trip" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.encrypted_round_trip" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.tampered_tag" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.plaintext_with_key_rejected" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.tampered_header" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.wrong_key" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.size_limits" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.seq_changes_ciphertext" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.direction_changes_ciphertext" time="0.00" />
+		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.downlink_round_trip" time="0.00" />
 		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.decode_crc_mismatch" time="0.00" />
 		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.decode_too_short" time="0.00" />
 		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.flag_constants" time="0.00" />
@@ -357,7 +391,7 @@
 		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.payload_struct_sizes" time="0.00" />
 		<testcase classname="weather_station.lora_packet" name="weather_station.lora_packet.lora_packet_suite.packet_size_constants" time="0.00" />
 	</testsuite>
-	<testsuite name="weather_station.location_registry" timestamp="2026-10-11T08:53:40.510293" time="0.05" tests="12" failures="0" errors="0" skipped="0">
+	<testsuite name="weather_station.location_registry" timestamp="2026-10-11T12:08:04.529950" time="0.02" tests="12" failures="0" errors="0" skipped="0">
 		<properties>
 			<property name="version" value="fa4f8fb0e470" />
 			<property name="platform" value="native_sim/native/64" />

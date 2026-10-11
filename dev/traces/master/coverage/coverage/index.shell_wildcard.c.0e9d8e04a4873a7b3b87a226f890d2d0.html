@@ -89,7 +89,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l106">z_shell_has_wildcard (zephyr/subsys/shell/shell_wildcard.c:106)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="49">called 49 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="52">called 52 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">83.3%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">66.7%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">88.9%</div>
@@ -103,14 +103,14 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l119">z_shell_wildcard_prepare (zephyr/subsys/shell/shell_wildcard.c:119)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="44">called 44 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="46">called 46 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l159">z_shell_wildcard_process (zephyr/subsys/shell/shell_wildcard.c:159)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="65">called 65 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="68">called 68 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
@@ -882,7 +882,7 @@
         <td class="lineno"><a id="l106" href="#l106">106</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">49</td>
+        <td class="linecount coveredLine show_coveredLine">52</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">bool</span><span class="w"> </span><span class="nf">z_shell_has_wildcard</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">str</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -896,7 +896,7 @@
         <td class="lineno"><a id="l108" href="#l108">108</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">49</td>
+        <td class="linecount coveredLine show_coveredLine">52</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">str_len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_shell_strlen</span><span class="p">(</span><span class="n">str</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -912,12 +912,12 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 4 taken 309 times.</div>
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 49 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 4 taken 322 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 52 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">358</td>
+        <td class="linecount coveredLine show_coveredLine">374</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">str_len</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -926,14 +926,14 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/4</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 309 times.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 5 taken 322 times.</div>
               <div class="notTakenBranch">&cross; Branch 4 &rightarrow; 6 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 6 not taken.</div>
-              <div class="takenBranch">&check; Branch 5 &rightarrow; 7 taken 309 times.</div>
+              <div class="takenBranch">&check; Branch 5 &rightarrow; 7 taken 322 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">309</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">322</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;?&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;*&#39;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -968,7 +968,7 @@
         <td class="lineno"><a id="l116" href="#l116">116</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">49</td>
+        <td class="linecount coveredLine show_coveredLine">52</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -989,7 +989,7 @@
         <td class="lineno"><a id="l119" href="#l119">119</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">44</td>
+        <td class="linecount coveredLine show_coveredLine">46</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">z_shell_wildcard_prepare</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">shell</span><span class="w"> </span><span class="o">*</span><span class="n">sh</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -1157,28 +1157,28 @@
         <td class="lineno"><a id="l143" href="#l143">143</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">44</td>
+        <td class="linecount coveredLine show_coveredLine">46</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">memset</span><span class="p">(</span><span class="n">sh</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">temp_buff</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">sh</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">temp_buff</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l144" href="#l144">144</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">44</td>
+        <td class="linecount coveredLine show_coveredLine">46</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">memcpy</span><span class="p">(</span><span class="n">sh</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">temp_buff</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l145" href="#l145">145</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">44</td>
+        <td class="linecount coveredLine show_coveredLine">46</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">sh</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cmd_buff</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l146" href="#l146">146</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">44</td>
+        <td class="linecount coveredLine show_coveredLine">46</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">sh</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cmd_buff_len</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1220,7 +1220,7 @@
         <td class="lineno"><a id="l152" href="#l152">152</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">44</td>
+        <td class="linecount coveredLine show_coveredLine">46</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">z_shell_spaces_trim</span><span class="p">(</span><span class="n">sh</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">temp_buff</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -1241,14 +1241,14 @@
         <td class="lineno"><a id="l155" href="#l155">155</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">44</td>
+        <td class="linecount coveredLine show_coveredLine">46</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">sh</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">cmd_tmp_buff_len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_shell_strlen</span><span class="p">(</span><span class="n">sh</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">temp_buff</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l156" href="#l156">156</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">44</td>
+        <td class="linecount coveredLine show_coveredLine">46</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -1269,7 +1269,7 @@
         <td class="lineno"><a id="l159" href="#l159">159</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">enum</span><span class="w"> </span><span class="n">shell_wildcard_status</span><span class="w"> </span><span class="nf">z_shell_wildcard_process</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">shell</span><span class="w"> </span><span class="o">*</span><span class="n">sh</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -1297,7 +1297,7 @@
         <td class="lineno"><a id="l163" href="#l163">163</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">enum</span><span class="w"> </span><span class="n">shell_wildcard_status</span><span class="w"> </span><span class="n">ret_val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SHELL_WILDCARD_NOT_FOUND</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1314,11 +1314,11 @@
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
               <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 16 times.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 49 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 52 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">65</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -1348,19 +1348,19 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 49 times.</div>
+              <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 52 times.</div>
               <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 7 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">49</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">52</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">z_shell_has_wildcard</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l170" href="#l170">170</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">49</td>
+        <td class="linecount coveredLine show_coveredLine">52</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">ret_val</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1524,7 +1524,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 08:56:26
+          at 2026-10-11 12:10:25
         </footer>
       </div>
     </div>

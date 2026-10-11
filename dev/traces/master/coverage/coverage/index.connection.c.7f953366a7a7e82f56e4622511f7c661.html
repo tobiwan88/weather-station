@@ -166,7 +166,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l1100">net_conn_init (zephyr/subsys/net/ip/connection.c:1100)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="68">called 68 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="74">called 74 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -7938,7 +7938,7 @@
         <td class="lineno"><a id="l1100" href="#l1100">1100</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">net_conn_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -7966,14 +7966,14 @@
         <td class="lineno"><a id="l1104" href="#l1104">1104</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">sys_slist_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn_unused</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l1105" href="#l1105">1105</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">sys_slist_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn_used</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -7989,19 +7989,19 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 7 &rightarrow; 5 taken 544 times.</div>
-              <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 68 times.</div>
+              <div class="takenBranch">&check; Branch 7 &rightarrow; 5 taken 592 times.</div>
+              <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 74 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">612</td>
+        <td class="linecount coveredLine show_coveredLine">666</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">CONFIG_NET_MAX_CONN</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l1108" href="#l1108">1108</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">544</td>
+        <td class="linecount coveredLine show_coveredLine">592</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">sys_slist_prepend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn_unused</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">conns</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">node</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -8015,7 +8015,7 @@
         <td class="lineno"><a id="l1110" href="#l1110">1110</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -8032,7 +8032,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 08:56:26
+          at 2026-10-11 12:10:25
         </footer>
       </div>
     </div>

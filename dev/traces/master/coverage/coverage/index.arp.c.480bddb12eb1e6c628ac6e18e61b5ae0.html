@@ -236,7 +236,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l1149">net_arp_init (zephyr/subsys/net/l2/ethernet/arp.c:1149)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="68">called 68 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="74">called 74 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -8330,7 +8330,7 @@
         <td class="lineno"><a id="l1149" href="#l1149">1149</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">net_arp_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -8386,21 +8386,21 @@
         <td class="lineno"><a id="l1157" href="#l1157">1157</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">sys_slist_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arp_free_entries</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l1158" href="#l1158">1158</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">sys_slist_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arp_pending_entries</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l1159" href="#l1159">1159</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">sys_slist_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arp_table</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -8416,12 +8416,12 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 9 &rightarrow; 6 taken 136 times.</div>
-              <div class="takenBranch">&check; Branch 9 &rightarrow; 10 taken 68 times.</div>
+              <div class="takenBranch">&check; Branch 9 &rightarrow; 6 taken 148 times.</div>
+              <div class="takenBranch">&check; Branch 9 &rightarrow; 10 taken 74 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">204</td>
+        <td class="linecount coveredLine show_coveredLine">222</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">CONFIG_NET_ARP_TABLE_SIZE</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -8435,14 +8435,14 @@
         <td class="lineno"><a id="l1163" href="#l1163">1163</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">k_fifo_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arp_entries</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">pending_queue</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l1164" href="#l1164">1164</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">136</td>
+        <td class="linecount coveredLine show_coveredLine">148</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">sys_slist_prepend</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arp_free_entries</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">arp_entries</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">node</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -8491,7 +8491,7 @@
         <td class="lineno"><a id="l1171" href="#l1171">1171</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">74</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -8683,7 +8683,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 08:56:26
+          at 2026-10-11 12:10:25
         </footer>
       </div>
     </div>
