@@ -1,0 +1,8 @@
+tests:
+  weather_station.sensor_node_tx:
+    platform_allow:
+      - native_sim/native/64
+    harness: ztest
+    tags:
+      - sensor_node_tx
+      - weather_station

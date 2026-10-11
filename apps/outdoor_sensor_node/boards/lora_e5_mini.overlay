@@ -19,3 +19,7 @@
 		label = "SEN0460";
 	};
 };
+
+&rng {
+	status = "okay";
+};

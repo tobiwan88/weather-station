@@ -34,7 +34,8 @@ int sensor_node_tx_enable(void);
 int sensor_node_tx_disable(void);
 
 /**
- * Force an immediate transmission of all buffered readings.
+ * Force transmission of all buffered readings. The send is queued on the
+ * work queue and runs asynchronously.
  * Called by config_cmd handler on FORCE_TX command.
  *
  * @return 0 on success, -ENETDOWN if TX is disabled.
