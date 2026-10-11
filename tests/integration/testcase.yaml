@@ -7,6 +7,8 @@ tests:
       pytest_dut_scope: function
       pytest_root:
         - "pytest/"
+      pytest_args:
+        - "--ignore-glob=*test_http_force_pw.py"
     tags:
       - integration
       - weather_station
@@ -14,4 +16,24 @@ tests:
       - native_sim/native/64
     extra_configs:
       - CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y
+      - CONFIG_HTTP_DASHBOARD_AUTH_FORCE_PW_CHANGE=n
     timeout: 240
+  weather_station.integration.force_pw:
+    platform_allow:
+      - native_sim/native/64
+    harness: pytest
+    harness_config:
+      pytest_dut_scope: function
+      pytest_root:
+        - "pytest/test_http_force_pw.py"
+    tags:
+      - integration
+      - weather_station
+    integration_platforms:
+      - native_sim/native/64
+    extra_configs:
+      - CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y
+      - CONFIG_HTTP_DASHBOARD_AUTH_FORCE_PW_CHANGE=y
+      # Own port: twister runs both scenarios in parallel on one host.
+      - CONFIG_HTTP_DASHBOARD_PORT=8081
+    timeout: 120
