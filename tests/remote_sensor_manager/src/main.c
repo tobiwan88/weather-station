@@ -16,6 +16,9 @@
  *   t4: sensor_trigger_chan broadcast → fake transport forwards → data appears
  */
 
+#include <stdio.h>
+#include <string.h>
+
 #include <zephyr/kernel.h>
 #include <zephyr/sys/iterable_sections.h>
 #include <zephyr/zbus/zbus.h>
@@ -260,4 +263,55 @@ ZTEST(remote_sensor_manager_suite, test_event_uid_in_registry)
 		zassert_true(entry->is_remote, "Event uid=0x%08x has is_remote=false",
 			     last_event.sensor_uid);
 	}
+}
+
+/* --------------------------------------------------------------------------
+ * t6: back-to-back discovery events must not overwrite each other
+ * -------------------------------------------------------------------------- */
+
+/**
+ * @brief Two different discovery events published without sleeping in between
+ *        must both be registered.
+ *
+ * Regression test for the former single pending-slot design, where the second
+ * event overwrote the first before the work handler ran.
+ */
+ZTEST(remote_sensor_manager_suite, test_back_to_back_discovery_both_registered)
+{
+	static const uint8_t mac_a[] = {0xA0, 0x00, 0x00, 0x00, 0x00, 0x01};
+	static const uint8_t mac_b[] = {0xB0, 0x00, 0x00, 0x00, 0x00, 0x02};
+	struct remote_discovery_event evt_a = {0};
+	struct remote_discovery_event evt_b = {0};
+
+	evt_a.action = REMOTE_DISCOVERY_FOUND;
+	evt_a.proto = REMOTE_TRANSPORT_PROTO_FAKE;
+	evt_a.sensor_type = SENSOR_TYPE_TEMPERATURE;
+	evt_a.peer_addr_len = sizeof(mac_a);
+	memcpy(evt_a.peer_addr, mac_a, sizeof(mac_a));
+	snprintf(evt_a.suggested_label, sizeof(evt_a.suggested_label), "b2b-a");
+	evt_a.suggested_uid =
+		remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX, mac_a,
+					    sizeof(mac_a), SENSOR_TYPE_TEMPERATURE);
+
+	evt_b.action = REMOTE_DISCOVERY_FOUND;
+	evt_b.proto = REMOTE_TRANSPORT_PROTO_FAKE;
+	evt_b.sensor_type = SENSOR_TYPE_TEMPERATURE;
+	evt_b.peer_addr_len = sizeof(mac_b);
+	memcpy(evt_b.peer_addr, mac_b, sizeof(mac_b));
+	snprintf(evt_b.suggested_label, sizeof(evt_b.suggested_label), "b2b-b");
+	evt_b.suggested_uid =
+		remote_sensor_uid_from_addr(CONFIG_FAKE_REMOTE_SENSOR_UID_PREFIX, mac_b,
+					    sizeof(mac_b), SENSOR_TYPE_TEMPERATURE);
+
+	/* No sleep between the two publishes: both must survive until the handler runs. */
+	zassert_ok(remote_sensor_announce_disc(&evt_a), "publish evt_a failed");
+	zassert_ok(remote_sensor_announce_disc(&evt_b), "publish evt_b failed");
+
+	k_sleep(K_MSEC(200));
+
+	zassert_not_null(sensor_registry_lookup(evt_a.suggested_uid),
+			 "First back-to-back event uid=0x%08x was lost", evt_a.suggested_uid);
+	zassert_not_null(sensor_registry_lookup(evt_b.suggested_uid),
+			 "Second back-to-back event uid=0x%08x not registered",
+			 evt_b.suggested_uid);
 }

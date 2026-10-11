@@ -86,6 +86,7 @@ step "Build gateway" build gateway
 gateway_ok=$((1 - failed))
 step "Build sensor-node" build sensor-node
 [[ -z "$skip_smoke" && $gateway_ok -eq 1 ]] && step "Shell smoke test" smoke
+export SENSOR_NODE_EXE="$BUILD_ROOT/sensor-node/zephyr/zephyr.exe"
 [[ -z "$skip_tests" ]] && step "Twister" west twister -p "$BOARD" -T "$test_root" -N -j 8 \
 	--inline-logs --outdir "$WS_ROOT/twister-out"
 [[ -z "$skip_precommit" ]] && step "Pre-commit" pre-commit run --all-files

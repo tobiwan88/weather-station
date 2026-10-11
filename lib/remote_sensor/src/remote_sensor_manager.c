@@ -21,6 +21,7 @@
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/sys/atomic.h>
 #include <zephyr/sys/iterable_sections.h>
 #include <zephyr/zbus/zbus.h>
 
@@ -296,10 +297,39 @@ static struct k_work_q remote_sensor_wq;
 
 static struct k_work disc_work;
 static struct k_work scan_work;
-static struct remote_discovery_event pending_disc;
-static struct remote_scan_ctrl_event pending_scan;
-static K_MUTEX_DEFINE(disc_pending_mutex);
-static K_MUTEX_DEFINE(scan_pending_mutex);
+
+/*
+ * Listeners may run in ISR context, so they only k_msgq_put() (non-blocking)
+ * and submit a work item. The work handlers drain the queues, so back-to-back
+ * events are all processed instead of overwriting a single slot.
+ */
+K_MSGQ_DEFINE_STATIC(disc_msgq, sizeof(struct remote_discovery_event), 8, 4);
+K_MSGQ_DEFINE_STATIC(scan_msgq, sizeof(struct remote_scan_ctrl_event), 4, 4);
+
+/* Cumulative drop counts for the queues above. */
+static atomic_t disc_drops = ATOMIC_INIT(0);
+static atomic_t scan_drops = ATOMIC_INIT(0);
+
+static bool is_power_of_ten(uint32_t n)
+{
+	if (n == 0U) {
+		return false;
+	}
+	while (n % 10U == 0U) {
+		n /= 10U;
+	}
+	return n == 1U;
+}
+
+/* Count a dropped event and log at 1, 10, 100, ... drops to avoid spamming. */
+static void note_queue_drop(atomic_t *drops, const char *what)
+{
+	uint32_t n = (uint32_t)atomic_inc(drops) + 1U;
+
+	if (is_power_of_ten(n)) {
+		LOG_WRN("%s queue full, dropped %u events", what, n);
+	}
+}
 
 /* --------------------------------------------------------------------------
  * Discovery work handler + zbus listener
@@ -311,19 +341,19 @@ static void disc_work_handler(struct k_work *work)
 
 	ARG_UNUSED(work);
 
-	k_mutex_lock(&disc_pending_mutex, K_FOREVER);
-	evt = pending_disc;
-	k_mutex_unlock(&disc_pending_mutex);
-	handle_discovery(&evt);
+	while (k_msgq_get(&disc_msgq, &evt, K_NO_WAIT) == 0) {
+		handle_discovery(&evt);
+	}
 }
 
 static void discovery_cb(const struct zbus_channel *chan)
 {
 	const struct remote_discovery_event *evt = zbus_chan_const_msg(chan);
 
-	k_mutex_lock(&disc_pending_mutex, K_FOREVER);
-	pending_disc = *evt;
-	k_mutex_unlock(&disc_pending_mutex);
+	if (k_msgq_put(&disc_msgq, evt, K_NO_WAIT) != 0) {
+		note_queue_drop(&disc_drops, "discovery");
+		return;
+	}
 	(void)k_work_submit_to_queue(&remote_sensor_wq, &disc_work);
 }
 
@@ -339,27 +369,26 @@ static void scan_work_handler(struct k_work *work)
 
 	ARG_UNUSED(work);
 
-	k_mutex_lock(&scan_pending_mutex, K_FOREVER);
-	evt = pending_scan;
-	k_mutex_unlock(&scan_pending_mutex);
+	while (k_msgq_get(&scan_msgq, &evt, K_NO_WAIT) == 0) {
+		STRUCT_SECTION_FOREACH(remote_transport, t)
+		{
+			bool match = evt.proto == REMOTE_TRANSPORT_PROTO_UNKNOWN ||
+				     t->proto == evt.proto;
+			bool can_scan = t->caps & REMOTE_TRANSPORT_CAP_SCAN;
 
-	STRUCT_SECTION_FOREACH(remote_transport, t)
-	{
-		bool match = evt.proto == REMOTE_TRANSPORT_PROTO_UNKNOWN || t->proto == evt.proto;
-		bool can_scan = t->caps & REMOTE_TRANSPORT_CAP_SCAN;
-
-		if (!match || !can_scan) {
-			continue;
-		}
-		if (evt.action == REMOTE_SCAN_START) {
-			LOG_INF("scan start: %s", t->name);
-			if (t->scan_start) {
-				t->scan_start(t);
+			if (!match || !can_scan) {
+				continue;
 			}
-		} else {
-			LOG_INF("scan stop: %s", t->name);
-			if (t->scan_stop) {
-				t->scan_stop(t);
+			if (evt.action == REMOTE_SCAN_START) {
+				LOG_INF("scan start: %s", t->name);
+				if (t->scan_start) {
+					t->scan_start(t);
+				}
+			} else {
+				LOG_INF("scan stop: %s", t->name);
+				if (t->scan_stop) {
+					t->scan_stop(t);
+				}
 			}
 		}
 	}
@@ -369,9 +398,10 @@ static void scan_ctrl_cb(const struct zbus_channel *chan)
 {
 	const struct remote_scan_ctrl_event *evt = zbus_chan_const_msg(chan);
 
-	k_mutex_lock(&scan_pending_mutex, K_FOREVER);
-	pending_scan = *evt;
-	k_mutex_unlock(&scan_pending_mutex);
+	if (k_msgq_put(&scan_msgq, evt, K_NO_WAIT) != 0) {
+		note_queue_drop(&scan_drops, "scan control");
+		return;
+	}
 	(void)k_work_submit_to_queue(&remote_sensor_wq, &scan_work);
 }
 

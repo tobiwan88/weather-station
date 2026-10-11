@@ -47,9 +47,8 @@ def test_sensor_node_value_reflected_in_gateway(sensor_node_harness, authed_harn
 @pytest.mark.system
 @pytest.mark.shell
 def test_sensor_node_uid_registered_in_gateway(sensor_node_harness, shell_harness):
-    """After sensor-node trigger the gateway sensor_registry must list the sensor uid."""
+    """After sensor-node trigger the gateway must register the sensor uid as a remote sensor."""
     sensor_node_harness.trigger_all()
     time.sleep(0.5)
-    lines = shell_harness.exec("sensor_registry list")
-    joined = " ".join(lines)
-    assert "0021" in joined, f"uid 0x0021 not in gateway sensor_registry list: {joined}"
+    uids = shell_harness.list_remote_sensors()
+    assert 0x0021 in uids, f"uid 0x0021 not in gateway remote sensors: {[hex(u) for u in uids]}"

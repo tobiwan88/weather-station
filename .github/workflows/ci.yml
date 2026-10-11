@@ -373,6 +373,17 @@ jobs:
       - name: Install gcovr
         run: source /home/zephyr/.venv/bin/activate && pip install gcovr --quiet
 
+      - name: Build sensor-node for system tests
+        run: |
+          source /home/zephyr/.venv/bin/activate
+          WEST_ROOT=$(west topdir)
+          export ZEPHYR_EXTRA_MODULES="${WEST_ROOT}/weather-station"
+          export ZEPHYR_BASE="${WEST_ROOT}/zephyr"
+          west build -p always -b native_sim/native/64 \
+            --build-dir "${GITHUB_WORKSPACE}/build/sensor-node" \
+            "${WEST_ROOT}/weather-station/apps/sensor-node"
+          echo "SENSOR_NODE_EXE=${GITHUB_WORKSPACE}/build/sensor-node/zephyr/zephyr.exe" >> "$GITHUB_ENV"
+
       - name: Run Twister with coverage
         run: |
           source /home/zephyr/.venv/bin/activate

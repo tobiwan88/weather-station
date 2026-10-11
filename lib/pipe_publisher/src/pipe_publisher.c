@@ -17,13 +17,30 @@
 #include <zephyr/zbus/zbus.h>
 
 #include "sensor_message.pb.h"
+#include <zephyr/sys/atomic.h>
+
 #include <pb_encode.h>
 #include <sensor_event/sensor_event.h>
 
 LOG_MODULE_REGISTER(pipe_publisher, CONFIG_PIPE_PUBLISHER_LOG_LEVEL);
 
 ZBUS_CHAN_DECLARE(sensor_event_chan);
-ZBUS_SUBSCRIBER_DEFINE(pipe_pub_sub, 8);
+
+/* The listener copies each event into a queue (publisher context, never blocks);
+ * the thread drains it. Re-reading the channel from the thread would race with
+ * the publisher and drop events.
+ */
+K_MSGQ_DEFINE_STATIC(pipe_pub_q, sizeof(struct env_sensor_data), 16, 4);
+static atomic_t s_drops;
+
+static void pipe_pub_listener_cb(const struct zbus_channel *chan)
+{
+	if (k_msgq_put(&pipe_pub_q, zbus_chan_const_msg(chan), K_NO_WAIT) != 0) {
+		atomic_inc(&s_drops);
+	}
+}
+
+ZBUS_LISTENER_DEFINE(pipe_pub_listener, pipe_pub_listener_cb);
 
 /* 2-byte LE length prefix + max nanopb-encoded SensorReading */
 static int s_fifo_fd = -1;
@@ -57,20 +74,15 @@ static void pipe_pub_thread(void *a, void *b, void *c)
 	ARG_UNUSED(b);
 	ARG_UNUSED(c);
 
-	const struct zbus_channel *chan;
+	struct env_sensor_data evt;
 
 	while (true) {
-		int rc = zbus_sub_wait(&pipe_pub_sub, &chan, K_FOREVER);
+		k_msgq_get(&pipe_pub_q, &evt, K_FOREVER);
 
-		if (rc != 0) {
-			LOG_ERR("zbus_sub_wait: %d", rc);
-			continue;
-		}
+		atomic_val_t drops = atomic_clear(&s_drops);
 
-		struct env_sensor_data evt;
-
-		if (zbus_chan_read(&sensor_event_chan, &evt, K_NO_WAIT) != 0) {
-			continue;
+		if (drops > 0) {
+			LOG_WRN("queue full, dropped %ld events", (long)drops);
 		}
 
 		/* Retry open if FIFO not yet connected to a reader. */
@@ -131,7 +143,7 @@ K_THREAD_DEFINE(pipe_pub_tid, CONFIG_PIPE_PUBLISHER_THREAD_STACK_SIZE, pipe_pub_
 
 static int pipe_publisher_init(void)
 {
-	int rc = zbus_chan_add_obs(&sensor_event_chan, &pipe_pub_sub, K_NO_WAIT);
+	int rc = zbus_chan_add_obs(&sensor_event_chan, &pipe_pub_listener, K_NO_WAIT);
 
 	if (rc != 0) {
 		LOG_ERR("add obs sensor_event_chan: %d", rc);
