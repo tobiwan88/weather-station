@@ -2,6 +2,29 @@
 
 Open work only. Done items live in git history.
 
+## Gateway (found by native_sim testing, 2026-10-11)
+
+- **LORA-RPC-ARGV**: `lora rpc` reads argv[2..4] instead of argv[1..3], so it targets the wrong
+  node and command (`lib/lora_radio/src/lora_shell.c`).
+- **PIPE-SIGPIPE**: a sensor node dies with SIGPIPE when the gateway restarts
+  (`lib/pipe_publisher`); ignore SIGPIPE and reopen the FIFO.
+- **MQTT-TOPIC-ESCAPE**: `+`, `#` or `/` in a sensor name or location break the topic (broker
+  drops the client, reconnect loop). Reject or replace them in `build_topic`.
+- **MQTT-TYPES**: VOC, gas resistance and PM types publish under topic `unknown`.
+- **MQTT-TIME**: `time` is the publish time, not the sample time; before SNTP sync it is uptime.
+  Use the sample timestamp and withhold or flag unsynced values.
+- **MQTT-LOG-FLOOD**: one WRN per dropped event while the broker is down; rate-limit it.
+- **NATIVE-SIM-SETTINGS**: native_sim builds use `CONFIG_SETTINGS_NONE`; add a file backend so
+  persistence is testable. `settings_save_one` errors are ignored in `http_dashboard/auth.c`.
+- **HTTP-BODY-LIMIT**: POST bodies over 1 KB return 401; return 413.
+- **INPUT-VALIDATION**: dashboard and shell accept `abc`, 0 or negative numbers and report
+  success (`trigger_interval_ms`, `fake_sensors *_set`, `fake_sensors trigger zz` broadcasts,
+  `lora provision 010` parses as octal, 2-character passwords accepted).
+- **DASHBOARD-UX**: values without units, uptime-based timestamps, each history sample stored
+  5 times, "Server error (429)" on lockout, config page overflows at 390 px, "Co2"/"Voc" labels.
+- **LVGL-UX**: truncated sensor names, warning icons without legend, analog clock while the
+  config says HH:MM.
+
 ## LoRa
 
 - **LORA-RPC-COMMANDS**: `lora_handler_rpc.c` only handles PING/GET_VERSION/REBOOT (reliable

@@ -1,0 +1,90 @@
+From ea1c59d827da4b738db0950c9a09cf57bcdb9f17 Mon Sep 17 00:00:00 2001
+From: Tobias Meyer <tobiuhg@gmail.com>
+Date: Sun, 11 Oct 2026 14:45:05 +0000
+Subject: [PATCH] drivers: net: nsos: unlink polled socket on close
+
+nsos_close() freed the socket while sock->poll could still be linked in
+nsos_polls and registered in the epoll set, e.g. after zvfs_poll()
+failed with -ENOMEM once some fds were already prepared. A later
+calloc() reused the memory, and nsos_isr() called a NULL mid.cb.
+
+Wake the poller with POLLHUP, clear cb/cond, EPOLL_CTL_DEL and unlink
+before closing the host fd and freeing. In nsos_poll_prepare(), drop a
+stale link instead of appending the node twice.
+
+Same close fix as upstream PR #117024, plus the prepare guard.
+---
+ drivers/net/nsos_sockets.c | 40 ++++++++++++++++++++++++++++----------
+ 1 file changed, 30 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/nsos_sockets.c b/drivers/net/nsos_sockets.c
+index 1c5df5bfba7..457ae5c6dd4 100644
+--- a/drivers/net/nsos_sockets.c
++++ b/drivers/net/nsos_sockets.c
+@@ -275,26 +275,38 @@ static ssize_t nsos_write(void *obj, const void *buf, size_t sz)
+ static int nsos_close(void *obj)
+ {
+ 	struct nsos_socket *sock = obj;
+-	struct nsos_socket_poll *poll;
+ 	k_spinlock_key_t key;
+ 	int ret;
+ 
+-	ret = nsi_host_close(sock->poll.mid.fd);
+-	if (ret < 0) {
+-		errno = nsos_adapt_get_zephyr_errno();
+-	}
+-
++	/* A concurrent or abandoned zsock_poll() (e.g. zvfs_poll() failing with
++	 * -ENOMEM after some fds were already prepared, or skipping POLL_UPDATE
++	 * for an fd that was closed meanwhile) can leave sock->poll linked in
++	 * nsos_polls and registered in the epoll set. Wake it with POLLHUP, then
++	 * unlink and EPOLL_CTL_DEL it before the socket is freed, otherwise
++	 * nsos_isr() would walk freed memory. The DEL must precede close():
++	 * a dup'd fd (nsos_wait_for_poll) keeps the epoll entry alive.
++	 */
+ 	key = k_spin_lock(&nsos_polls_lock);
+ 
+-	SYS_DLIST_FOR_EACH_CONTAINER(&nsos_polls, poll, node) {
+-		if (poll == &sock->poll) {
+-			poll->mid.revents = ZSOCK_POLLHUP;
+-			poll->mid.cb(&poll->mid);
++	if (sys_dnode_is_linked(&sock->poll.node)) {
++		sock->poll.mid.revents = ZSOCK_POLLHUP;
++		if (sock->poll.mid.cb != NULL) {
++			sock->poll.mid.cb(&sock->poll.mid);
+ 		}
++		sock->poll.mid.cb = NULL;
++		sock->poll.cond = NULL;
++
++		nsos_adapt_poll_remove(&sock->poll.mid);
++		sys_dlist_remove(&sock->poll.node);
+ 	}
+ 
+ 	k_spin_unlock(&nsos_polls_lock, key);
+ 
++	ret = nsi_host_close(sock->poll.mid.fd);
++	if (ret < 0) {
++		errno = nsos_adapt_get_zephyr_errno();
++	}
++
+ 	nsi_host_free(sock);
+ 
+ 	return ret;
+@@ -335,6 +347,14 @@ static int nsos_poll_prepare(struct nsos_socket *sock, struct zsock_pollfd *pfd,
+ 	k_poll_event_init(*pev, K_POLL_TYPE_SIGNAL, K_POLL_MODE_NOTIFY_ONLY, &poll->signal);
+ 	key = k_spin_lock(&nsos_polls_lock);
+ 
++	/* Left linked by an earlier poll that never reached POLL_UPDATE
++	 * (zvfs_poll() error path): appending twice corrupts the list.
++	 */
++	if (sys_dnode_is_linked(&poll->node)) {
++		nsos_adapt_poll_remove(&poll->mid);
++		sys_dlist_remove(&poll->node);
++	}
++
+ 	sys_dlist_append(&nsos_polls, &poll->node);
+ 
+ 	nsos_adapt_poll_add(&poll->mid);
+-- 
+2.47.3
+

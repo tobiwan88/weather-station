@@ -64,6 +64,25 @@ The virtual display opens as a window on the host desktop. Buttons B1–B4 map t
 
 ---
 
+## Testing from a macOS host
+
+The gateway runs inside the `ws_build` container. The container has its own IP
+(`container ls`, ADDR column), so the dashboard is at `http://<container-ip>:8080` from the
+Mac without port publishing. For the LVGL window, run Xvfb in the container
+(`Xvfb :99 &`, then start the gateway with `DISPLAY=:99`) and capture it with ImageMagick
+`import -window root`.
+
+Known native_sim limits:
+
+- Settings are not persisted (`CONFIG_SETTINGS_NONE`): credentials, LoRa keys, locations and
+  MQTT settings reset on every boot.
+- SNTP resyncs use Zephyr's own DNS resolver, which has no server here, so the gateway uses a
+  numeric SNTP server. A hostname entered on the dashboard fails with
+  "Failed to initiate DNS query (-22)"; use an IP.
+- NSOS needs a local patch (`zephyr/patches.yml`) until upstream PR 117024 is merged.
+
+---
+
 ## native_sim + sensor node (FIFO)
 
 On native_sim the node->gateway path uses `pipe_publisher` (`apps/sensor-node`) and `pipe_transport` (gateway), joined by a POSIX FIFO. The gateway opens the FIFO non-blocking, so it also boots without a node. The LoRa radio uses a fake driver (`lora_drv_fake_zephyr.c`) with no PHY simulation. Integration test: `tests/integration/pytest/test_sensor_node_gateway.py` (needs `SENSOR_NODE_EXE`).
