@@ -1,6 +1,6 @@
 # Composition Model
 
-> Design rationale: [ADR-008](../adr/ADR-008-kconfig-app-composition.md).
+> Design rationale: [decisions](../decisions.md).
 
 ## The Problem with Explicit Wiring
 
@@ -249,4 +249,4 @@ Code may stay in `apps/*/src/` when it satisfies **both**:
 
 If something cannot be expressed in that budget, it belongs in a library with its own `SYS_INIT`. This rule forces a clean separation: application policy lives in `prj.conf`; mechanism lives in libraries.
 
-> **Known violation:** `main()` currently calls `lvgl_display_run()` directly. This is tracked in the backlog as `[ADR-008-RULE4]`. The fix is to start the LVGL thread from `lvgl_display_init()` via `SYS_INIT`, making `main.c` a pure `LOG_MODULE_REGISTER + return 0`.
+> **Known violation:** `main()` currently calls `lvgl_display_run()` directly. This is tracked in the backlog as `[LVGL-MAIN-THREAD]`. The fix is to start the LVGL thread from `lvgl_display_init()` via `SYS_INIT`, making `main.c` a pure `LOG_MODULE_REGISTER + return 0`.

@@ -43,10 +43,10 @@ Local build env: Apple `container` running `ghcr.io/tobiwan88/zephyr_docker:arm`
 - [x] lvgl_display calls `lv_async_call` outside the LVGL lock from a zbus listener
 
 ## Phase 3 — Simplify ADRs and rules
-- [ ] Collapse 17 ADRs into a short "decisions" doc keeping only rules that still constrain
+- [x] Collapse 17 ADRs into a short "decisions" doc keeping only rules that still constrain
       code; drop process ceremony (frozen/supersede workflow, auto-generated constraint table)
-- [ ] Remove done/abandoned plans and specs; trim backlog to open items
-- [ ] Drop skills that only exist to maintain removed process (`adr`, `arch-sync`, …)
+- [x] Remove done/abandoned plans and specs; trim backlog to open items
+- [x] Drop skills that only exist to maintain removed process (`adr`, `arch-sync`, …)
 
 ## Phase 4 — Migrate to Zephyr v4.5.0-rc1
 - [ ] Bump `west.yml`, fix breakages, both apps + twister green

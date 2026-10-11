@@ -25,7 +25,7 @@ Ground the plan in the repo, not memory:
 - `lib/` and `apps/`: existing code in the same domain; follow its Kconfig, SYS_INIT and zbus pattern.
 - `dts/bindings/`, `boards/`: DT nodes and overlays. `tests/`: the suite each subtask will run.
 - `CLAUDE.md`: banned patterns and the channel list. `docs/backlog.md` if the feature touches a deferred item.
-- `docs/adr/` only if a past decision seems relevant.
+- `docs/decisions.md` for design decisions that constrain the change.
 
 ## 3. Decompose
 
@@ -39,7 +39,7 @@ dependency on another's output. Each subtask:
   - build: `scripts/ws.sh 'west build -b native_sim/native/64 -d build/native_sim_native_64/gateway weather-station/apps/gateway'`
   - suite: `scripts/ws.sh 'west twister -p native_sim/native/64 -T weather-station/tests/<module> --inline-logs -v -N'`
 - Is self-contained, because the implementer receives only that subtask block.
-- Keeps the plan to ≤ 5 subtasks. A new zbus channel needs an ADR first (`/adr`).
+- Keeps the plan to ≤ 5 subtasks. A new zbus channel needs a short entry in `docs/decisions.md` first.
 
 Draw a dependency graph (`──►` waits for, `──` runs in parallel). List every file touched by
 more than one subtask; each one forces a dependency or a reshuffle. Otherwise write "No conflicts".
