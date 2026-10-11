@@ -18,7 +18,7 @@ if SEN0460_SENSOR
 
 config SEN0460_SENSOR_DEFAULT_UID
 	hex "Default sensor UID"
-	default 0x0021
+	default 0x0111
 
 config SEN0460_SENSOR_SETTLE_MS
 	int "Settle delay after wake (ms)"

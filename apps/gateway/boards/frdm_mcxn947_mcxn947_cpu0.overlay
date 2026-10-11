@@ -9,9 +9,8 @@
  * LoRa:
  *   - Flexcomm5 LPUART5 wired to Wio-E5 Mini co-processor
  *
- * UIDs 0x0001–0x000F are reserved for gateway local sensors.
- * UIDs 0x0011–0x001F are reserved for gateway outdoor sensors.
- * UIDs 0x0021+ are for remote sensor nodes.
+ * Sensor UID ranges: see docs/architecture/system-overview.md
+ * (local hardware 0x0100–0x0FFF, remote nodes derived by remote_sensor).
  *
  * No display — LVGL is disabled on this target.
  */
