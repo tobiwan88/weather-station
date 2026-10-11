@@ -1,0 +1,8 @@
+tests:
+  weather_station.lora_session:
+    platform_allow:
+      - native_sim/native/64
+    harness: ztest
+    tags:
+      - lora_session
+      - weather_station
