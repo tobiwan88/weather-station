@@ -81,9 +81,10 @@ static int list_cb(const struct sensor_registry_entry *entry, void *user_data)
 		return 0;
 	}
 
-	const char *name = sensor_registry_get_display_name(entry->uid);
+	char name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN + 1];
+	int rc = sensor_registry_copy_display_name(entry->uid, name, sizeof(name));
 
-	shell_print(ctx->sh, "  uid=0x%08x  %-30s  %s", entry->uid, name ? name : "(unknown)",
+	shell_print(ctx->sh, "  uid=0x%08x  %-30s  %s", entry->uid, rc == 0 ? name : "(unknown)",
 		    entry->label);
 	ctx->count++;
 	return 0;

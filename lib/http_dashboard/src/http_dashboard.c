@@ -156,7 +156,17 @@ static void respond_200_with_cookie(struct http_response_ctx *rsp, const char *t
 /* Static output buffers                                                        */
 /* -------------------------------------------------------------------------- */
 
-static uint8_t json_buf[8192];
+/*
+ * /api/data output buffer. Worst case per response (user metadata enabled):
+ *   per slot = 95 overhead (separator, uid, type, field names, closers)
+ *            + 6 * (SENSOR_REGISTRY_META_NAME_LEN + _LOCATION_LEN + _DESC_LEN)
+ *              (6 bytes/char bounds \u00XX escaping of control characters)
+ *            + HISTORY_SIZE * 48 (",{"t":" 6 + int64 timestamp 20 + ",\"v\":" 5
+ *              + %.2f value 16 + "}" 1)
+ *   total   = MAX_SENSORS * per_slot + 15 (wrapper and NUL)
+ * At defaults: 16 * 1823 + 15 = 29183 bytes, so the Kconfig default is 30 KiB.
+ */
+static uint8_t json_buf[CONFIG_HTTP_DASHBOARD_JSON_BUF_SIZE];
 static uint8_t cfg_json_buf[2048];
 static uint8_t loc_json_buf[512];
 
@@ -731,24 +741,15 @@ static int api_config_handler(struct http_client_ctx *client, enum http_transact
 
 	config_state_copy_sntp_server(sntp_snap, sizeof(sntp_snap));
 
-#if defined(CONFIG_HTTP_DASHBOARD_AUTH)
-	char api_token[AUTH_SESSION_TOKEN_LEN + 1];
-
-	auth_token_copy(api_token, sizeof(api_token));
-#else
-	const char *api_token = NULL;
-#endif
-
 #if defined(CONFIG_MQTT_PUBLISHER)
 	struct mqtt_publisher_config mqtt_cfg;
 
 	mqtt_publisher_get_config(&mqtt_cfg);
-	size_t len =
-		config_to_json(CONFIG_HTTP_DASHBOARD_PORT, config_state_get_trigger_ms(), sntp_snap,
-			       api_token, &mqtt_cfg, cfg_json_buf, sizeof(cfg_json_buf));
+	size_t len = config_to_json(CONFIG_HTTP_DASHBOARD_PORT, config_state_get_trigger_ms(),
+				    sntp_snap, &mqtt_cfg, cfg_json_buf, sizeof(cfg_json_buf));
 #else
 	size_t len = config_to_json(CONFIG_HTTP_DASHBOARD_PORT, config_state_get_trigger_ms(),
-				    sntp_snap, api_token, NULL, cfg_json_buf, sizeof(cfg_json_buf));
+				    sntp_snap, NULL, cfg_json_buf, sizeof(cfg_json_buf));
 #endif
 
 	if (len == 0) {

@@ -167,35 +167,44 @@ int sensor_registry_get_meta(uint32_t uid, struct sensor_registry_meta *out)
 	return -ENOENT;
 }
 
-const char *sensor_registry_get_display_name(uint32_t uid)
+int sensor_registry_copy_display_name(uint32_t uid, char *buf, size_t len)
 {
+	if (buf == NULL || len == 0) {
+		return -EINVAL;
+	}
+
 	k_mutex_lock(&registry_mutex, K_FOREVER);
 	for (int i = 0; i < registry_count; i++) {
 		if (registry[i]->uid == uid) {
 			const char *name = (meta[i].display_name[0] != '\0') ? meta[i].display_name
 									     : registry[i]->label;
 
+			/* snprintf always NUL-terminates and truncates to len. */
+			snprintf(buf, len, "%s", name);
 			k_mutex_unlock(&registry_mutex);
-			return name;
+			return 0;
 		}
 	}
 	k_mutex_unlock(&registry_mutex);
-	return NULL;
+	return -ENOENT;
 }
 
-const char *sensor_registry_get_location(uint32_t uid)
+int sensor_registry_copy_location(uint32_t uid, char *buf, size_t len)
 {
+	if (buf == NULL || len == 0) {
+		return -EINVAL;
+	}
+
 	k_mutex_lock(&registry_mutex, K_FOREVER);
 	for (int i = 0; i < registry_count; i++) {
 		if (registry[i]->uid == uid) {
-			const char *loc = meta[i].location;
-
+			snprintf(buf, len, "%s", meta[i].location);
 			k_mutex_unlock(&registry_mutex);
-			return loc;
+			return 0;
 		}
 	}
 	k_mutex_unlock(&registry_mutex);
-	return NULL;
+	return -ENOENT;
 }
 
 #	ifdef CONFIG_SENSOR_REGISTRY_SETTINGS
