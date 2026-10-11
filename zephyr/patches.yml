@@ -1,6 +1,17 @@
 checkout-command: git checkout .
 clean-command: git clean -d -f -x
 
-# No local Zephyr patches are needed on v4.5.0-rc1: the nsos fixes (0001 epoll
-# EEXIST, 0002 nsos_polls spinlock) were dropped; see git history and docs/backlog.md.
-patches: []
+patches:
+  - path: zephyr/0001-drivers-net-nsos-unlink-polled-socket-on-close.patch
+    sha256sum: 04bf45690a12134959d7646e9e58d73f7aff8a583becbe2d8cd090c2d228280e
+    module: zephyr
+    author: Tobias Meyer
+    email: tobiuhg@gmail.com
+    date: 2026-10-11
+    upstreamable: true
+    merge-pr: https://github.com/zephyrproject-rtos/zephyr/pull/117024
+    apply-command: git am
+    comments: |
+      native_sim only. nsos_close() freed a socket that was still linked in
+      nsos_polls, so nsos_isr() later called a NULL callback (SIGSEGV with
+      parallel HTTP clients). Drop once PR 117024 is in our Zephyr revision.

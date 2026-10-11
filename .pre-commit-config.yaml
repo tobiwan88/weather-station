@@ -3,8 +3,11 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
+      # Patch files keep diff whitespace (blank context lines are a single space).
       - id: trailing-whitespace
+        exclude: ^zephyr/patches/
       - id: end-of-file-fixer
+        exclude: ^zephyr/patches/
       - id: check-yaml
         args: [--unsafe]
       - id: check-merge-conflict

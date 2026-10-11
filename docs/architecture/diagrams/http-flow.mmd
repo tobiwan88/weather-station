@@ -6,7 +6,7 @@ sequenceDiagram
     participant HTTP as HTTP Server Thread
     participant CC as config_cmd_chan<br/>(zbus)
     participant FS as fake_sensors_timer
-    participant SNTP as sntp_sync
+    participant SNTP as net_config SNTP (Zephyr)
     participant SR as sensor_registry
     participant LOC as location_registry
     participant MQTTP as mqtt_publisher
@@ -23,13 +23,12 @@ sequenceDiagram
 
     alt sntp_server present
         HTTP->>HTTP: update sntp_server_buf<br/>(spinlock-protected snapshot)
+        HTTP->>SNTP: net_config_sntp_set_server(server)
     end
 
     alt action=sntp_resync
-        HTTP->>CC: publish CONFIG_CMD_SNTP_RESYNC
-        CC-->>SNTP: zbus listener callback
-        SNTP->>SNTP: k_work_reschedule(&immediate_work, K_NO_WAIT)
-        Note over SNTP: Runs async in work queue<br/>performs SNTP query
+        HTTP->>SNTP: net_config_sntp_set_server(server)
+        Note over SNTP: upstream client resyncs asynchronously on the socket service
     end
 
     alt sensor_<uid>_name present and USER_META enabled

@@ -4,7 +4,7 @@ title: SYS_INIT Boot Sequence (APPLICATION Priority)
 sequenceDiagram
     participant KERNEL as Zephyr Kernel
     participant TRACE as trace_recorder<br/>priority 1
-    participant SNTP as sntp_sync<br/>priority 80
+    participant SNTP as net_config SNTP<br/>priority 95
     participant FT as fake_temperature<br/>priority 90
     participant FH as fake_humidity<br/>priority 91
     participant LVGL as lvgl_display<br/>priority 91
@@ -27,10 +27,8 @@ sequenceDiagram
     TRACE->>TRACE: trace_ready = true
     TRACE-->>KERNEL: return 0
 
-    KERNEL->>SNTP: sntp_sync_init()
-    SNTP->>SNTP: initial SNTP query (blocking)
-    SNTP->>SNTP: schedule periodic_work (K_SECONDS(3600))
-    SNTP-->>KERNEL: return 0
+    KERNEL->>SNTP: net_config init + SNTP sync (priority 95)
+    SNTP-->>KERNEL: return
 
     KERNEL->>FT: fake_temperature_init()
     FT->>FT: sensor_registry_register(uid, ...)
@@ -76,7 +74,7 @@ sequenceDiagram
 
     KERNEL->>SEL: sensor_event_log_init()
     SEL->>SEL: zbus_chan_add_obs(sensor_event_chan)
-    Note over SEL: also at priority 95: sensor_registry settings load,<br/>sntp_sync config_cmd init, fake_sensors config_cmd init
+    Note over SEL: also at priority 95: sensor_registry settings load,<br/>fake_sensors config_cmd init
     SEL-->>KERNEL: return 0
 
     KERNEL->>LOC: location_registry_settings_load()

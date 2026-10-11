@@ -43,7 +43,7 @@ uint16_t lora_node_get_id(void);
 /**
  * @brief Store the session (node_id, session_key) to NVS.
  *
- * Called after successful pairing to persist the session.
+ * Called by `lora_node provision` to persist the pre-shared key.
  *
  * @param node_id     Assigned node ID.
  * @param session_key 16-byte AES session key.

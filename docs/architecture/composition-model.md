@@ -48,7 +48,6 @@ The mechanism is `SYS_INIT`. Each library registers its own initialisation funct
 The initialisation chain is the application's wiring diagram. Reading it tells you every feature that is active and the order they come up:
 
 ```
-priority 80  sntp_sync              — initial SNTP query before timestamps are needed
 priority 90  fake_temperature       — registers in sensor_registry, subscribes trigger chan
 priority 91  fake_humidity          — same; lvgl_display also at 91 (subscribes event chan)
 priority 92  fake_co2               — same; remote_sensor_manager also at 92
@@ -56,7 +55,8 @@ priority 92  fake_co2               — same; remote_sensor_manager also at 92
 priority 93  fake_voc               — same; fake_remote_sensor also at 93
 priority 94  remote_sensor_settings — loads persisted peer list after manager is up
 priority 95  sensor_event_log       — gateway listener subscribes to sensor_event_chan
-             (+ settings loads)       sensor_registry, sntp_sync, fake_sensors config-cmd callbacks
+             (+ settings loads)       sensor_registry, fake_sensors config-cmd callbacks
+priority 95  net_config (Zephyr)      — boot SNTP sync (CONFIG_NET_CONFIG_CLOCK_SNTP_INIT)
 priority 96  location_registry      — loads persisted location names after registry is up
 priority 97  http_dashboard         — subscribes to sensor_event_chan, starts HTTP server
 priority 98  mqtt_publisher         — subscribes to sensor_event_chan, connects to MQTT broker

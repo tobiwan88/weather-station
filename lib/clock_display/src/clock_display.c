@@ -3,7 +3,7 @@
  * @file clock_display.c
  * @brief Periodic console clock display — logs HH:MM UTC every 60 seconds.
  *
- * Runs at SYS_INIT APPLICATION priority 99 (after SNTP sync at 80) so the
+ * Runs at SYS_INIT APPLICATION priority 99 (after net_config SNTP init at 95) so the
  * first tick already reflects the synchronised wall-clock time.
  */
 

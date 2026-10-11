@@ -34,7 +34,7 @@ For a failure deep in a chain (build, then twister, then test, then assertion), 
 | Zephyr SDK version mismatch | SDK out of date | Update the SDK in the container |
 | `west update` fetch failure | Manifest allowlist changed | `scripts/ws.sh 'west update --narrow'` |
 | Upstream Zephyr behavior differs from expected | Patches not applied | `scripts/ws.sh 'west patch apply'`, then rebuild |
-| `EPOLL_CTL_ADD` errno 17 (EEXIST) crash | Two threads opened sockets at once | Follow `.claude/rules/native-sim-net.md` (presync delay) |
+| `EPOLL_CTL_ADD` errno 17 (EEXIST) crash | Two threads opened sockets at once | Follow `.claude/rules/native-sim-net.md` (NSOS epoll notes) |
 | Socket or poll exhaustion (`ZVFS_POLL_MAX`, `NET_MAX_CONTEXTS`) | Too few slots for HTTP, MQTT, SNTP | Check the limits in `.claude/rules/native-sim-net.md` |
 | Twister timeout | Binary hang, or LVGL enabled in a test build | Confirm LVGL is off; check the poll limits |
 | MQTT tests skipped or failing | No broker on port 1883 | Start a local broker on that port |

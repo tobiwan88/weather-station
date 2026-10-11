@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include <zephyr/logging/log.h>
+#include <zephyr/net/net_config.h>
 
 #include <config_cmd/config_cmd.h>
 #include <location_registry/location_registry.h>
@@ -31,8 +32,16 @@ void config_state_copy_sntp_server(char *out, size_t len)
 {
 	__ASSERT(len > 0, "out buffer length must be > 0");
 	k_spinlock_key_t key = k_spin_lock(&sntp_lock);
+	const char *src = sntp_server_buf;
 
-	strncpy(out, sntp_server_buf, len - 1);
+#ifdef CONFIG_NET_CONFIG_SNTP_INIT_SERVER
+	/* Nothing set via POST: report the server the SNTP client falls back to. */
+	if (src[0] == '\0') {
+		src = CONFIG_NET_CONFIG_SNTP_INIT_SERVER;
+	}
+#endif
+
+	strncpy(out, src, len - 1);
 	out[len - 1] = '\0';
 	k_spin_unlock(&sntp_lock, key);
 }
@@ -104,23 +113,38 @@ void process_post(const uint8_t *body, size_t len)
 				}
 				LOG_INF("trigger interval set to %u ms", ms);
 			} else if (strcmp(key, "sntp_server") == 0) {
-				k_spinlock_key_t skey = k_spin_lock(&sntp_lock);
-
-				strncpy(sntp_server_buf, val, sizeof(sntp_server_buf) - 1);
-				sntp_server_buf[sizeof(sntp_server_buf) - 1] = '\0';
-				k_spin_unlock(&sntp_lock, skey);
-				LOG_INF("sntp server set to %s", val);
-			} else if (strcmp(key, "action") == 0 && strcmp(val, "sntp_resync") == 0) {
-				struct config_cmd_event cmd = {
-					.cmd = CONFIG_CMD_SNTP_RESYNC,
-					.arg = 0,
-				};
-				int rc = zbus_chan_pub(&config_cmd_chan, &cmd, K_NO_WAIT);
+				/* Apply first (queues an immediate resync) and cache only what
+				 * upstream accepted, so GET /api/config shows the server in use.
+				 */
+				int rc = net_config_sntp_set_server(val);
 
 				if (rc != 0) {
-					LOG_WRN("config_cmd_chan pub failed: %d", rc);
+					LOG_WRN("sntp server '%s' not applied: %d", val, rc);
+				} else {
+					k_spinlock_key_t skey = k_spin_lock(&sntp_lock);
+
+					strncpy(sntp_server_buf, val, sizeof(sntp_server_buf) - 1);
+					sntp_server_buf[sizeof(sntp_server_buf) - 1] = '\0';
+					k_spin_unlock(&sntp_lock, skey);
+					LOG_INF("sntp server set to %s", val);
 				}
-				LOG_INF("SNTP resync triggered");
+			} else if (strcmp(key, "action") == 0 && strcmp(val, "sntp_resync") == 0) {
+				char server[sizeof(sntp_server_buf)];
+				k_spinlock_key_t skey = k_spin_lock(&sntp_lock);
+
+				strncpy(server, sntp_server_buf, sizeof(server) - 1);
+				server[sizeof(server) - 1] = '\0';
+				k_spin_unlock(&sntp_lock, skey);
+
+				/* An empty cache selects the Kconfig default server. */
+				int rc = net_config_sntp_set_server(server[0] != '\0' ? server
+										      : NULL);
+
+				if (rc != 0) {
+					LOG_WRN("SNTP resync not started: %d", rc);
+				} else {
+					LOG_INF("SNTP resync triggered");
+				}
 			} else if (strcmp(key, "action") == 0 &&
 				   (strcmp(val, "add_location") == 0 ||
 				    strcmp(val, "remove_location") == 0)) {

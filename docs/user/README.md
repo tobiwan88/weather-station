@@ -39,6 +39,7 @@ The dashboard exposes a REST API for programmatic access:
 | `/api/config` | GET / POST | Read or update runtime configuration |
 | `/api/login` | POST | Authenticate and receive a session cookie |
 | `/api/logout` | POST | Invalidate current session |
+| `/api/change-credentials` | POST | Change username and password |
 | `/api/locations` | GET | List registered locations |
 | `/api/token/rotate` | POST | Rotate the API bearer token |
 
@@ -56,6 +57,9 @@ When `CONFIG_HTTP_DASHBOARD_AUTH=y`:
 - API clients send `Authorization: Bearer <token>` header
 - Default credentials are set via Kconfig at build time
 - Credentials are persisted in Zephyr settings (`dash/user`, `dash/pass`, `dash/token`)
+  - First login with default credentials forces a credential change (`POST /api/change-credentials`); other APIs return 403 `password_change_required` until then.
+  - After 5 consecutive failed logins `/api/login` returns 429 with `Retry-After`.
+  - `GET /api/config` does not return the API token; use the `http_dashboard token show` shell command.
 
 When `CONFIG_HTTP_DASHBOARD_AUTH=n` (default for development), all endpoints are open.
 
@@ -68,17 +72,24 @@ The serial shell provides command-line access to subsystems. Connect via the ser
 | Command | Description |
 |---|---|
 | `fake_sensors list` | List all fake sensor instances |
-| `fake_sensors set <idx> <value>` | Set a sensor's output value |
-| `fake_sensors trigger <idx>` | Manually trigger a sensor sample |
+| `fake_sensors temperature_set <uid_hex> <mdegC>` | Set a fake sensor's temperature |
+| `fake_sensors humidity_set <uid_hex> <m_pct_rh>` | Set a fake sensor's humidity |
+| `fake_sensors co2_set <uid_hex> <mppm>` | Set a fake sensor's CO2 value |
+| `fake_sensors voc_set <uid_hex> <mIAQ>` | Set a fake sensor's VOC index |
+| `fake_sensors trigger [uid_hex]` | Manually trigger a sensor sample (omit for broadcast) |
 | `mqtt_pub status` | Show MQTT publisher status |
 | `mqtt_pub set <key> <value>` | Update MQTT settings |
 | `location add <name>` | Register a new location |
 | `location remove <name>` | Remove a location |
 | `location list` | List all registered locations |
 | `remote_sensor list` | List paired remote sensors |
-| `remote_sensor scan` | Start a remote sensor scan |
-| `remote_sensor pair <uid>` | Pair a discovered sensor |
-| `remote_sensor unpair <uid>` | Unpair a sensor |
+| `remote_sensor scan start\|stop [proto]` | Start or stop a remote sensor scan |
+| `lora provision <id>` | Generate a pre-shared key for a node (gateway) |
+| `lora forget <id>` | Remove a node session and its key (gateway) |
+| `lora sessions` | List sessions without keys (gateway) |
+| `lora_node provision <id> <32-hex-key>` | Store the node's pre-shared key (node) |
+| `lora_node status` | Show node id, provisioning state and next seq (node) |
+| `http_dashboard token show\|rotate` | Print or rotate the API bearer token |
 
 ## LVGL Display
 
@@ -95,10 +106,10 @@ Features are enabled at build time via Kconfig. Key options:
 | Option | Default | Description |
 |---|---|---|
 | `CONFIG_HTTP_DASHBOARD` | y | Web dashboard on port 8080 |
-| `CONFIG_HTTP_DASHBOARD_AUTH` | n | Require login for dashboard access |
+| `CONFIG_HTTP_DASHBOARD_AUTH` | y (gateway), n (Kconfig) | Require login for dashboard access |
 | `CONFIG_LVGL_DISPLAY` | y | SDL display window |
 | `CONFIG_MQTT_PUBLISHER` | y | MQTT sensor data publishing |
 | `CONFIG_FAKE_SENSORS` | y | Fake sensor drivers (native_sim) |
 | `CONFIG_FAKE_SENSORS_AUTO_PUBLISH_MS` | 1000 | Auto-publish interval for fake sensors |
-| `CONFIG_SNTP_SYNC` | y | SNTP time synchronization |
+| `CONFIG_NET_CONFIG_CLOCK_SNTP_INIT` | y | Boot-time SNTP sync (Zephyr net_config) |
 | `CONFIG_PIPE_PUBLISHER` | n | POSIX pipe output (integration testing) |

@@ -87,7 +87,7 @@ Thread               Runtime %  Switches     ID
 ----------------------------------------------------
 http_dashboard          34.2%        456      7
 mqtt_publisher          22.1%        312      8
-sntp_sync_thread         8.5%         89      3
+mqtt_publisher_thread   8.5%         89      3
 ...
 ```
 

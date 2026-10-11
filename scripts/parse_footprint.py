@@ -58,7 +58,6 @@ WS_LIBS = {
     "sensor_event_log",
     "sensor_registry",
     "sensor_trigger",
-    "sntp_sync",
 }
 
 # Zephyr top-level components to track

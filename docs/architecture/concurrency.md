@@ -4,15 +4,14 @@
 
 ## Execution Contexts
 
-Eight distinct contexts run concurrently in the gateway:
+Seven distinct contexts run concurrently in the gateway:
 
 | Context | What runs there | Scheduling |
 |---|---|---|
 | Timer ISR | `fake_sensors_timer` expiry — publishes to trigger channel | Hardware timer, preempts everything |
 | zbus thread | All zbus listener callbacks | Zephyr internal thread, runs after each publish |
-| System work queue | `k_work_delayable` handlers (sntp resync, clock display) | Cooperative within the work queue thread |
+| System work queue | `k_work_delayable` handlers (clock display) | Cooperative within the work queue thread |
 | HTTP server thread(s) | HTTP request handlers | Per Zephyr HTTP server configuration |
-| sntp_sync thread | Periodic NTP sync; executes config-cmd resync requests | Dedicated `k_thread` |
 | remote_sensor manager thread | Peer registration, scan start/stop dispatch | Dedicated `k_thread` |
 | mqtt_publisher thread | MQTT connect/reconnect loop and broker publish | Dedicated `k_thread` |
 | Main thread | LVGL render loop or `k_sleep(K_FOREVER)` | Lowest priority |
@@ -36,10 +35,6 @@ The lock scope is kept to the minimum: acquire, `memcpy` the ring buffer snapsho
 ### `k_mutex` in `sensor_registry`
 
 The registry is written by sensor driver `SYS_INIT` callbacks (priority 90/91) and read by the HTTP dashboard handler. Neither of these runs from ISR context. A mutex is correct here and preferable: if `CONFIG_SENSOR_REGISTRY_SETTINGS=y`, saving user metadata calls into Zephyr's settings subsystem which may block on flash I/O. A spinlock cannot be held across a blocking call.
-
-### `atomic_t` in `sntp_sync`
-
-The synced flag is written once (after the first successful NTP query) and read frequently (by anything that calls `sntp_sync_is_ready()`). An atomic variable is sufficient — no locking overhead, no ISR restriction.
 
 ---
 

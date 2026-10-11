@@ -9,13 +9,13 @@ flowchart LR
     subgraph sensor_node_tx
         LISTENER["zbus Listener\n(ADR-002: no blocking)"]
         LOCK["k_spinlock"]
-        BUF["Ring Buffer\nenv_sensor_data[20]"]
-        WIRE["Wire Array\nlora_reading[20]\n5 bytes each"]
+        BUF["Ring Buffer\nenv_sensor_data[MAX_READINGS] (drop oldest when full)"]
+        WIRE["Wire Array\nlora_reading[READINGS_PER_PACKET=5], 5 bytes each"]
         TIMER["k_work_delayable\n(CONFIG_SENSOR_NODE_TX_INTERVAL_S)"]
         FORCE["FORCE_TX\nconfig_cmd_chan"]
     end
 
-    LORA["lora_node\nlora_node_transmit()"]
+    LORA["lora_node\nlora_node_transmit()\n(chunked, <=5 readings per packet, unsent requeued)"]
     AIR["((LoRa RF))"]
 
     SENSORS -->|trigger| TRIG
@@ -37,7 +37,7 @@ flowchart LR
     WIRE -->|5-byte readings| LORA
     SNAP -->|uses| BUF
     SNAP -->|writes| WIRE
-    SNAP -->|calls| LORA
+    SNAP -->|calls per chunk| LORA
     LORA --> AIR
 
     style sensor_node_tx fill:#f0fdf4,stroke:#22c55e

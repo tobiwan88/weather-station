@@ -239,10 +239,10 @@ The sensor node runs custom Zephyr firmware as a separate Zephyr application. Th
 Key firmware responsibilities:
 - Read BME688 (T/H/P/gas resistance) and SEN0460 (PM1.0/PM2.5/PM10) via I2C
 - Encode readings in compact 5-byte wire format (1B sensor_type + 4B q31_value)
-- Transmit via `lib/lora_radio/` using the protocol defined in ADR-015
+- Transmit via `lib/lora_node/` + `lib/sensor_node_tx/` (shared codec `lib/lora_proto`, protocol in ADR-015)
 - Sleep in WOR mode (2.1 µA) between measurement cycles
 - Respond to trigger commands and RPC from gateway
-- Support button-press pairing (Ed25519 + AES-128-GCM session key exchange)
+- Use a pre-shared AES-128-GCM key entered via `lora_node provision <id> <hex>` (no over-the-air pairing)
 
 ### Power
 

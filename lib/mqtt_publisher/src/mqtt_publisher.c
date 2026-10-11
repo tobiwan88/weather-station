@@ -33,12 +33,12 @@
 #include <zephyr/random/random.h>
 #include <zephyr/settings/settings.h>
 #include <zephyr/sys/base64.h>
+#include <zephyr/sys/clock.h>
 #include <zephyr/zbus/zbus.h>
 
 #include <mqtt_publisher/mqtt_publisher.h>
 #include <sensor_event/sensor_event.h>
 #include <sensor_registry/sensor_registry.h>
-#include <sntp_sync/sntp_sync.h>
 
 #include "mqtt_publisher_format.h"
 
@@ -225,27 +225,6 @@ static void mqtt_evt_handler(struct mqtt_client *const client, const struct mqtt
 }
 
 /* --------------------------------------------------------------------------
- * Epoch cache — avoids calling sntp_sync_get_epoch_ms() per publish.
- * TODO: Replace with a system-wide epoch cache that is updated by
- * sntp_sync when a new sync completes, rather than polling here.
- * -------------------------------------------------------------------------- */
-static int64_t s_cached_epoch_s;
-static int64_t s_epoch_cache_updated_ms;
-
-static int64_t get_cached_epoch_s(void)
-{
-	int64_t now = k_uptime_get();
-
-	if (s_epoch_cache_updated_ms == 0 ||
-	    now - s_epoch_cache_updated_ms > CONFIG_MQTT_PUBLISHER_EPOCH_CACHE_TTL_MS) {
-		s_cached_epoch_s = sntp_sync_get_epoch_ms() / 1000;
-		s_epoch_cache_updated_ms = now;
-	}
-
-	return s_cached_epoch_s;
-}
-
-/* --------------------------------------------------------------------------
  * Publish one event
  * -------------------------------------------------------------------------- */
 static void publish_event(const struct env_sensor_data *evt)
@@ -255,7 +234,10 @@ static void publish_event(const struct env_sensor_data *evt)
 
 	char location[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN + 1];
 	char name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN + 1];
-	int64_t epoch_s = get_cached_epoch_s();
+	struct timespec ts = {0};
+
+	sys_clock_gettime(SYS_CLOCK_REALTIME, &ts);
+	int64_t epoch_s = ts.tv_sec;
 
 	/* On lookup failure use "", which build_topic substitutes with "unknown". */
 	if (sensor_registry_copy_location(evt->sensor_uid, location, sizeof(location)) != 0) {

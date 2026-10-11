@@ -86,9 +86,9 @@ subscribe to them identically to local sensor channels:
 │  │  Radio   │   │  Packet   │   │  Session  │   │   Protocol   │  │
 │  │  Driver  │   │  Framing  │   │  Manager  │   │   Handlers   │  │
 │  │          │   │           │   │           │   │              │  │
-│  │ SX1276/  │   │ 8B hdr +  │   │ pairing   │   │ data_handler │  │
-│  │ SX1262   │   │ GCM tag   │   │ state     │   │ rpc_handler  │  │
-│  │ SPI      │   │ CRC16     │   │ keys      │   │ fota_handler │  │
+│  │ SX1276/  │   │ 10B hdr + │   │ sessions  │   │ data_handler │  │
+│  │ SX1262   │   │ GCM tag + │   │ PSK keys  │   │ rpc_handler  │  │
+│  │ SPI      │   │ CRC16     │   │ replay    │   │ fota_handler │  │
 │  │ IRQ      │   │           │   │ node_map  │   │              │  │
 │  └──────────┘   └───────────┘   └───────────┘   └──────────────┘  │
 │                                                                     │
@@ -147,7 +147,7 @@ Sequence and nonce rules:
 | Bit | Name | Meaning |
 |-----|------|---------|
 | 0 | ACK_REQ | Receiver must send ACK/NACK |
-| 1 | ENCRYPTED | Payload + GCM tag present (always 1 after pairing) |
+| 1 | ENCRYPTED | Payload + GCM tag present (always 1 when a node key is provisioned) |
 | 2 | FRAGMENTED | Payload spans multiple frames |
 | 3 | DIR_DOWN | Gateway → node frame (part of the nonce) |
 | 4–7 | RESERVED | Must be 0 |
@@ -185,7 +185,7 @@ Default for sensor data: SF10/BW125. For FOTA: SF7/BW500.
 
 ## Internal Modules
 
-### Radio Driver (`lora_radio_drv.c`)
+### Radio Driver (`lora_drv_*.c`, `lora_radio_main.c`)
 
 SPI-based HAL for SX1276/SX1262. Provides:
 
@@ -221,12 +221,12 @@ Maintains per-node state:
 - `node_id` → `session_key` mapping
 - `last_seq_rx` / `last_seq_tx` (sequence number tracking)
 - `retry_count` and `last_ack_time` for reliable frames
-- `pairing_state` enum: UNPAIRED, PAIRING, PAIRED, EXPIRED
+- `state` enum in `lora_session.h`; sessions are created by `lora provision`
 - Node ID allocation pool (0x0001–0x00FF for LoRa)
 - Persistence to Zephyr Settings (`lora/<node_id>/key`)
 
 On reboot: restores all sessions from Settings. Invalidates sessions where
-GCM auth fails (the node was unpaired or key rotated).
+GCM auth fails (the node was forgotten or its key rotated).
 
 ### Reliable TX (`lora_pending.c`)
 
@@ -276,7 +276,7 @@ Runs on the dedicated LoRa RX thread.
 | `sensor_event_chan` | `sensor_event` | Publishes decoded `env_sensor_data` via `remote_sensor_publish_data()` |
 | `sensor_trigger_chan` | `sensor_trigger` | Subscribes: when `target_uid` matches a paired LoRa node, sends TRIGGER_SAMPLE RPC |
 | `remote_scan_ctrl_chan` | `remote_sensor` | Subscribes: on SCAN_START for LORA proto, enables RX continuous mode |
-| `remote_discovery_chan` | `remote_sensor` | Publishes: FOUND/LOST events during pairing and session expiry |
+| `remote_discovery_chan` | `remote_sensor` | Publishes: FOUND/LOST events on node discovery and session expiry |
 | `config_cmd_chan` | `config_cmd` | Subscribes: new LORA_RPC command type → `lora_radio_rpc_send()` |
 
 ### New channels
@@ -345,7 +345,7 @@ original vtable design, the section carries only metadata — no function
 pointers:
 
 ```c
-/* In lib/lora_radio/src/main.c */
+/* In lib/lora_radio/src/lora_radio_main.c */
 REMOTE_TRANSPORT_REGISTER(lora_transport, {
     .name  = "lora",
     .proto = REMOTE_TRANSPORT_PROTO_LORA,
@@ -378,10 +378,17 @@ Nodes use a pre-shared per-node AES-128 key; there is no over-the-air pairing
 Native_sim dev nodes use `CONFIG_LORA_NODE_DEV_KEY`/`CONFIG_LORA_NODE_DEV_NODE_ID`
 instead; never use those in production.
 
-----------|-----------|
+### Why pre-shared keys
+
+The old OTA pairing had the gateway private key in source, sent the session key in clear and the node never verified the signature. PSK provisioning over the shell is simpler and actually secure.
+
+### Security properties
+
+| Property | Mechanism |
+|----------|-----------|
 | Key distribution | Pre-shared per-node key, entered via shell; never sent over the air |
 | Replay protection | Per-direction sequence numbers, enforced before handlers run |
-| Frame encryption | AES-128-GCM on all post-pairing frames |
+| Frame encryption | AES-128-GCM on all frames (plaintext rejected by default, `LORA_RADIO_REQUIRE_ENCRYPTION=y`) |
 | Unpair | `lora forget <node_id>` removes the session and key; the gateway then drops that node's frames |
 
 ---
@@ -417,6 +424,8 @@ void lora_handle_sensor_data(uint16_t src_node, const uint8_t *payload, uint8_t 
     }
 }
 ```
+
+The node sends at most `CONFIG_SENSOR_NODE_TX_READINGS_PER_PACKET` (5) readings per frame; failed chunks are requeued; the buffer drops the oldest reading when full.
 
 ### Sensor node TX decision logic
 
@@ -586,7 +595,8 @@ CONFIG_LORA_SENSOR_PUBLISH_INTERVAL_S — Default publish interval (default 60)
 CONFIG_LORA_SENSOR_KEEPALIVE_S     — Default keep-alive interval (default 0)
 CONFIG_LORA_RADIO_DEFAULT_SF       — Default spreading factor (default 10)
 CONFIG_LORA_RADIO_DEFAULT_BW       — Default bandwidth (default 125)
-CONFIG_LORA_RADIO_SESSION_MAX      — Max paired nodes (default 16)
+CONFIG_LORA_RADIO_SESSION_MAX      — Max provisioned nodes (default 16)
+CONFIG_LORA_NODE_DEV_KEY / CONFIG_LORA_NODE_DEV_NODE_ID — native_sim development key only
 ```
 
 ---

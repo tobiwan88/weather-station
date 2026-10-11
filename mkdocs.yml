@@ -26,6 +26,8 @@ theme:
 
 nav:
   - Home: index.md
+  - User Guide: user/README.md
+  - Hardware: hardware/README.md
   - Architecture:
     - Overview: architecture/README.md
     - System Overview: architecture/system-overview.md
@@ -36,6 +38,12 @@ nav:
     - Firmware Update: architecture/firmware-update.md
     - LoRa Protocol: architecture/lora-protocol.md
     - Diagrams: architecture/diagrams.md
+    - HTTP Dashboard: architecture/http-dashboard.md
+    - Fake Sensors: architecture/fake-sensors.md
+    - native_sim: architecture/native-sim.md
+    - CI and Dev Environment: architecture/ci-dev-environment.md
+    - Trace Recorder: architecture/trace-recorder.md
+    - Renode Trace Workflow: architecture/renode-trace-workflow.md
   - Decisions: decisions.md
   - Backlog: backlog.md
   - Footprint: https://tobiwan88.github.io/weather-station/dev/bench/

@@ -37,7 +37,6 @@ graph LR
 
     subgraph CFG_CONSUMERS["Config Consumers"]
         FS_CFG["fake_sensors\ninterval update"]
-        SNTP_CFG["sntp_sync\nresync trigger"]
     end
 
     subgraph CHAN_DISC["remote discovery (k_msgq, not zbus)"]
@@ -76,7 +75,6 @@ graph LR
 
     HTTPL -->|pub config_cmd_event| CC
     CC -->|sub| FS_CFG
-    CC -->|sub| SNTP_CFG
     CC -->|sub| MQTT_CFG
 
     FAKE_T -->|remote_sensor_announce_disc| RD2

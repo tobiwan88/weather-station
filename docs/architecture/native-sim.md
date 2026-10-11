@@ -4,22 +4,7 @@
 
 `native_sim` compiles the full Zephyr application as a native Linux executable. It runs on any x86_64 or ARM64 Linux host (including GitHub Actions runners and the devcontainer). Zephyr threads, timers, zbus, logging, and the shell all work correctly with no emulator, no QEMU, and no hardware.
 
-v1 of the project targets `native_sim` exclusively. No real hardware build targets are committed until the architecture is validated end-to-end in simulation.
-
----
-
-## Development progression
-
-```
-Phase 1: native_sim  ◄── CURRENT     Phase 2: Renode  ◄── CURRENT  Phase 3: Real hardware
-─────────────────────                ──────────────────────      ─────────────────────
-Single binary                        Single-node simulation      Real MCU boards
-Full app logic                       Boot + shell + trace tests  Full integration
-Shell interaction                    Thread-level profiling      Flash + debug
-Fast iteration                       Automated assertions        Production config
-                                     (multi-node: see backlog    (hardware: see backlog
-                                      [RENODE-PHASE2])            ADR-007 trigger)
-```
+v1 of the project targets `native_sim` exclusively. Development targets native_sim; hardware targets (frdm_mcxn947, lora_e5_mini, wio_e5_mini) build in CI.
 
 ---
 
@@ -35,7 +20,7 @@ Fast iteration                       Automated assertions        Production conf
 | MQTT client | Full (connects to host Mosquitto) |
 | HTTP server | Full (accessible from host browser) |
 | LVGL display | SDL2 virtual display window |
-| LoRa radio | Fake driver only (no PHY simulation) |
+| LoRa radio | Fake driver (no PHY); node->gateway is exercised over the FIFO pipe transport |
 | Real I2C/SPI sensors | No hardware — use `fake_sensors` |
 | GPIO buttons | Simulated via shell commands |
 
@@ -79,19 +64,28 @@ The virtual display opens as a window on the host desktop. Buttons B1–B4 map t
 
 ---
 
-## native_sim + LoRa (fake driver)
+## Testing from a macOS host
 
-There is no LoRa PHY simulation on native_sim. The `lora_radio` library provides a native_sim stub that intercepts `lora_send()` and `lora_recv()` and routes packets through a FIFO or Unix socket. This allows the sensor-node and gateway to exchange LoRa packets via the host OS when run as two separate processes:
+The gateway runs inside the `ws_build` container. The container has its own IP
+(`container ls`, ADDR column), so the dashboard is at `http://<container-ip>:8080` from the
+Mac without port publishing. For the LVGL window, run Xvfb in the container
+(`Xvfb :99 &`, then start the gateway with `DISPLAY=:99`) and capture it with ImageMagick
+`import -window root`.
 
-```bash
-# Terminal 1: sensor node
-./build/sensor_node_native_sim/zephyr/zephyr.exe --lora-fifo=/tmp/lora_channel
+Known native_sim limits:
 
-# Terminal 2: gateway
-./build/gateway_native_sim/zephyr/zephyr.exe --lora-fifo=/tmp/lora_channel
-```
+- Settings are not persisted (`CONFIG_SETTINGS_NONE`): credentials, LoRa keys, locations and
+  MQTT settings reset on every boot.
+- SNTP resyncs use Zephyr's own DNS resolver, which has no server here, so the gateway uses a
+  numeric SNTP server. A hostname entered on the dashboard fails with
+  "Failed to initiate DNS query (-22)"; use an IP.
+- NSOS needs a local patch (`zephyr/patches.yml`) until upstream PR 117024 is merged.
 
-When only one node is running, `lora_recv()` simply blocks forever — the gateway works fine with local fake sensors only.
+---
+
+## native_sim + sensor node (FIFO)
+
+On native_sim the node->gateway path uses `pipe_publisher` (`apps/sensor-node`) and `pipe_transport` (gateway), joined by a POSIX FIFO. The gateway opens the FIFO non-blocking, so it also boots without a node. The LoRa radio uses a fake driver (`lora_drv_fake_zephyr.c`) with no PHY simulation. Integration test: `tests/integration/pytest/test_sensor_node_gateway.py` (needs `SENSOR_NODE_EXE`).
 
 ---
 

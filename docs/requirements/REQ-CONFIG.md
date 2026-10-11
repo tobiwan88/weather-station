@@ -7,17 +7,16 @@ review
 0.1
 
 ## Context
-Runtime configuration is managed through the `config_cmd` zbus channel, supporting commands for MQTT, SNTP, locations, and other subsystems. Configuration persists across reboots via Zephyr settings.
+Runtime configuration is managed through the `config_cmd` zbus channel, supporting commands for MQTT, locations, and other subsystems. Configuration persists across reboots via Zephyr settings.
 
 ## Functional Requirements
 
 ### REQ-CONFIG-001 — Config Command Channel
-The system shall provide a `config_cmd_chan` zbus channel for runtime configuration commands. Producers publish config commands; consumers (MQTT, SNTP, location, etc.) subscribe and apply changes.
+The system shall provide a `config_cmd_chan` zbus channel for runtime configuration commands. Producers publish config commands; consumers (MQTT, location, etc.) subscribe and apply changes.
 
 ### REQ-CONFIG-002 — Supported Commands
 The system shall support the following configuration commands:
 - MQTT: broker address, port, username, password, gateway ID, enable/disable
-- SNTP: resync request
 - Location: add, update, delete, list
 - Other subsystems as needed
 
@@ -28,7 +27,7 @@ The system shall persist configuration values across reboots using Zephyr settin
 The system shall provide shell commands that mirror the config_cmd channel functionality, enabling configuration via UART/console without HTTP dashboard.
 
 ### REQ-CONFIG-005 — Immediate Effect
-The system shall apply configuration changes immediately upon receipt. MQTT changes shall trigger reconnection; SNTP resync shall trigger immediate query; location changes shall update the registry.
+The system shall apply configuration changes immediately upon receipt. MQTT changes shall trigger reconnection; location changes shall update the registry.
 
 ### REQ-CONFIG-006 — Kconfig Composition
 The system shall be composed via Kconfig — each subsystem's config support shall be gated by its own `CONFIG_*` symbol. App CMakeLists.txt shall contain no feature-selection logic.
@@ -37,7 +36,6 @@ The system shall be composed via Kconfig — each subsystem's config support sha
 - REQ-MQTT-004: MQTT runtime reconfiguration
 - REQ-MQTT-008: MQTT settings persistence
 - REQ-LOCATION-001: Location registry
-- REQ-TIME-003: SNTP resync via config command
 
 ## Constraints
 - zbus listeners must not block (config consumers must defer heavy work)
@@ -49,7 +47,6 @@ The system shall be composed via Kconfig — each subsystem's config support sha
 - [ ] [native_sim] Integration: MQTT config change triggers reconnection
 - [ ] [native_sim] Integration: Location add/update/delete persists across reboot
 - [ ] [native_sim] Integration: Shell commands mirror config_cmd functionality
-- [ ] [native_sim] Integration: SNTP resync via config_cmd triggers immediate query
 - [ ] [native_sim] ztest: Config command struct is copyable (no heap pointers)
 - [ ] [renode] Integration: Config persistence over simulated storage
 - [ ] [manual] Board: Shell configuration via UART console

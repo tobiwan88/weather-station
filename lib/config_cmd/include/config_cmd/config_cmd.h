@@ -5,7 +5,7 @@
  *
  * Any producer (e.g. http_dashboard handling a POST /api/config) may
  * publish a config_cmd_event on config_cmd_chan. Each consumer
- * (fake_sensors, sntp_sync) independently subscribes and handles the
+ * (fake_sensors) independently subscribes and handles the
  * relevant commands. Producers never know who their consumers are.
  */
 
@@ -22,7 +22,6 @@ extern "C" {
 /** Type of configuration command. */
 enum config_cmd_type {
 	CONFIG_CMD_SET_TRIGGER_INTERVAL,
-	CONFIG_CMD_SNTP_RESYNC,
 	CONFIG_CMD_MQTT_SET_ENABLED,
 	CONFIG_CMD_MQTT_SET_BROKER,
 	CONFIG_CMD_MQTT_SET_AUTH,

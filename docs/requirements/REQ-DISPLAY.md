@@ -15,7 +15,7 @@ The display subsystem renders sensor data on an LVGL-based UI (320x240 SDL windo
 The system shall initialize LVGL with a 320x240 SDL window on native_sim, using `DEVICE_DT_GET(DT_CHOSEN(zephyr_display))` for display device selection — never a specific driver node.
 
 ### REQ-DISPLAY-002 — Analog Clock
-The system shall display an analog clock showing wall-clock time from `sntp_sync`, updated every 60 seconds.
+The system shall display an analog clock showing wall-clock time from the realtime clock (`sys_clock_gettime(SYS_CLOCK_REALTIME)`), updated every 60 seconds.
 
 ### REQ-DISPLAY-003 — Sensor Cards
 The system shall render sensor data as cards on the LVGL display, with one card per sensor location showing the latest measurement values.
@@ -54,7 +54,7 @@ The system shall call `display_blanking_off()` after UI creation to ensure the d
 
 ## Acceptance Criteria
 - [ ] [native_sim] Integration: LVGL window opens on native_sim build
-- [ ] [native_sim] Integration: Analog clock displays correct time from sntp_sync
+- [ ] [native_sim] Integration: Analog clock displays correct time from the realtime clock (`sys_clock_gettime(SYS_CLOCK_REALTIME)`)
 - [ ] [native_sim] Integration: Sensor cards update on new sensor events
 - [ ] [native_sim] Integration: Screen navigation via B1/B2 buttons works
 - [ ] [native_sim] Integration: sensor_registry lookup routes events to correct cards
