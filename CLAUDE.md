@@ -57,7 +57,7 @@ Firmware conventions (loaded automatically when editing `lib/` or `apps/`) are i
   remote-sensor and LoRa stacks.
 - Sensor identity is `sensor_uid`: fake sensors 0x0001–0x00FF, remote nodes 0x0Fxxxxxx,
   broadcast 0xFFFFFFFF. Hardware drivers take the UID from the DT `sensor-uid` property (Kconfig
-  fallbacks BME680 0x0011, SEN0460 0x0021). Look up metadata through `sensor_registry`.
+  fallbacks BME680 0x0101, SEN0460 0x0111). Look up metadata through `sensor_registry`.
   `fota_confirm` and MCUboot only matter on hardware builds.
 - `docs/decisions.md`: design decisions that still constrain the code (`ADR-0NN` in comments). `docs/backlog.md`: open work.
 

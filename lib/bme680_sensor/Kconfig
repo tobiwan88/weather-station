@@ -16,7 +16,7 @@ if BME680_SENSOR
 
 config BME680_SENSOR_DEFAULT_UID
 	hex "Default sensor UID if not specified in DT"
-	default 0x0011
+	default 0x0101
 	help
 	  Fallback UID used when the DT node does not have a sensor-uid property.
 
