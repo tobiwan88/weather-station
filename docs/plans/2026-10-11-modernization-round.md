@@ -30,16 +30,17 @@ Local build env: Apple `container` running `ghcr.io/tobiwan88/zephyr_docker:arm`
       gitignore `.cocoindex_code/`
 
 ## Phase 2 — Fix confirmed bugs
-- [ ] `sntp_sync.c:65` signed `(long)` fraction cast → negative tv_nsec on 32-bit
-- [ ] `fake_sensors_timer.c:34` zbus publish from k_timer ISR → work item
-- [ ] SEN0460 Q31 overflow for > 1000 µg/m³ → clamp
-- [ ] `sensor_registry` returns pointers into locked table → copy-out API
-- [ ] `/api/data` fixed 8 KB buffer overflow; `GET /api/config` leaks api_token
-- [ ] `fota_confirm` confirms without health check
-- [ ] Restore salvaged sensor_registry / location_registry tests
-- [ ] `sensor_event_log` prints raw `%7.2f` (no FP log formatting); uid width inconsistent
-- [ ] trace_recorder opt-in `k_malloc` dump path; prints under spinlock
-- [ ] lvgl_display calls `lv_async_call` outside the LVGL lock from a zbus listener
+(The HTTP server hang in docs/bugs/ was not reproducible in the T5 run; retest after Phase 4.)
+- [x] `sntp_sync.c:65` signed `(long)` fraction cast → negative tv_nsec on 32-bit
+- [x] `fake_sensors_timer.c:34` zbus publish from k_timer ISR → work item
+- [x] SEN0460 Q31 overflow for > 1000 µg/m³ → clamp
+- [x] `sensor_registry` returns pointers into locked table → copy-out API
+- [x] `/api/data` fixed 8 KB buffer overflow; `GET /api/config` leaks api_token
+- [x] `fota_confirm` confirms without health check
+- [x] Restore salvaged sensor_registry / location_registry tests
+- [x] `sensor_event_log` prints raw `%7.2f` (no FP log formatting); uid width inconsistent
+- [x] trace_recorder opt-in `k_malloc` dump path; prints under spinlock
+- [x] lvgl_display calls `lv_async_call` outside the LVGL lock from a zbus listener
 
 ## Phase 3 — Simplify ADRs and rules
 - [ ] Collapse 17 ADRs into a short "decisions" doc keeping only rules that still constrain
@@ -49,6 +50,8 @@ Local build env: Apple `container` running `ghcr.io/tobiwan88/zephyr_docker:arm`
 
 ## Phase 4 — Migrate to Zephyr v4.5.0-rc1
 - [ ] Bump `west.yml`, fix breakages, both apps + twister green
+- [ ] Add `zcbor` to the west allowlist: without it `CONFIG_MCUMGR=y` on frdm_mcxn947 silently resolves to n
+- [ ] Drop local nsos patch 0002 (upstream in v4.5); keep 0001 (epoll EEXIST)
 - [ ] Audit self-written code vs. upstream equivalents (zbus async listeners, LoRa APIs,
       SNTP, settings, sensor RTIO, HTTP server, io_stream vs. upstream stream/flash APIs)
       and replace where upstream is better

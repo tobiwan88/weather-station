@@ -11,6 +11,7 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/rtio/rtio.h>
+#include <zephyr/sys/atomic.h>
 #include <zephyr/zbus/zbus.h>
 
 #include <hw_sensor_utils/hw_sensor_publish.h>
@@ -32,7 +33,7 @@ struct sen0460_state {
 	const struct sensor_decoder_api *decoder;
 	uint32_t uid;
 	bool enabled;
-	enum sen0460_power_state power_state;
+	atomic_t power_state;
 	struct k_work_delayable settle_work;
 };
 
@@ -76,7 +77,7 @@ static void sen0460_sample_work_fn(struct k_work *work)
 	ARG_UNUSED(work);
 
 #ifdef CONFIG_SENSOR_ASYNC_API
-	sen0460_state.power_state = SEN0460_STATE_SAMPLING;
+	atomic_set(&sen0460_state.power_state, SEN0460_STATE_SAMPLING);
 	sen0460_read_cfg.sensor = sen0460_state.dev;
 
 	int rc = sensor_read(&sen0460_iodev, &sen0460_rtio, NULL, 0);
@@ -144,7 +145,7 @@ suspend:
 	LOG_WRN("CONFIG_SENSOR_ASYNC_API not enabled, skipping sample");
 #endif
 
-	sen0460_state.power_state = SEN0460_STATE_SUSPENDED;
+	atomic_set(&sen0460_state.power_state, SEN0460_STATE_SUSPENDED);
 }
 
 static void sen0460_trigger_cb(const struct zbus_channel *chan)
@@ -159,17 +160,16 @@ static void sen0460_trigger_cb(const struct zbus_channel *chan)
 		return;
 	}
 
-	if (sen0460_state.power_state != SEN0460_STATE_SUSPENDED) {
+	if (!atomic_cas(&sen0460_state.power_state, SEN0460_STATE_SUSPENDED,
+			SEN0460_STATE_AWAKENING)) {
 		return;
 	}
-
-	sen0460_state.power_state = SEN0460_STATE_AWAKENING;
 
 #ifdef CONFIG_PM_DEVICE
 	int rc = sensor_attr_set(sen0460_state.dev, SENSOR_CHAN_ALL, SEN0460_ATTR_RESUME, NULL);
 	if (rc < 0 && rc != -ENOSYS) {
 		LOG_WRN("attr_set RESUME failed: %d", rc);
-		sen0460_state.power_state = SEN0460_STATE_SUSPENDED;
+		atomic_set(&sen0460_state.power_state, SEN0460_STATE_SUSPENDED);
 		return;
 	}
 #endif
@@ -197,7 +197,7 @@ int sen0460_sensor_enable(void)
 #endif
 
 	sen0460_state.enabled = true;
-	sen0460_state.power_state = SEN0460_STATE_SUSPENDED;
+	atomic_set(&sen0460_state.power_state, SEN0460_STATE_SUSPENDED);
 	LOG_INF("SEN0460 enabled (uid=0x%08x)", sen0460_state.uid);
 	return 0;
 }
@@ -217,7 +217,7 @@ int sen0460_sensor_disable(void)
 #endif
 
 	sen0460_state.enabled = false;
-	sen0460_state.power_state = SEN0460_STATE_SUSPENDED;
+	atomic_set(&sen0460_state.power_state, SEN0460_STATE_SUSPENDED);
 	LOG_INF("SEN0460 disabled");
 	return 0;
 }
@@ -244,7 +244,7 @@ static int sen0460_sensor_init(void)
 #endif
 
 	sen0460_state.uid = CONFIG_SEN0460_SENSOR_DEFAULT_UID;
-	sen0460_state.power_state = SEN0460_STATE_SUSPENDED;
+	atomic_set(&sen0460_state.power_state, SEN0460_STATE_SUSPENDED);
 
 	{
 		static const struct sensor_registry_entry sen0460_reg = {

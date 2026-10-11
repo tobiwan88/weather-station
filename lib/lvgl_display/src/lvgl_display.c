@@ -24,14 +24,16 @@
  * Thread-safety model:
  *   - SYS_INIT at APPLICATION priority 91 subscribes to sensor_event_chan.
  *   - lvgl_display_run() (called from main) creates widgets inside lvgl_lock,
- *     then drives lv_timer_handler in a loop.
- *   - zbus listener (zbus thread): updates sensor_cards[] under k_spinlock,
- *     copies snapshot, then calls lv_async_call().
- *   - lv_async_call callbacks run in the LVGL workqueue thread — safe to
- *     call any lv_*() function directly.
- *   - Clock uses k_work_delayable, fires every 60 s, uses lv_async_call().
- *   - card_widgets[] and page_first_card are only accessed from LVGL
- *     workqueue / event callbacks — no lock needed.
+ *     then drives lv_timer_handler in a loop under lvgl_lock.
+ *   - zbus listener (publisher context, must not block): updates sensor_cards[]
+ *     under k_spinlock, copies snapshot, then sets UI_DIRTY_CARDS.
+ *   - Clock uses k_work_delayable (system workqueue), fires every 60 s, stores
+ *     the time and sets UI_DIRTY_CLOCK.
+ *   - The lvgl_display_run() loop consumes the dirty flags under lvgl_lock, so
+ *     no other thread ever waits for LVGL rendering.
+ *   - Every lv_*() call (widgets, event callbacks, card and clock updates)
+ *     runs under lvgl_lock. card_widgets[] and page_first_card are protected
+ *     by that lock.
  */
 
 #undef _POSIX_C_SOURCE
@@ -50,6 +52,7 @@
 #include <zephyr/drivers/display.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/sys/atomic.h>
 #include <zephyr/sys/clock.h>
 #include <zephyr/zbus/zbus.h>
 
@@ -116,7 +119,7 @@ static struct sensor_card cards_snapshot[CONFIG_LVGL_DISPLAY_MAX_CARDS];
 static struct k_spinlock cards_lock;
 
 /* --------------------------------------------------------------------------
- * LVGL widget handles (LVGL workqueue thread only — no lock needed)
+ * LVGL widget handles (accessed only under lvgl_lock)
  * -------------------------------------------------------------------------- */
 
 struct sensor_card_widgets {
@@ -170,9 +173,9 @@ static int count_valid_cards(void)
 static void get_card_name(uint32_t uid, enum sensor_type type, char *buf, size_t len)
 {
 #if defined(CONFIG_LVGL_DISPLAY_USE_SENSOR_REGISTRY)
-	const char *name = sensor_registry_get_display_name(uid);
+	char name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN + 1];
 
-	if (name && name[0] != '\0') {
+	if (sensor_registry_copy_display_name(uid, name, sizeof(name)) == 0 && name[0] != '\0') {
 		snprintf(buf, len, "%s", name);
 		return;
 	}
@@ -214,8 +217,13 @@ static void update_clock_hands(int hour, int min)
 }
 
 /* --------------------------------------------------------------------------
- * Clock async update (runs in LVGL workqueue thread)
+ * Clock update (caller must hold lvgl_lock)
  * -------------------------------------------------------------------------- */
+
+/* Set by the zbus listener / clock work, consumed by the lvgl_display_run() loop. */
+#define UI_DIRTY_CARDS BIT(0)
+#define UI_DIRTY_CLOCK BIT(1)
+static atomic_t ui_dirty;
 
 static void clock_async_update(void *unused)
 {
@@ -238,7 +246,7 @@ static void clock_tick(struct k_work *work)
 	clock_hour = (int)(sod / 3600);
 	clock_min = (int)((sod % 3600) / 60);
 
-	lv_async_call(clock_async_update, NULL);
+	atomic_or(&ui_dirty, UI_DIRTY_CLOCK);
 	k_work_reschedule(&clock_work, K_SECONDS(60));
 }
 
@@ -307,7 +315,7 @@ static void nav_next_cb(lv_event_t *e)
 }
 
 /* --------------------------------------------------------------------------
- * Card creation (runs in LVGL workqueue thread)
+ * Card creation (caller must hold lvgl_lock)
  * -------------------------------------------------------------------------- */
 
 static void create_sensor_card(int slot, const struct sensor_card *cards_local)
@@ -511,7 +519,7 @@ static void create_sensor_card(int slot, const struct sensor_card *cards_local)
 }
 
 /* --------------------------------------------------------------------------
- * Card update (runs in LVGL workqueue thread)
+ * Card update (caller must hold lvgl_lock)
  * -------------------------------------------------------------------------- */
 
 static void update_sensor_card(int slot, const struct sensor_card *cards_local)
@@ -564,7 +572,7 @@ static void update_sensor_card(int slot, const struct sensor_card *cards_local)
 }
 
 /* --------------------------------------------------------------------------
- * Sensor async update (runs in LVGL workqueue thread)
+ * Sensor update (caller must hold lvgl_lock)
  * -------------------------------------------------------------------------- */
 
 static void sensor_async_update(void *unused)
@@ -600,7 +608,7 @@ static void sensor_async_update(void *unused)
 }
 
 /* --------------------------------------------------------------------------
- * zbus listener (runs in zbus thread)
+ * zbus listener (runs in publisher context, must not block)
  * -------------------------------------------------------------------------- */
 
 static void sensor_event_cb(const struct zbus_channel *chan)
@@ -640,7 +648,7 @@ static void sensor_event_cb(const struct zbus_channel *chan)
 	memcpy(cards_snapshot, sensor_cards, sizeof(sensor_cards));
 	k_spin_unlock(&cards_lock, key);
 
-	lv_async_call(sensor_async_update, NULL);
+	atomic_or(&ui_dirty, UI_DIRTY_CARDS);
 }
 
 ZBUS_LISTENER_DEFINE(lvgl_display_listener, sensor_event_cb);
@@ -848,7 +856,17 @@ void lvgl_display_run(void)
 	while (true) {
 		uint32_t next_ms;
 
+		atomic_val_t dirty = atomic_clear(&ui_dirty);
+
 		lvgl_lock();
+		if (dirty & UI_DIRTY_CARDS) {
+			sensor_async_update(NULL);
+		}
+#if defined(CONFIG_LVGL_DISPLAY_SHOW_CLOCK)
+		if (dirty & UI_DIRTY_CLOCK) {
+			clock_async_update(NULL);
+		}
+#endif
 		next_ms = lv_timer_handler();
 		lvgl_unlock();
 

@@ -253,9 +253,17 @@ static void publish_event(const struct env_sensor_data *evt)
 	char topic_buf[128];
 	char payload_buf[128];
 
-	const char *location = sensor_registry_get_location(evt->sensor_uid);
-	const char *name = sensor_registry_get_display_name(evt->sensor_uid);
+	char location[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN + 1];
+	char name[CONFIG_SENSOR_REGISTRY_META_NAME_LEN + 1];
 	int64_t epoch_s = get_cached_epoch_s();
+
+	/* On lookup failure use "", which build_topic substitutes with "unknown". */
+	if (sensor_registry_copy_location(evt->sensor_uid, location, sizeof(location)) != 0) {
+		location[0] = '\0';
+	}
+	if (sensor_registry_copy_display_name(evt->sensor_uid, name, sizeof(name)) != 0) {
+		name[0] = '\0';
+	}
 
 	mqtt_publisher_build_topic(s_gateway_name, location, name, evt->type, topic_buf,
 				   sizeof(topic_buf));

@@ -132,14 +132,18 @@ size_t history_to_json(const struct sensor_history *snap, int n_sensors, uint8_t
 		if (sensor_registry_get_meta(snap[i].uid, &smeta) == 0 && !smeta.enabled) {
 			continue;
 		}
-		const char *label = sensor_registry_get_display_name(snap[i].uid);
-		const char *location = sensor_registry_get_location(snap[i].uid);
+		char label_buf[CONFIG_SENSOR_REGISTRY_META_NAME_LEN + 1];
+		char location_buf[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN + 1];
+		const char *label = "unknown";
+		const char *location = "unknown";
 
-		if (!label) {
-			label = "unknown";
+		if (sensor_registry_copy_display_name(snap[i].uid, label_buf, sizeof(label_buf)) ==
+		    0) {
+			label = label_buf;
 		}
-		if (!location) {
-			location = "unknown";
+		if (sensor_registry_copy_location(snap[i].uid, location_buf,
+						  sizeof(location_buf)) == 0) {
+			location = location_buf;
 		}
 		const char *description = smeta.description;
 #else
@@ -270,21 +274,14 @@ static int sensor_entry_to_json_cb(const struct sensor_registry_entry *e, void *
 }
 
 size_t config_to_json(uint16_t port, uint32_t trigger_ms, const char *sntp_server,
-		      const char *api_token, const struct mqtt_publisher_config *mqtt_cfg,
-		      uint8_t *buf, size_t buf_size)
+		      const struct mqtt_publisher_config *mqtt_cfg, uint8_t *buf, size_t buf_size)
 {
 	int pos = 0;
 	int rem = (int)buf_size - 1;
 
 	JAPPEND("{\"port\":%d,\"trigger_interval_ms\":%u,\"sntp_server\":\"", port, trigger_ms);
 	JAPPEND_STR(sntp_server);
-	JAPPEND("\"");
-	if (api_token && api_token[0] != '\0') {
-		JAPPEND(",\"api_token\":\"");
-		JAPPEND_STR(api_token);
-		JAPPEND("\"");
-	}
-	JAPPEND(",\"locations\":[");
+	JAPPEND("\",\"locations\":[");
 
 	struct json_write_ctx lctx = {.buf = buf, .pos = pos, .rem = rem, .first = true};
 

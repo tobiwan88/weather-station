@@ -14,6 +14,7 @@
 #define SENSOR_REGISTRY_SENSOR_REGISTRY_H_
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -105,27 +106,36 @@ int sensor_registry_set_meta(uint32_t uid, const struct sensor_registry_meta *me
 int sensor_registry_get_meta(uint32_t uid, struct sensor_registry_meta *out);
 
 /**
- * @brief Return the display name for a sensor.
+ * @brief Copy the display name for a sensor into a caller buffer.
  *
- * Returns meta.display_name if non-empty, otherwise falls back to the
- * DT label from sensor_registry_entry.
+ * Copies meta.display_name if non-empty, otherwise the DT label from
+ * sensor_registry_entry. The copy is made under the registry lock, so the
+ * result stays valid even if the metadata is rewritten concurrently. The
+ * output is always NUL-terminated and truncated to fit @p len.
  *
  * @param uid Sensor uid.
- * @return Display name string, or NULL if uid is not registered.
+ * @param buf Destination buffer. Must not be NULL.
+ * @param len Size of @p buf in bytes. Must be > 0.
+ * @return 0 on success, -ENOENT if uid is not registered, -EINVAL if buf is
+ *         NULL or len is 0.
  */
-const char *sensor_registry_get_display_name(uint32_t uid);
+int sensor_registry_copy_display_name(uint32_t uid, char *buf, size_t len);
 
 /**
- * @brief Return the location string for a sensor.
+ * @brief Copy the location string for a sensor into a caller buffer.
  *
- * Returns meta.location (set at runtime via dashboard or shell), or an
- * empty string if no location has been assigned yet.
+ * Copies meta.location (set at runtime via dashboard or shell), or an empty
+ * string if no location has been assigned yet. The copy is made under the
+ * registry lock. The output is always NUL-terminated and truncated to fit
+ * @p len.
  *
  * @param uid Sensor uid.
- * @return Location string (never NULL for a registered sensor), or NULL
- *         if uid is not registered.
+ * @param buf Destination buffer. Must not be NULL.
+ * @param len Size of @p buf in bytes. Must be > 0.
+ * @return 0 on success, -ENOENT if uid is not registered, -EINVAL if buf is
+ *         NULL or len is 0.
  */
-const char *sensor_registry_get_location(uint32_t uid);
+int sensor_registry_copy_location(uint32_t uid, char *buf, size_t len);
 
 #endif /* CONFIG_SENSOR_REGISTRY_USER_META */
 

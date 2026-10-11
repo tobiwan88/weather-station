@@ -51,12 +51,16 @@ static int cmd_list(const struct shell *sh, size_t argc, char **argv)
 			break;
 		}
 #ifdef CONFIG_SENSOR_REGISTRY_USER_META
-		const char *loc = sensor_registry_get_location(entry->uid);
+		char loc[CONFIG_SENSOR_REGISTRY_META_LOCATION_LEN + 1];
+
+		if (sensor_registry_copy_location(entry->uid, loc, sizeof(loc)) != 0) {
+			loc[0] = '\0';
+		}
 #else
-		const char *loc = NULL;
+		const char *loc = "";
 #endif
 
-		shell_print(sh, "0x%04x  %-12s  %-20s  %d %s", entry->uid, kind_str, loc ? loc : "",
+		shell_print(sh, "0x%04x  %-12s  %-20s  %d %s", entry->uid, kind_str, loc,
 			    *entry->value_milli, unit_str);
 	}
 	return 0;
