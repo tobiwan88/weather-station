@@ -1,91 +1,74 @@
 ---
 name: build-and-test
-description: Use after any code, Kconfig, DTS, or config change — before committing. Runs the mandatory build + test gate for the weather-station project.
+description: Run the mandatory build, twister, pytest and pre-commit gate after any code, Kconfig, DTS or config change, before commit. Use for: build, run tests, twister, check standards.
+argument-hint: "[gate | twister <suite> | pytest <marker>]"
 allowed-tools: Bash
-disable-model-invocation: false
 ---
 
-# Build and Test Gate
+# Build and Test
 
-Run the mandatory build + test gate for the weather-station project.
+Run every command through `scripts/ws.sh`, from the workspace root. `weather-station/` is the
+repo path inside it. Don't claim success without running the command.
 
-## Use the script
-
-Instead of running individual commands, use the build gate script:
+## Full gate (run before every commit)
 
 ```bash
-scripts/build-gate.sh [options]
+scripts/ws.sh 'cd weather-station && scripts/build-gate.sh'
 ```
 
-**Options:**
-- `--pristine` — Force pristine rebuild (default: auto-detects from git diff)
-- `--skip-smoke` — Skip shell smoke-test step
-- `--skip-tests` — Skip twister test step
-- `--skip-precommit` — Skip pre-commit step
-- `--quiet` — Suppress stderr progress output
+Runs, in order: build gateway, build sensor-node, shell smoke test, twister, pre-commit.
+Progress goes to stderr; JSON with per-step results goes to stdout. Exit 0 = every executed step passed, 1 = a step failed. `-T tests/<suite>` limits twister to one suite.
 
-**Output:** JSON to stdout with per-step results, durations, and overall verdict. Human-readable progress goes to stderr.
+Options: `--pristine` (force rebuild; auto-detected from git diff), `--skip-smoke`,
+`--skip-tests`, `--skip-precommit`, `--sca` (CodeChecker, informational).
 
-**Example:**
+## Individual steps
+
 ```bash
-scripts/build-gate.sh
-scripts/build-gate.sh --pristine
-scripts/build-gate.sh --skip-tests --skip-precommit
+scripts/ws.sh 'west build -p -b native_sim/native/64 -d build/native_sim_native_64/gateway weather-station/apps/gateway'
+scripts/ws.sh 'west build -p -b native_sim/native/64 -d build/native_sim_native_64/sensor-node weather-station/apps/sensor-node'
+scripts/ws.sh 'printf "help\nfake_sensors list\n" | timeout 10 build/native_sim_native_64/gateway/zephyr/zephyr.exe -uart_stdinout'
+scripts/ws.sh 'cd weather-station && west twister -p native_sim/native/64 -T tests/ -N -j 8'
+scripts/ws.sh 'cd weather-station && pre-commit run --all-files'
 ```
 
-**JSON output schema:**
-```json
-{
-  "script": "build-gate",
-  "timestamp": "2026-05-25T12:00:00Z",
-  "verdict": "PASS|FAIL",
-  "steps": [
-    {"name": "Build gateway", "status": "PASS|FAIL|SKIP", "duration_s": 12.3, "detail": "...", "errors": []},
-    {"name": "Build sensor-node", "status": "PASS|FAIL|SKIP", "duration_s": 8.1, "detail": "...", "errors": []},
-    {"name": "Shell smoke-test", "status": "PASS|FAIL|SKIP", "duration_s": 2.0, "detail": "...", "errors": []},
-    {"name": "Twister tests", "status": "PASS|FAIL|SKIP", "duration_s": 45.0, "detail": "...", "errors": []},
-    {"name": "Pre-commit", "status": "PASS|FAIL|SKIP", "duration_s": 3.0, "detail": "...", "errors": []}
-  ],
-  "summary": "All 5 steps passed."
-}
+Use `-p` (pristine) after any Kconfig, DTS or `.conf` change. Without it, incremental builds
+can keep stale config.
+
+## Single twister suite
+
+```bash
+scripts/ws.sh 'cd weather-station && west twister -p native_sim/native/64 -T tests/<suite> -N -j 8 --inline-logs -v'
 ```
 
-**Exit codes:** 0 = all PASS, 1 = one or more FAIL, 2 = partial (some skipped)
+Replace `<suite>` with a directory under `tests/`. Add `--inline-logs -v` when debugging a failure.
 
-## Manual steps (for reference)
+## Single pytest marker (integration tests)
 
-The script runs these 5 steps in order:
+```bash
+scripts/ws.sh 'cd weather-station && scripts/run-tests.sh --marker smoke'
+scripts/ws.sh 'cd weather-station && scripts/run-tests.sh --test test_http_api'
+```
 
-1. **Build gateway** — `west build -b native_sim/native/64 apps/gateway`
-2. **Build sensor-node** — `west build -b native_sim/native/64 apps/sensor-node`
-3. **Shell smoke-test** — Pipe commands to gateway binary, verify `fake_sensors` appears
-4. **Twister** — `west twister -p native_sim/native/64 -T tests/ --inline-logs -v -N`
-5. **Pre-commit** — `pre-commit run --all-files`
+Markers: `smoke` (run first), `shell`, `http`, `mqtt`, `e2e`, `system`. `--all` runs unit and
+integration tests. Don't run `pytest` directly; twister manages the DUT and the harness.
 
-Use `--pristine` (or `-p always`) after any Kconfig, DTS overlay, or `.conf` change.
-The script auto-detects this from git diff.
+## Standards check
+
+```bash
+scripts/ws.sh 'cd weather-station && scripts/check-standards.sh master..HEAD'
+```
+
+No argument checks uncommitted changes. Also accepts `HEAD~1..HEAD` or file names after `--`.
+Exit 0 = PASS, 1 = BLOCK (fix before commit), 2 = WARN.
 
 ## Gotchas
 
-- **ZEPHYR_BASE is stale.** The script always uses `ZEPHYR_BASE=/home/zephyr/workspace/zephyr` for twister.
-- **Pristine vs. incremental.** Kconfig/DTS/conf changes require `-p always`. The script auto-detects this.
-- **Mosquitto.** MQTT tests skip silently if no broker is running. Start `mosquitto -p 1883 -d` for full coverage.
-- **CMakeCache.txt.** If builds fail with a stale path, delete `CMakeCache.txt` and rebuild.
-
-## Red Flags — STOP and re-run the failed step
-
-| Feeling | Reality |
-|---------|---------|
-| "Should pass" / "probably fine" / "looks correct" | You didn't verify |
-| Trusting a build from an earlier session | Not fresh evidence |
-| Skipping sensor-node build because "only gateway changed" | Build both |
-| Skipping shell smoke-test because "just a small change" | Small changes can break init |
-| Proceeding past a test failure saying "will fix later" | Fix now or don't proceed |
-| Proceeding past a pre-commit hook failure | Fix now or don't proceed |
-| Any wording implying success without having RUN the verification command | No evidence = no claim |
-
-## Binary path reference
-
-```
-/home/zephyr/workspace/build/native_sim/native/64/gateway/zephyr/zephyr.exe
-```
+- **MQTT tests skip without a broker.** Start one with `scripts/ws.sh 'mosquitto -p 1883 -d'`.
+  Install `mosquitto` in the container if it is missing.
+- **Stale builds.** If a build fails with a stale path, delete `CMakeCache.txt` in that build dir and rebuild with `-p`.
+- **Stale ZEPHYR_BASE.** `ws.sh` sets it. Don't call `west` from the host shell.
+- **No `printk`, heap or banned string functions** in `lib/` or `apps/`. The standards check catches these.
+- **Test failure or DUT crash:** run `/systematic-debug` before changing code.
+- **No container:** if `ws.sh` reports no build environment, start the `ws_build` container
+  (see the repo CLAUDE.md).

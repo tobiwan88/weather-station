@@ -1,86 +1,75 @@
 ---
 name: new-diagram
-description: Use when adding or updating architecture diagrams, Mermaid charts, flow charts, sequence diagrams, or architecture visualization. Creates or edits .mmd files in docs/architecture/diagrams/.
+description: Use when adding or updating an architecture diagram, Mermaid chart or sequence diagram in docs/architecture/diagrams/ and its catalog entry. Triggers: "diagram", "mermaid", "sequence diagram", "flow chart".
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
-# Diagram Conventions Guide
+# Add or Update an Architecture Diagram
 
-Use this guide when adding or updating architecture diagrams for the weather-station project.
+Diagrams are raw Mermaid sources in `docs/architecture/diagrams/`. Each is embedded in an
+architecture page and listed in `docs/architecture/diagrams.md`. No generator script exists:
+the `.mmd` file is the source of truth and pages include it with a snippet.
 
-## When to use each diagram type
+## Choose the diagram type
 
 | Type | Use for |
 |------|---------|
-| `graph TB` / `graph LR` | Component relationships, dependency graphs, layered architecture views |
-| `sequenceDiagram` | Message flows, time-ordered interactions, init sequences, request-response cycles |
-| `flowchart` | Decision trees, algorithm flows — use sparingly, prefer sequenceDiagram for flows with actors |
+| `graph TB` / `graph LR` | Component relationships, dependency graphs, layered views |
+| `sequenceDiagram` | Message flows, init sequences, request-response, anything time-ordered |
+| `flowchart` | Decision trees and algorithms. Use sparingly |
 
-Do not use `graph TD` for sequential flows — use `sequenceDiagram` instead.
+Do not use `graph TD` for sequential flows. Use `sequenceDiagram`.
 
-## Project colour palette
+## File format
 
-All existing diagrams use this palette. Match it exactly for new diagrams:
-
-```
-Application layer:  fill:#dbeafe, stroke:#3b82f6  (blue)
-Library layer:      fill:#dcfce7, stroke:#16a34a  (green)
-Channel nodes:      fill:#fef9c3, stroke:#ca8a04  (yellow)
-Consumer nodes:     fill:#fce7f3, stroke:#db2777  (pink)
-Zephyr RTOS nodes:  fill:#fce7f3, stroke:#db2777  (pink)
-Transport nodes:    fill:#e0e7ff, stroke:#6366f1  (indigo)
-```
-
-Apply with `style <ID> fill:#..., stroke:#...` at the bottom of graph diagrams.
-
-## File naming and location
-
-- **Source file:** `docs/architecture/diagrams/<kebab-name>.mmd`
-- **Content:** raw Mermaid source only — no markdown code fences
-- **Frontmatter:** add a title block at the top:
+- File: `docs/architecture/diagrams/<kebab-name>.mmd`
+- Start with a front-matter title block, as the existing files do:
   ```
   ---
   title: Human-readable title
   ---
   ```
-- **Inline embed** (in any arch page or diagrams.md):
-  ````markdown
-  ```mermaid
-  --8<-- "<kebab-name>.mmd"
-  ```
-  ````
+- Raw Mermaid only. No markdown code fences inside the `.mmd` file.
 
-## Where to add a new diagram
+## Project palette
 
-1. **Create** `docs/architecture/diagrams/<kebab-name>.mmd`
-2. **Add to catalog** `docs/architecture/diagrams.md` — append a new `## Section` with a one-line description and the snippet include
-3. **Embed inline** in the most relevant arch page, at the natural point in the narrative where the diagram adds meaning the text doesn't already provide
+Apply with `style <ID> fill:#..., stroke:#...` at the bottom of graph diagrams. Use no other colours.
 
-Only embed where a visual genuinely clarifies structure or flow. Do not add diagrams to every section.
-
-## Validate the diagram
-
-After creating or editing a `.mmd` file, verify it renders correctly:
-
-```bash
-npx --yes @mermaid-js/mermaid-cli mmdc -i <file>.mmd -o /dev/null 2>&1
 ```
-
-If `mmdc` is not available, paste the content into [Mermaid Live Editor](https://mermaid.live) and confirm it renders without errors. Do not proceed with a broken diagram.
+Application layer:  fill:#dbeafe, stroke:#3b82f6  (blue)
+Library layer:      fill:#dcfce7, stroke:#16a34a  (green)
+Channel nodes:      fill:#fef9c3, stroke:#ca8a04  (yellow)
+Consumer / Zephyr:  fill:#fce7f3, stroke:#db2777  (pink)
+Transport nodes:    fill:#e0e7ff, stroke:#6366f1  (indigo)
+```
 
 ## Style rules
 
-- **Subgraph labels:** ALL-CAPS SHORT name + `\n` detail line, e.g. `["LIBRARY LAYER (lib/)\nself-wired via SYS_INIT"]`
-- **Edge labels:** lowercase imperative, e.g. `-->|publishes|`, `-->|subscribes|`, `-->|Kconfig selects|`
-- **Sequence participants:** use `as` aliases for multi-line names, e.g. `participant DASH as http_dashboard<br/>(ring buffer)`
-- **Sequence notes:** `Note over X: brief context` — one short phrase, not a paragraph
-- **Line breaks in labels:** use `<br/>` inside node labels and participant aliases
+- Subgraph labels: ALL-CAPS name plus a `\n` detail line. Edge labels: lowercase imperative
+  (`-->|publishes|`). Line breaks in labels: `<br/>`.
+- Sequence participants: `as` aliases, e.g. `participant DASH as http_dashboard<br/>(ring buffer)`.
+- Sequence notes: `Note over X: brief phrase`, not a paragraph.
 
-## What NOT to do
+## Where it goes
 
-- Do not embed long inline Mermaid blocks directly in arch pages — always use a `.mmd` file + snippet include
-- Do not use `graph TD` for sequential flows (use `sequenceDiagram`)
-- Do not add diagrams to a page just because a diagram exists — only embed where it adds meaning
-- Do not use colours outside the project palette without a strong reason
-- Do not commit `.mmd` files with markdown code fences around the Mermaid source
+1. Create `docs/architecture/diagrams/<kebab-name>.mmd`.
+2. Append a `## Section` to `docs/architecture/diagrams.md` with a one-line description and the snippet:
+   ````markdown
+   ```mermaid
+   --8<-- "<kebab-name>.mmd"
+   ```
+   ````
+3. Embed the same snippet inline in the most relevant page under `docs/architecture/`, at the
+   point where the diagram adds meaning the text does not. Do not add diagrams to every section,
+   and do not paste long Mermaid blocks into pages.
 
-**Terminal state:** `.mmd` file created in `docs/architecture/diagrams/`, catalog entry added to `docs/architecture/diagrams.md`, diagram embedded in relevant arch page, rendering verified.
+## Verification
+
+Diagram-only changes need no firmware build. Render the source to check it parses:
+
+```bash
+npx --yes @mermaid-js/mermaid-cli mmdc -i docs/architecture/diagrams/<kebab-name>.mmd -o "${TMPDIR:-/tmp}/<kebab-name>.svg"
+```
+
+If `mmdc` is unavailable, check the source at https://mermaid.live. Do not proceed with a
+diagram that fails to render. Then run `pre-commit run --all-files` before committing. Commit as `docs(arch): add <kebab-name> diagram`.

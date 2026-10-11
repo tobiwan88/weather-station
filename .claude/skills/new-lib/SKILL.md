@@ -1,98 +1,60 @@
 ---
 name: new-lib
-description: Use when adding a new library under lib/. Creates the full scaffold with Kconfig, CMakeLists.txt, header, source, and wires it into the build system. Invoke when the user says "add library", "new lib", "create library", or similar.
-argument-hint: <lib_name> "<description>" <kconfig_symbol> <sys_init_priority>
+description: Use when adding a new library under lib/ (a consumer or utility that uses zbus channels). Scaffolds Kconfig, CMakeLists.txt, header, source and build wiring. Triggers: "add library", "new lib", "create library".
+argument-hint: <lib_name> "<description>" <KCONFIG_SYMBOL> <sys_init_priority>
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
-# Add a New Consumer or Utility Library
+# Add a New Library
 
-Use this when adding a **new library** under `lib/` — e.g. an MQTT publisher,
-telemetry codec, data logger, or any other consumer/utility that subscribes to
-zbus channels.
+Creates a self-contained library under `lib/<lib_name>/`. `scripts/scaffold-lib.sh`
+embeds every file template, so do not write the scaffold files by hand.
 
-**Arguments received**: lib_name=`$0` · description=`$1` · kconfig_symbol=`$2` · sys_init_priority=`$3`
+**Arguments**: lib_name=`$0` · description=`$1` · kconfig_symbol=`$2` · sys_init_priority=`$3`
 
-## Use the scaffold script
+## Steps
 
-Instead of creating files manually, use the scaffold script:
+1. **Branch**: `git checkout master && git pull && git checkout -b feat/<lib_name>`
+2. **Decide the zbus role**:
+   - New channel: `ZBUS_CHAN_DEFINE` in exactly one `.c`, `ZBUS_CHAN_DECLARE` in the public header.
+   - Existing channel: `ZBUS_CHAN_DECLARE` plus `zbus_chan_add_obs()`. Never redefine a channel.
+3. **Pick the SYS_INIT priority**: consumers of `sensor_event_chan` go at 92 or higher, after
+   their producers. Publishers to `sensor_trigger_chan` stay below 90. Check for collisions
+   with `grep -rn "SYS_INIT" lib/`.
+4. **Dry run, then scaffold**:
+   ```bash
+   scripts/scaffold-lib.sh <lib_name> "<description>" <KCONFIG_SYMBOL> <priority> --dry-run
+   scripts/scaffold-lib.sh <lib_name> "<description>" <KCONFIG_SYMBOL> <priority>
+   ```
+   Options: `--dry-run`, `--skip-build`, `--quiet`. JSON goes to stdout and progress to stderr.
+   Exit 0 on success, 1 on error (missing args, library exists, build failure).
+   The script creates `lib/<name>/{Kconfig,CMakeLists.txt,include/<name>/<name>.h,src/<name>.c}`,
+   registers the library in `lib/Kconfig` and the root `CMakeLists.txt`, and sets
+   `CONFIG_<SYMBOL>=y` in `apps/gateway/prj.conf`.
+5. **Implement `src/<name>.c`**:
+   - Subscribe to channels. Do not poll.
+   - Listeners run in the publisher's context (possibly an ISR or timer). They must not block,
+     sleep or take mutexes. Hand heavy work to a work item or subscriber thread.
+   - Look up sensors through `sensor_registry` by `sensor_uid`. Never hardcode UIDs.
+   - Bus access uses `_dt()` variants only (`i2c_write_read_dt`, `spi_transceive_dt`, `gpio_dt_spec`).
+   - Return negative errno. Log with `LOG_MODULE_REGISTER` and `LOG_INF`/`LOG_WRN`/`LOG_ERR`.
+   - No heap, no `printk` in `lib/`, no `strcpy`/`sprintf`/`gets`/`atoi`.
+6. **Compose through Kconfig only**: `apps/*/src/main.c` stays `LOG_MODULE_REGISTER` plus
+   `return 0`. Never add `target_link_libraries()` to an app CMake file.
+7. **Unit tests**: if the library has logic, add `tests/<lib_name>/` with `testcase.yaml`
+   and `src/`, following an existing suite such as `tests/sensor_event/`.
+
+## Verification
+
+Kconfig changed, so build pristine (`-p always`) from the workspace via `scripts/ws.sh`:
 
 ```bash
-scripts/scaffold-lib.sh <lib_name> "<description>" <kconfig_symbol> <sys_init_priority>
+scripts/ws.sh 'west build -p always -b native_sim/native/64 -d build/native_sim_native_64/gateway weather-station/apps/gateway'
+scripts/ws.sh 'west build -p always -b native_sim/native/64 -d build/native_sim_native_64/sensor-node weather-station/apps/sensor-node'
+scripts/ws.sh 'printf "help\n" | timeout 10 build/native_sim_native_64/gateway/zephyr/zephyr.exe -uart_stdinout'
+scripts/ws.sh 'west twister -p native_sim/native/64 -T weather-station/tests/<lib_name> --inline-logs -v -N'
 ```
 
-**Options:**
-- `--dry-run` — Show what would be created without writing files
-- `--skip-build` — Skip the build verification step
-- `--quiet` — Suppress stderr progress output
-
-**Example:**
-```bash
-scripts/scaffold-lib.sh mqtt_publisher "MQTT telemetry publisher" MQTT_PUBLISHER 95
-scripts/scaffold-lib.sh mqtt_publisher "MQTT telemetry publisher" MQTT_PUBLISHER 95 --dry-run
-```
-
-**Output:** JSON to stdout with created files list, build status, and overall verdict. Human-readable progress goes to stderr.
-
-**JSON output schema:**
-```json
-{
-  "script": "scaffold-lib",
-  "timestamp": "2026-05-25T12:00:00Z",
-  "verdict": "PASS|FAIL|DRY_RUN",
-  "lib_name": "mqtt_publisher",
-  "kconfig_symbol": "CONFIG_MQTT_PUBLISHER",
-  "sys_init_priority": 95,
-  "files_created": [
-    "lib/mqtt_publisher/Kconfig",
-    "lib/mqtt_publisher/CMakeLists.txt",
-    "lib/mqtt_publisher/include/mqtt_publisher/mqtt_publisher.h",
-    "lib/mqtt_publisher/src/mqtt_publisher.c",
-    "lib/Kconfig (modified)",
-    "CMakeLists.txt (modified)",
-    "apps/gateway/prj.conf (modified)"
-  ],
-  "build_status": "PASS|FAIL|SKIPPED|N/A",
-  "build_output": "...",
-  "summary": "Created 7 files for lib/mqtt_publisher."
-}
-```
-
-**Exit codes:** 0 = success, 1 = error (missing args, file exists, build failed)
-
-## Manual steps (for reference)
-
-The script performs these steps:
-
-1. **Branch** — `git checkout master && git pull && git checkout -b feat/<lib_name>`
-2. **Decide zbus channel ownership** — Does this library define a new channel? If yes, `ZBUS_CHAN_DEFINE` in exactly one `.c`. If no, subscribe via `ZBUS_CHAN_DECLARE` + `zbus_chan_add_obs()`.
-3. **Choose SYS_INIT priority** — Consumers of `sensor_event_chan` must initialise **after** their producers (≥92). Publishers to `sensor_trigger_chan` stay below 90.
-4. **Create directory structure** — `lib/<lib_name>/{CMakeLists.txt, Kconfig, include/<lib_name>/<lib_name>.h, src/<lib_name>.c}`
-5. **Write files** — See reference templates in `references/`
-6. **Register in build system** — Add to `lib/Kconfig` and root `CMakeLists.txt`
-7. **Enable in app configs** — `CONFIG_<KCONFIG_SYMBOL>=y` in `apps/gateway/prj.conf`
-8. **Verify the build** — Pristine rebuild required (Kconfig changed)
-
-## Architecture rules
-
-- **Architecture rule**: `ZBUS_CHAN_DEFINE` in exactly one `.c` per channel. Never define a channel that is already defined elsewhere.
-- **Do not** add `target_link_libraries()` in any app `CMakeLists.txt` — use Kconfig only
-- **Do not** create a `sensor_manager` — sensors are trigger-driven, not polled
-- **Do not** put application logic in `main.c` — `main.c` should contain only `LOG_MODULE_REGISTER` + optional `SYS_INIT` + `k_sleep(K_FOREVER)`
-- **Do not** hardcode `sensor_uid` values in consumers — look them up via `sensor_registry`
-
-## Red Flags — STOP and re-check
-
-| Feeling | Reality |
-|---------|---------|
-| "I can use `target_link_libraries()` in the app" | Never. ADR-008: Kconfig-only composition. |
-| "This channel is already defined somewhere else" | Don't define it again. `ZBUS_CHAN_DEFINE` in exactly one `.c`. |
-| "I need a sensor_manager to poll sensors" | ADR-004: trigger-driven, not polled. Subscribe to channels. |
-| "I'll put logic in `main.c`" | ADR-008: main.c = `LOG_MODULE_REGISTER` + `return 0` only. |
-| "I'll hardcode sensor_uid in the consumer" | ADR-006: `sensor_uid` is the identity key. Use `sensor_registry`. |
-
-## Next steps
-
-After completing this skill:
-- Invoke `/build-and-test` to run the full verification gate
-- If the library introduces a new pattern or channel → invoke `/adr` to document the decision
+If the library has no suite yet, run `-T weather-station/tests/` (the full suite) instead.
+Then run `/build-and-test` for the full gate and `pre-commit run --all-files` before committing.
+Commit as `feat(<lib_name>): <summary>` and keep the message at 72 characters or fewer.
