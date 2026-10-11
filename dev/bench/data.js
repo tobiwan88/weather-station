@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1791705225170,
+  "lastUpdate": 1791708450596,
   "repoUrl": "https://github.com/tobiwan88/weather-station",
   "entries": {
     "Weather Station Footprint": [
@@ -7577,6 +7577,275 @@ window.BENCHMARK_DATA = {
           {
             "name": "gateway-frdm-mcxn947 / Stack / z_main_thread",
             "value": 192,
+            "unit": "bytes"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "tobiuhg@gmail.com",
+            "name": "Tobias Meyer",
+            "username": "tobiwan88"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "811b44a314b3cf69639e51eabd4570dc96532a41",
+          "message": "Merge pull request #54 from tobiwan88/chore/zephyr-4.5-rc1\n\nchore(zephyr): migrate to Zephyr v4.5.0-rc1",
+          "timestamp": "2026-10-11T10:43:04+02:00",
+          "tree_id": "fb2edb22ff3ee6420c3595f8821df83872c49012",
+          "url": "https://github.com/tobiwan88/weather-station/commit/811b44a314b3cf69639e51eabd4570dc96532a41"
+        },
+        "date": 1791708434427,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Total",
+            "value": 340424,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / Total",
+            "value": 154088,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Top / (hidden)",
+            "value": 44818,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Top / OUTPUT_DIR",
+            "value": 2148,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / Top / (hidden)",
+            "value": 11,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Top / WORKSPACE",
+            "value": 74859,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / weather-station",
+            "value": 62107,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / apps / gateway",
+            "value": 48,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / clock_display",
+            "value": 152,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / config_cmd",
+            "value": 64,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / http_dashboard",
+            "value": 47511,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / location_registry",
+            "value": 1416,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / mqtt_publisher",
+            "value": 4418,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / remote_sensor",
+            "value": 3484,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / sensor_event",
+            "value": 588,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / sensor_event_log",
+            "value": 880,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / sensor_registry",
+            "value": 1404,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / sensor_trigger",
+            "value": 72,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / WS / lib / sntp_sync",
+            "value": 518,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / Top / WORKSPACE",
+            "value": 65727,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / weather-station",
+            "value": 65350,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / clock_display",
+            "value": 48,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / config_cmd",
+            "value": 144,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / http_dashboard",
+            "value": 48416,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / location_registry",
+            "value": 552,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / mqtt_publisher",
+            "value": 6310,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / remote_sensor",
+            "value": 2536,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / sensor_event",
+            "value": 64,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / sensor_event_log",
+            "value": 8,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / sensor_registry",
+            "value": 2200,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / sensor_trigger",
+            "value": 48,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / WS / lib / sntp_sync",
+            "value": 2292,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Top / ZEPHYR_BASE",
+            "value": 198375,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Zephyr / boards",
+            "value": 884,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Zephyr / drivers",
+            "value": 24636,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Zephyr / subsys",
+            "value": 143989,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Zephyr / arch",
+            "value": 4366,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Zephyr / lib",
+            "value": 10700,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Zephyr / soc",
+            "value": 48,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / ROM / Zephyr / kernel",
+            "value": 11962,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / Top / ZEPHYR_BASE",
+            "value": 88146,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / Zephyr / drivers",
+            "value": 4579,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / Zephyr / subsys",
+            "value": 57729,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / Zephyr / arch",
+            "value": 25,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / Zephyr / lib",
+            "value": 856,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / RAM / Zephyr / kernel",
+            "value": 24957,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / Stack / z_idle_threads",
+            "value": 208,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / Stack / z_interrupt_stacks",
+            "value": 2048,
+            "unit": "bytes"
+          },
+          {
+            "name": "gateway-frdm-mcxn947 / Stack / z_main_thread",
+            "value": 208,
             "unit": "bytes"
           }
         ]
