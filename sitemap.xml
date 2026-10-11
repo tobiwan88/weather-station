@@ -9,83 +9,11 @@
          <lastmod>2026-10-11</lastmod>
     </url>
     <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-001-repo-and-workspace-structure/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-002-zbus-as-system-bus/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-003-sensor-event-data-model/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-004-trigger-driven-sampling/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-005-fake-sensor-subsystem/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-006-lora-channel-boundary/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-007-gateway-display-combined/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-008-kconfig-app-composition/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-009-native-sim-first/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-010-ci-and-dev-environment/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-011-http-dashboard/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-012-integration-test-architecture/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-013-mqtt-configurable/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-014-mcuboot-fota/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-015-lora-protocol/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-016-trace-recorder/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/adr/ADR-017-io-stream-abstraction/</loc>
+         <loc>https://tobiwan88.github.io/weather-station/decisions/</loc>
          <lastmod>2026-10-11</lastmod>
     </url>
     <url>
          <loc>https://tobiwan88.github.io/weather-station/architecture/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/architecture/architecture-constraints/</loc>
          <lastmod>2026-10-11</lastmod>
     </url>
     <url>
@@ -161,18 +89,6 @@
          <lastmod>2026-10-11</lastmod>
     </url>
     <url>
-         <loc>https://tobiwan88.github.io/weather-station/plans/impl-plan-missing-agents-2026-05-23/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/plans/plan-superpowers-learnings-2026-05-23/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/requirements/PLAN-requirements-and-cocoindex/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
          <loc>https://tobiwan88.github.io/weather-station/requirements/REQ-CONFIG/</loc>
          <lastmod>2026-10-11</lastmod>
     </url>
@@ -222,70 +138,6 @@
     </url>
     <url>
          <loc>https://tobiwan88.github.io/weather-station/requirements/TEMPLATE/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-01-nanopb-pipe-transport/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-02-documentation-github-pages/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-09-lora-radio-library/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-09-mcuboot-fota/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-14-renode-integration/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-15-renode-trace-analysis/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-04-29-sensor-node-gateway-comm-design/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-01-frdm-mcxn947-gateway-board-support/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-01-nanopb-pipe-transport-design/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-02-documentation-github-pages-design/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-03-remote-sensor-discovery-zbus-design/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-14-renode-integration-design/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-15-cocoindex-code-integration-design/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-15-renode-trace-analysis-design/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-16-lora-bridge-app-design/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-22-sen0460-functional-driver-design/</loc>
          <lastmod>2026-10-11</lastmod>
     </url>
     <url>

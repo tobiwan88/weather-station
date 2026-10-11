@@ -270,18 +270,17 @@
   
   
   
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../adr/" class="md-tabs__link">
-          
+    <li class="md-tabs__item">
+      <a href="../../decisions/" class="md-tabs__link">
+        
   
   
-  ADR
+    
+  
+  Decisions
 
-        </a>
-      </li>
-    
+      </a>
+    </li>
   
 
       
@@ -913,67 +912,15 @@
   
   
   
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ADR
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    ADR
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix="">
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../../adr/" class="md-nav__link">
+      <a href="../../decisions/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Architecture Decision Records
+    Decisions
   
 
     
@@ -982,14 +929,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1245,7 +1184,7 @@
 
 <h1 id="composition-model">Composition Model</h1>
 <blockquote>
-<p>Design rationale: <a href="../../adr/ADR-008-kconfig-app-composition/">ADR-008</a>.</p>
+<p>Design rationale: <a href="../../decisions/">decisions</a>.</p>
 </blockquote>
 <h2 id="the-problem-with-explicit-wiring">The Problem with Explicit Wiring</h2>
 <p>In a conventional embedded application, <code>main.c</code> acts as a compositor:</p>
@@ -1469,7 +1408,7 @@ priority 99  clock_display          — schedules 60-second wall-clock tick
 </ul>
 <p>If something cannot be expressed in that budget, it belongs in a library with its own <code>SYS_INIT</code>. This rule forces a clean separation: application policy lives in <code>prj.conf</code>; mechanism lives in libraries.</p>
 <blockquote>
-<p><strong>Known violation:</strong> <code>main()</code> currently calls <code>lvgl_display_run()</code> directly. This is tracked in the backlog as <code>[ADR-008-RULE4]</code>. The fix is to start the LVGL thread from <code>lvgl_display_init()</code> via <code>SYS_INIT</code>, making <code>main.c</code> a pure <code>LOG_MODULE_REGISTER + return 0</code>.</p>
+<p><strong>Known violation:</strong> <code>main()</code> currently calls <code>lvgl_display_run()</code> directly. This is tracked in the backlog as <code>[LVGL-MAIN-THREAD]</code>. The fix is to start the LVGL thread from <code>lvgl_display_init()</code> via <code>SYS_INIT</code>, making <code>main.c</code> a pure <code>LOG_MODULE_REGISTER + return 0</code>.</p>
 </blockquote>
 
 

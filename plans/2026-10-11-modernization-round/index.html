@@ -264,18 +264,17 @@
   
   
   
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../adr/" class="md-tabs__link">
-          
+    <li class="md-tabs__item">
+      <a href="../../decisions/" class="md-tabs__link">
+        
   
   
-  ADR
+    
+  
+  Decisions
 
-        </a>
-      </li>
-    
+      </a>
+    </li>
   
 
       
@@ -706,67 +705,15 @@
   
   
   
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ADR
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    ADR
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix="">
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../../adr/" class="md-nav__link">
+      <a href="../../decisions/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Architecture Decision Records
+    Decisions
   
 
     
@@ -775,14 +722,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -997,10 +936,10 @@ merged on green CI before the next phase starts.</p>
 - [x] lvgl_display calls <code>lv_async_call</code> outside the LVGL lock from a zbus listener</p>
 <h2 id="phase-3-simplify-adrs-and-rules">Phase 3 — Simplify ADRs and rules</h2>
 <ul>
-<li>[ ] Collapse 17 ADRs into a short "decisions" doc keeping only rules that still constrain
+<li>[x] Collapse 17 ADRs into a short "decisions" doc keeping only rules that still constrain
       code; drop process ceremony (frozen/supersede workflow, auto-generated constraint table)</li>
-<li>[ ] Remove done/abandoned plans and specs; trim backlog to open items</li>
-<li>[ ] Drop skills that only exist to maintain removed process (<code>adr</code>, <code>arch-sync</code>, …)</li>
+<li>[x] Remove done/abandoned plans and specs; trim backlog to open items</li>
+<li>[x] Drop skills that only exist to maintain removed process (<code>adr</code>, <code>arch-sync</code>, …)</li>
 </ul>
 <h2 id="phase-4-migrate-to-zephyr-v450-rc1">Phase 4 — Migrate to Zephyr v4.5.0-rc1</h2>
 <ul>

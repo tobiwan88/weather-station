@@ -5,27 +5,31 @@
       
       
       
-        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/plans/impl-plan-missing-agents-2026-05-23/">
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/decisions/">
       
       
+        <link rel="prev" href="../architecture/diagrams/">
+      
+      
+        <link rel="next" href="../backlog/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>Implementation Plan — Missing Agent Pipeline Components - Weather Station Documentation</title>
+        <title>Decisions - Weather Station Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -44,13 +48,13 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
     
     
-  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
             html.glightbox-open { overflow: initial; height: 100%; }
             .gslide-title { margin-top: 0px; user-select: text; }
             .gslide-desc { color: #666; user-select: text; }
@@ -79,7 +83,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#implementation-plan-missing-agent-pipeline-components" class="md-skip">
+        <a href="#design-decisions" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +97,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+    <a href=".." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
@@ -113,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Implementation Plan — Missing Agent Pipeline Components
+              Decisions
             
           </span>
         </div>
@@ -226,7 +230,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -247,7 +251,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../architecture/" class="md-tabs__link">
+        <a href="../architecture/" class="md-tabs__link">
           
   
   
@@ -263,19 +267,20 @@
   
   
   
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
   
     
-    
-      <li class="md-tabs__item">
-        <a href="../../adr/" class="md-tabs__link">
-          
   
-  
-  ADR
+  Decisions
 
-        </a>
-      </li>
-    
+      </a>
+    </li>
   
 
       
@@ -285,7 +290,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../backlog/" class="md-tabs__link">
+      <a href="../backlog/" class="md-tabs__link">
         
   
   
@@ -339,7 +344,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+    <a href=".." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
@@ -369,7 +374,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -448,7 +453,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
+      <a href="../architecture/" class="md-nav__link">
         
   
   
@@ -476,7 +481,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/system-overview/" class="md-nav__link">
+      <a href="../architecture/system-overview/" class="md-nav__link">
         
   
   
@@ -504,7 +509,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/event-bus/" class="md-nav__link">
+      <a href="../architecture/event-bus/" class="md-nav__link">
         
   
   
@@ -532,7 +537,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/composition-model/" class="md-nav__link">
+      <a href="../architecture/composition-model/" class="md-nav__link">
         
   
   
@@ -560,7 +565,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/concurrency/" class="md-nav__link">
+      <a href="../architecture/concurrency/" class="md-nav__link">
         
   
   
@@ -588,7 +593,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/integration-tests/" class="md-nav__link">
+      <a href="../architecture/integration-tests/" class="md-nav__link">
         
   
   
@@ -616,7 +621,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/firmware-update/" class="md-nav__link">
+      <a href="../architecture/firmware-update/" class="md-nav__link">
         
   
   
@@ -644,7 +649,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/lora-protocol/" class="md-nav__link">
+      <a href="../architecture/lora-protocol/" class="md-nav__link">
         
   
   
@@ -672,7 +677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/diagrams/" class="md-nav__link">
+      <a href="../architecture/diagrams/" class="md-nav__link">
         
   
   
@@ -704,33 +709,26 @@
       
   
   
+    
   
   
-    
-    
-    
-    
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
         
       
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
-        
+        <label class="md-nav__link md-nav__link--active" for="__toc">
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
   
   
   <span class="md-ellipsis">
     
   
-    ADR
+    Decisions
   
 
     
@@ -738,35 +736,17 @@
   
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    ADR
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix="">
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../adr/" class="md-nav__link">
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
     
   
-    Architecture Decision Records
+    Decisions
   
 
     
@@ -775,13 +755,201 @@
   
 
       </a>
-    </li>
-  
+      
+        
 
-              
-            
-          </ul>
-        </nav>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#adr-001-repo-and-west-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-001 Repo and west workspace
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-002-zbus-is-the-only-ipc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-002 zbus is the only IPC
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-003-sensor-event-data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-003 Sensor event data model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-004-trigger-driven-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-004 Trigger-driven sampling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-005-fake-sensors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-005 Fake sensors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-007-gateway-and-display-share-one-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-007 Gateway and display share one image
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-008-kconfig-only-app-composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-008 Kconfig-only app composition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-009-native_sim-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-009 native_sim first
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-010-one-container-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-010 One container image
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-011-http-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-011 HTTP dashboard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-012-pytest-integration-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-012 Pytest integration tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-013-mqtt-config-via-zbus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-013 MQTT config via zbus
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-014-mcuboot-fota" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-014 MCUboot FOTA
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-015-lora-protocol-supersedes-adr-006" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-015 LoRa protocol (supersedes ADR-006)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-016-trace-recorder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-016 Trace recorder
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-017-io_stream" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-017 io_stream
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -794,7 +962,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../backlog/" class="md-nav__link">
+      <a href="../backlog/" class="md-nav__link">
         
   
   
@@ -868,10 +1036,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#context" class="md-nav__link">
+  <a href="#adr-001-repo-and-west-workspace" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Context
+        ADR-001 Repo and west workspace
       
     </span>
   </a>
@@ -879,10 +1047,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#adr-constraints-applicable" class="md-nav__link">
+  <a href="#adr-002-zbus-is-the-only-ipc" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ADR Constraints Applicable
+        ADR-002 zbus is the only IPC
       
     </span>
   </a>
@@ -890,104 +1058,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#subtasks" class="md-nav__link">
+  <a href="#adr-003-sensor-event-data-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Subtasks
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Subtasks">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#impl-001-ask_until_understood-skill" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IMPL-001: ask_until_understood skill
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#impl-003-dev-implement-subtask-agent" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IMPL-003: /dev-implement-subtask agent
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#impl-004-dev-coordinate-agent" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IMPL-004: /dev-coordinate agent
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#impl-005-test-write-agent" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IMPL-005: /test-write agent
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#impl-006-arch-validate-agent" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IMPL-006: /arch-validate agent
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#impl-007-sec-arch-review-agent" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IMPL-007: /sec-arch-review agent
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#impl-008-integration-wire-ask_until_understood-into-existing-agents" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IMPL-008: Integration: wire ask_until_understood into existing agents
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dependency-graph" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Dependency Graph
+        ADR-003 Sensor event data model
       
     </span>
   </a>
@@ -995,10 +1069,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#file-conflict-report" class="md-nav__link">
+  <a href="#adr-004-trigger-driven-sampling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        File Conflict Report
+        ADR-004 Trigger-driven sampling
       
     </span>
   </a>
@@ -1006,10 +1080,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#implementation-order-by-wave" class="md-nav__link">
+  <a href="#adr-005-fake-sensors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Implementation Order (by wave)
+        ADR-005 Fake sensors
       
     </span>
   </a>
@@ -1017,10 +1091,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#estimated-totals" class="md-nav__link">
+  <a href="#adr-007-gateway-and-display-share-one-image" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Estimated Totals
+        ADR-007 Gateway and display share one image
       
     </span>
   </a>
@@ -1028,10 +1102,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#deferred-out-of-scope" class="md-nav__link">
+  <a href="#adr-008-kconfig-only-app-composition" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Deferred / Out of Scope
+        ADR-008 Kconfig-only app composition
       
     </span>
   </a>
@@ -1039,10 +1113,98 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#success-criteria" class="md-nav__link">
+  <a href="#adr-009-native_sim-first" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Success Criteria
+        ADR-009 native_sim first
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-010-one-container-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-010 One container image
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-011-http-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-011 HTTP dashboard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-012-pytest-integration-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-012 Pytest integration tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-013-mqtt-config-via-zbus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-013 MQTT config via zbus
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-014-mcuboot-fota" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-014 MCUboot FOTA
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-015-lora-protocol-supersedes-adr-006" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-015 LoRa protocol (supersedes ADR-006)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-016-trace-recorder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-016 Trace recorder
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adr-017-io_stream" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADR-017 io_stream
       
     </span>
   </a>
@@ -1069,257 +1231,87 @@
   
 
 
-<h1 id="implementation-plan-missing-agent-pipeline-components">Implementation Plan — Missing Agent Pipeline Components</h1>
-<blockquote>
-<p>Generated from Phase 1 gap analysis of the Agentic Firmware Development Pipeline
-Plan date: 2026-05-23</p>
-</blockquote>
-<h2 id="context">Context</h2>
-<p>Three agents are built (<code>/arch-sync</code>, <code>/standards-check</code>, <code>/dev-plan</code>). Five agents and one skill remain to complete Phase 1. This plan orders them by dependency and value to the weather-station project.</p>
-<p><strong>FFF removed:</strong> The project uses zero FFF mocks. All 7 existing test suites follow the native_sim + zbus-listener + DT-defined fake sensors pattern. Sub-agents find this pattern via cocoindex search. No FFF skill needed.</p>
-<h2 id="adr-constraints-applicable">ADR Constraints Applicable</h2>
-<table>
-<thead>
-<tr>
-<th>ADR</th>
-<th>Constraint</th>
-<th>Impact</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ADR-008</td>
-<td>Kconfig-only composition; library CMakeLists only <code>CONFIG_</code> gates</td>
-<td><code>/dev-implement-subtask</code> must respect this</td>
-</tr>
-<tr>
-<td>ADR-002</td>
-<td>zbus channel ownership rules</td>
-<td><code>/test-write</code> and <code>/dev-implement-subtask</code> must follow</td>
-</tr>
-<tr>
-<td>ADR-003</td>
-<td>Flat struct, no heap pointers</td>
-<td>All code-writing agents</td>
-</tr>
-<tr>
-<td>ADR-009</td>
-<td>native_sim first</td>
-<td>Tests target native_sim</td>
-</tr>
-<tr>
-<td>ADR-012</td>
-<td>Pytest + Twister; no pytest config files</td>
-<td><code>/test-write</code> output format</td>
-</tr>
-<tr>
-<td>ADR-005</td>
-<td>Fake sensors UIDs 0x0001–0x00FF</td>
-<td>Implement agents must not reuse real UID ranges</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h2 id="subtasks">Subtasks</h2>
-<h3 id="impl-001-ask_until_understood-skill">IMPL-001: <code>ask_until_understood</code> skill</h3>
-<p><strong>Domain:</strong> skill
-<strong>Files:</strong>
-- Create: <code>.claude/skills/ask-until-understood/SKILL.md</code>
-- Modify: <code>.claude/skills/arch-sync/SKILL.md</code> (add ask_until_understood directive)
-- Modify: <code>.claude/skills/dev-plan/SKILL.md</code> (add ask_until_understood directive)</p>
-<p><strong>Depends on:</strong> none
-<strong>Parallel with:</strong> none (first item, nothing to parallelize with)
-<strong>Estimated:</strong> 40 lines (+ 6 lines per agent wired in)</p>
-<p><strong>Description:</strong>
-Reusable prompt fragment (~30 lines) that agents compose into their system prompt. Enforces: identify gaps, ask all questions in one message, never invent missing constraints, flag assumptions explicitly.</p>
-<p>Wire into <code>/arch-sync</code>, <code>/dev-plan</code>, and <code>/standards-check</code> as a "Before Step 1" directive. Also add to the existing <code>/adr</code> skill which already does this conversationally.</p>
-<h3 id="impl-003-dev-implement-subtask-agent">IMPL-003: <code>/dev-implement-subtask</code> agent</h3>
-<p><strong>Domain:</strong> agent
-<strong>Files:</strong>
-- Create: <code>.claude/skills/dev-implement-subtask/SKILL.md</code></p>
-<p><strong>Depends on:</strong> none
-<strong>Parallel with:</strong> IMPL-005, IMPL-006
-<strong>Estimated:</strong> 180 lines</p>
-<p><strong>Description:</strong>
-Code-writing agent that implements exactly one YAML subtask from a <code>/dev-plan</code> output.</p>
-<div class="highlight"><pre><span></span><code>&lt;HARD-GATE&gt;
-You may ONLY create or modify files listed in files_to_create and files_to_modify.
-You may NOT touch test files.
-You may NOT modify files owned by another subtask.
-You may NOT disable Kconfig safety options or add casts to silence warnings.
-Violating any of these = the subtask is invalid. Stop and escalate.
-&lt;/HARD-GATE&gt;
-</code></pre></div>
-<p>Steps: load constraints → search cocoindex for patterns → implement → build check → iterate up to 5x. Includes diff cap (200 lines max modification to existing files per iteration).</p>
-<p><strong>Red Flags — STOP:</strong>
-- Touching a file not in the allowlist
-- Skipping the build check because "trivial change"
-- Proceeding past a build failure saying "will fix in next iteration"
-- Exceeding 200 lines of diffs and rationalizing "it's all necessary"
-- Disabling a Kconfig safety option to make a build pass
-- Any iteration past #5 without escalating</p>
-<h3 id="impl-004-dev-coordinate-agent">IMPL-004: <code>/dev-coordinate</code> agent</h3>
-<p><strong>Domain:</strong> agent
-<strong>Files:</strong>
-- Create: <code>.claude/skills/dev-coordinate/SKILL.md</code></p>
-<p><strong>Depends on:</strong> IMPL-003 (needs /dev-implement-subtask to exist)
-<strong>Parallel with:</strong> none — sequential
-<strong>Estimated:</strong> 160 lines</p>
-<p><strong>Description:</strong>
-Reads an <code>impl-plan-*.md</code> file, parses subtask YAML blocks, dispatches <code>/dev-implement-subtask</code> for each subtask in dependency order. After each subtask: runs <code>/standards-check</code>. If BLOCK: feeds findings back to implement-subtask (3 iterations max then escalate). After all subtasks: runs <code>west twister</code>. Writes summary to <code>docs/plans/impl-summary-&lt;slug&gt;.md</code>.</p>
-<p>Phase 1 dispatches sequentially (user invokes each subtask). Phase 3 fan-out is future work.</p>
-<h3 id="impl-005-test-write-agent">IMPL-005: <code>/test-write</code> agent</h3>
-<p><strong>Domain:</strong> agent
-<strong>Files:</strong>
-- Create: <code>.claude/skills/test-write/SKILL.md</code></p>
-<p><strong>Depends on:</strong> IMPL-001 (ask_until_understood)
-<strong>Parallel with:</strong> IMPL-003, IMPL-006
-<strong>Estimated:</strong> 180 lines</p>
-<p><strong>Description:</strong>
-Independent test writer. HARD CONSTRAINT: must NOT read any files under <code>src/</code>. Derives tests from REQ file only — never from implementation. Outputs ztest suites following the existing project pattern (native_sim, zbus listeners, DT-defined fake sensors, semaphore-based event waiting — see <code>tests/fake_sensors/src/main.c</code> and <code>tests/mqtt_publisher/src/main.c</code> for canonical examples). Lists [hil] and [manual] deferred criteria. Dry-run builds via <code>west twister -p native_sim</code>. No Renode, no Robot Framework — not set up in this project.</p>
-<h3 id="impl-006-arch-validate-agent">IMPL-006: <code>/arch-validate</code> agent</h3>
-<p><strong>Domain:</strong> agent
-<strong>Files:</strong>
-- Create: <code>.claude/skills/arch-validate/SKILL.md</code></p>
-<p><strong>Depends on:</strong> IMPL-001 (ask_until_understood)
-<strong>Parallel with:</strong> IMPL-005
-<strong>Estimated:</strong> 120 lines</p>
-<p><strong>Description:</strong>
-Validates a git diff against <code>architecture-constraints.md</code> and accepted ADRs — NOT against a YAML schema. Complements <code>/standards-check</code> (which checks code patterns) by checking architecture-level rules. Steps: load constraints → extract rules → analyze diff → produce compliance table. Output: <code>docs/arch/validation-report-&lt;timestamp&gt;.md</code> with COMPLIANT/VIOLATION/NOT APPLICABLE status per constraint.</p>
-<h3 id="impl-007-sec-arch-review-agent">IMPL-007: <code>/sec-arch-review</code> agent</h3>
-<p><strong>Domain:</strong> agent
-<strong>Files:</strong>
-- Create: <code>.claude/skills/sec-arch-review/SKILL.md</code></p>
-<p><strong>Depends on:</strong> IMPL-006 (delegates to /arch-validate)
-<strong>Parallel with:</strong> none
-<strong>Estimated:</strong> 150 lines</p>
-<p><strong>Description:</strong>
-Pre-merge security + architecture review. Delegates architecture check to <code>/arch-validate</code>. Adds: hardcoded credential scan, disabled security Kconfig flags (HW_STACK_PROTECTION, FORTIFY_SOURCE), banned crypto (MD5, SHA1, DES, RC4), TLS verification, acceptance criterion cross-reference. No CRA-specific checks — this project has no CRA obligations. Output: <code>docs/reviews/sec-arch-&lt;timestamp&gt;.md</code>.</p>
-<h3 id="impl-008-integration-wire-ask_until_understood-into-existing-agents">IMPL-008: Integration: wire <code>ask_until_understood</code> into existing agents</h3>
-<p><strong>Domain:</strong> refactor
-<strong>Files:</strong>
-- Modify: <code>.claude/skills/arch-sync/SKILL.md</code>
-- Modify: <code>.claude/skills/dev-plan/SKILL.md</code>
-- Modify: <code>.claude/skills/standards-check/SKILL.md</code></p>
-<p><strong>Depends on:</strong> IMPL-001
-<strong>Parallel with:</strong> IMPL-003, IMPL-004, IMPL-005, IMPL-006, IMPL-007 (no file overlap)
-<strong>Estimated:</strong> 30 lines total</p>
-<p><strong>Description:</strong>
-Add "apply ask_until_understood" directive to the start of each agent's Steps section. For <code>/arch-sync</code>: before Step 1. For <code>/dev-plan</code>: before Step 0 (already has this inline, formalize). For <code>/standards-check</code>: before Step 1 (when given a feature description rather than a git ref).</p>
-<hr>
-<h2 id="dependency-graph">Dependency Graph</h2>
-<div class="highlight"><pre><span></span><code>IMPL-001 (ask_until_understood) ──┬──► IMPL-005 (/test-write)
-                                  ├──► IMPL-006 (/arch-validate)
-                                  └──► IMPL-008 (wire into existing)
-
-IMPL-003 (/dev-implement-subtask) ──► IMPL-004 (/dev-coordinate)
-
-IMPL-006 (/arch-validate) ──► IMPL-007 (/sec-arch-review)
-</code></pre></div>
-<h2 id="file-conflict-report">File Conflict Report</h2>
-<p>No conflicts. Every agent creates exactly one file in <code>.claude/skills/&lt;name&gt;/SKILL.md</code>. IMPL-008 modifies files created by IMPL-001 batch — this is intentional and declared as a dependency.</p>
-<h2 id="implementation-order-by-wave">Implementation Order (by wave)</h2>
-<table>
-<thead>
-<tr>
-<th>Wave</th>
-<th>Subtask</th>
-<th>Rationale</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Wave 1</strong></td>
-<td>IMPL-001</td>
-<td>Pure skill (no tool calls), unblocks everything else</td>
-</tr>
-<tr>
-<td><strong>Wave 2</strong></td>
-<td>IMPL-008</td>
-<td>Trivial wiring — completes immediately after Wave 1</td>
-</tr>
-<tr>
-<td><strong>Wave 3</strong></td>
-<td>IMPL-003 + IMPL-005 + IMPL-006</td>
-<td>Three independent agents, fully parallel. IMPL-003 and IMPL-005 share no dependencies</td>
-</tr>
-<tr>
-<td><strong>Wave 4</strong></td>
-<td>IMPL-004</td>
-<td>Needs IMPL-003 to exist</td>
-</tr>
-<tr>
-<td><strong>Wave 5</strong></td>
-<td>IMPL-007</td>
-<td>Needs IMPL-006 to exist</td>
-</tr>
-</tbody>
-</table>
-<h2 id="estimated-totals">Estimated Totals</h2>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Count</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Skills to create</td>
-<td>1 (<code>ask_until_understood</code>)</td>
-</tr>
-<tr>
-<td>Agents to create</td>
-<td>5 (<code>/dev-implement-subtask</code>, <code>/dev-coordinate</code>, <code>/test-write</code>, <code>/arch-validate</code>, <code>/sec-arch-review</code>)</td>
-</tr>
-<tr>
-<td>Files modified</td>
-<td>3 (wire ask_until_understood into existing 3 agents)</td>
-</tr>
-<tr>
-<td>Total new lines</td>
-<td>~950</td>
-</tr>
-<tr>
-<td>Waves</td>
-<td>5</td>
-</tr>
-</tbody>
-</table>
-<h2 id="deferred-out-of-scope">Deferred / Out of Scope</h2>
-<p>These agents were in the original plan but are NOT included here:</p>
-<table>
-<thead>
-<tr>
-<th>Agent</th>
-<th>Why deferred</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>/req-engineer</code></td>
-<td>Project has 16 accepted ADRs and 14-page architecture docs. Requirements ingestion is done. Would be valuable for a brand-new subsystem (e.g., adding LoRaWAN).</td>
-</tr>
-<tr>
-<td><code>/release-prep</code></td>
-<td>Requires <code>west spdx</code> (SPDX SBOM generation), <code>git-cliff</code>, <code>osv-scanner</code>, <code>sbomqs</code> — none of which are set up. This is a Phase 2+ concern if the project ships production firmware.</td>
-</tr>
-<tr>
-<td><code>/cra-audit</code></td>
-<td>EU Cyber Resilience Act is not a requirement for this project. The agent exists in the plan as a reusable pattern.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="success-criteria">Success Criteria</h2>
-<ul>
-<li>[ ] <code>ask_until_understood</code> wired into all human-facing agents</li>
-<li>[ ] <code>/dev-coordinate</code> can successfully read a plan from <code>/dev-plan</code> and dispatch subtasks sequentially</li>
-<li>[ ] <code>/dev-implement-subtask</code> respects file allowlists (verified by <code>/standards-check</code>)</li>
-<li>[ ] <code>/test-write</code> produces compilable tests following the zbus-listener pattern (no FFF, no src/ access)</li>
-<li>[ ] <code>/arch-validate</code> correctly identifies ADR constraint violations in a test diff</li>
-<li>[ ] <code>/sec-arch-review</code> delegates to <code>/arch-validate</code> and adds security-only checks</li>
-<li>[ ] All skills pass <code>pre-commit run --all-files</code></li>
-</ul>
+<h1 id="design-decisions">Design decisions</h1>
+<p>Short list of decisions that still constrain the code. Numbers match the old
+<code>ADR-0NN</code> references in code comments. The full historical ADR text (context,
+alternatives, consequences) is in git history: <code>git log -- docs/adr</code>.</p>
+<h2 id="adr-001-repo-and-west-workspace">ADR-001 Repo and west workspace</h2>
+<p>West T2 topology: this repo is both the west manifest and a Zephyr module
+(<code>zephyr/module.yml</code>). Zephyr and external modules are fetched by west, never
+committed. Keep <code>name-allowlist</code> in <code>west.yml</code> minimal.</p>
+<h2 id="adr-002-zbus-is-the-only-ipc">ADR-002 zbus is the only IPC</h2>
+<p>One concern = one channel. <code>ZBUS_CHAN_DECLARE</code> in the library's public header,
+<code>ZBUS_CHAN_DEFINE</code> in exactly one <code>.c</code>. Producers never know consumers.
+Listeners run in the publisher's context and must not block; slow work goes in a
+subscriber thread. Message structs are copyable (no pointers to heap).</p>
+<h2 id="adr-003-sensor-event-data-model">ADR-003 Sensor event data model</h2>
+<p>One event = one measurement, in a flat 20-byte <code>env_sensor_data</code> with a Q31
+value. Encode/decode helpers live in <code>sensor_event.h</code>; convert to physical units
+only at the display/MQTT/log edges. <code>sensor_uid</code> is the identity key; never hardcode it, go through
+<code>sensor_registry</code>. The struct is not a wire format; cross-device data needs an
+explicit encoding layer. No heap.</p>
+<h2 id="adr-004-trigger-driven-sampling">ADR-004 Trigger-driven sampling</h2>
+<p>No sensor manager. Anyone publishes <code>sensor_trigger_chan</code>; each driver
+subscribes and responds (<code>target_uid = 0</code> is broadcast). Sources, sensors and
+consumers must stay unaware of each other.</p>
+<h2 id="adr-005-fake-sensors">ADR-005 Fake sensors</h2>
+<p><code>lib/fake_sensors</code> is a production-quality driver set for native_sim: DT-defined,
+shell-controlled, trigger-driven, self-registering via <code>STRUCT_SECTION_ITERABLE</code>.
+Real hardware replaces it by Kconfig only. Never enabled in production builds.</p>
+<h2 id="adr-007-gateway-and-display-share-one-image">ADR-007 Gateway and display share one image</h2>
+<p><code>apps/gateway</code> contains both gateway and display logic. They talk only via zbus
+(no cross includes between display and connectivity libs), so a later split is a
+Kconfig change.</p>
+<h2 id="adr-008-kconfig-only-app-composition">ADR-008 Kconfig-only app composition</h2>
+<p>Apps select features in <code>prj.conf</code> / board <code>.conf</code> only. No
+<code>target_link_libraries()</code> in app CMake. <code>main.c</code> is <code>LOG_MODULE_REGISTER</code> plus
+<code>return 0</code>; libraries wire themselves with <code>SYS_INIT</code>.</p>
+<h2 id="adr-009-native_sim-first">ADR-009 native_sim first</h2>
+<p>All development and CI target <code>native_sim/native/64</code>; no hardware needed. Renode
+(multi-node) and real boards come later. Code must run under simulated time
+(avoid <code>k_busy_wait</code> assumptions).</p>
+<h2 id="adr-010-one-container-image">ADR-010 One container image</h2>
+<p><code>ghcr.io/tobiwan88/zephyr_docker</code> is used for devcontainer and CI. Always set
+<code>ZEPHYR_BASE</code> explicitly (the image default is stale).</p>
+<h2 id="adr-011-http-dashboard">ADR-011 HTTP dashboard</h2>
+<p><code>lib/http_dashboard</code>, Kconfig opt-in, port 8080, self-init via <code>SYS_INIT</code>.
+Ring buffer is guarded by a <code>k_spinlock</code> (listeners can run in ISR); copy a
+snapshot under the lock and serialise outside it. Needs the
+<code>http_dashboard_sections.ld</code> linker fragment. Talk to other subsystems via zbus
+(or a dedicated file compiled only when both are enabled), not direct calls.
+Auth: session cookie for browsers, bearer token for automation
+(<code>CONFIG_HTTP_DASHBOARD_AUTH</code>). HTML is still embedded as C strings (see backlog).</p>
+<h2 id="adr-012-pytest-integration-tests">ADR-012 Pytest integration tests</h2>
+<p><code>pytest-twister-harness</code> runs tests against the built binary. Tests use harness
+classes (shell, HTTP, MQTT page objects), never raw DUT strings. One DUT boots
+per session; auth tests use the <code>authed_harness</code> fixture.</p>
+<h2 id="adr-013-mqtt-config-via-zbus">ADR-013 MQTT config via zbus</h2>
+<p>Runtime MQTT settings go through <code>config_cmd_chan</code> (<code>config/mqtt/</code> namespace).
+The dashboard publishes, <code>mqtt_publisher</code> consumes; neither calls the other.</p>
+<h2 id="adr-014-mcuboot-fota">ADR-014 MCUboot FOTA</h2>
+<p>Standalone MCUboot (no TF-M) on <code>frdm_mcxn947/mcxn947/cpu0</code> via sysbuild, ED25519
+signing, SWAP_MOVE. Upload over HTTP (<code>/api/fota/*</code>, behind the dashboard auth);
+the new image must call <code>boot_write_img_confirmed()</code> after a settle delay or
+MCUboot reverts. Signing keys live offline / in a git-ignored <code>keys/</code>, never in
+the repo. Known gaps (home project): no anti-rollback, no encrypted slots, no
+hardware key isolation. Hardware-only feature.</p>
+<h2 id="adr-015-lora-protocol-supersedes-adr-006">ADR-015 LoRa protocol (supersedes ADR-006)</h2>
+<p>LoRa details stay inside the LoRa libraries; consumers only see
+<code>env_sensor_data</code> on <code>sensor_event_chan</code> (one packet becomes N events, stamped
+with the gateway clock). Frame: 8-byte header (type+version, flags, src, dst,
+seq) plus a 12-byte AES-128-GCM tag after pairing. Sensor data is fire and
+forget; RPC and FOTA chunks use ACK plus retry (3 retries, one RPC pending per
+node). Pairing is button-triggered with a 30 s window and an Ed25519-signed
+response; session keys persist in Settings/NVS. Respect EU868 1 % duty cycle
+(publish interval at least 60 s). Wire details: <code>architecture/lora-protocol.md</code>.</p>
+<h2 id="adr-016-trace-recorder">ADR-016 Trace recorder</h2>
+<p><code>lib/trace_recorder</code> overrides Zephyr's <code>CONFIG_TRACING_USER</code> hooks to write
+8-byte records into a static ring buffer, dumped post-mortem (Renode
+<code>ReadMemory</code>) for thread-level analysis. Debug/CI feature, off by default.</p>
+<h2 id="adr-017-io_stream">ADR-017 io_stream</h2>
+<p><code>lib/io_stream</code> is a vtable (read/write/seek/tell/size/flush/close) with flash
+and RAM-buffer backends so FOTA code runs on native_sim. Static instances only.
+Flash backend is sequential-write (non-sequential writes return <code>-ENOTSUP</code>).</p>
 
 
 
@@ -1369,12 +1361,12 @@ IMPL-006 (/arch-validate) ──► IMPL-007 (/sec-arch-review)
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
-        <script src="../../javascripts/mermaid-zoom.js"></script>
+        <script src="../javascripts/mermaid-zoom.js"></script>
       
     
   

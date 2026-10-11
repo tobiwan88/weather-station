@@ -264,18 +264,17 @@
   
   
   
-    
-    
-      <li class="md-tabs__item">
-        <a href="../adr/" class="md-tabs__link">
-          
+    <li class="md-tabs__item">
+      <a href="../decisions/" class="md-tabs__link">
+        
   
   
-  ADR
+    
+  
+  Decisions
 
-        </a>
-      </li>
-    
+      </a>
+    </li>
   
 
       
@@ -706,67 +705,15 @@
   
   
   
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3">
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ADR
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    ADR
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix="">
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../adr/" class="md-nav__link">
+      <a href="../decisions/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Architecture Decision Records
+    Decisions
   
 
     
@@ -775,14 +722,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1318,7 +1257,7 @@
                        │  └──────────────────┘  └─────────────┘  │
                        └─────────────────────────────────────────┘
 </code></pre></div>
-<p>The topology follows <a href="../adr/ADR-015-lora-protocol/">ADR-015</a>: the gateway uses a dedicated STM32WLE5JC LoRa co-processor connected via UART. The outdoor sensor node is a self-contained Zephyr device that reads sensors and transmits compact 5-byte readings over LoRa P2P. The gateway and display are combined in a single firmware image per <a href="../adr/ADR-007-gateway-display-combined/">ADR-007</a>.</p>
+<p>The topology follows ADR-015 (see <a href="../decisions/">decisions</a>): the gateway uses a dedicated STM32WLE5JC LoRa co-processor connected via UART. The outdoor sensor node is a self-contained Zephyr device that reads sensors and transmits compact 5-byte readings over LoRa P2P. The gateway and display are combined in a single firmware image per <a href="../decisions/">ADR-007</a>.</p>
 <hr>
 <h2 id="gateway-frdm-mcxn947">Gateway — FRDM-MCXN947</h2>
 <p><strong>NXP FRDM-MCXN947 development board</strong> — the main gateway MCU.</p>
@@ -1738,7 +1677,7 @@
 <p>Zephyr upstream provides <code>CONFIG_BME680</code> which covers BME688 in compatibility mode (T/P/H/gas resistance).</p>
 <hr>
 <h2 id="gateway-wio-e5-mini-lora-co-processor">Gateway — Wio-E5 Mini LoRa Co-Processor</h2>
-<p><strong>Seeed Studio Wio-E5 Mini</strong> (STM32WLE5JC) — dedicated LoRa radio co-processor, running custom Zephyr firmware with <code>lib/lora_radio/</code>. Role defined in <a href="../adr/ADR-015-lora-protocol/">ADR-015</a>.</p>
+<p><strong>Seeed Studio Wio-E5 Mini</strong> (STM32WLE5JC) — dedicated LoRa radio co-processor, running custom Zephyr firmware with <code>lib/lora_radio/</code>. Role defined in ADR-015 (see <a href="../decisions/">decisions</a>).</p>
 <table>
 <thead>
 <tr>
@@ -1909,7 +1848,7 @@
 <p>RF switch control for high-power TX: PA4=0, PA5=1. Only RFO_HP supported — no low-power TX path.</p>
 <hr>
 <h2 id="outdoor-sensor-node-1-wio-e5-mini">Outdoor Sensor Node 1 — Wio-E5 Mini</h2>
-<p>The outdoor sensor node is a self-contained Zephyr device built around the Wio-E5 Mini module. It reads local sensors, encodes readings in the compact 5-byte wire format defined in <a href="../adr/ADR-015-lora-protocol/">ADR-015</a>, and transmits them over LoRa P2P to the gateway.</p>
+<p>The outdoor sensor node is a self-contained Zephyr device built around the Wio-E5 Mini module. It reads local sensors, encodes readings in the compact 5-byte wire format defined in ADR-015 (see <a href="../decisions/">decisions</a>), and transmits them over LoRa P2P to the gateway.</p>
 <p><strong>MCU and radio:</strong> same Wio-E5 Mini module as the gateway co-processor (see specs above).</p>
 <h3 id="firmware">Firmware</h3>
 <p>The sensor node runs custom Zephyr firmware as a separate Zephyr application. The build target is based on the <code>nucleo_wl55jc</code> board definition, adapted via an overlay to match the Wio-E5 Mini pinout (different UART, RF control GPIOs, and LED mappings — see table above).</p>
@@ -2318,9 +2257,8 @@ With solar charging (e.g., 2W panel), indefinite operation is achievable.</p>
 <li><a href="https://wiki.seeedstudio.com/LoRa_E5_mini/">Seeed Wio-E5 Mini</a> — module wiki</li>
 <li><a href="https://www.st.com/en/microcontrollers-microprocessors/stm32wle5jc.html">STM32WLE5JC Datasheet</a> — STM32WL series</li>
 <li><a href="https://wiki.dfrobot.com/SKU_SEN0460_Gravity_PM2.5_Air_Quality_Sensor">DFRobot SEN0460</a> — PM2.5 sensor wiki</li>
-<li><a href="../adr/ADR-006-lora-channel-boundary/">ADR-006</a> — LoRa bounded context (superseded)</li>
-<li><a href="../adr/ADR-007-gateway-display-combined/">ADR-007</a> — combined gateway + display</li>
-<li><a href="../adr/ADR-015-lora-protocol/">ADR-015</a> — LoRa protocol architecture (superseding)</li>
+<li><a href="../decisions/">ADR-007</a> — combined gateway + display</li>
+<li>ADR-015 (see <a href="../decisions/">decisions</a>) — LoRa protocol architecture (superseding)</li>
 </ul>
 
 
