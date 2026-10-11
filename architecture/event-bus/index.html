@@ -247,6 +247,44 @@
   
   
   
+  
+    <li class="md-tabs__item">
+      <a href="../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
     
   
   
@@ -398,6 +436,60 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -419,10 +511,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -440,8 +532,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -816,6 +908,174 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1044,7 +1304,7 @@
 <tr>
 <td><code>config_cmd_chan</code></td>
 <td><code>lib/config_cmd</code></td>
-<td>config producers (HTTP) → consumers (fake_sensors, sntp_sync, mqtt_publisher)</td>
+<td>config producers (HTTP) → consumers (fake_sensors, mqtt_publisher)</td>
 </tr>
 <tr>
 <td><code>remote_scan_ctrl_chan</code></td>
@@ -1097,7 +1357,6 @@ graph LR
 
     subgraph CFG_CONSUMERS["Config Consumers"]
         FS_CFG["fake_sensors\ninterval update"]
-        SNTP_CFG["sntp_sync\nresync trigger"]
     end
 
     subgraph CHAN_DISC["remote discovery (k_msgq, not zbus)"]
@@ -1136,7 +1395,6 @@ graph LR
 
     HTTPL --&gt;|pub config_cmd_event| CC
     CC --&gt;|sub| FS_CFG
-    CC --&gt;|sub| SNTP_CFG
     CC --&gt;|sub| MQTT_CFG
 
     FAKE_T --&gt;|remote_sensor_announce_disc| RD2
@@ -1167,7 +1425,7 @@ graph LR
 <li><code>sensor_trigger_chan</code> — <em>when</em> to sample. Any code that wants sensors to fire publishes here. Sensor drivers don't know or care who triggered them.</li>
 <li><code>sensor_event_chan</code> — <em>what was measured</em>. Any code that wants sensor readings subscribes here. Trigger sources don't know or care what consumes the data.</li>
 </ul>
-<p><code>config_cmd_chan</code> applies the same pattern to configuration: <code>http_dashboard</code> publishes a <code>config_cmd_event</code> when the user changes settings; <code>fake_sensors</code>, <code>sntp_sync</code>, and <code>mqtt_publisher</code> subscribe independently. Neither module references the other.</p>
+<p><code>config_cmd_chan</code> applies the same pattern to configuration: <code>http_dashboard</code> publishes a <code>config_cmd_event</code> when the user changes settings; <code>fake_sensors</code> and <code>mqtt_publisher</code> subscribe independently. Neither module references the other.</p>
 <p><code>remote_scan_ctrl_chan</code> follows the same pattern for the remote sensor layer — the manager and shell exchange scan control events without direct calls to transport adapters.</p>
 <blockquote>
 <p><strong>Note — k_msgq inside <code>remote_sensor_manager</code>:</strong> The manager subscribes to

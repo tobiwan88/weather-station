@@ -11,7 +11,7 @@
         <link rel="prev" href="../lora-protocol/">
       
       
-        <link rel="next" href="../../decisions/">
+        <link rel="next" href="../http-dashboard/">
       
       
         
@@ -247,6 +247,44 @@
   
   
   
+  
+    <li class="md-tabs__item">
+      <a href="../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
     
   
   
@@ -398,6 +436,60 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -419,10 +511,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -440,8 +532,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -882,6 +974,174 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1174,7 +1434,6 @@ graph TB
             SR["sensor_registry\nuid → metadata"]
         end
         subgraph SERVICES["Services"]
-            SNTP["sntp_sync\nwall-clock SNTP"]
             HTTP["http_dashboard\nChart.js + config API\nport 8080"]
             CLK["clock_display\nHH:MM UTC ticker"]
             LVGL["lvgl_display\nSDL window (native_sim)"]
@@ -1211,7 +1470,6 @@ graph TB
     HTTP --&gt;|reads| LOC
     HTTP --&gt;|publishes| CC
     FS --&gt;|registers| SR
-    SNTP --&gt;|subscribes| CC
     SEL --&gt;|subscribes| SEC
     RS --&gt;|publishes| SEC
     RS --&gt;|subscribes| STC
@@ -1224,10 +1482,8 @@ graph TB
 
     SEC --&gt; ZBUS
     STC --&gt; ZBUS
-    SNTP --&gt; NET
     HTTP --&gt; HTTPD
     CLK --&gt; KWORK
-    SNTP --&gt; KWORK
     FS --&gt; KTIMER
     HTTP --&gt; KSPIN
     SR --&gt; KMUX
@@ -1281,7 +1537,6 @@ graph LR
 
     subgraph CFG_CONSUMERS["Config Consumers"]
         FS_CFG["fake_sensors\ninterval update"]
-        SNTP_CFG["sntp_sync\nresync trigger"]
     end
 
     subgraph CHAN_DISC["remote discovery (k_msgq, not zbus)"]
@@ -1320,7 +1575,6 @@ graph LR
 
     HTTPL --&gt;|pub config_cmd_event| CC
     CC --&gt;|sub| FS_CFG
-    CC --&gt;|sub| SNTP_CFG
     CC --&gt;|sub| MQTT_CFG
 
     FAKE_T --&gt;|remote_sensor_announce_disc| RD2
@@ -1400,7 +1654,6 @@ graph TD
     ST["sensor_trigger\ntrigger event + chan"]
     SR["sensor_registry\nuid → metadata"]
     FS["fake_sensors\nDT-driven drivers"]
-    SNTP["sntp_sync\nwall-clock SNTP"]
     HTTP["http_dashboard\nweb dashboard + API"]
     CLK["clock_display\nHH:MM ticker"]
     LVGL["lvgl_display\nSDL window"]
@@ -1417,7 +1670,6 @@ graph TD
     NET(["NETWORKING\n(Zephyr)"])
     HTTPD(["HTTP_SERVER\n(Zephyr)"])
     LVGLLIB(["LVGL + DISPLAY\n(Zephyr)"])
-    SNTPLIB(["SNTP\n(Zephyr)"])
     SETTINGS(["SETTINGS\n(Zephyr)"])
     LORADRV(["LORA DRIVER\n(Zephyr)"])
     PSACRYPTO(["PSA_CRYPTO\n(Zephyr)"])
@@ -1426,7 +1678,6 @@ graph TD
     APP --&gt;|Kconfig| ST
     APP --&gt;|Kconfig| SR
     APP --&gt;|Kconfig| FS
-    APP --&gt;|Kconfig| SNTP
     APP --&gt;|Kconfig| HTTP
     APP --&gt;|Kconfig| CLK
     APP --&gt;|Kconfig| LVGL
@@ -1455,9 +1706,6 @@ graph TD
     HTTP --&gt; CC
     HTTP --&gt; HTTPD
 
-    SNTP --&gt; CC
-    SNTP --&gt; NET
-    SNTP --&gt; SNTPLIB
 
     SEL --&gt; SE
 
@@ -1491,7 +1739,6 @@ graph TD
     style NET fill:#fce7f3,stroke:#db2777
     style HTTPD fill:#fce7f3,stroke:#db2777
     style LVGLLIB fill:#fce7f3,stroke:#db2777
-    style SNTPLIB fill:#fce7f3,stroke:#db2777
     style SETTINGS fill:#fce7f3,stroke:#db2777
     style LORADRV fill:#fce7f3,stroke:#db2777
     style PSACRYPTO fill:#fce7f3,stroke:#db2777
@@ -1504,7 +1751,7 @@ title: SYS_INIT Boot Sequence (APPLICATION Priority)
 sequenceDiagram
     participant KERNEL as Zephyr Kernel
     participant TRACE as trace_recorder&lt;br/&gt;priority 1
-    participant SNTP as sntp_sync&lt;br/&gt;priority 80
+    participant SNTP as net_config SNTP&lt;br/&gt;priority 95
     participant FT as fake_temperature&lt;br/&gt;priority 90
     participant FH as fake_humidity&lt;br/&gt;priority 91
     participant LVGL as lvgl_display&lt;br/&gt;priority 91
@@ -1527,10 +1774,8 @@ sequenceDiagram
     TRACE-&gt;&gt;TRACE: trace_ready = true
     TRACE--&gt;&gt;KERNEL: return 0
 
-    KERNEL-&gt;&gt;SNTP: sntp_sync_init()
-    SNTP-&gt;&gt;SNTP: initial SNTP query (blocking)
-    SNTP-&gt;&gt;SNTP: schedule periodic_work (K_SECONDS(3600))
-    SNTP--&gt;&gt;KERNEL: return 0
+    KERNEL-&gt;&gt;SNTP: net_config init + SNTP sync (priority 95)
+    SNTP--&gt;&gt;KERNEL: return
 
     KERNEL-&gt;&gt;FT: fake_temperature_init()
     FT-&gt;&gt;FT: sensor_registry_register(uid, ...)
@@ -1576,7 +1821,7 @@ sequenceDiagram
 
     KERNEL-&gt;&gt;SEL: sensor_event_log_init()
     SEL-&gt;&gt;SEL: zbus_chan_add_obs(sensor_event_chan)
-    Note over SEL: also at priority 95: sensor_registry settings load,&lt;br/&gt;sntp_sync config_cmd init, fake_sensors config_cmd init
+    Note over SEL: also at priority 95: sensor_registry settings load,&lt;br/&gt;fake_sensors config_cmd init
     SEL--&gt;&gt;KERNEL: return 0
 
     KERNEL-&gt;&gt;LOC: location_registry_settings_load()
@@ -1614,7 +1859,7 @@ sequenceDiagram
     participant HTTP as HTTP Server Thread
     participant CC as config_cmd_chan&lt;br/&gt;(zbus)
     participant FS as fake_sensors_timer
-    participant SNTP as sntp_sync
+    participant SNTP as net_config SNTP (Zephyr)
     participant SR as sensor_registry
     participant LOC as location_registry
     participant MQTTP as mqtt_publisher
@@ -1631,13 +1876,12 @@ sequenceDiagram
 
     alt sntp_server present
         HTTP-&gt;&gt;HTTP: update sntp_server_buf&lt;br/&gt;(spinlock-protected snapshot)
+        HTTP-&gt;&gt;SNTP: net_config_sntp_set_server(server)
     end
 
     alt action=sntp_resync
-        HTTP-&gt;&gt;CC: publish CONFIG_CMD_SNTP_RESYNC
-        CC--&gt;&gt;SNTP: zbus listener callback
-        SNTP-&gt;&gt;SNTP: k_work_reschedule(&amp;immediate_work, K_NO_WAIT)
-        Note over SNTP: Runs async in work queue&lt;br/&gt;performs SNTP query
+        HTTP-&gt;&gt;SNTP: net_config_sntp_set_server(server)
+        Note over SNTP: upstream client resyncs asynchronously on the socket service
     end
 
     alt sensor_&lt;uid&gt;_name present and USER_META enabled
@@ -1831,13 +2075,13 @@ flowchart LR
     subgraph sensor_node_tx
         LISTENER["zbus Listener\n(ADR-002: no blocking)"]
         LOCK["k_spinlock"]
-        BUF["Ring Buffer\nenv_sensor_data[20]"]
-        WIRE["Wire Array\nlora_reading[20]\n5 bytes each"]
+        BUF["Ring Buffer\nenv_sensor_data[MAX_READINGS] (drop oldest when full)"]
+        WIRE["Wire Array\nlora_reading[READINGS_PER_PACKET=5], 5 bytes each"]
         TIMER["k_work_delayable\n(CONFIG_SENSOR_NODE_TX_INTERVAL_S)"]
         FORCE["FORCE_TX\nconfig_cmd_chan"]
     end
 
-    LORA["lora_node\nlora_node_transmit()"]
+    LORA["lora_node\nlora_node_transmit()\n(chunked, &lt;=5 readings per packet, unsent requeued)"]
     AIR["((LoRa RF))"]
 
     SENSORS --&gt;|trigger| TRIG
@@ -1859,7 +2103,7 @@ flowchart LR
     WIRE --&gt;|5-byte readings| LORA
     SNAP --&gt;|uses| BUF
     SNAP --&gt;|writes| WIRE
-    SNAP --&gt;|calls| LORA
+    SNAP --&gt;|calls per chunk| LORA
     LORA --&gt; AIR
 
     style sensor_node_tx fill:#f0fdf4,stroke:#22c55e

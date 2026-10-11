@@ -244,6 +244,44 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
     
     
       <li class="md-tabs__item">
@@ -394,6 +432,60 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -408,10 +500,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -429,8 +521,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -679,6 +771,174 @@
     
   
     Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
   
 
     
@@ -1041,7 +1301,7 @@
 <h3 id="req-display-001-lvgl-initialization">REQ-DISPLAY-001 — LVGL Initialization</h3>
 <p>The system shall initialize LVGL with a 320x240 SDL window on native_sim, using <code>DEVICE_DT_GET(DT_CHOSEN(zephyr_display))</code> for display device selection — never a specific driver node.</p>
 <h3 id="req-display-002-analog-clock">REQ-DISPLAY-002 — Analog Clock</h3>
-<p>The system shall display an analog clock showing wall-clock time from <code>sntp_sync</code>, updated every 60 seconds.</p>
+<p>The system shall display an analog clock showing wall-clock time from the realtime clock (<code>sys_clock_gettime(SYS_CLOCK_REALTIME)</code>), updated every 60 seconds.</p>
 <h3 id="req-display-003-sensor-cards">REQ-DISPLAY-003 — Sensor Cards</h3>
 <p>The system shall render sensor data as cards on the LVGL display, with one card per sensor location showing the latest measurement values.</p>
 <h3 id="req-display-004-sensor-event-subscription">REQ-DISPLAY-004 — Sensor Event Subscription</h3>
@@ -1075,7 +1335,7 @@
 <h2 id="acceptance-criteria">Acceptance Criteria</h2>
 <ul>
 <li>[ ] [native_sim] Integration: LVGL window opens on native_sim build</li>
-<li>[ ] [native_sim] Integration: Analog clock displays correct time from sntp_sync</li>
+<li>[ ] [native_sim] Integration: Analog clock displays correct time from the realtime clock (<code>sys_clock_gettime(SYS_CLOCK_REALTIME)</code>)</li>
 <li>[ ] [native_sim] Integration: Sensor cards update on new sensor events</li>
 <li>[ ] [native_sim] Integration: Screen navigation via B1/B2 buttons works</li>
 <li>[ ] [native_sim] Integration: sensor_registry lookup routes events to correct cards</li>

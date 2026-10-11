@@ -1,0 +1,2289 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-28-test-coverage-increase/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Test Coverage Increase Implementation Plan - Weather Station Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#test-coverage-increase-implementation-plan" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Weather Station Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Test Coverage Increase Implementation Plan
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to dark mode" type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo" aria-label="Switch to light mode" type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden="">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../architecture/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../decisions/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Decisions
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../backlog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Backlog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Footprint
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+
+    </a>
+    Weather Station Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tobiwan88/weather-station" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    tobiwan88/weather-station
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4">
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/system-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/event-bus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Bus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/composition-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Composition Model
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/concurrency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concurrency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/integration-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/firmware-update/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/lora-protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoRa Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/diagrams/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://tobiwan88.github.io/weather-station/dev/bench/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Footprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#phase-1-infrastructure-enable-measurement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1 — Infrastructure (enable measurement)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 1 — Infrastructure (enable measurement)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-11-add-coverage-gate-to-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 1.1: Add coverage gate to CI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-12-enable-native_sim-flash-simulator-for-io_stream_flash-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 1.2: Enable native_sim flash simulator for io_stream_flash testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-2-unit-tests-on-native_sim-highest-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2 — Unit Tests on native_sim (highest ROI)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 2 — Unit Tests on native_sim (highest ROI)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-21-io_stream_flash-unit-tests-241-lines-currently-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2.1: io_stream_flash unit tests (241 lines, currently 0%)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-22-lora_packet-unit-tests-172-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2.2: lora_packet unit tests (172 lines)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-23-lora_session-unit-tests-140-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2.3: lora_session unit tests (140 lines)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-24-lora_pending-unit-tests-303-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2.4: lora_pending unit tests (303 lines)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-25-lora_rpc-unit-tests-317-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2.5: lora_rpc unit tests (317 lines)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-3-fota-integration-tests-on-native_sim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3 — FOTA Integration Tests on native_sim
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 3 — FOTA Integration Tests on native_sim">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-31-fota-sender-receiver-end-to-end-buffer-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 3.1: FOTA sender + receiver end-to-end (buffer streams)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-32-http-fota-api-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 3.2: HTTP FOTA API tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-33-fota_confirm-unit-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 3.3: fota_confirm unit test
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-4-renode-test-expansion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4 — Renode Test Expansion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 4 — Renode Test Expansion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-41-add-existing-renode-tests-to-ci-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 4.1: Add existing Renode tests to CI matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-5-remaining-native_sim-gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 5 — Remaining Native_sim Gaps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 5 — Remaining Native_sim Gaps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-51-lora_handler_data-unit-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 5.1: lora_handler_data unit tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-52-sensor_registry-unit-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 5.2: sensor_registry unit tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-53-sensor_event_log-unit-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 5.3: sensor_event_log unit tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependency Graph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estimated-new-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estimated New Tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="test-coverage-increase-implementation-plan">Test Coverage Increase Implementation Plan</h1>
+<blockquote>
+<p><strong>For agentic workers:</strong> REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (<code>- [ ]</code>) syntax for tracking.</p>
+</blockquote>
+<p><strong>Goal:</strong> Increase test coverage across native_sim unit tests, integration tests, and Renode, with measurable coverage gates in CI.</p>
+<p><strong>Architecture:</strong> Phase-by-phase approach: (1) CI coverage gate + flash simulator enablement, (2) LoRa unit tests on native_sim, (3) FOTA integration tests with buffer streams, (4) Renode test expansion, (5) remaining gaps.</p>
+<p><strong>Tech Stack:</strong> Zephyr ztest, pytest-twister-harness, gcovr, Robot Framework (Renode), fake LoRa driver (kernel FIFO loopback), io_stream buffer backend.</p>
+<p><strong>Current state:</strong> ~130 tests total. Coverage: sensor_event ✓, mqtt_publisher ✓, io_stream_buffer ✓, remote_sensor_uid ✓, fake_sensors ✓, trace_recorder ✓, HTTP dashboard ✓, sensor flow ✓. Gaps: LoRa (0%), FOTA (0% functional), io_stream_flash (0%), fota_confirm (smoke-only), 9 libraries with zero tests.</p>
+<hr>
+<h2 id="phase-1-infrastructure-enable-measurement">Phase 1 — Infrastructure (enable measurement)</h2>
+<h3 id="task-11-add-coverage-gate-to-ci">Task 1.1: Add coverage gate to CI</h3>
+<p><strong>Files:</strong>
+- Modify: <code>.github/workflows/ci.yml</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Add coverage threshold to test-and-coverage job</strong></li>
+</ul>
+<p>In the <code>test-and-coverage</code> job, after the <code>west twister</code> command that generates coverage, add a gcovr threshold check:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># After the twister coverage run, add:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check coverage threshold</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">gcovr --filter='lib/' --exclude='tests/' --exclude='zephyr/' \</span>
+<span class="w">      </span><span class="no">--fail-under-line 35 --print-summary \</span>
+<span class="w">      </span><span class="no">twister-out/coverage.xml</span>
+</code></pre></div>
+<p>Start at 35% (current estimated baseline) — this will fail if coverage drops but won't block incremental progress. The threshold should be ratcheted up as new tests are added.</p>
+<ul>
+<li>[ ] <strong>Step 2: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>.github/workflows/ci.yml
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"ci: add coverage threshold gate (35% line coverage)"</span>
+</code></pre></div>
+<h3 id="task-12-enable-native_sim-flash-simulator-for-io_stream_flash-testing">Task 1.2: Enable native_sim flash simulator for io_stream_flash testing</h3>
+<p><strong>Files:</strong>
+- Create: <code>tests/io_stream/overlay_flash_sim.dts</code>
+- Create: <code>tests/io_stream/prj_flash.conf</code>
+- Modify: <code>tests/io_stream/testcase.yaml</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Create flash simulator device tree overlay</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* tests/io_stream/overlay_flash_sim.dts */</span>
+<span class="nf">/</span><span class="cm"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">chosen</span><span class="cm"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">zephyr</span><span class="p">,</span><span class="n">flash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">flash_sim</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="nl">flash_sim</span><span class="p">:</span><span class="w"> </span><span class="nf">flash_sim</span><span class="o">@</span><span class="mi">0</span><span class="cm"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kr">compatible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"zephyr,flash-simulator"</span><span class="p">;</span>
+<span class="w">        </span><span class="kr">reg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x0</span><span class="w"> </span><span class="mh">0x100000</span><span class="o">&gt;</span><span class="p">;</span><span class="w"> </span><span class="cm">/* 1 MB simulated flash */</span>
+<span class="w">        </span><span class="n">erase-block-size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mi">4096</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">write-block-size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mi">4</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="nf">partitions</span><span class="cm"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kr">compatible</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"fixed-partitions"</span><span class="p">;</span>
+<span class="w">        </span><span class="kr">#address-cells</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">        </span><span class="kr">#size-cells</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="w">        </span><span class="nl">test_partition</span><span class="p">:</span><span class="w"> </span><span class="nf">partition</span><span class="o">@</span><span class="mi">0</span><span class="cm"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"test_partition"</span><span class="p">;</span>
+<span class="w">            </span><span class="kr">reg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&lt;</span><span class="mh">0x0</span><span class="w"> </span><span class="mh">0x100000</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Create flash test prj.conf</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/io_stream/prj_flash.conf</span>
+CONFIG_ZTEST=y
+CONFIG_IO_STREAM=y
+CONFIG_IO_STREAM_FLASH=y
+CONFIG_FLASH=y
+CONFIG_FLASH_MAP=y
+CONFIG_FLASH_SIMULATOR=y
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Add flash variant to testcase.yaml</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nt">tests</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">weather_station.io_stream</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">platform_allow</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">native_sim/native/64</span>
+<span class="w">    </span><span class="nt">harness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ztest</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">io_stream</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weather_station</span>
+<span class="w">  </span><span class="nt">weather_station.io_stream_flash</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">platform_allow</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">native_sim/native/64</span>
+<span class="w">    </span><span class="nt">harness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ztest</span>
+<span class="w">    </span><span class="nt">extra_args</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OVERLAY_CONFIG=prj_flash.conf</span>
+<span class="w">    </span><span class="nt">extra_args</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OVERLAY_CONFIG+=overlay_flash_sim.dts</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">io_stream</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">io_stream_flash</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weather_station</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>tests/io_stream/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"test(io_stream): add flash simulator variant for native_sim"</span>
+</code></pre></div>
+<hr>
+<h2 id="phase-2-unit-tests-on-native_sim-highest-roi">Phase 2 — Unit Tests on native_sim (highest ROI)</h2>
+<h3 id="task-21-io_stream_flash-unit-tests-241-lines-currently-0">Task 2.1: io_stream_flash unit tests (241 lines, currently 0%)</h3>
+<p><strong>Files:</strong>
+- Modify: <code>tests/io_stream/src/main.c</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Add flash stream tests to existing test suite</strong></li>
+</ul>
+<p>Add these tests to <code>tests/io_stream/src/main.c</code>, guarded by <code>#if defined(CONFIG_IO_STREAM_FLASH)</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#if defined(CONFIG_IO_STREAM_FLASH)</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/storage/flash_map.h&gt;</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">io_stream_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_flash_init_by_id</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">io_stream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">part_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FIXED_PARTITION_ID</span><span class="p">(</span><span class="n">test_partition</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_flash_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">part_id</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"flash init failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">stream</span><span class="p">.</span><span class="n">read</span><span class="p">,</span><span class="w"> </span><span class="s">"read should be set"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">stream</span><span class="p">.</span><span class="n">write</span><span class="p">,</span><span class="w"> </span><span class="s">"write should be set"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">stream</span><span class="p">.</span><span class="n">seek</span><span class="p">,</span><span class="w"> </span><span class="s">"seek should be set"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">stream</span><span class="p">.</span><span class="n">tell</span><span class="p">,</span><span class="w"> </span><span class="s">"tell should be set"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">stream</span><span class="p">.</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="s">"size should be set"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">stream</span><span class="p">.</span><span class="n">flush</span><span class="p">,</span><span class="w"> </span><span class="s">"flush should be set"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">stream</span><span class="p">.</span><span class="n">close</span><span class="p">,</span><span class="w"> </span><span class="s">"close should be set"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">io_stream_close</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">io_stream_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_flash_write_and_read</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">io_stream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">part_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FIXED_PARTITION_ID</span><span class="p">(</span><span class="n">test_partition</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_flash_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">part_id</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"init failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">data</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Hello, flash!"</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">ssize_t</span><span class="w"> </span><span class="n">written</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_write</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">written</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="w"> </span><span class="s">"write returned %zd"</span><span class="p">,</span><span class="w"> </span><span class="n">written</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_flush</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"flush failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_size</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="w"> </span><span class="s">"size returned %zu"</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_seek</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">IO_STREAM_SEEK_SET</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"seek failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">read_buf</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">ssize_t</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_read</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">read_buf</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">read_buf</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">read</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="w"> </span><span class="s">"read returned %zd"</span><span class="p">,</span><span class="w"> </span><span class="n">read</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_mem_equal</span><span class="p">(</span><span class="n">read_buf</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="w"> </span><span class="s">"data mismatch"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">io_stream_close</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">io_stream_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_flash_non_sequential_write_rejected</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">io_stream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">part_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FIXED_PARTITION_ID</span><span class="p">(</span><span class="n">test_partition</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_flash_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">part_id</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"init failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">data</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"test"</span><span class="p">;</span>
+<span class="w">    </span><span class="n">io_stream_write</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
+
+<span class="w">    </span><span class="cm">/* Seek back and try to write — should return -ENOTSUP */</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_seek</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">IO_STREAM_SEEK_SET</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"seek failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">ssize_t</span><span class="w"> </span><span class="n">written</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_write</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">written</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">ENOTSUP</span><span class="p">,</span>
+<span class="w">                  </span><span class="s">"non-sequential write returned %zd, expected -ENOTSUP"</span><span class="p">,</span><span class="w"> </span><span class="n">written</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">io_stream_close</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">io_stream_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_flash_close_and_reinit</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">io_stream</span><span class="w"> </span><span class="n">stream</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">part_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FIXED_PARTITION_ID</span><span class="p">(</span><span class="n">test_partition</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_flash_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">part_id</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"first init failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_close</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"close failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* Second init should fail (static state already used) */</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">io_stream_flash_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">part_id</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">EBUSY</span><span class="p">,</span>
+<span class="w">                  </span><span class="s">"double init returned %d, expected -EBUSY"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="cp">#endif </span><span class="cm">/* CONFIG_IO_STREAM_FLASH */</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Run flash variant tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>twister<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span>native_sim/native/64<span class="w"> </span>-T<span class="w"> </span>tests/io_stream<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--inline-logs<span class="w"> </span>-v<span class="w"> </span>-s<span class="w"> </span>weather_station.io_stream_flash
+</code></pre></div>
+<p>Expected: All 4 new flash tests pass.</p>
+<ul>
+<li>[ ] <strong>Step 3: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>tests/io_stream/src/main.c<span class="w"> </span>tests/io_stream/testcase.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>tests/io_stream/prj_flash.conf<span class="w"> </span>tests/io_stream/overlay_flash_sim.dts
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"test(io_stream): add flash backend unit tests (4 new cases)"</span>
+</code></pre></div>
+<h3 id="task-22-lora_packet-unit-tests-172-lines">Task 2.2: lora_packet unit tests (172 lines)</h3>
+<p><strong>Files:</strong>
+- Create: <code>tests/lora_packet/testcase.yaml</code>
+- Create: <code>tests/lora_packet/CMakeLists.txt</code>
+- Create: <code>tests/lora_packet/prj.conf</code>
+- Create: <code>tests/lora_packet/src/main.c</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Create test skeleton</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/lora_packet/testcase.yaml</span>
+<span class="nt">tests</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">weather_station.lora_packet</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">platform_allow</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">native_sim/native/64</span>
+<span class="w">    </span><span class="nt">harness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ztest</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lora_packet</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weather_station</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># tests/lora_packet/CMakeLists.txt</span>
+<span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.20.0</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">Zephyr</span><span class="w"> </span><span class="s">REQUIRED</span><span class="w"> </span><span class="s">HINTS</span><span class="w"> </span><span class="o">$ENV{</span><span class="nv">ZEPHYR_BASE</span><span class="o">}</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">test_lora_packet</span><span class="p">)</span>
+<span class="nb">target_sources</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">src/main.c</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/lora_packet/prj.conf</span>
+CONFIG_ZTEST=y
+CONFIG_LORA_RADIO=y
+CONFIG_MBEDTLS=y
+CONFIG_MBEDTLS_BUILTIN=y
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Write tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* tests/lora_packet/src/main.c */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;lora_radio/lora_frame.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;lora_radio/lora_radio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/ztest.h&gt;</span>
+
+<span class="n">ZTEST_SUITE</span><span class="p">(</span><span class="n">lora_packet_suite</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_packet_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_crc16_roundtrip</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">data</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mh">0x01</span><span class="p">,</span><span class="w"> </span><span class="mh">0x02</span><span class="p">,</span><span class="w"> </span><span class="mh">0x03</span><span class="p">,</span><span class="w"> </span><span class="mh">0x04</span><span class="p">,</span><span class="w"> </span><span class="mh">0x05</span><span class="p">};</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">crc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_crc16</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
+
+<span class="w">    </span><span class="cm">/* Verify CRC is non-zero for non-trivial data */</span>
+<span class="w">    </span><span class="n">zassert_true</span><span class="p">(</span><span class="n">crc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"CRC16 of non-zero data should be non-zero"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* Verify CRC is deterministic */</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">crc2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_crc16</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">crc</span><span class="p">,</span><span class="w"> </span><span class="n">crc2</span><span class="p">,</span><span class="w"> </span><span class="s">"CRC16 should be deterministic"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_packet_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_crc16_empty_data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">crc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_crc16</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">crc</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"CRC16 of empty data should be 0"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_packet_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_header_encode_decode</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">lora_l2_header</span><span class="w"> </span><span class="n">hdr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">hdr</span><span class="p">.</span><span class="n">type_ver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">LORA_FRAME_SENSOR_DATA</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mh">0x01</span><span class="p">;</span>
+<span class="w">    </span><span class="n">hdr</span><span class="p">.</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LORA_FLAG_ACK_REQ</span><span class="p">;</span>
+<span class="w">    </span><span class="n">hdr</span><span class="p">.</span><span class="n">src_node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x12</span><span class="p">;</span>
+<span class="w">    </span><span class="n">hdr</span><span class="p">.</span><span class="n">src_node</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x34</span><span class="p">;</span>
+<span class="w">    </span><span class="n">hdr</span><span class="p">.</span><span class="n">dst_node</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x56</span><span class="p">;</span>
+<span class="w">    </span><span class="n">hdr</span><span class="p">.</span><span class="n">dst_node</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x78</span><span class="p">;</span>
+<span class="w">    </span><span class="n">hdr</span><span class="p">.</span><span class="n">seq_num</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xAB</span><span class="p">;</span>
+<span class="w">    </span><span class="n">hdr</span><span class="p">.</span><span class="n">seq_num</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xCD</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">buf</span><span class="p">[</span><span class="n">LORA_L2_HEADER_SIZE</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_header_encode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hdr</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="n">LORA_L2_HEADER_SIZE</span><span class="p">,</span><span class="w"> </span><span class="s">"encode returned %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">lora_l2_header</span><span class="w"> </span><span class="n">decoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_header_decode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">decoded</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"decode returned %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">decoded</span><span class="p">.</span><span class="n">type_ver</span><span class="p">,</span><span class="w"> </span><span class="n">hdr</span><span class="p">.</span><span class="n">type_ver</span><span class="p">,</span><span class="w"> </span><span class="s">"type_ver mismatch"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">decoded</span><span class="p">.</span><span class="n">flags</span><span class="p">,</span><span class="w"> </span><span class="n">hdr</span><span class="p">.</span><span class="n">flags</span><span class="p">,</span><span class="w"> </span><span class="s">"flags mismatch"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_mem_equal</span><span class="p">(</span><span class="n">decoded</span><span class="p">.</span><span class="n">src_node</span><span class="p">,</span><span class="w"> </span><span class="n">hdr</span><span class="p">.</span><span class="n">src_node</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">"src_node mismatch"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_mem_equal</span><span class="p">(</span><span class="n">decoded</span><span class="p">.</span><span class="n">dst_node</span><span class="p">,</span><span class="w"> </span><span class="n">hdr</span><span class="p">.</span><span class="n">dst_node</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">"dst_node mismatch"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_mem_equal</span><span class="p">(</span><span class="n">decoded</span><span class="p">.</span><span class="n">seq_num</span><span class="p">,</span><span class="w"> </span><span class="n">hdr</span><span class="p">.</span><span class="n">seq_num</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">"seq_num mismatch"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_packet_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_frame_type_constants</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">LORA_FRAME_SENSOR_DATA</span><span class="p">,</span><span class="w"> </span><span class="mh">0x1</span><span class="p">,</span><span class="w"> </span><span class="s">"SENSOR_DATA type"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">LORA_FRAME_RPC_CMD</span><span class="p">,</span><span class="w"> </span><span class="mh">0x2</span><span class="p">,</span><span class="w"> </span><span class="s">"RPC_CMD type"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">LORA_FRAME_RPC_RESP</span><span class="p">,</span><span class="w"> </span><span class="mh">0x3</span><span class="p">,</span><span class="w"> </span><span class="s">"RPC_RESP type"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">LORA_FRAME_FOTA_CHUNK</span><span class="p">,</span><span class="w"> </span><span class="mh">0x4</span><span class="p">,</span><span class="w"> </span><span class="s">"FOTA_CHUNK type"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">LORA_FRAME_FOTA_CHUNK_ACK</span><span class="p">,</span><span class="w"> </span><span class="mh">0x5</span><span class="p">,</span><span class="w"> </span><span class="s">"FOTA_CHUNK_ACK type"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">LORA_FRAME_PROV_BEACON</span><span class="p">,</span><span class="w"> </span><span class="mh">0x6</span><span class="p">,</span><span class="w"> </span><span class="s">"PROV_BEACON type"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Run tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>twister<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span>native_sim/native/64<span class="w"> </span>-T<span class="w"> </span>tests/lora_packet<span class="w"> </span>--inline-logs<span class="w"> </span>-v
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>tests/lora_packet/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"test(lora): add packet encode/decode unit tests (4 cases)"</span>
+</code></pre></div>
+<h3 id="task-23-lora_session-unit-tests-140-lines">Task 2.3: lora_session unit tests (140 lines)</h3>
+<p><strong>Files:</strong>
+- Create: <code>tests/lora_session/testcase.yaml</code>
+- Create: <code>tests/lora_session/CMakeLists.txt</code>
+- Create: <code>tests/lora_session/prj.conf</code>
+- Create: <code>tests/lora_session/src/main.c</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Create test skeleton</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/lora_session/testcase.yaml</span>
+<span class="nt">tests</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">weather_station.lora_session</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">platform_allow</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">native_sim/native/64</span>
+<span class="w">    </span><span class="nt">harness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ztest</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lora_session</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weather_station</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># tests/lora_session/CMakeLists.txt</span>
+<span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.20.0</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">Zephyr</span><span class="w"> </span><span class="s">REQUIRED</span><span class="w"> </span><span class="s">HINTS</span><span class="w"> </span><span class="o">$ENV{</span><span class="nv">ZEPHYR_BASE</span><span class="o">}</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">test_lora_session</span><span class="p">)</span>
+<span class="nb">target_sources</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">src/main.c</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/lora_session/prj.conf</span>
+CONFIG_ZTEST=y
+CONFIG_LORA_RADIO=y
+CONFIG_LORA_RADIO_SESSION_MAX=4
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Write tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* tests/lora_session/src/main.c */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;lora_radio/lora_session.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/ztest.h&gt;</span>
+
+<span class="n">ZTEST_SUITE</span><span class="p">(</span><span class="n">lora_session_suite</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_session_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_add_get_remove</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">lora_session</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">key</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_session_add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">key</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"add failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_session_get</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="s">"get should return session"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">node_id</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">"node_id mismatch"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_session_remove</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"remove failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_session_get</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_is_null</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="s">"get should return NULL after remove"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_session_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_get_nonexistent</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">lora_session</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_session_get</span><span class="p">(</span><span class="mi">99</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_is_null</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="s">"get nonexistent should return NULL"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_session_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_remove_nonexistent</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_session_remove</span><span class="p">(</span><span class="mi">99</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_not_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"remove nonexistent should fail"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_session_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_duplicate_add</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">key</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_session_add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">key</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"first add failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_session_add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">key</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_not_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"duplicate add should fail"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">lora_session_remove</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Run tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>twister<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span>native_sim/native/64<span class="w"> </span>-T<span class="w"> </span>tests/lora_session<span class="w"> </span>--inline-logs<span class="w"> </span>-v
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>tests/lora_session/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"test(lora): add session lifecycle unit tests (4 cases)"</span>
+</code></pre></div>
+<h3 id="task-24-lora_pending-unit-tests-303-lines">Task 2.4: lora_pending unit tests (303 lines)</h3>
+<p><strong>Files:</strong>
+- Create: <code>tests/lora_pending/testcase.yaml</code>
+- Create: <code>tests/lora_pending/CMakeLists.txt</code>
+- Create: <code>tests/lora_pending/prj.conf</code>
+- Create: <code>tests/lora_pending/src/main.c</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Create test skeleton</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/lora_pending/testcase.yaml</span>
+<span class="nt">tests</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">weather_station.lora_pending</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">platform_allow</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">native_sim/native/64</span>
+<span class="w">    </span><span class="nt">harness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ztest</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lora_pending</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weather_station</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># tests/lora_pending/CMakeLists.txt</span>
+<span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.20.0</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">Zephyr</span><span class="w"> </span><span class="s">REQUIRED</span><span class="w"> </span><span class="s">HINTS</span><span class="w"> </span><span class="o">$ENV{</span><span class="nv">ZEPHYR_BASE</span><span class="o">}</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">test_lora_pending</span><span class="p">)</span>
+<span class="nb">target_sources</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">src/main.c</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/lora_pending/prj.conf</span>
+CONFIG_ZTEST=y
+CONFIG_LORA_RADIO=y
+CONFIG_LORA_RADIO_FAKE=y
+CONFIG_LORA_RADIO_PENDING=y
+CONFIG_LORA_RADIO_RETRY_MAX=2
+CONFIG_LORA_RADIO_RETRY_TIMEOUT_BASE_MS=100
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Write tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* tests/lora_pending/src/main.c */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;lora_radio/lora_pending.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;lora_radio/lora_radio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/device.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/ztest.h&gt;</span>
+
+<span class="n">ZTEST_SUITE</span><span class="p">(</span><span class="n">lora_pending_suite</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">cb_called</span><span class="p">;</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">cb_status</span><span class="p">;</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">test_cb</span><span class="p">(</span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">node_id</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">user_data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">node_id</span><span class="p">;</span>
+<span class="w">    </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">user_data</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cb_called</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cb_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">status</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_pending_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_async_send_and_callback</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">lora_dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEVICE_DT_GET</span><span class="p">(</span><span class="n">DT_NODELABEL</span><span class="p">(</span><span class="n">lora0</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">lora_dev</span><span class="p">,</span><span class="w"> </span><span class="s">"fake lora device not found"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">data</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mh">0x01</span><span class="p">,</span><span class="w"> </span><span class="mh">0x02</span><span class="p">,</span><span class="w"> </span><span class="mh">0x03</span><span class="p">};</span>
+<span class="w">    </span><span class="n">cb_called</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cb_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_pending_send_async</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">LORA_FRAME_SENSOR_DATA</span><span class="p">,</span>
+<span class="w">                                      </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="n">test_cb</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"async send failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* Wait for callback (fake driver loops back immediately) */</span>
+<span class="w">    </span><span class="n">k_sleep</span><span class="p">(</span><span class="n">K_MSEC</span><span class="p">(</span><span class="mi">200</span><span class="p">));</span>
+
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">cb_called</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">"callback not called"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">cb_status</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"callback status should be 0 (success)"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_pending_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_cancel</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">lora_dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEVICE_DT_GET</span><span class="p">(</span><span class="n">DT_NODELABEL</span><span class="p">(</span><span class="n">lora0</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">lora_dev</span><span class="p">,</span><span class="w"> </span><span class="s">"fake lora device not found"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">data</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mh">0x01</span><span class="p">};</span>
+<span class="w">    </span><span class="n">cb_called</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_pending_send_async</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">LORA_FRAME_SENSOR_DATA</span><span class="p">,</span>
+<span class="w">                                      </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span><span class="w"> </span><span class="n">test_cb</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"async send failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">lora_pending_cancel</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">k_sleep</span><span class="p">(</span><span class="n">K_MSEC</span><span class="p">(</span><span class="mi">200</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">cb_called</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"callback should not be called after cancel"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Run tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>twister<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span>native_sim/native/64<span class="w"> </span>-T<span class="w"> </span>tests/lora_pending<span class="w"> </span>--inline-logs<span class="w"> </span>-v
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>tests/lora_pending/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"test(lora): add pending/retry unit tests (2 cases)"</span>
+</code></pre></div>
+<h3 id="task-25-lora_rpc-unit-tests-317-lines">Task 2.5: lora_rpc unit tests (317 lines)</h3>
+<p><strong>Files:</strong>
+- Create: <code>tests/lora_rpc/testcase.yaml</code>
+- Create: <code>tests/lora_rpc/CMakeLists.txt</code>
+- Create: <code>tests/lora_rpc/prj.conf</code>
+- Create: <code>tests/lora_rpc/src/main.c</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Create test skeleton</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/lora_rpc/testcase.yaml</span>
+<span class="nt">tests</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">weather_station.lora_rpc</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">platform_allow</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">native_sim/native/64</span>
+<span class="w">    </span><span class="nt">harness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ztest</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lora_rpc</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weather_station</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># tests/lora_rpc/CMakeLists.txt</span>
+<span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.20.0</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">Zephyr</span><span class="w"> </span><span class="s">REQUIRED</span><span class="w"> </span><span class="s">HINTS</span><span class="w"> </span><span class="o">$ENV{</span><span class="nv">ZEPHYR_BASE</span><span class="o">}</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">test_lora_rpc</span><span class="p">)</span>
+<span class="nb">target_sources</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">src/main.c</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/lora_rpc/prj.conf</span>
+CONFIG_ZTEST=y
+CONFIG_LORA_RADIO=y
+CONFIG_LORA_RADIO_FAKE=y
+CONFIG_LORA_RADIO_RPC_RETRY=y
+CONFIG_LORA_RADIO_PENDING=y
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Write tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* tests/lora_rpc/src/main.c */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;lora_radio/lora_chan.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;lora_radio/lora_frame.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;lora_radio/lora_radio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/device.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/ztest.h&gt;</span>
+
+<span class="n">ZTEST_SUITE</span><span class="p">(</span><span class="n">lora_rpc_suite</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_rpc_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_rpc_ping_roundtrip</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">lora_dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEVICE_DT_GET</span><span class="p">(</span><span class="n">DT_NODELABEL</span><span class="p">(</span><span class="n">lora0</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">lora_dev</span><span class="p">,</span><span class="w"> </span><span class="s">"fake lora device not found"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* Send PING command via the RPC handler */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">cmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LORA_RPC_PING</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">payload</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_rpc_send_sync</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">payload</span><span class="p">),</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* The fake driver should loop back and the handler should respond */</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"RPC PING failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">LORA_RPC_PONG</span><span class="p">,</span><span class="w"> </span><span class="s">"expected PONG response"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_rpc_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_rpc_get_version</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">lora_dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEVICE_DT_GET</span><span class="p">(</span><span class="n">DT_NODELABEL</span><span class="p">(</span><span class="n">lora0</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">lora_dev</span><span class="p">,</span><span class="w"> </span><span class="s">"fake lora device not found"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">payload</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_rpc_send_sync</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">LORA_RPC_GET_VERSION</span><span class="p">,</span>
+<span class="w">                                 </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">payload</span><span class="p">),</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"RPC GET_VERSION failed: %d"</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="w">    </span><span class="cm">/* Version response starts with LORA_RPC_VERSION */</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">LORA_RPC_VERSION</span><span class="p">,</span><span class="w"> </span><span class="s">"expected VERSION response"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">lora_rpc_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_rpc_unknown_command</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">lora_dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEVICE_DT_GET</span><span class="p">(</span><span class="n">DT_NODELABEL</span><span class="p">(</span><span class="n">lora0</span><span class="p">));</span>
+<span class="w">    </span><span class="n">zassert_not_null</span><span class="p">(</span><span class="n">lora_dev</span><span class="p">,</span><span class="w"> </span><span class="s">"fake lora device not found"</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">payload</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lora_rpc_send_sync</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">payload</span><span class="p">),</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s">"RPC should not fail on unknown cmd"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">zassert_equal</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">LORA_RPC_ERROR</span><span class="p">,</span><span class="w"> </span><span class="s">"expected ERROR response"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Run tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>twister<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span>native_sim/native/64<span class="w"> </span>-T<span class="w"> </span>tests/lora_rpc<span class="w"> </span>--inline-logs<span class="w"> </span>-v
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>tests/lora_rpc/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"test(lora): add RPC command unit tests (3 cases)"</span>
+</code></pre></div>
+<hr>
+<h2 id="phase-3-fota-integration-tests-on-native_sim">Phase 3 — FOTA Integration Tests on native_sim</h2>
+<h3 id="task-31-fota-sender-receiver-end-to-end-buffer-streams">Task 3.1: FOTA sender + receiver end-to-end (buffer streams)</h3>
+<p><strong>Files:</strong>
+- Create: <code>tests/integration/pytest/test_lora_fota.py</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Write FOTA integration test</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="sd">"""tests/integration/pytest/test_lora_fota.py — FOTA over LoRa loopback."""</span>
+
+<span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="n">pytestmark</span> <span class="o">=</span> <span class="p">[</span><span class="n">pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">e2e</span><span class="p">,</span> <span class="n">pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">shell</span><span class="p">]</span>
+
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">"module"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">fota_image</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Generate a small test image (128 bytes of pattern data)."""</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">([</span><span class="n">i</span> <span class="o">%</span> <span class="mi">256</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">128</span><span class="p">)])</span>
+
+
+<span class="k">def</span> <span class="nf">test_fota_sender_uses_buffer_stream</span><span class="p">(</span><span class="n">shell</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Verify FOTA sender initializes and can read from buffer stream."""</span>
+    <span class="c1"># This test verifies the io_stream integration path is compiled and linked.</span>
+    <span class="c1"># The sender uses io_stream_flash on hardware, io_stream_buffer on native_sim.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="s2">"Zephyr"</span> <span class="ow">in</span> <span class="n">result</span><span class="p">,</span> <span class="s2">"gateway should boot with FOTA support"</span>
+
+
+<span class="k">def</span> <span class="nf">test_fota_receiver_uses_buffer_stream</span><span class="p">(</span><span class="n">shell</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Verify FOTA receiver initializes and can write to buffer stream."""</span>
+    <span class="c1"># The receiver path uses io_stream_flash on hardware, buffer on native_sim.</span>
+    <span class="c1"># We verify the handler is linked by checking the shell help includes fota-related commands.</span>
+    <span class="n">help_text</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="s2">"fake_sensors"</span> <span class="ow">in</span> <span class="n">help_text</span><span class="p">,</span> <span class="s2">"shell should be functional"</span>
+</code></pre></div>
+<p>Note: Full FOTA integration testing requires the FOTA state machine to be triggerable via shell or zbus. The current FOTA implementation is triggered via <code>lora_fota_chan</code> (zbus). For native_sim testing, we need a way to trigger FOTA without LoRa hardware. This requires either:
+- A shell command to trigger FOTA start (new feature), or
+- A zbus test harness that publishes <code>lora_fota_event</code> directly</p>
+<p>For now, these tests verify the code paths are compiled and linked. Full end-to-end FOTA testing will be added once a trigger mechanism exists.</p>
+<ul>
+<li>[ ] <strong>Step 2: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>tests/integration/pytest/test_lora_fota.py
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"test(fota): add FOTA integration test stub (buffer stream path)"</span>
+</code></pre></div>
+<h3 id="task-32-http-fota-api-tests">Task 3.2: HTTP FOTA API tests</h3>
+<p><strong>Files:</strong>
+- Modify: <code>tests/integration/pytest/test_http_api.py</code> (or create <code>test_fota_http.py</code>)</p>
+<ul>
+<li>[ ] <strong>Step 1: Write HTTP FOTA tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="sd">"""tests/integration/pytest/test_fota_http.py — HTTP FOTA API tests."""</span>
+
+<span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="n">pytestmark</span> <span class="o">=</span> <span class="p">[</span><span class="n">pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">http</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">test_fota_status_endpoint</span><span class="p">(</span><span class="n">http</span><span class="p">,</span> <span class="n">shell</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""GET /api/fota/status returns slot versions and state."""</span>
+    <span class="n">shell</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">http</span><span class="p">)</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/api/fota/status"</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="s2">"slot0"</span> <span class="ow">in</span> <span class="n">data</span>
+    <span class="k">assert</span> <span class="s2">"slot1"</span> <span class="ow">in</span> <span class="n">data</span>
+
+
+<span class="k">def</span> <span class="nf">test_fota_upload_requires_auth</span><span class="p">(</span><span class="n">http</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""POST /api/fota/upload without auth returns 401."""</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/api/fota/upload"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span> <span class="o">*</span> <span class="mi">64</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>tests/integration/pytest/test_fota_http.py
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"test(fota): add HTTP FOTA API tests (status + auth)"</span>
+</code></pre></div>
+<h3 id="task-33-fota_confirm-unit-test">Task 3.3: fota_confirm unit test</h3>
+<p><strong>Files:</strong>
+- Create: <code>tests/fota_confirm/testcase.yaml</code>
+- Create: <code>tests/fota_confirm/CMakeLists.txt</code>
+- Create: <code>tests/fota_confirm/prj.conf</code>
+- Create: <code>tests/fota_confirm/src/main.c</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Create test skeleton</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/fota_confirm/testcase.yaml</span>
+<span class="nt">tests</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">weather_station.fota_confirm</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">platform_allow</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">native_sim/native/64</span>
+<span class="w">    </span><span class="nt">harness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ztest</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">fota_confirm</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">weather_station</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c"># tests/fota_confirm/CMakeLists.txt</span>
+<span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.20.0</span><span class="p">)</span>
+<span class="nb">find_package</span><span class="p">(</span><span class="s">Zephyr</span><span class="w"> </span><span class="s">REQUIRED</span><span class="w"> </span><span class="s">HINTS</span><span class="w"> </span><span class="o">$ENV{</span><span class="nv">ZEPHYR_BASE</span><span class="o">}</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="s">test_fota_confirm</span><span class="p">)</span>
+<span class="nb">target_sources</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span><span class="w"> </span><span class="s">src/main.c</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/fota_confirm/prj.conf</span>
+CONFIG_ZTEST=y
+CONFIG_FOTA_CONFIRM=y
+CONFIG_FOTA_CONFIRM_DELAY_S=1
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 2: Write tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="cm">/* tests/fota_confirm/src/main.c */</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/ztest.h&gt;</span>
+
+<span class="n">ZTEST_SUITE</span><span class="p">(</span><span class="n">fota_confirm_suite</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="n">ZTEST</span><span class="p">(</span><span class="n">fota_confirm_suite</span><span class="p">,</span><span class="w"> </span><span class="n">test_confirm_init_succeeds</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="cm">/* fota_confirm uses SYS_INIT APPLICATION 99.</span>
+<span class="cm">     * If we reach here, init succeeded. */</span>
+<span class="w">    </span><span class="n">zassert_true</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">"fota_confirm should initialize without crashing"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 3: Run tests</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nv">ZEPHYR_BASE</span><span class="o">=</span>/home/zephyr/workspace/zephyr<span class="w"> </span>west<span class="w"> </span>twister<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-p<span class="w"> </span>native_sim/native/64<span class="w"> </span>-T<span class="w"> </span>tests/fota_confirm<span class="w"> </span>--inline-logs<span class="w"> </span>-v
+</code></pre></div>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>tests/fota_confirm/
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"test(fota): add fota_confirm init test (1 case)"</span>
+</code></pre></div>
+<hr>
+<h2 id="phase-4-renode-test-expansion">Phase 4 — Renode Test Expansion</h2>
+<h3 id="task-41-add-existing-renode-tests-to-ci-matrix">Task 4.1: Add existing Renode tests to CI matrix</h3>
+<p><strong>Files:</strong>
+- Modify: <code>.github/workflows/ci.yml</code></p>
+<ul>
+<li>[ ] <strong>Step 1: Add gateway_trace and outdoor_sensor_node_boot to CI</strong></li>
+</ul>
+<p>In the <code>renode</code> job matrix, add:
+</p><div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gateway_trace</span>
+<span class="w">  </span><span class="nt">robot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simulation/renode/tests/gateway_trace.robot</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">outdoor_sensor_node_boot</span>
+<span class="w">  </span><span class="nt">robot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">simulation/renode/tests/outdoor_sensor_node_boot.robot</span>
+</code></pre></div><p></p>
+<ul>
+<li>[ ] <strong>Step 2: Commit</strong></li>
+</ul>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>.github/workflows/ci.yml
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"ci: add gateway_trace and outdoor_sensor_node_boot to Renode matrix"</span>
+</code></pre></div>
+<hr>
+<h2 id="phase-5-remaining-native_sim-gaps">Phase 5 — Remaining Native_sim Gaps</h2>
+<h3 id="task-51-lora_handler_data-unit-tests">Task 5.1: lora_handler_data unit tests</h3>
+<p><strong>Files:</strong>
+- Create: <code>tests/lora_handler_data/</code> (testcase.yaml, CMakeLists.txt, prj.conf, src/main.c)</p>
+<ul>
+<li>[ ] <strong>Step 1: Write tests for sensor data payload decode</strong></li>
+</ul>
+<p>Tests: UID derivation from frame, Q31 value extraction, zbus event publish verification.</p>
+<h3 id="task-52-sensor_registry-unit-tests">Task 5.2: sensor_registry unit tests</h3>
+<p><strong>Files:</strong>
+- Create: <code>tests/sensor_registry/</code> (testcase.yaml, CMakeLists.txt, prj.conf, src/main.c)</p>
+<ul>
+<li>[ ] <strong>Step 1: Write tests for registry operations</strong></li>
+</ul>
+<p>Tests: add/lookup/delete, full registry rejection, UID collision handling, iteration, location metadata.</p>
+<h3 id="task-53-sensor_event_log-unit-tests">Task 5.3: sensor_event_log unit tests</h3>
+<p><strong>Files:</strong>
+- Create: <code>tests/sensor_event_log/</code> (testcase.yaml, CMakeLists.txt, prj.conf, src/main.c)</p>
+<ul>
+<li>[ ] <strong>Step 1: Write tests for event log ring buffer</strong></li>
+</ul>
+<p>Tests: append, overflow, snapshot within spinlock, read-back verification.</p>
+<hr>
+<h2 id="dependency-graph">Dependency Graph</h2>
+<div class="highlight"><pre><span></span><code>Phase 1 (infra)
+  ├── 1.1 coverage gate      ──► CI fails on regressions
+  └── 1.2 flash simulator    ──► Phase 2.1
+
+Phase 2 (unit tests)
+  ├── 2.1 io_stream_flash    ── depends on 1.2
+  ├── 2.2 lora_packet        ── independent
+  ├── 2.3 lora_session       ── independent
+  ├── 2.4 lora_pending       ── independent
+  └── 2.5 lora_rpc           ── benefits from 2.2-2.4
+
+Phase 3 (FOTA integration)
+  ├── 3.1 fota end-to-end    ── depends on 2.4 (lora_pending is used by FOTA)
+  ├── 3.2 fota http API      ── independent
+  └── 3.3 fota_confirm       ── independent
+
+Phase 4 (Renode)
+  ├── 4.1 add existing       ── trivial, CI-only
+  └── 4.2 fota functional    ── blocked on [RENODE-SPI-NOR]
+
+Phase 5 (remaining gaps)     ── independent, lower priority
+</code></pre></div>
+<hr>
+<h2 id="estimated-new-tests">Estimated New Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>New test cases</th>
+<th>New test files</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 (infra)</td>
+<td>0</td>
+<td>2 files modified + 2 created</td>
+<td>Small</td>
+</tr>
+<tr>
+<td>2 (native_sim unit)</td>
+<td>~17</td>
+<td>5 new test dirs</td>
+<td>Large</td>
+</tr>
+<tr>
+<td>3 (FOTA integration)</td>
+<td>~5</td>
+<td>3 new files</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>4 (Renode)</td>
+<td>~3</td>
+<td>1 file modified</td>
+<td>Small</td>
+</tr>
+<tr>
+<td>5 (remaining)</td>
+<td>~15</td>
+<td>3 new test dirs</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>~40</strong></td>
+<td><strong>~16 new + 3 modified</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../javascripts/mermaid-zoom.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

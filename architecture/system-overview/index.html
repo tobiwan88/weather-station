@@ -247,6 +247,44 @@
   
   
   
+  
+    <li class="md-tabs__item">
+      <a href="../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
     
   
   
@@ -398,6 +436,60 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -419,10 +511,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -440,8 +532,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -866,6 +958,174 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1169,7 +1429,6 @@ graph TB
             SR["sensor_registry\nuid → metadata"]
         end
         subgraph SERVICES["Services"]
-            SNTP["sntp_sync\nwall-clock SNTP"]
             HTTP["http_dashboard\nChart.js + config API\nport 8080"]
             CLK["clock_display\nHH:MM UTC ticker"]
             LVGL["lvgl_display\nSDL window (native_sim)"]
@@ -1206,7 +1465,6 @@ graph TB
     HTTP --&gt;|reads| LOC
     HTTP --&gt;|publishes| CC
     FS --&gt;|registers| SR
-    SNTP --&gt;|subscribes| CC
     SEL --&gt;|subscribes| SEC
     RS --&gt;|publishes| SEC
     RS --&gt;|subscribes| STC
@@ -1219,10 +1477,8 @@ graph TB
 
     SEC --&gt; ZBUS
     STC --&gt; ZBUS
-    SNTP --&gt; NET
     HTTP --&gt; HTTPD
     CLK --&gt; KWORK
-    SNTP --&gt; KWORK
     FS --&gt; KTIMER
     HTTP --&gt; KSPIN
     SR --&gt; KMUX
@@ -1262,8 +1518,8 @@ graph TB
 <td>Emulated local sensor drivers (temp, humidity, CO2, VOC); subscribes to trigger channel, publishes to event channel</td>
 </tr>
 <tr>
-<td><code>sntp_sync</code></td>
-<td>Maintains wall-clock time via SNTP; provides a single authoritative <code>get_epoch_ms()</code></td>
+<td>(Zephyr net_config SNTP)</td>
+<td>Upstream SNTP client: boot sync at SYS_INIT 95 and async resync; consumers read sys_clock_gettime(SYS_CLOCK_REALTIME)</td>
 </tr>
 <tr>
 <td><code>clock_display</code></td>
@@ -1279,7 +1535,7 @@ graph TB
 </tr>
 <tr>
 <td><code>config_cmd</code></td>
-<td>Owns the <code>config_cmd_chan</code> zbus channel; decouples config producers (HTTP) from consumers (fake_sensors, sntp_sync, mqtt_publisher)</td>
+<td>Owns the <code>config_cmd_chan</code> zbus channel; decouples config producers (HTTP) from consumers (fake_sensors, mqtt_publisher)</td>
 </tr>
 <tr>
 <td><code>location_registry</code></td>
@@ -1342,7 +1598,6 @@ graph TD
     ST["sensor_trigger\ntrigger event + chan"]
     SR["sensor_registry\nuid → metadata"]
     FS["fake_sensors\nDT-driven drivers"]
-    SNTP["sntp_sync\nwall-clock SNTP"]
     HTTP["http_dashboard\nweb dashboard + API"]
     CLK["clock_display\nHH:MM ticker"]
     LVGL["lvgl_display\nSDL window"]
@@ -1359,7 +1614,6 @@ graph TD
     NET(["NETWORKING\n(Zephyr)"])
     HTTPD(["HTTP_SERVER\n(Zephyr)"])
     LVGLLIB(["LVGL + DISPLAY\n(Zephyr)"])
-    SNTPLIB(["SNTP\n(Zephyr)"])
     SETTINGS(["SETTINGS\n(Zephyr)"])
     LORADRV(["LORA DRIVER\n(Zephyr)"])
     PSACRYPTO(["PSA_CRYPTO\n(Zephyr)"])
@@ -1368,7 +1622,6 @@ graph TD
     APP --&gt;|Kconfig| ST
     APP --&gt;|Kconfig| SR
     APP --&gt;|Kconfig| FS
-    APP --&gt;|Kconfig| SNTP
     APP --&gt;|Kconfig| HTTP
     APP --&gt;|Kconfig| CLK
     APP --&gt;|Kconfig| LVGL
@@ -1397,9 +1650,6 @@ graph TD
     HTTP --&gt; CC
     HTTP --&gt; HTTPD
 
-    SNTP --&gt; CC
-    SNTP --&gt; NET
-    SNTP --&gt; SNTPLIB
 
     SEL --&gt; SE
 
@@ -1433,7 +1683,6 @@ graph TD
     style NET fill:#fce7f3,stroke:#db2777
     style HTTPD fill:#fce7f3,stroke:#db2777
     style LVGLLIB fill:#fce7f3,stroke:#db2777
-    style SNTPLIB fill:#fce7f3,stroke:#db2777
     style SETTINGS fill:#fce7f3,stroke:#db2777
     style LORADRV fill:#fce7f3,stroke:#db2777
     style PSACRYPTO fill:#fce7f3,stroke:#db2777
@@ -1502,12 +1751,16 @@ the identity key for <code>sensor_registry</code>, LVGL display cards, and MQTT 
 │   ├── sensor_trigger/        ← sensor_trigger_event struct, zbus channel
 │   ├── sensor_registry/       ← uid → label/location/scaling metadata
 │   ├── fake_sensors/          ← DT-instantiated fake drivers + auto-publish timer
-│   ├── sntp_sync/             ← SNTP time sync with runtime resync
 │   ├── clock_display/         ← wall-clock widget for LVGL display
 │   ├── lvgl_display/          ← LVGL display manager (sensor tiles)
 │   ├── http_dashboard/        ← Chart.js timeseries + config REST API
 │   ├── uart_lora_bridge/      ← gateway-side UART receiver (24-byte wire → zbus)
 │   ├── uart_lora_sender/      ← co-processor-side UART sender (zbus → 24-byte wire)
+│   ├── lora_proto/                ← shared LoRa packet codec (AES-GCM)
+│   ├── lora_node/
+│   ├── sensor_node_tx/
+│   ├── pipe_transport/
+│   ├── pipe_publisher/
 │   └── lora_radio/            ← LoRa bounded context (SX126x, sessions, FOTA)
 │
 ├── include/common/            ← shared headers (zbus channel declarations,

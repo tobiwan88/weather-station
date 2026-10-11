@@ -8,6 +8,10 @@
         <link rel="canonical" href="https://tobiwan88.github.io/weather-station/hardware/">
       
       
+        <link rel="prev" href="../user/">
+      
+      
+        <link rel="next" href="../architecture/">
       
       
         
@@ -244,6 +248,46 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
     
     
       <li class="md-tabs__item">
@@ -394,6 +438,507 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#system-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System Topology
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-frdm-mcxn947" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway — FRDM-MCXN947
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway — FRDM-MCXN947">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#connectivity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connectivity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expansion-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Expansion Headers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flexcomm-assignments-gateway-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flexcomm Assignments (Gateway Build)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-ili9341-24-tft-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway — ILI9341 2.4" TFT Display
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway — ILI9341 2.4&quot; TFT Display">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pin-mapping-ili9341-to-mcxn947-arduino-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Mapping — ILI9341 to MCXN947 Arduino Header
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#touch-panel-optional-xpt2046" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Touch Panel (Optional, XPT2046)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ili9341-initialization-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ILI9341 Initialization Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-bme688-indoor-environmental-sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway — BME688 Indoor Environmental Sensor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway — BME688 Indoor Environmental Sensor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pin-mapping-bme688-to-mcxn947-arduino-i2c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Mapping — BME688 to MCXN947 Arduino I2C
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gas-sensing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gas Sensing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-wio-e5-mini-lora-co-processor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway — Wio-E5 Mini LoRa Co-Processor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway — Wio-E5 Mini LoRa Co-Processor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pin-mapping-wio-e5-mini-to-mcxn947" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Mapping — Wio-E5 Mini to MCXN947
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wio-e5-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wio-E5 Firmware
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outdoor-sensor-node-1-wio-e5-mini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Sensor Node 1 — Wio-E5 Mini
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Outdoor Sensor Node 1 — Wio-E5 Mini">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Firmware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outdoor-sensor-node-1-bme688-outdoor-environmental-sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Sensor Node 1 — BME688 Outdoor Environmental Sensor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Outdoor Sensor Node 1 — BME688 Outdoor Environmental Sensor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pin-mapping-bme688-qt-to-wio-e5-mini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Mapping — BME688 QT to Wio-E5 Mini
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outdoor-enclosure-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Enclosure Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outdoor-sensor-node-1-sen0460-pm25-particulate-sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Sensor Node 1 — SEN0460 PM2.5 Particulate Sensor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Outdoor Sensor Node 1 — SEN0460 PM2.5 Particulate Sensor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pin-mapping-sen0460-to-wio-e5-mini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Mapping — SEN0460 to Wio-E5 Mini
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i2c-bus-details-outdoor-sensor-node-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I2C Bus Details — Outdoor Sensor Node 1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outdoor-enclosure-notes_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Enclosure Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pin-conflict-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pin Conflict Resolution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zephyr-board-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zephyr Board Support
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Zephyr Board Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gateway-frdm_mcxn947mcxn947cpu0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway: frdm_mcxn947/mcxn947/cpu0
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lora-co-processor-wio-e5-mini-nucleo_wl55jc-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LoRa Co-Processor (Wio-E5 Mini): nucleo_wl55jc based
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outdoor-sensor-node-1-wio-e5-mini_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outdoor Sensor Node 1 (Wio-E5 Mini)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bill-of-materials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bill of Materials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -408,10 +953,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -429,8 +974,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -679,6 +1224,174 @@
     
   
     Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
   
 
     
@@ -1855,10 +2568,10 @@
 <p>Key firmware responsibilities:
 - Read BME688 (T/H/P/gas resistance) and SEN0460 (PM1.0/PM2.5/PM10) via I2C
 - Encode readings in compact 5-byte wire format (1B sensor_type + 4B q31_value)
-- Transmit via <code>lib/lora_radio/</code> using the protocol defined in ADR-015
+- Transmit via <code>lib/lora_node/</code> + <code>lib/sensor_node_tx/</code> (shared codec <code>lib/lora_proto</code>, protocol in ADR-015)
 - Sleep in WOR mode (2.1 µA) between measurement cycles
 - Respond to trigger commands and RPC from gateway
-- Support button-press pairing (Ed25519 + AES-128-GCM session key exchange)</p>
+- Use a pre-shared AES-128-GCM key entered via <code>lora_node provision &lt;id&gt; &lt;hex&gt;</code> (no over-the-air pairing)</p>
 <h3 id="power">Power</h3>
 <table>
 <thead>

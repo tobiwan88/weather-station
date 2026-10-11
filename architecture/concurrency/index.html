@@ -247,6 +247,44 @@
   
   
   
+  
+    <li class="md-tabs__item">
+      <a href="../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
     
   
   
@@ -398,6 +436,60 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -419,10 +511,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -440,8 +532,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -674,17 +766,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#atomic_t-in-sntp_sync" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        atomic_t in sntp_sync
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -820,6 +901,174 @@
     
   
     Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
   
 
     
@@ -992,17 +1241,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#atomic_t-in-sntp_sync" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        atomic_t in sntp_sync
-      
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1055,7 +1293,7 @@
 <p>Design rationale: <a href="../../decisions/">decisions</a>.</p>
 </blockquote>
 <h2 id="execution-contexts">Execution Contexts</h2>
-<p>Eight distinct contexts run concurrently in the gateway:</p>
+<p>Seven distinct contexts run concurrently in the gateway:</p>
 <table>
 <thead>
 <tr>
@@ -1077,18 +1315,13 @@
 </tr>
 <tr>
 <td>System work queue</td>
-<td><code>k_work_delayable</code> handlers (sntp resync, clock display)</td>
+<td><code>k_work_delayable</code> handlers (clock display)</td>
 <td>Cooperative within the work queue thread</td>
 </tr>
 <tr>
 <td>HTTP server thread(s)</td>
 <td>HTTP request handlers</td>
 <td>Per Zephyr HTTP server configuration</td>
-</tr>
-<tr>
-<td>sntp_sync thread</td>
-<td>Periodic NTP sync; executes config-cmd resync requests</td>
-<td>Dedicated <code>k_thread</code></td>
 </tr>
 <tr>
 <td>remote_sensor manager thread</td>
@@ -1117,8 +1350,6 @@
 <p>The lock scope is kept to the minimum: acquire, <code>memcpy</code> the ring buffer snapshot, release. JSON serialisation happens outside the lock. This keeps the critical section short regardless of how many sensors are registered or how large the history buffer is.</p>
 <h3 id="k_mutex-in-sensor_registry"><code>k_mutex</code> in <code>sensor_registry</code></h3>
 <p>The registry is written by sensor driver <code>SYS_INIT</code> callbacks (priority 90/91) and read by the HTTP dashboard handler. Neither of these runs from ISR context. A mutex is correct here and preferable: if <code>CONFIG_SENSOR_REGISTRY_SETTINGS=y</code>, saving user metadata calls into Zephyr's settings subsystem which may block on flash I/O. A spinlock cannot be held across a blocking call.</p>
-<h3 id="atomic_t-in-sntp_sync"><code>atomic_t</code> in <code>sntp_sync</code></h3>
-<p>The synced flag is written once (after the first successful NTP query) and read frequently (by anything that calls <code>sntp_sync_is_ready()</code>). An atomic variable is sufficient — no locking overhead, no ISR restriction.</p>
 <hr>
 <h2 id="the-snapshot-pattern">The Snapshot Pattern</h2>
 <p>The HTTP dashboard demonstrates the recommended pattern for sharing data between an interrupt-derived producer and a thread-based consumer:</p>

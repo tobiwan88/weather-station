@@ -247,6 +247,44 @@
   
   
   
+  
+    <li class="md-tabs__item">
+      <a href="../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
     
   
   
@@ -398,6 +436,60 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -419,10 +511,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked="">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -440,8 +532,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -824,10 +916,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sensor-node-relay-stub-not-implemented" class="md-nav__link">
+  <a href="#sensor-node-relay-partially-implemented" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sensor-node relay (stub — not implemented)
+        Sensor-node relay (partially implemented)
       
     </span>
   </a>
@@ -908,6 +1000,174 @@
     
   
     Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
   
 
     
@@ -1174,10 +1434,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sensor-node-relay-stub-not-implemented" class="md-nav__link">
+  <a href="#sensor-node-relay-partially-implemented" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sensor-node relay (stub — not implemented)
+        Sensor-node relay (partially implemented)
       
     </span>
   </a>
@@ -1542,13 +1802,12 @@ sequenceDiagram
     Note over BOOT,APP: If app crashes before confirm:&lt;br/&gt;next reset → MCUboot detects&lt;br/&gt;unconfirmed slot0 → SWAP_MOVE&lt;br/&gt;reverses → previous image restored
 </code></pre>
 <hr>
-<h2 id="sensor-node-relay-stub-not-implemented">Sensor-node relay (stub — not implemented)</h2>
-<p><strong>Not yet implemented.</strong> This feature depends on the LoRa library (ADR-015) and the
+<h2 id="sensor-node-relay-partially-implemented">Sensor-node relay (partially implemented)</h2>
+<p><strong>Partially implemented (<code>lib/fota_relay</code>, <code>lora_handler_fota.c</code>).</strong> This feature depends on the LoRa library (ADR-015) and the
 UART proxy agent for the STM32WLE5JC co-processor. See backlog items
 [FOTA-REMOVE-UART-MCUMGR] and [RENODE-PHASE2] for the related infrastructure work.</p>
 <p>The gateway will eventually relay firmware to remote sensor nodes (e.g., STM32WLE5JC
-via LoRa). The interface is defined here as a placeholder; implementation is deferred
-to a future ADR (depends on ADR-006 LoRa implementation).</p>
+via LoRa). The interface is defined here as a placeholder; LoRa FOTA chunking lives in <code>lib/lora_radio/src/lora_handler_fota.c</code> (see lora-protocol.md).</p>
 <div class="highlight"><pre><span></span><code><span class="cm">/**</span>
 <span class="cm"> * Transport vtable for gateway-to-sensor-node firmware relay.</span>
 <span class="cm"> * Implement one instance per wireless transport (LoRa, BLE, …).</span>
@@ -1566,7 +1825,7 @@ to a future ADR (depends on ADR-006 LoRa implementation).</p>
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">get_version</span><span class="p">)(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">target_uid</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
 <span class="p">};</span>
 </code></pre></div>
-<p>Key design constraints for the LoRa relay (to be resolved in the future ADR):</p>
+<p>Key design constraints for the LoRa relay (see lora-protocol.md):</p>
 <ul>
 <li>STM32WLE5JC (Cortex-M4, no TrustZone) → MCUboot + ED25519, software keys only</li>
 <li>LoRa EU868 duty cycle (~1%) limits throughput; a 128 KB image takes hours</li>

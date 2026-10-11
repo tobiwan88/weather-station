@@ -8,6 +8,10 @@
         <link rel="canonical" href="https://tobiwan88.github.io/weather-station/architecture/http-dashboard/">
       
       
+        <link rel="prev" href="../diagrams/">
+      
+      
+        <link rel="next" href="../fake-sensors/">
       
       
         
@@ -244,9 +248,49 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../" class="md-tabs__link">
           
   
@@ -394,24 +438,83 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -429,8 +532,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -692,6 +795,276 @@
 
               
             
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ring-buffer-snapshot-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ring-buffer snapshot pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linker-fragment-requirement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linker fragment requirement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web assets
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -851,10 +1224,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#htmljs-embedded-as-c-strings" class="md-nav__link">
+  <a href="#web-assets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTML/JS embedded as C strings
+        Web assets
       
     </span>
   </a>
@@ -918,7 +1291,7 @@
 </tr>
 <tr>
 <td><code>POST /api/login</code></td>
-<td>Authenticate with username/password; returns session cookie</td>
+<td>Authenticate with username/password; returns session cookie. Returns 429 + Retry-After after <code>HTTP_DASHBOARD_AUTH_MAX_FAILS</code> consecutive failures</td>
 </tr>
 <tr>
 <td><code>POST /api/logout</code></td>
@@ -938,6 +1311,7 @@
 </tr>
 </tbody>
 </table>
+<p><code>sntp_server</code> is applied via <code>net_config_sntp_set_server()</code>; <code>action=sntp_resync</code> starts an upstream async resync. <code>GET /api/config</code> does not return the API token.</p>
 <p>The split between a human UI (<code>/</code>, <code>/config</code>) and a data API (<code>/api/*</code>) keeps the API stable even if the HTML changes.</p>
 <hr>
 <h2 id="ring-buffer-snapshot-pattern">Ring-buffer snapshot pattern</h2>
@@ -965,19 +1339,13 @@ serialize JSON from local copy   ← no lock held
 <li>Both mechanisms guard all <code>/api/*</code> and <code>/config</code> endpoints.</li>
 <li>Credentials and the API token are persisted in Zephyr settings under <code>dash/user</code>, <code>dash/pass</code>, and <code>dash/token</code>.</li>
 <li>First-boot defaults are set via Kconfig (<code>lib/http_dashboard/Kconfig</code>).</li>
+<li><code>CONFIG_HTTP_DASHBOARD_AUTH_FORCE_PW_CHANGE</code> (default y) forces a credential change while first-boot defaults are in use.</li>
+<li><code>CONFIG_HTTP_DASHBOARD_AUTH_MAX_FAILS</code> (default 5) sets the consecutive failed logins before throttling.</li>
 </ul>
 <p>When <code>CONFIG_HTTP_DASHBOARD_AUTH=n</code> all endpoints remain open — suitable for local development without credentials. Integration tests that exercise authenticated endpoints must use the <code>authed_harness</code> fixture or supply a bearer token.</p>
 <hr>
-<h2 id="htmljs-embedded-as-c-strings">HTML/JS embedded as C strings</h2>
-<p>The Chart.js page and config form are stored as C string literals inside <code>http_dashboard.c</code>. This works with zero filesystem dependency on <code>native_sim</code> and requires no build-time asset pipeline. It is a known prototype limitation — editing HTML inside a C string is error-prone and prevents live-reload workflows.</p>
-<p>The intended target architecture is to serve web assets from LittleFS:</p>
-<ol>
-<li>Web assets (HTML, CSS, JS) live in a dedicated source directory.</li>
-<li>At build time they are compiled into a LittleFS filesystem image.</li>
-<li>The C layer becomes an HTTP router only — no HTML in <code>.c</code> files.</li>
-<li>Live-reload becomes possible by re-flashing only the filesystem partition.</li>
-</ol>
-<p>This work is deferred to a future iteration (see backlog: <code>[HTTP-DASHBOARD] Decouple HTML/JS from C source via LittleFS</code>).</p>
+<h2 id="web-assets">Web assets</h2>
+<p><code>src/*.html</code>, <code>*.js</code>, <code>*.css</code> are bundled into generated <code>.inc</code> headers at build time and served from flash. LittleFS is optional future work.</p>
 
 
 

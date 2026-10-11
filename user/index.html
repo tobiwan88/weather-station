@@ -8,6 +8,10 @@
         <link rel="canonical" href="https://tobiwan88.github.io/weather-station/user/">
       
       
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../hardware/">
       
       
         
@@ -243,6 +247,46 @@
   
   
   
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
   
     
     
@@ -392,6 +436,229 @@
       
   
   
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interfaces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP Dashboard
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="HTTP Dashboard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#accessing-the-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accessing the Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-via-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration via API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uart-shell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UART Shell
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="UART Shell">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#available-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available Commands
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lvgl-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LVGL Display
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kconfig-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kconfig Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
   
   
     
@@ -408,10 +675,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -429,8 +696,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -679,6 +946,174 @@
     
   
     Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
   
 
     
@@ -1044,6 +1479,11 @@
 <td>Invalidate current session</td>
 </tr>
 <tr>
+<td><code>/api/change-credentials</code></td>
+<td>POST</td>
+<td>Change username and password</td>
+</tr>
+<tr>
 <td><code>/api/locations</code></td>
 <td>GET</td>
 <td>List registered locations</td>
@@ -1066,7 +1506,10 @@
 - Browser users log in via <code>/login</code> with username/password
 - API clients send <code>Authorization: Bearer &lt;token&gt;</code> header
 - Default credentials are set via Kconfig at build time
-- Credentials are persisted in Zephyr settings (<code>dash/user</code>, <code>dash/pass</code>, <code>dash/token</code>)</p>
+- Credentials are persisted in Zephyr settings (<code>dash/user</code>, <code>dash/pass</code>, <code>dash/token</code>)
+  - First login with default credentials forces a credential change (<code>POST /api/change-credentials</code>); other APIs return 403 <code>password_change_required</code> until then.
+  - After 5 consecutive failed logins <code>/api/login</code> returns 429 with <code>Retry-After</code>.
+  - <code>GET /api/config</code> does not return the API token; use the <code>http_dashboard token show</code> shell command.</p>
 <p>When <code>CONFIG_HTTP_DASHBOARD_AUTH=n</code> (default for development), all endpoints are open.</p>
 <h2 id="uart-shell">UART Shell</h2>
 <p>The serial shell provides command-line access to subsystems. Connect via the serial console of your target device.</p>
@@ -1084,12 +1527,24 @@
 <td>List all fake sensor instances</td>
 </tr>
 <tr>
-<td><code>fake_sensors set &lt;idx&gt; &lt;value&gt;</code></td>
-<td>Set a sensor's output value</td>
+<td><code>fake_sensors temperature_set &lt;uid_hex&gt; &lt;mdegC&gt;</code></td>
+<td>Set a fake sensor's temperature</td>
 </tr>
 <tr>
-<td><code>fake_sensors trigger &lt;idx&gt;</code></td>
-<td>Manually trigger a sensor sample</td>
+<td><code>fake_sensors humidity_set &lt;uid_hex&gt; &lt;m_pct_rh&gt;</code></td>
+<td>Set a fake sensor's humidity</td>
+</tr>
+<tr>
+<td><code>fake_sensors co2_set &lt;uid_hex&gt; &lt;mppm&gt;</code></td>
+<td>Set a fake sensor's CO2 value</td>
+</tr>
+<tr>
+<td><code>fake_sensors voc_set &lt;uid_hex&gt; &lt;mIAQ&gt;</code></td>
+<td>Set a fake sensor's VOC index</td>
+</tr>
+<tr>
+<td><code>fake_sensors trigger [uid_hex]</code></td>
+<td>Manually trigger a sensor sample (omit for broadcast)</td>
 </tr>
 <tr>
 <td><code>mqtt_pub status</code></td>
@@ -1116,16 +1571,32 @@
 <td>List paired remote sensors</td>
 </tr>
 <tr>
-<td><code>remote_sensor scan</code></td>
-<td>Start a remote sensor scan</td>
+<td><code>remote_sensor scan start\|stop [proto]</code></td>
+<td>Start or stop a remote sensor scan</td>
 </tr>
 <tr>
-<td><code>remote_sensor pair &lt;uid&gt;</code></td>
-<td>Pair a discovered sensor</td>
+<td><code>lora provision &lt;id&gt;</code></td>
+<td>Generate a pre-shared key for a node (gateway)</td>
 </tr>
 <tr>
-<td><code>remote_sensor unpair &lt;uid&gt;</code></td>
-<td>Unpair a sensor</td>
+<td><code>lora forget &lt;id&gt;</code></td>
+<td>Remove a node session and its key (gateway)</td>
+</tr>
+<tr>
+<td><code>lora sessions</code></td>
+<td>List sessions without keys (gateway)</td>
+</tr>
+<tr>
+<td><code>lora_node provision &lt;id&gt; &lt;32-hex-key&gt;</code></td>
+<td>Store the node's pre-shared key (node)</td>
+</tr>
+<tr>
+<td><code>lora_node status</code></td>
+<td>Show node id, provisioning state and next seq (node)</td>
+</tr>
+<tr>
+<td><code>http_dashboard token show\|rotate</code></td>
+<td>Print or rotate the API bearer token</td>
 </tr>
 </tbody>
 </table>
@@ -1152,7 +1623,7 @@
 </tr>
 <tr>
 <td><code>CONFIG_HTTP_DASHBOARD_AUTH</code></td>
-<td>n</td>
+<td>y (gateway), n (Kconfig)</td>
 <td>Require login for dashboard access</td>
 </tr>
 <tr>
@@ -1176,9 +1647,9 @@
 <td>Auto-publish interval for fake sensors</td>
 </tr>
 <tr>
-<td><code>CONFIG_SNTP_SYNC</code></td>
+<td><code>CONFIG_NET_CONFIG_CLOCK_SNTP_INIT</code></td>
 <td>y</td>
-<td>SNTP time synchronization</td>
+<td>Boot-time SNTP sync (Zephyr net_config)</td>
 </tr>
 <tr>
 <td><code>CONFIG_PIPE_PUBLISHER</code></td>

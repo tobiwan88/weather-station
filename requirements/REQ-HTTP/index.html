@@ -244,6 +244,44 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
     
     
       <li class="md-tabs__item">
@@ -394,6 +432,60 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -408,10 +500,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -429,8 +521,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -679,6 +771,174 @@
     
   
     Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
   
 
     
@@ -1052,7 +1312,7 @@
 - <code>POST /api/token/rotate</code> — Rotate API bearer token
 - <code>GET /api/locations</code> — JSON list of locations</p>
 <h3 id="req-http-004-session-authentication">REQ-HTTP-004 — Session Authentication</h3>
-<p>The system shall require session-cookie or API bearer-token authentication for <code>/api/*</code> endpoints. Unauthenticated requests shall return 401.</p>
+<p>The system shall require session-cookie or API bearer-token authentication for <code>/api/*</code> endpoints. Unauthenticated requests shall return 401. While first-boot credentials are unchanged, authenticated APIs other than login/logout/change-credentials shall return 403 <code>password_change_required</code>. After <code>HTTP_DASHBOARD_AUTH_MAX_FAILS</code> consecutive failed logins <code>/api/login</code> shall return 429 with <code>Retry-After</code>. <code>GET /api/config</code> shall not expose the API token.</p>
 <h3 id="req-http-005-configuration-form">REQ-HTTP-005 — Configuration Form</h3>
 <p>The system shall serve an HTML configuration form at <code>GET /config</code> for runtime configuration of MQTT, locations, and other settings.</p>
 <h3 id="req-http-006-fota-upload-endpoint">REQ-HTTP-006 — FOTA Upload Endpoint</h3>
@@ -1061,7 +1321,7 @@
 - <code>GET /api/fota/status</code> — Return slot versions and state
 - <code>POST /api/fota/sensor/&lt;uid&gt;/apply</code> — Trigger sensor-node FOTA over LoRa</p>
 <h3 id="req-http-007-self-contained-assets">REQ-HTTP-007 — Self-Contained Assets</h3>
-<p>The system shall serve HTML/CSS/JS as self-contained content with no CDN dependencies. Assets shall be embedded as C string literals (prototype) or served from LittleFS (target architecture).</p>
+<p>The system shall serve HTML/CSS/JS as self-contained content with no CDN dependencies. Assets are separate source files bundled into generated <code>.inc</code> headers at build time.</p>
 <h3 id="req-http-008-ring-buffer-snapshot">REQ-HTTP-008 — Ring Buffer Snapshot</h3>
 <p>The system shall protect the sensor data ring buffer with <code>k_spinlock</code>, copying the snapshot within the lock and serializing to JSON outside the lock.</p>
 <h3 id="req-http-009-kconfig-opt-in">REQ-HTTP-009 — Kconfig Opt-In</h3>
@@ -1077,7 +1337,7 @@
 <ul>
 <li>HTTP server needs ~1 second after boot to bind port 8080</li>
 <li><code>k_spinlock</code> callbacks must not sleep or block</li>
-<li>HTML embedded in C strings is a prototype limitation; target is LittleFS</li>
+<li>Assets bundled at build time; LittleFS is optional future work</li>
 <li>Cross-subsystem coupling: prefer zbus publish; conditional integration files acceptable</li>
 </ul>
 <h2 id="acceptance-criteria">Acceptance Criteria</h2>
@@ -1091,6 +1351,7 @@
 <li>[ ] [native_sim] Integration: POST /api/fota/upload streams image to flash</li>
 <li>[ ] [native_sim] Integration: GET /api/config returns configuration form</li>
 <li>[ ] [native_sim] Integration: POST /api/config updates runtime config</li>
+<li>[x] [native_sim] Integration: forced password change and 429 lockout (<code>test_http_force_pw.py</code>)</li>
 <li>[ ] [renode] Integration: HTTP endpoints functional over simulated network</li>
 <li>[ ] [manual] Board: Dashboard accessible from browser on local network</li>
 </ul>

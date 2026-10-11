@@ -244,6 +244,44 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
     
     
       <li class="md-tabs__item">
@@ -394,6 +432,60 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -408,10 +500,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -429,8 +521,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -679,6 +771,174 @@
     
   
     Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
   
 
     
@@ -1003,14 +1263,13 @@
 <h2 id="version">Version</h2>
 <p>0.1</p>
 <h2 id="context">Context</h2>
-<p>Runtime configuration is managed through the <code>config_cmd</code> zbus channel, supporting commands for MQTT, SNTP, locations, and other subsystems. Configuration persists across reboots via Zephyr settings.</p>
+<p>Runtime configuration is managed through the <code>config_cmd</code> zbus channel, supporting commands for MQTT, locations, and other subsystems. Configuration persists across reboots via Zephyr settings.</p>
 <h2 id="functional-requirements">Functional Requirements</h2>
 <h3 id="req-config-001-config-command-channel">REQ-CONFIG-001 — Config Command Channel</h3>
-<p>The system shall provide a <code>config_cmd_chan</code> zbus channel for runtime configuration commands. Producers publish config commands; consumers (MQTT, SNTP, location, etc.) subscribe and apply changes.</p>
+<p>The system shall provide a <code>config_cmd_chan</code> zbus channel for runtime configuration commands. Producers publish config commands; consumers (MQTT, location, etc.) subscribe and apply changes.</p>
 <h3 id="req-config-002-supported-commands">REQ-CONFIG-002 — Supported Commands</h3>
 <p>The system shall support the following configuration commands:
 - MQTT: broker address, port, username, password, gateway ID, enable/disable
-- SNTP: resync request
 - Location: add, update, delete, list
 - Other subsystems as needed</p>
 <h3 id="req-config-003-settings-persistence">REQ-CONFIG-003 — Settings Persistence</h3>
@@ -1018,7 +1277,7 @@
 <h3 id="req-config-004-shell-interface-parity">REQ-CONFIG-004 — Shell Interface Parity</h3>
 <p>The system shall provide shell commands that mirror the config_cmd channel functionality, enabling configuration via UART/console without HTTP dashboard.</p>
 <h3 id="req-config-005-immediate-effect">REQ-CONFIG-005 — Immediate Effect</h3>
-<p>The system shall apply configuration changes immediately upon receipt. MQTT changes shall trigger reconnection; SNTP resync shall trigger immediate query; location changes shall update the registry.</p>
+<p>The system shall apply configuration changes immediately upon receipt. MQTT changes shall trigger reconnection; location changes shall update the registry.</p>
 <h3 id="req-config-006-kconfig-composition">REQ-CONFIG-006 — Kconfig Composition</h3>
 <p>The system shall be composed via Kconfig — each subsystem's config support shall be gated by its own <code>CONFIG_*</code> symbol. App CMakeLists.txt shall contain no feature-selection logic.</p>
 <h2 id="dependencies">Dependencies</h2>
@@ -1026,7 +1285,6 @@
 <li>REQ-MQTT-004: MQTT runtime reconfiguration</li>
 <li>REQ-MQTT-008: MQTT settings persistence</li>
 <li>REQ-LOCATION-001: Location registry</li>
-<li>REQ-TIME-003: SNTP resync via config command</li>
 </ul>
 <h2 id="constraints">Constraints</h2>
 <ul>
@@ -1040,7 +1298,6 @@
 <li>[ ] [native_sim] Integration: MQTT config change triggers reconnection</li>
 <li>[ ] [native_sim] Integration: Location add/update/delete persists across reboot</li>
 <li>[ ] [native_sim] Integration: Shell commands mirror config_cmd functionality</li>
-<li>[ ] [native_sim] Integration: SNTP resync via config_cmd triggers immediate query</li>
 <li>[ ] [native_sim] ztest: Config command struct is copyable (no heap pointers)</li>
 <li>[ ] [renode] Integration: Config persistence over simulated storage</li>
 <li>[ ] [manual] Board: Shell configuration via UART console</li>

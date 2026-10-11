@@ -5,7 +5,7 @@
       
       
       
-        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/bugs/potential_nos_bugs.c/">
+        <link rel="canonical" href="https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-27-req-ingestion-cocoindex-design/">
       
       
       
@@ -13,19 +13,19 @@
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>native_sim NSOS Bug Analysis - Weather Station Documentation</title>
+        <title>DESIGN — Requirements Ingestion &amp; CocoIndex Zephyr Corpus - Weather Station Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -44,13 +44,13 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
     
     
-  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+  <link href="../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
             html.glightbox-open { overflow: initial; height: 100%; }
             .gslide-title { margin-top: 0px; user-select: text; }
             .gslide-desc { color: #666; user-select: text; }
@@ -79,7 +79,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#native_sim-nsos-bug-analysis" class="md-skip">
+        <a href="#design-requirements-ingestion-cocoindex-zephyr-corpus" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+    <a href="../../.." title="Weather Station Documentation" class="md-header__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              native_sim NSOS Bug Analysis
+              DESIGN — Requirements Ingestion &amp; CocoIndex Zephyr Corpus
             
           </span>
         </div>
@@ -226,7 +226,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
   
@@ -244,10 +244,48 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../../../user/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  User Guide
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../hardware/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Hardware
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
     
     
       <li class="md-tabs__item">
-        <a href="../../architecture/" class="md-tabs__link">
+        <a href="../../../architecture/" class="md-tabs__link">
           
   
   
@@ -265,7 +303,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../decisions/" class="md-tabs__link">
+      <a href="../../../decisions/" class="md-tabs__link">
         
   
   
@@ -284,7 +322,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../backlog/" class="md-tabs__link">
+      <a href="../../../backlog/" class="md-tabs__link">
         
   
   
@@ -338,7 +376,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
+    <a href="../../.." title="Weather Station Documentation" class="md-nav__button md-logo" aria-label="Weather Station Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
@@ -368,7 +406,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -376,6 +414,60 @@
     
   
     Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
   
 
     
@@ -408,10 +500,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4">
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
@@ -429,8 +521,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -447,7 +539,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
+      <a href="../../../architecture/" class="md-nav__link">
         
   
   
@@ -475,7 +567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/system-overview/" class="md-nav__link">
+      <a href="../../../architecture/system-overview/" class="md-nav__link">
         
   
   
@@ -503,7 +595,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/event-bus/" class="md-nav__link">
+      <a href="../../../architecture/event-bus/" class="md-nav__link">
         
   
   
@@ -531,7 +623,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/composition-model/" class="md-nav__link">
+      <a href="../../../architecture/composition-model/" class="md-nav__link">
         
   
   
@@ -559,7 +651,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/concurrency/" class="md-nav__link">
+      <a href="../../../architecture/concurrency/" class="md-nav__link">
         
   
   
@@ -587,7 +679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/integration-tests/" class="md-nav__link">
+      <a href="../../../architecture/integration-tests/" class="md-nav__link">
         
   
   
@@ -615,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/firmware-update/" class="md-nav__link">
+      <a href="../../../architecture/firmware-update/" class="md-nav__link">
         
   
   
@@ -643,7 +735,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/lora-protocol/" class="md-nav__link">
+      <a href="../../../architecture/lora-protocol/" class="md-nav__link">
         
   
   
@@ -671,7 +763,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../architecture/diagrams/" class="md-nav__link">
+      <a href="../../../architecture/diagrams/" class="md-nav__link">
         
   
   
@@ -679,6 +771,174 @@
     
   
     Diagrams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/http-dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/fake-sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/native-sim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    native_sim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/ci-dev-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI and Dev Environment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/trace-recorder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trace Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../architecture/renode-trace-workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renode Trace Workflow
   
 
     
@@ -706,7 +966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../decisions/" class="md-nav__link">
+      <a href="../../../decisions/" class="md-nav__link">
         
   
   
@@ -733,7 +993,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../backlog/" class="md-nav__link">
+      <a href="../../../backlog/" class="md-nav__link">
         
   
   
@@ -807,10 +1067,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#system-context" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        System Context
+        Overview
       
     </span>
   </a>
@@ -818,22 +1078,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#fixed-bugs" class="md-nav__link">
+  <a href="#1-cocoindex-layer-2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fixed Bugs ✅
+        1. CocoIndex Layer 2
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Fixed Bugs ✅">
+    <nav class="md-nav" aria-label="1. CocoIndex Layer 2">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#bug-1-eexist-crash-in-nsos_adapt_poll_add" class="md-nav__link">
+  <a href="#script-scriptscocoindex_zephyr_flowpy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bug 1 — EEXIST Crash in nsos_adapt_poll_add
+        Script: scripts/cocoindex_zephyr_flow.py
       
     </span>
   </a>
@@ -841,10 +1101,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#bug-2-epoll_ctl-toctou-race" class="md-nav__link">
+  <a href="#mcp-config-updates" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bug 2 — epoll_ctl TOCTOU Race
+        MCP Config Updates
       
     </span>
   </a>
@@ -852,10 +1112,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#bug-3-sigsegv-in-sys_dlist_remove" class="md-nav__link">
+  <a href="#verification" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bug 3 — SIGSEGV in sys_dlist_remove
+        Verification
       
     </span>
   </a>
@@ -868,22 +1128,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#remaining-bug" class="md-nav__link">
+  <a href="#2-req-file-ingestion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Remaining Bug 🔴
+        2. REQ File Ingestion
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Remaining Bug 🔴">
+    <nav class="md-nav" aria-label="2. REQ File Ingestion">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#test_token_rotation_invalidates_old_token-http-server-hang" class="md-nav__link">
+  <a href="#directory-docsrequirements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        test_token_rotation_invalidates_old_token — HTTP Server Hang
+        Directory: docs/requirements/
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-templatemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Template: TEMPLATE.md
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-domain-files-one-per-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11 Domain Files (one per domain)
       
     </span>
   </a>
@@ -896,10 +1178,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#patch-files" class="md-nav__link">
+  <a href="#3-commit-plan" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Patch Files
+        3. Commit Plan
       
     </span>
   </a>
@@ -907,32 +1189,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gdb-stub-for-debugging" class="md-nav__link">
+  <a href="#4-risks-mitigations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GDB Stub for Debugging
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#test-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Test Results
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#upstreaming-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Upstreaming Notes
+        4. Risks &amp; Mitigations
       
     </span>
   </a>
@@ -959,159 +1219,192 @@
   
 
 
-<h1 id="native_sim-nsos-bug-analysis">native_sim NSOS Bug Analysis</h1>
-<p><strong>Date</strong>: April 2026
-<strong>Status</strong>: SIGSEGV/crash bugs fixed. 32/33 integration tests passing. One HTTP server hang bug remains (test <code>test_token_rotation_invalidates_old_token</code>).</p>
-<hr>
-<h2 id="system-context">System Context</h2>
-<p>On <code>native_sim/native/64</code>, all Zephyr sockets share <strong>one OS-level epoll fd</strong> managed by
-<code>nsos_adapt.c</code>. Zephyr threads (HTTP server, MQTT, SNTP) are POSIX threads coordinated by
-the NCE (Native Co-operating Engine) semaphore model — only ONE Zephyr thread runs at a
-time, but preemption between them can happen at any yield point.</p>
-<p>The shared <code>nsos_polls</code> doubly-linked list (<code>sys_dlist_t</code> in <code>nsos_sockets.c</code>) tracks
-active poll descriptors.</p>
-<hr>
-<h2 id="fixed-bugs">Fixed Bugs ✅</h2>
-<h3 id="bug-1-eexist-crash-in-nsos_adapt_poll_add">Bug 1 — EEXIST Crash in <code>nsos_adapt_poll_add</code></h3>
-<p><strong>Symptom</strong>: DUT exits with code 1, log ends with:
-</p><div class="highlight"><pre><span></span><code>error in EPOLL_CTL_ADD: errno=17
-</code></pre></div><p></p>
-<p><strong>Root Cause</strong>: An fd is closed and reopened before the previous <code>EPOLL_CTL_DEL</code>
-completes. The new <code>EPOLL_CTL_ADD</code> fails with <code>EEXIST</code> because the stale entry is still
-registered.</p>
-<p><strong>Fix (patch 0001)</strong>: On <code>EEXIST</code>, use <code>EPOLL_CTL_MOD</code> to update the stale entry.
-On <code>ENOENT</code> in <code>poll_remove</code>, silently ignore (Linux auto-cleans on <code>close()</code>).</p>
-<hr>
-<h3 id="bug-2-epoll_ctl-toctou-race">Bug 2 — <code>epoll_ctl</code> TOCTOU Race</h3>
-<p><strong>Root Cause</strong>: <code>nsos_adapt_poll_add()</code> and <code>nsos_adapt_poll_remove()</code> called
-<code>epoll_ctl</code> without a lock, causing races when multiple Zephyr threads operated concurrently.</p>
-<p><strong>Fix (patch 0001)</strong>: Static <code>pthread_mutex_t nsos_epoll_mutex</code> wraps the full
-<code>epoll_ctl</code> sequence in both functions.</p>
-<hr>
-<h3 id="bug-3-sigsegv-in-sys_dlist_remove">Bug 3 — SIGSEGV in <code>sys_dlist_remove</code></h3>
-<p><strong>Symptom</strong>: DUT exits with SIGSEGV (signal 11). Backtrace shows:
-</p><div class="highlight"><pre><span></span><code>sys_dlist_remove (node=0x4b47a8 &lt;kheap.system_heap+688&gt;)
-  prev-&gt;next = next;  // prev was NULL
-</code></pre></div><p></p>
-<p><strong>Root Cause (two bugs in <code>nsos_sockets.c</code>)</strong>:</p>
-<ol>
-<li>
-<p><strong>No lock around <code>nsos_polls</code> dlist</strong> — <code>nsos_poll_prepare()</code> and
-   <code>nsos_poll_update()</code> accessed the shared dlist without synchronisation.
-   Zephyr could preempt between <code>is_linked</code> check and <code>sys_dlist_remove</code>,
-   causing a node with <code>prev == NULL</code> → SIGSEGV.</p>
-</li>
-<li>
-<p><strong><code>nsos_close()</code> use-after-free</strong> — called <code>k_free(sock)</code> without removing
-   <code>sock-&gt;poll.node</code> from <code>nsos_polls</code>. A subsequent <code>nsos_poll_update()</code> on
-   that slot accessed freed memory.</p>
-</li>
-</ol>
-<p><strong>Why <code>k_spinlock</code> (not <code>pthread_mutex</code>)</strong>: <code>pthread_mutex</code> does not block NCE
-context switches on native_sim. Only <code>k_spin_lock()</code> (via <code>arch_irq_lock</code>) blocks
-the NCE preemption. This was confirmed empirically — <code>pthread_mutex</code> did not fix
-the SIGSEGV.</p>
-<p><strong>Fix (patch 0002)</strong>: <code>k_spinlock</code> around all <code>nsos_polls</code> operations:
-- <code>nsos_close</code>: atomically check-and-remove node under lock; callback outside lock
-- <code>nsos_poll_prepare</code>: lock around <code>is_linked</code> check + <code>sys_dlist_remove</code>; remove before re-add
-- <code>nsos_poll_update</code>: lock around <code>is_linked</code> + <code>sys_dlist_remove</code></p>
-<hr>
-<h2 id="remaining-bug">Remaining Bug 🔴</h2>
-<h3 id="test_token_rotation_invalidates_old_token-http-server-hang"><code>test_token_rotation_invalidates_old_token</code> — HTTP Server Hang</h3>
-<p><strong>Symptom</strong>: After token rotation, the second POST request times out (<code>ReadTimeout: HTTPConnectionPool Read timed out</code>).</p>
-<p><strong>Behaviour</strong>:
-1. Old token POST → 401 (correct)
-2. New token POST → times out after 5s (server hangs, does not respond)</p>
-<p><strong>Current evidence</strong>:
-- DUT does NOT exit — process continues running
-- Log shows the POST was received and auth was checked (header captured correctly)
-- No SIGSEGV, no crash — server simply stops responding to POST requests
-- This happens ONLY after token rotation; normal POST requests work fine</p>
-<p><strong>Hypothesis</strong>: The token rotation changes <code>s_token</code> under a spinlock, but there may be a window where the HTTP handler sees a partially-written token. However, the auth check is using constant-time comparison and the token is 32 hex chars — this shouldn't cause a hang.</p>
-<p><strong>What is NOT the issue</strong>:
-- SIGSEGV is eliminated (k_spinlock patches work)
-- ConnectionResetError is eliminated (epoll patches work)
-- Header capture is working (401 returned correctly for old token)</p>
-<p><strong>To diagnose</strong>:
-1. Increase HTTP server debug logging (<code>CONFIG_NET_HTTP_SERVER_LOG_LEVEL_DBG=y</code>)
-2. Add logging in <code>auth.c</code> around the token comparison and rotation
-3. Use the GDB stub below to attach at the point of hang</p>
-<hr>
-<h2 id="patch-files">Patch Files</h2>
-<p>In <code>zephyr/patches/zephyr/</code>, applied by <code>west patch apply</code>:</p>
+<h1 id="design-requirements-ingestion-cocoindex-zephyr-corpus">DESIGN — Requirements Ingestion &amp; CocoIndex Zephyr Corpus</h1>
 <table>
 <thead>
 <tr>
-<th>Patch</th>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Status</strong></td>
+<td>Approved</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-05-27</td>
+</tr>
+<tr>
+<td><strong>Version</strong></td>
+<td>0.1</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="overview">Overview</h2>
+<p>Two complementary workstreams:
+1. <strong>CocoIndex Layer 2</strong> — Zephyr corpus indexer for semantic search over Zephyr's public API, samples, subsystems, DTS bindings, and board files
+2. <strong>REQ file ingestion</strong> — structured requirements documents seeded from existing ADRs and architecture docs</p>
+<p>Constrained by ADR-008 (Kconfig-only composition), ADR-009 (native_sim first), ADR-010 (CI/dev env).</p>
+<hr>
+<h2 id="1-cocoindex-layer-2">1. CocoIndex Layer 2</h2>
+<h3 id="script-scriptscocoindex_zephyr_flowpy">Script: <code>scripts/cocoindex_zephyr_flow.py</code></h3>
+<p>Uses <code>cocoindex</code> Python SDK to define flows. 7 scopes:</p>
+<table>
+<thead>
+<tr>
+<th>Flow name</th>
+<th>Path</th>
+<th>Patterns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>includes</code></td>
+<td><code>ZEPHYR/include/zephyr/</code></td>
+<td><code>*.h</code></td>
+</tr>
+<tr>
+<td><code>samples</code></td>
+<td><code>ZEPHYR/samples/</code></td>
+<td><code>*.c</code>, <code>*.h</code>, <code>CMakeLists.txt</code>, <code>prj.conf</code>, <code>*.overlay</code>, <code>*.dts</code>, <code>*.conf</code>, <code>Kconfig*</code>, <code>*.yaml</code></td>
+</tr>
+<tr>
+<td><code>subsys</code></td>
+<td><code>ZEPHYR/subsys/</code></td>
+<td><code>*.h</code>, <code>Kconfig*</code></td>
+</tr>
+<tr>
+<td><code>dts_bindings</code></td>
+<td><code>ZEPHYR/dts/bindings/</code></td>
+<td><code>*.yaml</code></td>
+</tr>
+<tr>
+<td><code>drivers</code></td>
+<td><code>ZEPHYR/drivers/</code></td>
+<td><code>include/**/*.h</code>, <code>Kconfig*</code></td>
+</tr>
+<tr>
+<td><code>boards_mcxn947</code></td>
+<td><code>ZEPHYR/boards/</code></td>
+<td><code>frdm_mcxn947*/**/*.dts</code>, <code>*.h</code>, <code>Kconfig*</code>, <code>nxp/mcxn947*/**</code></td>
+</tr>
+<tr>
+<td><code>hal_nxp</code></td>
+<td><code>modules/hal/nxp/</code></td>
+<td><code>*.h</code>, <code>Kconfig*</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>ZEPHYR_BASE</code> auto-detected from env or defaults to <code>/home/zephyr/workspace/zephyr</code>.</p>
+<h3 id="mcp-config-updates">MCP Config Updates</h3>
+<p><strong><code>opencode.json</code>:</strong> Add <code>cocoindex-zephyr</code> MCP server alongside existing <code>cocoindex-code</code>.
+<strong><code>.mcp.json</code>:</strong> Same addition.</p>
+<h3 id="verification">Verification</h3>
+<ul>
+<li><code>python scripts/cocoindex_zephyr_flow.py update</code> — runs index</li>
+<li><code>ccc index</code> — re-indexes project code</li>
+<li>Search queries verify quality</li>
+</ul>
+<hr>
+<h2 id="2-req-file-ingestion">2. REQ File Ingestion</h2>
+<h3 id="directory-docsrequirements">Directory: <code>docs/requirements/</code></h3>
+<h3 id="template-templatemd">Template: <code>TEMPLATE.md</code></h3>
+<p>Standard structure: Status, Version, Context, Functional requirement, Dependencies, Constraints, Acceptance criteria (tagged [native_sim]/[renode]/[hil]/[manual]), Related ADRs, Related Zephyr subsystems.</p>
+<h3 id="11-domain-files-one-per-domain">11 Domain Files (one per domain)</h3>
+<table>
+<thead>
+<tr>
 <th>File</th>
-<th>What it fixes</th>
+<th>Scope</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>0001-drivers-net-nsos-fix-epoll-race-and-poll-dlist-corru.patch</code></td>
-<td><code>nsos_adapt.c</code> + <code>nsos_sockets.c</code></td>
-<td>EEXIST fix + pthread_mutex for epoll_fd</td>
+<td><code>REQ-SENSORS.md</code></td>
+<td>Temp, humidity, pressure, CO2, VOC, PM2.5/PM10, gas resistance, Q31, trigger-driven, fake sensors</td>
 </tr>
 <tr>
-<td><code>0002-drivers-net-nsos-use-k_spinlock-for-nsos_polls-prote.patch</code></td>
-<td><code>nsos_sockets.c</code></td>
-<td>k_spinlock for nsos_polls dlist</td>
+<td><code>REQ-LORA.md</code></td>
+<td>Packet format, provisioning, RPC retry, FOTA window, session persistence, Ed25519</td>
+</tr>
+<tr>
+<td><code>REQ-MQTT.md</code></td>
+<td>Broker auth, topic hierarchy, QoS, runtime reconfig, self-heal reconnect</td>
+</tr>
+<tr>
+<td><code>REQ-HTTP.md</code></td>
+<td>Dashboard port 8080, Chart.js, REST API, session auth, FOTA upload</td>
+</tr>
+<tr>
+<td><code>REQ-DISPLAY.md</code></td>
+<td>LVGL 320x240 SDL, analog clock, sensor cards, event subscription, ADR-008</td>
+</tr>
+<tr>
+<td><code>REQ-FOTA.md</code></td>
+<td>MCUboot dual-image, signed updates, health-check confirm, HTTP transport, recovery</td>
+</tr>
+<tr>
+<td><code>REQ-POWER.md</code></td>
+<td>Sleep states, wake sources, PM integration, outdoor duty cycle</td>
+</tr>
+<tr>
+<td><code>REQ-TIME.md</code></td>
+<td>SNTP sync, resync on config, timestamp contract, pre-sync delay</td>
+</tr>
+<tr>
+<td><code>REQ-CONFIG.md</code></td>
+<td>config_cmd channel, supported commands, settings persistence, shell parity</td>
+</tr>
+<tr>
+<td><code>REQ-LOCATION.md</code></td>
+<td>Named location CRUD, settings persistence, uid-independent metadata</td>
+</tr>
+<tr>
+<td><code>REQ-DATA.md</code></td>
+<td>zbus ownership, event bus contract, sensor event struct, protobuf wire, ring buffer</td>
 </tr>
 </tbody>
 </table>
+<p>Each populated from all 16 ADRs + architecture docs with complete requirements, constraints, acceptance criteria, and cross-references.</p>
 <hr>
-<h2 id="gdb-stub-for-debugging">GDB Stub for Debugging</h2>
-<p>File: <code>tests/integration/pytest/crash_watch.gdbinit</code></p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Attach GDB to running native_sim process</span>
-gdb<span class="w"> </span>--batch<span class="w"> </span>-p<span class="w"> </span>&lt;pid&gt;<span class="w"> </span>-x<span class="w"> </span>crash_watch.gdbinit
-</code></pre></div>
-<p>The script sets breakpoints on:
-- <code>nsi_print_error_and_exit</code> — NSOS fatal errors
-- <code>z_fatal_error</code> — Zephyr kernel fatal handler
-- <code>catch signal SIGABRT</code> / <code>catch signal SIGSEGV</code>
-- <code>nsos_adapt_poll_remove</code> entry
-- <code>nsos_sockets.c:346</code> and <code>nsos_sockets.c:359</code> — dlist operations</p>
-<p>When attached, it captures <code>bt full</code>, <code>info threads</code>, and memory dumps of the poll node.</p>
+<h2 id="3-commit-plan">3. Commit Plan</h2>
+<ol>
+<li><code>feat(scripts): add CocoIndex Zephyr corpus indexer flow script</code></li>
+<li><code>feat(config): add cocoindex-zephyr MCP server config</code></li>
+<li><code>feat(docs): add REQ template and 11 domain requirement files</code></li>
+<li><code>docs(arch): update PLAN status to implemented</code></li>
+</ol>
 <hr>
-<h2 id="test-results">Test Results</h2>
+<h2 id="4-risks-mitigations">4. Risks &amp; Mitigations</h2>
 <table>
 <thead>
 <tr>
-<th>Test Suite</th>
-<th>Passing</th>
-<th>Failing</th>
+<th>Risk</th>
+<th>Mitigation</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>smoke</td>
-<td>4/4</td>
-<td>0</td>
+<td>CocoIndex SDK API differs from plan</td>
+<td>Probe installed version, adapt</td>
 </tr>
 <tr>
-<td>shell</td>
-<td>14/14</td>
-<td>0</td>
+<td>REQ file population is content-heavy</td>
+<td>Batch-read ADRs in parallel</td>
 </tr>
 <tr>
-<td>http</td>
-<td>21/22</td>
-<td>1 (<code>test_token_rotation_invalidates_old_token</code>)</td>
+<td>Zephyr upstream churn</td>
+<td>Smoke check for file count drop &gt;20%</td>
 </tr>
 <tr>
-<td><strong>Total</strong></td>
-<td><strong>32/33</strong></td>
-<td><strong>1</strong></td>
+<td>REQ staleness</td>
+<td>Cross-reference ADRs in <code>## Related ADRs</code></td>
 </tr>
 </tbody>
 </table>
-<hr>
-<h2 id="upstreaming-notes">Upstreaming Notes</h2>
-<p>Both patches are upstreamable:
-- 0001: EEXIST handling + epoll mutex — fixes real races on multi-socket native_sim
-- 0002: k_spinlock for nsos_polls — fixes dlist corruption on concurrent socket close/poll</p>
-<p>The remaining HTTP hang bug is likely in <code>http_dashboard</code> auth code, not NSOS.</p>
 
 
 
@@ -1161,12 +1454,12 @@ gdb<span class="w"> </span>--batch<span class="w"> </span>-p<span class="w"> </s
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
-        <script src="../../javascripts/mermaid-zoom.js"></script>
+        <script src="../../../javascripts/mermaid-zoom.js"></script>
       
     
   

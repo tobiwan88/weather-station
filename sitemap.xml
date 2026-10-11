@@ -73,23 +73,7 @@
          <lastmod>2026-10-11</lastmod>
     </url>
     <url>
-         <loc>https://tobiwan88.github.io/weather-station/bugs/http_server_hang.c/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/bugs/potential_nos_bugs.c/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
          <loc>https://tobiwan88.github.io/weather-station/hardware/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/plans/2026-10-11-modernization-round/</loc>
-         <lastmod>2026-10-11</lastmod>
-    </url>
-    <url>
-         <loc>https://tobiwan88.github.io/weather-station/plans/2026-10-11-phase5-subsensor-e2e/</loc>
          <lastmod>2026-10-11</lastmod>
     </url>
     <url>
@@ -142,6 +126,22 @@
     </url>
     <url>
          <loc>https://tobiwan88.github.io/weather-station/requirements/TEMPLATE/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-27-lora-reliable-tx-plan/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://tobiwan88.github.io/weather-station/superpowers/plans/2026-05-28-test-coverage-increase/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-27-lora-reliable-tx-design/</loc>
+         <lastmod>2026-10-11</lastmod>
+    </url>
+    <url>
+         <loc>https://tobiwan88.github.io/weather-station/superpowers/specs/2026-05-27-req-ingestion-cocoindex-design/</loc>
          <lastmod>2026-10-11</lastmod>
     </url>
     <url>
