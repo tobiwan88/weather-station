@@ -49,18 +49,34 @@ Local build env: Apple `container` running `ghcr.io/tobiwan88/zephyr_docker:arm`
 - [x] Drop skills that only exist to maintain removed process (`adr`, `arch-sync`, …)
 
 ## Phase 4 — Migrate to Zephyr v4.5.0-rc1
-- [ ] Bump `west.yml`, fix breakages, both apps + twister green
-- [ ] Add `zcbor` to the west allowlist: without it `CONFIG_MCUMGR=y` on frdm_mcxn947 silently resolves to n
-- [ ] Drop local nsos patch 0002 (upstream in v4.5); keep 0001 (epoll EEXIST)
-- [ ] Audit self-written code vs. upstream equivalents (zbus async listeners, LoRa APIs,
-      SNTP, settings, sensor RTIO, HTTP server, io_stream vs. upstream stream/flash APIs)
-      and replace where upstream is better
+- [x] Bump `west.yml`, fix breakages, both apps + twister green
+- [x] Drop local nsos patch 0002 (upstream in v4.5, PR 108526)
+- [x] Drop nsos patch 0001 too: 3 integration runs on rc1 pass without it. If the EPOLL_CTL_ADD
+      EEXIST crash returns, re-add only the EEXIST→EPOLL_CTL_MOD retry in `nsos_adapt_poll_add`
+      (no mutex; increment `nsos_adapt_nfds` only after success). Watch upstream PR 117024.
+- [x] Add `zcbor` to the west allowlist (MCUMGR now resolves to y on frdm_mcxn947)
+- [x] Audit self-written code vs. upstream (checked against the v4.5.0-rc1 tree). Outcome:
+      | Ours | Upstream | Verdict |
+      |---|---|---|
+      | listener → slot/msgq → work glue | `ZBUS_ASYNC_LISTENER` | skip: enabling it allocates a net_buf on *every* publish of *every* channel (zbus.c `_zbus_vded_exec`), asserts on pool exhaustion |
+      | `sntp_sync` (~130 LOC) | `NET_CONFIG_CLOCK_SNTP_INIT` + `_RESYNC` | defer: blocks init, resync rides the fragile nsos epoll path; revisit with hermetic SNTP tests |
+      | `uart_lora_bridge` IRQ RX | `modem_pipe` + `modem_backend_uart` | defer to Phase 5 (bridge protocol rework) |
+      | `io_stream` flash backend | `stream_flash` | already built on `flash_img`/`stream_flash`; nothing to gain |
+      | dashboard `fota.c` | mcumgr `img_mgmt` | defer: changes upload protocol and UI |
+      | `fake_sensors` | sensor emulators | keep: trigger/Q31 model is the point |
+      | sensors, HTTP server, MQTT, settings | — | already upstream APIs |
+- [ ] remote_sensor_manager: discovery/scan listeners keep one pending slot → back-to-back events are lost; use a small k_msgq
 
 ## Phase 5 — Sub-sensor end-to-end + gateway hardening
+- [ ] `SENSOR_NODE_TX` silently resolves to n on outdoor_sensor_node and sensor-node (`depends on CONFIG_CMD`,
+      which no node app enables) → the nodes never transmit. Use `select CONFIG_CMD`.
+- [ ] lora_e5_mini: `ENTROPY_STM32_RNG=y` resolves to n (`&rng` disabled in DT) → no entropy for PSA
 - [ ] native_sim: enable `PIPE_TRANSPORT` on gateway, make node→gateway test non-skipping
 - [ ] LoRa batching: split batches to ≤ 5 readings, requeue on failure
 - [ ] Single LoRa packet codec shared by node and gateway, unit-tested
-- [ ] Crypto: one tag length, reboot-safe nonce, reject plaintext from unpaired nodes
+- [ ] Crypto: one tag length, reboot-safe nonce, reject plaintext from unpaired nodes;
+      `PSA_ALG_ED25519` → `PSA_ALG_PURE_EDDSA` (TF-PSA-Crypto 1.1), `&key_id` passed by pointer in lora_packet.c
+- [ ] Integration tests: local `CONFIG_SNTP_SERVER` instead of a public NTP IP (hermetic tests)
 - [ ] Pairing on the node side; dev key out of source
 - [ ] ACK-request + seq dedup; FOTA seq/window fixes
 - [ ] Dashboard: force password change on first boot, login throttling

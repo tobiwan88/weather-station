@@ -13,7 +13,7 @@ The project uses a single container image — `ghcr.io/tobiwan88/zephyr_docker` 
 | Image | `ghcr.io/tobiwan88/zephyr_docker:latest` |
 | Base | Debian Trixie Slim |
 | Zephyr SDK | v1.0.1 |
-| Zephyr version | v4.4.0 |
+| Zephyr version | v4.5.0-rc1 |
 | User | `zephyr` (UID 1000, non-root) |
 | Python venv | `/home/zephyr/.venv` |
 | SDK path | `/home/zephyr/zephyr-sdk` |
