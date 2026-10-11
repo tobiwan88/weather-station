@@ -943,19 +943,35 @@ merged on green CI before the next phase starts.</p>
 </ul>
 <h2 id="phase-4-migrate-to-zephyr-v450-rc1">Phase 4 — Migrate to Zephyr v4.5.0-rc1</h2>
 <ul>
-<li>[ ] Bump <code>west.yml</code>, fix breakages, both apps + twister green</li>
-<li>[ ] Add <code>zcbor</code> to the west allowlist: without it <code>CONFIG_MCUMGR=y</code> on frdm_mcxn947 silently resolves to n</li>
-<li>[ ] Drop local nsos patch 0002 (upstream in v4.5); keep 0001 (epoll EEXIST)</li>
-<li>[ ] Audit self-written code vs. upstream equivalents (zbus async listeners, LoRa APIs,
-      SNTP, settings, sensor RTIO, HTTP server, io_stream vs. upstream stream/flash APIs)
-      and replace where upstream is better</li>
+<li>[x] Bump <code>west.yml</code>, fix breakages, both apps + twister green</li>
+<li>[x] Drop local nsos patch 0002 (upstream in v4.5, PR 108526)</li>
+<li>[x] Drop nsos patch 0001 too: 3 integration runs on rc1 pass without it. If the EPOLL_CTL_ADD
+      EEXIST crash returns, re-add only the EEXIST→EPOLL_CTL_MOD retry in <code>nsos_adapt_poll_add</code>
+      (no mutex; increment <code>nsos_adapt_nfds</code> only after success). Watch upstream PR 117024.</li>
+<li>[x] Add <code>zcbor</code> to the west allowlist (MCUMGR now resolves to y on frdm_mcxn947)</li>
+<li>[x] Audit self-written code vs. upstream (checked against the v4.5.0-rc1 tree). Outcome:
+      | Ours | Upstream | Verdict |
+      |---|---|---|
+      | listener → slot/msgq → work glue | <code>ZBUS_ASYNC_LISTENER</code> | skip: enabling it allocates a net_buf on <em>every</em> publish of <em>every</em> channel (zbus.c <code>_zbus_vded_exec</code>), asserts on pool exhaustion |
+      | <code>sntp_sync</code> (~130 LOC) | <code>NET_CONFIG_CLOCK_SNTP_INIT</code> + <code>_RESYNC</code> | defer: blocks init, resync rides the fragile nsos epoll path; revisit with hermetic SNTP tests |
+      | <code>uart_lora_bridge</code> IRQ RX | <code>modem_pipe</code> + <code>modem_backend_uart</code> | defer to Phase 5 (bridge protocol rework) |
+      | <code>io_stream</code> flash backend | <code>stream_flash</code> | already built on <code>flash_img</code>/<code>stream_flash</code>; nothing to gain |
+      | dashboard <code>fota.c</code> | mcumgr <code>img_mgmt</code> | defer: changes upload protocol and UI |
+      | <code>fake_sensors</code> | sensor emulators | keep: trigger/Q31 model is the point |
+      | sensors, HTTP server, MQTT, settings | — | already upstream APIs |</li>
+<li>[ ] remote_sensor_manager: discovery/scan listeners keep one pending slot → back-to-back events are lost; use a small k_msgq</li>
 </ul>
 <h2 id="phase-5-sub-sensor-end-to-end-gateway-hardening">Phase 5 — Sub-sensor end-to-end + gateway hardening</h2>
 <ul>
+<li>[ ] <code>SENSOR_NODE_TX</code> silently resolves to n on outdoor_sensor_node and sensor-node (<code>depends on CONFIG_CMD</code>,
+      which no node app enables) → the nodes never transmit. Use <code>select CONFIG_CMD</code>.</li>
+<li>[ ] lora_e5_mini: <code>ENTROPY_STM32_RNG=y</code> resolves to n (<code>&amp;rng</code> disabled in DT) → no entropy for PSA</li>
 <li>[ ] native_sim: enable <code>PIPE_TRANSPORT</code> on gateway, make node→gateway test non-skipping</li>
 <li>[ ] LoRa batching: split batches to ≤ 5 readings, requeue on failure</li>
 <li>[ ] Single LoRa packet codec shared by node and gateway, unit-tested</li>
-<li>[ ] Crypto: one tag length, reboot-safe nonce, reject plaintext from unpaired nodes</li>
+<li>[ ] Crypto: one tag length, reboot-safe nonce, reject plaintext from unpaired nodes;
+      <code>PSA_ALG_ED25519</code> → <code>PSA_ALG_PURE_EDDSA</code> (TF-PSA-Crypto 1.1), <code>&amp;key_id</code> passed by pointer in lora_packet.c</li>
+<li>[ ] Integration tests: local <code>CONFIG_SNTP_SERVER</code> instead of a public NTP IP (hermetic tests)</li>
 <li>[ ] Pairing on the node side; dev key out of source</li>
 <li>[ ] ACK-request + seq dedup; FOTA seq/window fixes</li>
 <li>[ ] Dashboard: force password change on first boot, login throttling</li>
