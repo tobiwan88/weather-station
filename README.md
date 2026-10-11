@@ -1,6 +1,6 @@
 # weather-station
 
-A vibe-coded IoT weather station built on [Zephyr RTOS v4.4.0](https://zephyrproject.org/).
+A vibe-coded IoT weather station built on [Zephyr RTOS v4.5.0-rc1](https://zephyrproject.org/).
 
 ---
 

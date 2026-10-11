@@ -44,7 +44,8 @@ static void uart_irq_cb(const struct device *dev, void *user_data)
 {
 	ARG_UNUSED(user_data);
 
-	if (!uart_irq_update(dev) || !uart_irq_rx_ready(dev)) {
+	uart_irq_update(dev);
+	if (!uart_irq_rx_ready(dev)) {
 		return;
 	}
 
