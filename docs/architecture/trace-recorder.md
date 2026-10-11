@@ -1,6 +1,6 @@
 # Trace Recorder
 
-> Design rationale: [ADR-016](../adr/ADR-016-trace-recorder.md).
+> Design rationale: [decisions](../decisions.md).
 
 The trace recorder captures thread context-switch events, ISR entries/exits, and
 idle events in a static ring buffer for post-mortem dump via Renode. It has no

@@ -1,6 +1,6 @@
 # native_sim Development Target
 
-> Design rationale: [ADR-009](../adr/ADR-009-native-sim-first.md).
+> Design rationale: [decisions](../decisions.md).
 
 `native_sim` compiles the full Zephyr application as a native Linux executable. It runs on any x86_64 or ARM64 Linux host (including GitHub Actions runners and the devcontainer). Zephyr threads, timers, zbus, logging, and the shell all work correctly with no emulator, no QEMU, and no hardware.
 

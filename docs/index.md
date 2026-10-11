@@ -11,5 +11,5 @@ This project uses Zephyr RTOS on a network of sensors and a central gateway.
 - [User Guide](user/README.md)
 - [Hardware](hardware/README.md)
 - [Architecture](architecture/README.md)
-- [Architecture Decision Records](adr/README.md)
+- [Design decisions](decisions.md)
 - [Backlog](backlog.md)
