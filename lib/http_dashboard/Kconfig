@@ -65,6 +65,25 @@ config HTTP_DASHBOARD_AUTH_DEFAULT_PASS
 	string "Default password (written to settings on first boot)"
 	default "admin"
 
+config HTTP_DASHBOARD_AUTH_FORCE_PW_CHANGE
+	bool "Force a credential change while first-boot defaults are in use"
+	default y
+	help
+	  While the stored credentials are still the first-boot defaults, every
+	  authenticated API except login, logout and change-credentials returns
+	  403 {"error":"password_change_required"}.
+
+config HTTP_DASHBOARD_AUTH_MAX_FAILS
+	int "Consecutive failed logins before throttling"
+	default 5
+	range 1 100
+	help
+	  After this many consecutive failures, POST /api/login returns 429 with
+	  a Retry-After header of min(5 s * 2^(fails - N), 300 s).  The counter
+	  is global (not per client) and reset by a successful login.  A LAN
+	  attacker can therefore keep the owner locked out for up to 300 s at
+	  a time; acceptable for a home device.
+
 config HTTP_DASHBOARD_SESSION_COUNT
 	int "Concurrent browser session slots"
 	default 4

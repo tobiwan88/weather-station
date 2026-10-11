@@ -111,6 +111,32 @@ static void respond_401(struct http_response_ctx *rsp)
 	rsp->final_chunk = true;
 }
 
+static const char pw_change_body[] = "{\"error\":\"password_change_required\"}";
+
+/* Auth gate for API endpoints other than login/logout/change-credentials.
+ * Fills @p rsp with 401 (not authenticated) or 403 (first-boot credentials
+ * not yet changed) and returns false when the request must be rejected.
+ */
+static bool api_authorized(const struct http_request_ctx *req, struct http_response_ctx *rsp)
+{
+	int rc = auth_api_authorize(req);
+
+	if (rc == 0) {
+		return true;
+	}
+	if (rc == -EPERM) {
+		rsp->status = HTTP_403_FORBIDDEN;
+		rsp->headers = unauth_hdrs;
+		rsp->header_count = ARRAY_SIZE(unauth_hdrs);
+		rsp->body = (const uint8_t *)pw_change_body;
+		rsp->body_len = sizeof(pw_change_body) - 1;
+		rsp->final_chunk = true;
+	} else {
+		respond_401(rsp);
+	}
+	return false;
+}
+
 static void respond_redirect_login(struct http_response_ctx *rsp)
 {
 	static const struct http_header loc_hdr[] = {
@@ -369,6 +395,24 @@ static int api_login_handler(struct http_client_ctx *client, enum http_transacti
 	char token[AUTH_SESSION_TOKEN_LEN + 1];
 	int rc = auth_login(username, password, token, sizeof(token));
 
+	if (rc == -EAGAIN) {
+		static const char locked[] = "{\"error\":\"too many attempts\"}";
+		static char retry_buf[12];
+		static struct http_header locked_hdrs[2] = {
+			{.name = "Content-Type", .value = "application/json"},
+			{.name = "Retry-After", .value = retry_buf},
+		};
+
+		snprintf(retry_buf, sizeof(retry_buf), "%u", auth_login_retry_after());
+		LOG_WRN("POST /api/login: throttled, retry after %s s", retry_buf);
+		response_ctx->status = HTTP_429_TOO_MANY_REQUESTS;
+		response_ctx->headers = locked_hdrs;
+		response_ctx->header_count = ARRAY_SIZE(locked_hdrs);
+		response_ctx->body = (const uint8_t *)locked;
+		response_ctx->body_len = sizeof(locked) - 1;
+		response_ctx->final_chunk = true;
+		return 0;
+	}
 	if (rc == -EACCES) {
 		LOG_DBG("POST /api/login: bad credentials");
 		static const char bad_creds[] = "{\"error\":\"bad credentials\"}";
@@ -514,6 +558,17 @@ static int api_change_creds_handler(struct http_client_ctx *client,
 		response_ctx->final_chunk = true;
 		return 0;
 	}
+	if (rc == -EPERM) {
+		static const char weak[] = "{\"error\":\"new_credentials_not_acceptable\"}";
+
+		response_ctx->status = HTTP_400_BAD_REQUEST;
+		response_ctx->headers = json_ct_hdr;
+		response_ctx->header_count = ARRAY_SIZE(json_ct_hdr);
+		response_ctx->body = (const uint8_t *)weak;
+		response_ctx->body_len = sizeof(weak) - 1;
+		response_ctx->final_chunk = true;
+		return 0;
+	}
 	if (rc == -EINVAL) {
 		static const char bad_input[] = "{\"error\":\"invalid input\"}";
 
@@ -580,8 +635,7 @@ static int api_token_rotate_handler(struct http_client_ctx *client,
 	}
 	token_rotate_cursor = 0;
 
-	if (!auth_api_check(request_ctx)) {
-		respond_401(response_ctx);
+	if (!api_authorized(request_ctx, response_ctx)) {
 		return 0;
 	}
 
@@ -638,8 +692,7 @@ static int api_data_handler(struct http_client_ctx *client, enum http_transactio
 	}
 
 #if defined(CONFIG_HTTP_DASHBOARD_AUTH)
-	if (!auth_api_check(request_ctx)) {
-		respond_401(response_ctx);
+	if (!api_authorized(request_ctx, response_ctx)) {
 		return 0;
 	}
 #endif
@@ -703,9 +756,8 @@ static int api_config_handler(struct http_client_ctx *client, enum http_transact
 
 		if (status == HTTP_SERVER_REQUEST_DATA_FINAL) {
 #if defined(CONFIG_HTTP_DASHBOARD_AUTH)
-			if (!auth_api_check(request_ctx)) {
+			if (!api_authorized(request_ctx, response_ctx)) {
 				post_cursor = 0;
-				respond_401(response_ctx);
 				return 0;
 			}
 #endif
@@ -731,8 +783,7 @@ static int api_config_handler(struct http_client_ctx *client, enum http_transact
 	}
 
 #if defined(CONFIG_HTTP_DASHBOARD_AUTH)
-	if (!auth_api_check(request_ctx)) {
-		respond_401(response_ctx);
+	if (!api_authorized(request_ctx, response_ctx)) {
 		return 0;
 	}
 #endif
@@ -796,8 +847,7 @@ static int api_locations_handler(struct http_client_ctx *client,
 	}
 
 #if defined(CONFIG_HTTP_DASHBOARD_AUTH)
-	if (!auth_api_check(request_ctx)) {
-		respond_401(response_ctx);
+	if (!api_authorized(request_ctx, response_ctx)) {
 		return 0;
 	}
 #endif

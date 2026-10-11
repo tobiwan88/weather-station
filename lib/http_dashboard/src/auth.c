@@ -20,9 +20,14 @@ LOG_MODULE_DECLARE(http_dashboard, CONFIG_HTTP_DASHBOARD_LOG_LEVEL);
 #define DASH_KEY_USER       "user"
 #define DASH_KEY_PASS       "pass"
 #define DASH_KEY_TOKEN      "token"
+#define DASH_KEY_MUST       "must_change"
 #define DASH_SETTINGS_USER  DASH_SUBTREE "/" DASH_KEY_USER
 #define DASH_SETTINGS_PASS  DASH_SUBTREE "/" DASH_KEY_PASS
 #define DASH_SETTINGS_TOKEN DASH_SUBTREE "/" DASH_KEY_TOKEN
+#define DASH_SETTINGS_MUST  DASH_SUBTREE "/" DASH_KEY_MUST
+
+#define LOGIN_BACKOFF_BASE_S 5U
+#define LOGIN_BACKOFF_MAX_S  300U
 
 /* -------------------------------------------------------------------------- */
 /* Session table                                                                */
@@ -44,6 +49,11 @@ static struct k_spinlock s_session_lock;
 static char s_username[AUTH_CRED_MAX];
 static char s_password[AUTH_CRED_MAX];
 static struct k_spinlock s_cred_lock;
+/* Guarded by s_cred_lock. */
+static bool s_must_change;
+static bool s_must_change_loaded;
+static uint32_t s_fail_count;
+static int64_t s_locked_until_ms;
 
 /* -------------------------------------------------------------------------- */
 /* API bearer token                                                             */
@@ -188,6 +198,9 @@ static int dash_settings_set(const char *key, size_t len, settings_read_cb read_
 	} else if (strcmp(key, DASH_KEY_PASS) == 0) {
 		strncpy(s_password, buf, AUTH_CRED_MAX - 1);
 		s_password[AUTH_CRED_MAX - 1] = '\0';
+	} else if (strcmp(key, DASH_KEY_MUST) == 0) {
+		s_must_change = (buf[0] == '1');
+		s_must_change_loaded = true;
 	} else if (strcmp(key, DASH_KEY_TOKEN) == 0) {
 		strncpy(s_api_token, buf, AUTH_SESSION_TOKEN_LEN);
 		s_api_token[AUTH_SESSION_TOKEN_LEN] = '\0';
@@ -223,6 +236,14 @@ int auth_init(void)
 		s_password[AUTH_CRED_MAX - 1] = '\0';
 		settings_save_one(DASH_SETTINGS_PASS, s_password, strlen(s_password) + 1);
 		LOG_INF("HTTP auth: first-boot password set");
+	}
+
+	/* Force-change flag: when never persisted, derive it from the credentials. */
+	if (!s_must_change_loaded) {
+		s_must_change = (strcmp(s_username, CONFIG_HTTP_DASHBOARD_AUTH_DEFAULT_USER) == 0 &&
+				 strcmp(s_password, CONFIG_HTTP_DASHBOARD_AUTH_DEFAULT_PASS) == 0);
+		s_must_change_loaded = true;
+		settings_save_one(DASH_SETTINGS_MUST, s_must_change ? "1" : "0", 2);
 	}
 
 	/* API token: generate on first boot. */
@@ -282,17 +303,35 @@ int auth_login(const char *username, const char *password, char *token_out, size
 		return -EINVAL;
 	}
 
-	/* Validate credentials constant-time. */
+	/* Validate credentials constant-time, honouring the failure throttle. */
 	k_spinlock_key_t ck = k_spin_lock(&s_cred_lock);
+
+	if (s_fail_count >= CONFIG_HTTP_DASHBOARD_AUTH_MAX_FAILS &&
+	    k_uptime_get() < s_locked_until_ms) {
+		k_spin_unlock(&s_cred_lock, ck);
+		return -EAGAIN;
+	}
+
 	int udiff = ct_strcmp(username, strlen(username), s_username, strlen(s_username));
 	int pdiff = ct_strcmp(password, strlen(password), s_password, strlen(s_password));
 
-	k_spin_unlock(&s_cred_lock, ck);
-
 	if (udiff != 0 || pdiff != 0) {
+		if (s_fail_count < UINT32_MAX) {
+			s_fail_count++;
+		}
+		if (s_fail_count >= CONFIG_HTTP_DASHBOARD_AUTH_MAX_FAILS) {
+			uint32_t shift =
+				MIN(s_fail_count - CONFIG_HTTP_DASHBOARD_AUTH_MAX_FAILS, 6U);
+			uint32_t delay_s = MIN(LOGIN_BACKOFF_BASE_S << shift, LOGIN_BACKOFF_MAX_S);
+
+			s_locked_until_ms = k_uptime_get() + (int64_t)delay_s * MSEC_PER_SEC;
+		}
+		k_spin_unlock(&s_cred_lock, ck);
 		LOG_DBG("auth_login: bad credentials");
 		return -EACCES;
 	}
+	s_fail_count = 0;
+	k_spin_unlock(&s_cred_lock, ck);
 
 	/* Generate session token. */
 	char new_token[AUTH_SESSION_TOKEN_LEN + 1];
@@ -329,6 +368,27 @@ int auth_login(const char *username, const char *password, char *token_out, size
 	memcpy(token_out, new_token, AUTH_SESSION_TOKEN_LEN + 1);
 	LOG_INF("auth_login: session created (slot %d)", target);
 	return 0;
+}
+
+uint32_t auth_login_retry_after(void)
+{
+	k_spinlock_key_t ck = k_spin_lock(&s_cred_lock);
+	int64_t left_ms = s_locked_until_ms - k_uptime_get();
+
+	k_spin_unlock(&s_cred_lock, ck);
+	if (left_ms <= 0) {
+		return 0;
+	}
+	return (uint32_t)((left_ms + MSEC_PER_SEC - 1) / MSEC_PER_SEC);
+}
+
+bool auth_must_change(void)
+{
+	k_spinlock_key_t ck = k_spin_lock(&s_cred_lock);
+	bool mc = s_must_change;
+
+	k_spin_unlock(&s_cred_lock, ck);
+	return mc;
 }
 
 void auth_logout(const struct http_request_ctx *request_ctx)
@@ -403,6 +463,17 @@ bool auth_api_check(const struct http_request_ctx *request_ctx)
 #undef BEARER_PREFIX_LEN
 }
 
+int auth_api_authorize(const struct http_request_ctx *request_ctx)
+{
+	if (!auth_api_check(request_ctx)) {
+		return -EACCES;
+	}
+	if (IS_ENABLED(CONFIG_HTTP_DASHBOARD_AUTH_FORCE_PW_CHANGE) && auth_must_change()) {
+		return -EPERM;
+	}
+	return 0;
+}
+
 /* -------------------------------------------------------------------------- */
 /* Credentials management                                                       */
 /* -------------------------------------------------------------------------- */
@@ -428,14 +499,43 @@ int auth_change_credentials(const char *old_user, const char *old_pass, const ch
 		k_spin_unlock(&s_cred_lock, key);
 		return -EACCES;
 	}
+	if (IS_ENABLED(CONFIG_HTTP_DASHBOARD_AUTH_FORCE_PW_CHANGE) && s_must_change &&
+	    ((strcmp(new_user, CONFIG_HTTP_DASHBOARD_AUTH_DEFAULT_USER) == 0 &&
+	      strcmp(new_pass, CONFIG_HTTP_DASHBOARD_AUTH_DEFAULT_PASS) == 0) ||
+	     strcmp(new_pass, old_pass) == 0)) {
+		/* Would leave the device on the well-known first-boot credentials. */
+		k_spin_unlock(&s_cred_lock, key);
+		return -EPERM;
+	}
 	strncpy(s_username, new_user, AUTH_CRED_MAX - 1);
 	s_username[AUTH_CRED_MAX - 1] = '\0';
 	strncpy(s_password, new_pass, AUTH_CRED_MAX - 1);
 	s_password[AUTH_CRED_MAX - 1] = '\0';
 	k_spin_unlock(&s_cred_lock, key);
 
-	settings_save_one(DASH_SETTINGS_USER, new_user, strlen(new_user) + 1);
-	settings_save_one(DASH_SETTINGS_PASS, new_pass, strlen(new_pass) + 1);
+	/* Persist credentials first, the must_change flag last: a failure part-way
+	 * leaves the gate closed rather than open.
+	 */
+	int rc = settings_save_one(DASH_SETTINGS_USER, new_user, strlen(new_user) + 1);
+
+	if (rc == 0 || rc == -ENOENT) {
+		rc = settings_save_one(DASH_SETTINGS_PASS, new_pass, strlen(new_pass) + 1);
+	}
+	if (rc == 0 || rc == -ENOENT) {
+		rc = settings_save_one(DASH_SETTINGS_MUST, "0", 2);
+	}
+	if (rc == -ENOENT) {
+		/* No settings backend configured (e.g. test builds): RAM-only. */
+		rc = 0;
+	}
+	if (rc != 0) {
+		LOG_ERR("HTTP auth: persisting credentials failed: %d", rc);
+		return -EIO;
+	}
+
+	key = k_spin_lock(&s_cred_lock);
+	s_must_change = false;
+	k_spin_unlock(&s_cred_lock, key);
 	LOG_INF("HTTP auth: credentials updated");
 	return 0;
 }
