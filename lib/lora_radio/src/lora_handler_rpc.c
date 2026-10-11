@@ -18,6 +18,9 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <lora_radio/lora_radio.h>
 #include <lora_radio/lora_session.h>
 
+/* Longest parameter block of an outgoing RPC_CMD */
+#define RPC_PARAMS_MAX 128
+
 typedef int (*rpc_handler_t)(uint16_t src_node, uint8_t cmd_id, const uint8_t *params,
 			     uint8_t param_len, uint8_t *resp_data, uint8_t *resp_len);
 
@@ -114,25 +117,9 @@ int lora_handle_rpc_cmd(uint16_t src_node, const uint8_t *payload, uint8_t paylo
 
 	struct lora_session *s = lora_session_get(src_node);
 
-	/* Duplicate detection: re-send cached response if same seq_num */
-	if (s && s->last_rpc_seq != 0 && s->last_rpc_seq == s->last_seq_rx) {
-		LOG_DBG("duplicate RPC cmd from node 0x%04x, resending cached response", src_node);
-		uint8_t tx_buf[LORA_MAX_PACKET_SF7];
-		uint8_t tx_len;
-		struct lora_l2_header hdr;
-
-		memset(&hdr, 0, sizeof(hdr));
-		hdr.type_ver = (LORA_FRAME_RPC_RESP << 4) | 0x01;
-		hdr.flags = LORA_FLAG_ENCRYPTED;
-		hdr.dst_node[0] = (uint8_t)(src_node & 0xFF);
-		hdr.dst_node[1] = (uint8_t)((src_node >> 8) & 0xFF);
-
-		lora_packet_encode(&hdr, s->last_rpc_resp, s->last_rpc_resp_len, s->session_key,
-				   tx_buf, &tx_len);
-		lora_send(lora_radio_dev, tx_buf, tx_len);
-		return 0;
-	}
-
+	/* No duplicate-command cache: the RX path drops replayed seqs before they reach
+	 * this handler, and a node retry carries a new seq, so each one is answered.
+	 */
 	uint8_t cmd_id = payload[0];
 	uint8_t param_len = payload[1];
 	const uint8_t *params = payload + 2;
@@ -153,7 +140,7 @@ int lora_handle_rpc_cmd(uint16_t src_node, const uint8_t *payload, uint8_t paylo
 	uint8_t resp_len = 0;
 	int status = handler(src_node, cmd_id, params, param_len, resp_data, &resp_len);
 
-	if (status == 0 && resp_len > sizeof(resp_data)) {
+	if (resp_len > sizeof(resp_data)) {
 		resp_len = sizeof(resp_data);
 	}
 
@@ -169,22 +156,26 @@ int lora_handle_rpc_cmd(uint16_t src_node, const uint8_t *payload, uint8_t paylo
 
 	memset(&hdr, 0, sizeof(hdr));
 	hdr.type_ver = (LORA_FRAME_RPC_RESP << 4) | 0x01;
-	hdr.flags = LORA_FLAG_ENCRYPTED;
-	hdr.dst_node[0] = (uint8_t)(src_node & 0xFF);
-	hdr.dst_node[1] = (uint8_t)((src_node >> 8) & 0xFF);
+	hdr.flags = LORA_FLAG_ENCRYPTED | LORA_FLAG_DIR_DOWN;
+	lora_hdr_dst_set(&hdr, src_node);
+
+	/* Responses are always encrypted: refuse if there is no key or no TX seq */
+	uint32_t seq;
+
+	if (!s) {
+		return -ENOENT;
+	}
+	if (lora_session_next_tx_seq(&seq) < 0) {
+		return -EIO;
+	}
+	lora_hdr_seq_set(&hdr, seq);
 
 	uint8_t tx_buf[LORA_MAX_PACKET_SF7];
-	uint8_t tx_len;
+	size_t tx_len;
 
-	lora_packet_encode(&hdr, rpc_rsp_buf, total_resp_len, s ? s->session_key : NULL, tx_buf,
-			   &tx_len);
-	lora_send(lora_radio_dev, tx_buf, tx_len);
-
-	/* Cache for duplicate detection */
-	if (s) {
-		s->last_rpc_seq = s->last_seq_rx;
-		s->last_rpc_resp_len = MIN(total_resp_len, sizeof(s->last_rpc_resp));
-		memcpy(s->last_rpc_resp, rpc_rsp_buf, s->last_rpc_resp_len);
+	if (lora_packet_encode(&hdr, rpc_rsp_buf, total_resp_len, s->session_key, tx_buf,
+			       sizeof(tx_buf), &tx_len) == 0) {
+		(void)lora_radio_send(tx_buf, tx_len);
 	}
 
 	return 0;
@@ -197,36 +188,42 @@ int lora_radio_rpc_send(uint16_t node_id, uint8_t cmd_id, const uint8_t *params,
 		return -EINVAL;
 	}
 
-	uint8_t payload[2 + (param_len > 128 ? 128 : param_len)];
+	if (param_len > RPC_PARAMS_MAX || (param_len > 0 && params == NULL)) {
+		return -EINVAL;
+	}
+
+	uint8_t payload[2 + RPC_PARAMS_MAX];
 
 	payload[0] = cmd_id;
 	payload[1] = param_len;
 	if (param_len > 0) {
-		memcpy(payload + 2, params, MIN(param_len, 128));
+		memcpy(payload + 2, params, param_len);
 	}
+	size_t payload_len = 2U + param_len;
 
 	struct lora_l2_header hdr;
 
 	memset(&hdr, 0, sizeof(hdr));
 	hdr.type_ver = (LORA_FRAME_RPC_CMD << 4) | 0x01;
-	hdr.flags = LORA_FLAG_ACK_REQ | LORA_FLAG_ENCRYPTED;
-	hdr.dst_node[0] = (uint8_t)(node_id & 0xFF);
-	hdr.dst_node[1] = (uint8_t)((node_id >> 8) & 0xFF);
-	hdr.seq_num[0] = (uint8_t)(s->last_seq_tx & 0xFF);
-	hdr.seq_num[1] = (uint8_t)((s->last_seq_tx >> 8) & 0xFF);
+	hdr.flags = LORA_FLAG_ACK_REQ | LORA_FLAG_ENCRYPTED | LORA_FLAG_DIR_DOWN;
+	lora_hdr_dst_set(&hdr, node_id);
+	uint32_t seq;
+	int ret = lora_session_next_tx_seq(&seq);
+
+	if (ret < 0) {
+		return ret;
+	}
+	lora_hdr_seq_set(&hdr, seq);
 
 	uint8_t tx_buf[LORA_MAX_PACKET_SF7];
-	uint8_t tx_len;
-	int ret =
-		lora_packet_encode(&hdr, payload, sizeof(payload), s->session_key, tx_buf, &tx_len);
+	size_t tx_len;
+	ret = lora_packet_encode(&hdr, payload, payload_len, s->session_key, tx_buf, sizeof(tx_buf),
+				 &tx_len);
 	if (ret < 0) {
 		return ret;
 	}
 
-	ret = lora_pending_send(node_id, s->last_seq_tx, LORA_FRAME_RPC_CMD, tx_buf, tx_len);
-	if (ret == 0) {
-		s->last_seq_tx++;
-	}
+	ret = lora_pending_send(node_id, seq, LORA_FRAME_RPC_CMD, tx_buf, tx_len);
 	return ret;
 }
 
@@ -238,38 +235,44 @@ int lora_radio_rpc_send_async(uint16_t node_id, uint8_t cmd_id, const uint8_t *p
 		return -EINVAL;
 	}
 
-	uint8_t payload[2 + (param_len > 128 ? 128 : param_len)];
+	if (param_len > RPC_PARAMS_MAX || (param_len > 0 && params == NULL)) {
+		return -EINVAL;
+	}
+
+	uint8_t payload[2 + RPC_PARAMS_MAX];
 
 	payload[0] = cmd_id;
 	payload[1] = param_len;
 	if (param_len > 0) {
-		memcpy(payload + 2, params, MIN(param_len, 128));
+		memcpy(payload + 2, params, param_len);
 	}
+	size_t payload_len = 2U + param_len;
 
 	struct lora_l2_header hdr;
 
 	memset(&hdr, 0, sizeof(hdr));
 	hdr.type_ver = (LORA_FRAME_RPC_CMD << 4) | 0x01;
-	hdr.flags = LORA_FLAG_ACK_REQ | LORA_FLAG_ENCRYPTED;
-	hdr.dst_node[0] = (uint8_t)(node_id & 0xFF);
-	hdr.dst_node[1] = (uint8_t)((node_id >> 8) & 0xFF);
-	hdr.seq_num[0] = (uint8_t)(s->last_seq_tx & 0xFF);
-	hdr.seq_num[1] = (uint8_t)((s->last_seq_tx >> 8) & 0xFF);
+	hdr.flags = LORA_FLAG_ACK_REQ | LORA_FLAG_ENCRYPTED | LORA_FLAG_DIR_DOWN;
+	lora_hdr_dst_set(&hdr, node_id);
+	uint32_t seq;
+	int ret = lora_session_next_tx_seq(&seq);
+
+	if (ret < 0) {
+		return ret;
+	}
+	lora_hdr_seq_set(&hdr, seq);
 
 	uint8_t tx_buf[LORA_MAX_PACKET_SF7];
-	uint8_t tx_len;
-	int ret =
-		lora_packet_encode(&hdr, payload, sizeof(payload), s->session_key, tx_buf, &tx_len);
+	size_t tx_len;
+	ret = lora_packet_encode(&hdr, payload, payload_len, s->session_key, tx_buf, sizeof(tx_buf),
+				 &tx_len);
 	if (ret < 0) {
 		return ret;
 	}
 
-	ret = lora_pending_send_async(node_id, s->last_seq_tx, LORA_FRAME_RPC_CMD, tx_buf, tx_len,
+	ret = lora_pending_send_async(node_id, seq, LORA_FRAME_RPC_CMD, tx_buf, tx_len,
 				      CONFIG_LORA_RADIO_RETRY_TIMEOUT_BASE_MS, rpc_async_cb,
 				      (void *)(uintptr_t)cmd_id);
-	if (ret == 0) {
-		s->last_seq_tx++;
-	}
 	return ret;
 }
 
@@ -283,10 +286,7 @@ int lora_handle_rpc_resp(uint16_t src_node, const uint8_t *payload, uint8_t payl
 	uint8_t status = payload[1];
 	uint8_t resp_len = payload_len > 2 ? (uint8_t)(payload_len - 2) : 0;
 
-	struct lora_session *s = lora_session_get(src_node);
-	uint16_t seq = s ? s->last_seq_rx : 0;
-
-	lora_pending_ack_match(src_node, seq, status != 0 ? -status : 0);
+	lora_pending_complete(src_node, LORA_FRAME_RPC_CMD, status != 0 ? -status : 0);
 
 	struct lora_rpc_result_event evt = {
 		.node_id = src_node,
@@ -304,12 +304,12 @@ int lora_handle_rpc_resp(uint16_t src_node, const uint8_t *payload, uint8_t payl
 
 int lora_handle_ack(uint16_t src_node, const uint8_t *payload, uint8_t payload_len)
 {
-	if (payload_len < 3) {
+	if (payload_len < sizeof(struct lora_ack)) {
 		return -EINVAL;
 	}
 
-	uint16_t ack_seq = (uint16_t)payload[0] | ((uint16_t)payload[1] << 8);
-	uint8_t status = payload[2];
+	uint32_t ack_seq = sys_get_le32(payload);
+	uint8_t status = payload[4];
 
 	lora_pending_ack_match(src_node, ack_seq, status != 0 ? -status : 0);
 

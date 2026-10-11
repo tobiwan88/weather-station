@@ -92,6 +92,18 @@ int lora_radio_rpc_send_async(uint16_t node_id, uint8_t cmd_id, const uint8_t *p
 			      uint8_t param_len);
 
 /**
+ * @brief Transmit a raw, already encoded frame.
+ *
+ * Takes the radio lock, switches the modem to the TX configuration (frequency
+ * and power from Kconfig; the Zephyr sx12xx driver only applies TX parameters
+ * when config.tx is true), sends, and restores the RX configuration. Safe to
+ * call from any thread except zbus listeners (it blocks for the airtime).
+ *
+ * @return 0 on success, negative errno on failure (-ENODEV before init).
+ */
+int lora_radio_send(const uint8_t *buf, size_t len);
+
+/**
  * @brief Derive a stable sensor UID from a LoRa node_id.
  *
  * uid = (0x0200 << 16) | (node_id << 4) | (type & 0x0F)

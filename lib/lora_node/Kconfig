@@ -3,7 +3,7 @@
 menuconfig LORA_NODE
 	bool "LoRa sensor node TX library"
 	depends on LORA
-	depends on PSA_CRYPTO
+	select LORA_PROTO
 	help
 	  Lightweight LoRa transmit library for sensor nodes. Handles radio
 	  initialization, session key management, packet encoding (AES-128-GCM
@@ -51,7 +51,54 @@ config LORA_NODE_SESSION_KEY
 	default 0x0
 	help
 	  Hard-coded 16-byte session key for testing. In production, the key
-	  is provisioned via the pairing protocol and stored in NVS.
+	  is provisioned with the lora_node shell and stored in NVS.
+
+config LORA_NODE_SEQ_SETTINGS_KEY
+	string "Settings key for the frame counter reservation"
+	default "node/seq"
+	help
+	  Settings key under which the write-ahead frame counter limit
+	  (reserved_until) is persisted. Used as AES-GCM nonce input.
+
+config LORA_NODE_SEQ_RESERVE
+	int "Frame counter block size reserved per flash write"
+	default 64
+	range 1 65536
+	help
+	  The node persists "next + this value" before using any counter in
+	  the block. After a reboot the counter resumes at the persisted
+	  limit, so a nonce is never reused. Up to this many counter values
+	  are skipped per reboot.
+
+config LORA_NODE_ALLOW_PLAINTEXT
+	bool "Allow unencrypted transmissions without a session key"
+	help
+	  When disabled (default) lora_node_transmit() returns -EACCES
+	  if no session key is available. Enable only for bring-up and tests.
+
+config LORA_NODE_DEV_KEY
+	string "Development session key (32 hex chars)"
+	default ""
+	help
+	  If non-empty and no session is stored in settings, this 16-byte
+	  key (32 hex characters) is used as the session together with
+	  LORA_NODE_DEV_NODE_ID. For development and native_sim only.
+	  NEVER use in production: the key is compiled into the image.
+
+config LORA_NODE_DEV_NODE_ID
+	int "Development node ID"
+	default 1
+	range 1 65535
+	help
+	  Node ID used together with LORA_NODE_DEV_KEY.
+
+config LORA_NODE_SHELL
+	bool "Shell commands for node provisioning"
+	default y if SHELL
+	depends on SHELL
+	help
+	  Adds "lora_node provision <node_id> <32-hex-key>" and
+	  "lora_node status".
 
 config LORA_NODE_SETTINGS_KEY
 	string "Settings key for session data"

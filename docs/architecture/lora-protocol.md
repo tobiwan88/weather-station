@@ -89,7 +89,7 @@ subscribe to them identically to local sensor channels:
 │  │ SX1276/  │   │ 8B hdr +  │   │ pairing   │   │ data_handler │  │
 │  │ SX1262   │   │ GCM tag   │   │ state     │   │ rpc_handler  │  │
 │  │ SPI      │   │ CRC16     │   │ keys      │   │ fota_handler │  │
-│  │ IRQ      │   │           │   │ node_map  │   │ prov_handler │  │
+│  │ IRQ      │   │           │   │ node_map  │   │              │  │
 │  └──────────┘   └───────────┘   └───────────┘   └──────────────┘  │
 │                                                                     │
 │  EXTERNAL SURFACE:                                                  │
@@ -104,15 +104,43 @@ subscribe to them identically to local sensor channels:
 
 ## Frame Protocol
 
-### L2 Header (8 bytes, shared across all frame types)
+### L2 Header (10 bytes, shared across all frame types)
 
 ```
 Byte 0:    [type:4][version:4]
 Byte 1:    [flags:8]
 Bytes 2–3: src_node (uint16 LE)
 Bytes 4–5: dst_node (uint16 LE)
-Bytes 6–7: seq_num (uint16 LE)
+Bytes 6–9: seq_num (uint32 LE)
 ```
+
+The header is the AAD of the GCM tag. The frame on the air is
+`header | payload (ciphertext) | GCM tag (12 B) | CRC16 (2 B, LE)`; the CRC16
+(CCITT, init 0xFFFF) covers everything before it, so the fixed overhead is
+24 bytes.
+
+### Nonce (AES-128-GCM, 12 bytes, built inside `lora_proto`)
+
+```
+Bytes 0–1:  node_id (uint16 LE) — the non-gateway end: src for uplink, dst for downlink
+Byte  2:    direction (0 = uplink, 1 = downlink; mirrors LORA_FLAG_DIR_DOWN)
+Byte  3:    0
+Bytes 4–7:  seq_num (uint32 LE)
+Bytes 8–11: 0
+```
+
+A (key, node, direction, seq) tuple must never repeat; callers only choose the
+seq. The node persists its counter, the gateway keeps one counter per node.
+
+Sequence and nonce rules:
+
+- Every transmitted frame takes a fresh seq (`lora_session_next_tx_seq()` on the
+  gateway). This includes ACKs, responses and retransmissions.
+- A retransmission is a new frame: it is re-encoded with a new seq and therefore a
+  new nonce. Reusing the seq would repeat the AES-GCM nonce and the receiver's
+  replay protection (`seq <= last_seq_rx` is dropped) would discard the frame.
+- Consequently a seq cannot identify a request across retries. The gateway tracks
+  the seq of the current transmission and updates it on every retransmit.
 
 ### Flags byte
 
@@ -121,7 +149,8 @@ Bytes 6–7: seq_num (uint16 LE)
 | 0 | ACK_REQ | Receiver must send ACK/NACK |
 | 1 | ENCRYPTED | Payload + GCM tag present (always 1 after pairing) |
 | 2 | FRAGMENTED | Payload spans multiple frames |
-| 3–7 | RESERVED | Must be 0 |
+| 3 | DIR_DOWN | Gateway → node frame (part of the nonce) |
+| 4–7 | RESERVED | Must be 0 |
 
 ### Frame types
 
@@ -133,22 +162,22 @@ Bytes 6–7: seq_num (uint16 LE)
 | 0x3 | RPC_RESP | — | cmd_id (1B) + status (1B) + data |
 | 0x4 | FOTA_CHUNK | ACK + retry | chunk_offset (4B LE) + chunk_data |
 | 0x5 | FOTA_CHUNK_ACK | — | chunk_offset (4B LE) + status (1B) |
-| 0x6 | PROV_BEACON | periodic | caps_count (1B) + capability_TLVs + pubkey (32B) + nonce (16B) + fw_ver |
-| 0x7 | PROV_RESPONSE | — | node_id (2B) + session_key (16B) + gateway_pubkey (32B) + sig (64B) |
-| 0x8 | ACK/NACK | — | ack_seq (2B LE) + status (1B) |
+| 0x6 | (reserved) | — | formerly OTA pairing beacon, unused |
+| 0x7 | (reserved) | — | formerly OTA pairing response, unused |
+| 0x8 | ACK/NACK | — | ack_seq (4B LE) + status (1B) |
 | 0x9–0xF | RESERVED | — | future expansion |
 
 ### Frame budget by spreading factor
 
 | SF / BW | Max frame | Overhead | Payload | Readings (5B each) | Min interval (1% duty) |
 |---------|-----------|----------|---------|---------------------|------------------------|
-| SF12/BW125 | 51 B | 20 B | 31 B | 6 | 99 s |
-| SF11/BW125 | 51 B | 20 B | 31 B | 6 | 58 s |
-| SF10/BW125 | 51 B | 20 B | 31 B | 6 | 37 s |
-| SF9/BW125 | 115 B | 20 B | 95 B | 19 | 18.5 s |
-| SF8/BW125 | 222 B | 20 B | 202 B | 40 | 10.3 s |
-| SF7/BW125 | 222 B | 20 B | 202 B | 40 | 6.2 s |
-| SF7/BW500 | 255 B | 20 B | 235 B | 47 | 5.6 s |
+| SF12/BW125 | 51 B | 24 B | 27 B | 5 | 99 s |
+| SF11/BW125 | 51 B | 24 B | 27 B | 5 | 58 s |
+| SF10/BW125 | 51 B | 24 B | 27 B | 5 | 37 s |
+| SF9/BW125 | 115 B | 24 B | 91 B | 18 | 18.5 s |
+| SF8/BW125 | 222 B | 24 B | 198 B | 39 | 10.3 s |
+| SF7/BW125 | 222 B | 24 B | 198 B | 39 | 6.2 s |
+| SF7/BW500 | 255 B | 24 B | 227 B | 46 | 5.6 s |
 
 Default for sensor data: SF10/BW125. For FOTA: SF7/BW500.
 
@@ -169,18 +198,21 @@ SPI-based HAL for SX1276/SX1262. Provides:
 Abstracted behind a `struct lora_radio_ops` to allow a fake radio backend
 (`CONFIG_LORA_RADIO_FAKE`) for native_sim testing.
 
-### Packet Framing (`lora_packet.c`)
+### Packet Framing (`lib/lora_proto`)
 
-Pure functions, no global state:
+One codec shared by the node (`lora_node`) and the gateway (`lora_radio`),
+`<lora_proto/lora_packet.h>`:
 
-- `lora_packet_encode()` — builds L2 header + payload buffer
-- `lora_packet_decode()` — validates and parses L2 header
-- `lora_packet_encrypt()` — AES-128-GCM encrypt + tag
-- `lora_packet_decrypt()` — AES-128-GCM decrypt + verify
-- `lora_packet_crc16()` — appends/validates radio-level CRC
+- `lora_packet_encode(hdr, payload, len, key, out, out_size, &out_len)` — header
+  + payload (AES-128-GCM via PSA when `key != NULL`, 12-byte tag) + CRC16;
+  `-EMSGSIZE` if it does not fit `out_size`
+- `lora_packet_decode(in, in_len, key, &hdr, payload, payload_size, &payload_len)`
+  — checks CRC16 (`-EBADMSG`), authenticates and decrypts (`-EBADMSG` on a bad
+  tag, header or key; `-EPERM` if encrypted and no key)
+- `lora_hdr_seq_get/set()` — 32-bit seq accessors
 
-CRC16 is frame-level (radio hardware typically handles this, but the function
-is available for the fake radio backend).
+`LORA_PROTO_MAX_READINGS(max_packet)` gives the readings per packet (5 at
+SF12). Stateless: no global state besides the PSA key import per call.
 
 ### Session Manager (`lora_session.c`)
 
@@ -202,7 +234,15 @@ Shared reliable transmission subsystem used by RPC and FOTA:
 
 - Per-session pending-request slot (serialized per node)
 - `k_work_delayable` retry timer with randomized exponential backoff
-- ACK/RPC_RESP/FOTA_CHUNK_ACK matching via `(node_id, seq_num)`
+- Window size 1: one request in flight per node (a second send returns `-EBUSY`)
+- ACK matching: a standalone ACK matches on `(node_id, ack_seq)` against the seq of the
+  current transmission. Responses that carry the responder's own seq instead of
+  echoing the request (FOTA_CHUNK_ACK) are validated by the handler (chunk offset)
+  and complete the slot via `lora_pending_complete(node_id, frame_type)`
+- On a match the retry work is rescheduled with `K_NO_WAIT`, so completion does not
+  wait for the retry timer
+- Retransmissions are re-encoded with a fresh seq (see Nonce); all transmissions go
+  through `lora_radio_send()` (radio mutex, sliced RX)
 - `lora_pending_send()` — blocking (for thread callers)
 - `lora_pending_send_async()` — non-blocking (for zbus listeners)
 - `lora_pending_ack_match()` — called from RX thread dispatch
@@ -221,7 +261,6 @@ Dispatch table indexed by frame type byte. Each handler:
    - **data_handler**: unpacks N × 5B readings, calls `remote_sensor_publish_data()`
    - **rpc_handler**: dispatches to command table, builds RPC_RESP
    - **fota_handler**: writes chunk to `flash_img`, sends FOTA_CHUNK_ACK
-   - **prov_handler**: validates beacon, assigns node_id + key, sends PROV_RESPONSE
 4. For reliable frames: schedules ACK transmission, updates session state
 
 Runs on the dedicated LoRa RX thread.
@@ -272,7 +311,7 @@ struct lora_link_event {
     uint16_t node_id;
     int16_t  rssi;      // dBm
     uint8_t  snr;       // dB
-    uint16_t seq_num;
+    uint32_t seq_num;
     uint16_t crc_errors; // since last report
 };
 ```
@@ -323,43 +362,27 @@ goes through zbus channels. The manager never calls a transport function directl
 
 ## Provisioning Flow
 
-```
-Sensor Node (STM32WLE5JC)               Gateway (frdm_mcxn947)
-│                                       │
-│  [User presses button]                │
-│  Enter pairing mode (30s timer)       │
-│                                       │
-│  PROV_BEACON (frame 0x6) ───────────►│
-│  {caps: TEMP+HUM,                    │  Validate capabilities
-│   pubkey: Ed25519_pk,                │  Check no duplicate pubkey
-│   nonce: rand[16],                   │  Assign node_id from pool
-│   fw_ver: "1.0.0"}                   │  Generate AES-128 session_key
-│                                       │
-│                      ◄─────────────── PROV_RESPONSE (frame 0x7)
-│                      {node_id, session_key, gateway_pubkey, sig}
-│                                       │
-│  Verify Ed25519 signature             │
-│  Store session_key in NVS             │
-│  Exit pairing mode                    │
-│                                       │
-│  SENSOR_DATA (frame 0x0) ───────────►│
-│  (encrypted, first reading)           │  Decrypt, validate GCM
-│                                       │  remote_sensor_publish_data()
-│                                       │  Persist session in Settings
-│                                       │
-│  [After reboot: session_key in NVS]   │  [After reboot: sessions
-│   Resume normal operation             │   restored from Settings]
-```
+Nodes use a pre-shared per-node AES-128 key; there is no over-the-air pairing
+(frame types 0x6/0x7 stay reserved, formerly OTA pairing).
 
-### Security properties
+1. On the gateway shell: `lora provision <node_id>` generates a 16-byte key with
+   the CSPRNG, stores it in the session table (persisted via Settings) and prints
+   it once as 32 hex chars.
+2. On the node shell: `lora_node provision <node_id> <32-hex-key>` saves the
+   session to Settings. `lora_node status` shows node id and paired state.
+3. The node sends AES-128-GCM frames with a persisted write-ahead counter; the
+   gateway drops plaintext and replayed frames (`lora sessions` lists node ids,
+   last RX seq and replay drops, never keys).
+4. `lora forget <node_id>` removes the session and its persisted key.
 
-| Property | Mechanism |
-|----------|-----------|
-| Gateway authentication | PROV_RESPONSE signed with Ed25519 |
-| Session key confidentiality | Plaintext in PROV_RESPONSE — relies on 30s window + proximity |
-| Replay protection | Nonce in beacon; sequence numbers in data frames |
+Native_sim dev nodes use `CONFIG_LORA_NODE_DEV_KEY`/`CONFIG_LORA_NODE_DEV_NODE_ID`
+instead; never use those in production.
+
+----------|-----------|
+| Key distribution | Pre-shared per-node key, entered via shell; never sent over the air |
+| Replay protection | Per-direction sequence numbers, enforced before handlers run |
 | Frame encryption | AES-128-GCM on all post-pairing frames |
-| Unpair | Gateway sends PEER_REMOVE; node wipes key; GCM auth fails → self-reset to pairing mode |
+| Unpair | `lora forget <node_id>` removes the session and key; the gateway then drops that node's frames |
 
 ---
 
@@ -474,7 +497,9 @@ Bytes 2+:  response data
 - SF-dependent timeout with ±30% randomization: 5s at SF7, 30s at SF12
 - Exponential backoff: 1×, 2×, 4× timeout multiplier
 - Up to 3 retries per command (Kconfig: `CONFIG_LORA_RADIO_RETRY_MAX`)
-- Duplicate detection: sensor node checks seq_num, re-sends cached response
+- No duplicate-command cache: replayed seqs are dropped by the receiver before the
+  handler runs. A node retrying an RPC must use a new seq; the gateway answers
+  every command that passes replay protection
 - RPC_RESP serves as implicit ACK — standalone ACK (0x8) also supported
 
 ---
@@ -498,7 +523,7 @@ Gateway (lora_radio)                       Sensor Node (STM32WLE5JC)
 │  ... repeat for all chunks ...           │
 │                                          │
 │  FOTA_CHUNK (offset=final, LAST flag) ─►│
-│                                          │  Verify ED25519 signature
+│                                          │  Verify image hash
 │                                          │  boot_request_upgrade(TEST)
 │                                          │  Reboot
 │                                          │
@@ -511,7 +536,12 @@ Gateway (lora_radio)                       Sensor Node (STM32WLE5JC)
 
 ### Chunk protocol
 
-- Windowed sender: 4–16 chunks in flight (Kconfig default 8)
+- Window size 1 per node: the pending layer allows one chunk in flight, so the
+  effective window is 1 regardless of `CONFIG_LORA_RADIO_FOTA_WINDOW`
+- Every chunk and every retransmission of a chunk uses a fresh seq (new nonce)
+- ACK matching is by chunk offset: the ACK echoes `offset` and carries the
+  receiver's own seq, and retransmits change the chunk's seq, so seq cannot match.
+  ACKs for an offset other than the in-flight chunk are ignored
 - Each chunk uses `lora_pending_send_async()` for per-chunk reliability
 - Retry timer: 2 seconds per chunk (Kconfig: `CONFIG_LORA_RADIO_FOTA_RETRY_MS`)
 - 3 retries per chunk before cooldown
@@ -532,7 +562,7 @@ Gateway (lora_radio)                       Sensor Node (STM32WLE5JC)
 
 | SF / BW | Chunk size | Airtime | Interval | 128 KB image |
 |---------|------------|---------|----------|-------------|
-| SF7/BW500 | 231 B | ~56 ms | 5.6 s | ~52 min |
+| SF7/BW500 | 227 B | ~56 ms | 5.6 s | ~52 min |
 | SF7/BW125 | 50 B | ~72 ms | 7.2 s | ~6.4 hr |
 | SF10/BW125 | 50 B | ~371 ms | 37.1 s | ~33 hr |
 
@@ -548,7 +578,7 @@ CONFIG_LORA_RADIO_DRV_SX1276       — Semtech SX1276 driver (choice)
 CONFIG_LORA_RADIO_DRV_SX1262       — Semtech SX1262 driver (choice)
 CONFIG_LORA_RADIO_FAKE             — Fake radio for native_sim testing
 CONFIG_LORA_RADIO_FOTA             — Enable FOTA chunk handler
-CONFIG_LORA_RADIO_FOTA_CHUNK_SIZE  — Max chunk data size (default 231)
+CONFIG_LORA_RADIO_FOTA_CHUNK_SIZE  — Max chunk data size (default 227)
 CONFIG_LORA_RADIO_FOTA_WINDOW      — In-flight chunks (default 8)
 CONFIG_LORA_RADIO_AUTO_PUBLISH_MS  — Periodic trigger forwarding (0 = disabled)
 CONFIG_LORA_RADIO_RX_THREAD_STACK  — RX thread stack (default 2048)
@@ -569,7 +599,6 @@ CONFIG_LORA_RADIO_SESSION_MAX      — Max paired nodes (default 16)
 | cpatch delta FOTA | `fota_mode = 0x01` in FOTA_START — no protocol change |
 | New sensor types | Add `sensor_type` enum value — consumers ignore unknown types |
 | New RPC commands | Add command ID in reserved range — no framing change |
-| DH key exchange | Add to PROV_BEACON/RESPONSE as optional TLV — backward compatible |
 | Mesh / repeater | New frame type + dst_node forwarding logic — header already supports it |
 | LoRaWAN | Replace `lib/lora_radio/` internals — external surface (same zbus channels) unchanged |
 

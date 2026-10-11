@@ -16,4 +16,5 @@ target_include_directories(
   app PRIVATE ${CMAKE_SOURCE_DIR}/../../lib/lora_radio/include)
 
 # Define Kconfig constants that would normally come from lora_radio/Kconfig.
-target_compile_definitions(app PRIVATE CONFIG_LORA_RADIO_SESSION_MAX=4)
+target_compile_definitions(app PRIVATE CONFIG_LORA_RADIO_SESSION_MAX=4
+                                       CONFIG_LORA_RADIO_SEQ_RESERVE=64)

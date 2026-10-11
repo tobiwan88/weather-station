@@ -5,10 +5,12 @@ menuconfig LORA_RADIO
 	depends on ZBUS
 	depends on SENSOR_EVENT
 	depends on REMOTE_SENSOR
+	select LORA_PROTO
 	help
 	  Point-to-point LoRa communication library for wireless sensor nodes.
 	  Implements a custom L2 frame protocol with AES-128-GCM encryption,
-	  RPC commands, FOTA relay, and button-press provisioning.
+	  RPC commands and FOTA relay. Nodes use pre-shared per-node keys
+	  provisioned through the shell (no over-the-air pairing).
 
 	  Uses Zephyr's LoRa driver API (<zephyr/drivers/lora.h>). The radio
 	  driver can be Zephyr's built-in SX126x driver (real hardware) or a
@@ -46,12 +48,13 @@ config LORA_RADIO_FOTA
 
 config LORA_RADIO_FOTA_CHUNK_SIZE
 	int "FOTA chunk size in bytes"
-	default 231
-	range 16 231
+	default 227
+	range 16 227
 	depends on LORA_RADIO_FOTA
 	help
 	  Maximum payload bytes per FOTA_CHUNK frame. Must fit within the
-	  LoRa packet budget at the configured spreading factor.
+	  LoRa packet budget at the configured spreading factor: 255 bytes
+	  minus 24 bytes frame overhead minus the 4-byte chunk offset.
 
 config LORA_RADIO_FOTA_WINDOW
 	int "FOTA window size (chunks in flight)"
@@ -94,6 +97,60 @@ config LORA_RADIO_DEFAULT_BW
 	help
 	  Default bandwidth in kHz used when no per-peer override is set.
 
+config LORA_RADIO_FREQ_HZ
+	int "LoRa carrier frequency (Hz)"
+	default 868000000
+	help
+	  Carrier frequency used for both RX and TX. Must be legal in your
+	  region and match the sensor nodes.
+
+config LORA_RADIO_TX_POWER
+	int "LoRa TX power (dBm)"
+	default 14
+	range -9 22
+	help
+	  Transmit power applied to every gateway/bridge transmission.
+
+config LORA_RADIO_RX_SLICE_MS
+	int "RX listen slice (ms)"
+	default 200
+	range 20 5000
+	help
+	  The RX thread listens in slices of this length and releases the
+	  modem between slices so lora_radio_send() can switch to TX. A
+	  longer slice delays outgoing frames by up to this long.
+
+config LORA_RADIO_REQUIRE_ENCRYPTION
+	bool "Drop plaintext and unknown-node uplink frames"
+	default y
+	help
+	  Only frames from nodes with a stored key that carry the ENCRYPTED
+	  flag and authenticate are accepted. Disable only for bring-up:
+	  plaintext frames are then dispatched without authentication (they
+	  do not update replay state or link statistics).
+
+config LORA_RADIO_SEQ_RESERVE
+	int "Downlink sequence reservation size"
+	default 64
+	range 1 65536
+	help
+	  The downlink counter is persisted in blocks of this many values
+	  (write-ahead). After a reboot it resumes at the persisted bound, so
+	  up to this many values are skipped but never reused. Encrypted TX is
+	  refused if the reservation cannot be persisted.
+
+config LORA_RADIO_ALLOW_VOLATILE_SEQ
+	bool "Allow a non-persistent downlink counter (test only)"
+	default y if BOARD_NATIVE_SIM
+	help
+	  The downlink sequence counter is the AES-GCM nonce and must survive
+	  reboots. If settings have no storage backend (SETTINGS_NONE) the
+	  reservation cannot be persisted and encrypted TX fails closed. This
+	  option lets TX continue from a RAM-only counter that restarts at 1
+	  on every boot, which repeats (key, nonce) pairs across reboots.
+	  Test-only: native_sim and simulators without flash. Never enable
+	  on hardware.
+
 config LORA_SENSOR_PUBLISH_INTERVAL_S
 	int "Sensor node publish interval in seconds"
 	default 60
@@ -122,9 +179,10 @@ config LORA_RADIO_SHELL
 	depends on SHELL
 	help
 	  Adds the "lora" shell command group:
-	    lora status          — show radio and session state
-	    lora send <node> ... — send a raw frame (debug)
-	    lora list            — list active sessions
+	    lora provision <node> — generate and store a per-node key
+	    lora forget <node>    — remove a node session
+	    lora sessions         — list sessions (no keys)
+	    lora status / rpc / unpair
 
 config LORA_RADIO_PENDING
 	bool "Reliable TX subsystem (retry + ACK matching)"
