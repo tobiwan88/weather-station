@@ -74,8 +74,8 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l22">k_sys_work_q_init (zephyr/kernel/system_work_q.c:22)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="72">called 72 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l22">sys_work_q_init (zephyr/kernel/system_work_q.c:22)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="71">called 71 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -95,7 +95,7 @@
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
     </div>
     <div class="nav">
-      <a class="nav prev" href="index.stack.c.52941380a5a4d39ed0cf11d91ca55b6a.html"></a>
+      <a class="nav prev" href="index.thread_entry.c.9eca9777b1b2ab51e37f4ccbbb4bd93b.html"></a>
       <a class="nav index" href="index.html"></a>
       <a class="nav next" href="index.thread.c.f4313229981824521b268a44c28f9630.html"></a>
     </div>
@@ -211,7 +211,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/init.h&gt;</span></td>
+        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;kernel_internal.h&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l16" href="#l16">16</a></td>
@@ -259,8 +259,8 @@
         <td class="lineno"><a id="l22" href="#l22">22</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">72</td>
-        <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">k_sys_work_q_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
+        <td class="linecount coveredLine show_coveredLine">71</td>
+        <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">sys_work_q_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l23" href="#l23">23</a></td>
@@ -322,7 +322,7 @@
         <td class="lineno"><a id="l31" href="#l31">31</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">72</td>
+        <td class="linecount coveredLine show_coveredLine">71</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_work_queue_start</span><span class="p">(</span><span class="o">&amp;</span><span class="n">k_sys_work_q</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -350,32 +350,53 @@
         <td class="lineno"><a id="l35" href="#l35">35</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">72</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="linecount coveredLine show_coveredLine">71</td>
+        <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l36" href="#l36">36</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l37" href="#l37">37</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm">/* Registered into the kernel post-init section. The entry lives in this TU,</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l38" href="#l38">38</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="n">SYS_INIT</span><span class="p">(</span><span class="n">k_sys_work_q_init</span><span class="p">,</span><span class="w"> </span><span class="n">POST_KERNEL</span><span class="p">,</span><span class="w"> </span><span class="n">CONFIG_KERNEL_INIT_PRIORITY_DEFAULT</span><span class="p">);</span></td>
+        <td class="src "><span class="cm"> * so it (and this init) is linked only when something references the system</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l39" href="#l39">39</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm"> * work queue (e.g. k_sys_work_q), preserving pay-per-use linkage.</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l40" href="#l40">40</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm"> */</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l41" href="#l41">41</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="n">K_KERNEL_INIT_POST</span><span class="p">(</span><span class="n">sys_work_q_init</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l42" href="#l42">42</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -388,7 +409,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

@@ -44,12 +44,12 @@
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-none">0.0%</td>
-        <td class="coverage-none">0 / 0 / 4</td>
+        <td class="coverage-none">0 / 0 / 10</td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
         <td class="coverage-none">0.0%</td>
-        <td class="coverage-none">0 / 0 / 2</td>
+        <td class="coverage-none">0 / 0 / 4</td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
@@ -74,7 +74,21 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 sortable">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l25">sys_clock_idle_exit (zephyr/drivers/timer/sys_clock_init.c:25)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l41">sys_clock_idle_enter (zephyr/drivers/timer/sys_clock_init.c:41)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
+  </div>
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l27">sys_clock_idle_exit (zephyr/drivers/timer/sys_clock_init.c:27)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
+  </div>
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l31">sys_clock_no_timeout (zephyr/drivers/timer/sys_clock_init.c:31)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
@@ -97,14 +111,14 @@
     zephyr/drivers/timer/sys_clock_init.c
     <div class="toggle-buttons">
       <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">0 covered</button>
-      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">4 uncovered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">10 uncovered</button>
       <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">0 partial covered</button>
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
     </div>
     <div class="nav">
       <a class="nav prev" href="index.native_sim_timer.c.b48cfbdd47caf735ba40740868628bec.html"></a>
       <a class="nav index" href="index.html"></a>
-      <a class="nav next" href="index.ffs.h.264283fcb17bfabd38d6d8c67d168bab.html"></a>
+      <a class="nav next" href="index.sys_lpm_hooks_stubs.c.403b54b7798e7ad68418d8e7b2eecd8b.html"></a>
     </div>
   </div>
   <div class="source-table-container">
@@ -260,7 +274,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="nf">sys_clock_set_timeout</span><span class="p">(</span><span class="kt">int32_t</span><span class="w"> </span><span class="n">ticks</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">idle</span><span class="p">)</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="nf">sys_clock_set_timeout</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ticks</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">idle</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l22" href="#l22">22</a></td>
@@ -273,39 +287,200 @@
         <td class="lineno"><a id="l23" href="#l23">23</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">ticks</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l24" href="#l24">24</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">	</span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">idle</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l25" href="#l25">25</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="nf">sys_clock_idle_exit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l26" href="#l26">26</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l27" href="#l27">27</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="nf">sys_clock_idle_exit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l28" href="#l28">28</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l29" href="#l29">29</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l30" href="#l30">30</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l31" href="#l31">31</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="nf">sys_clock_no_timeout</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l32" href="#l32">32</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l33" href="#l33">33</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="cm">/* Ask for the longest wait the interface can express. UINT32_MAX is</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l34" href="#l34">34</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">	 * numerically what K_TICKS_FOREVER was here, so a driver that has not</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l35" href="#l35">35</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">	 * migrated and still keys on that value stops its clock as it always</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l36" href="#l36">36</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">	 * did. It carries no special meaning otherwise.</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l37" href="#l37">37</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">	 */</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l38" href="#l38">38</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">sys_clock_set_timeout</span><span class="p">(</span><span class="n">UINT32_MAX</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l39" href="#l39">39</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l40" href="#l40">40</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l41" href="#l41">41</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="nf">sys_clock_idle_enter</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ticks</span><span class="p">)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l42" href="#l42">42</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l43" href="#l43">43</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="cm">/* A driver that does not implement this hook may still key its</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l44" href="#l44">44</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">	 * low-power handling on sys_clock_set_timeout()&#39;s idle argument, so</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l45" href="#l45">45</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">	 * pass true here. That argument is deprecated in favour of</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l46" href="#l46">46</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">	 * implementing this hook, and carries no information for a driver</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l47" href="#l47">47</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">	 * that does.</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l48" href="#l48">48</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">	 */</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l49" href="#l49">49</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">sys_clock_set_timeout</span><span class="p">(</span><span class="n">ticks</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l50" href="#l50">50</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l51" href="#l51">51</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -318,7 +493,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

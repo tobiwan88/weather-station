@@ -44,7 +44,7 @@
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-none">0.0%</td>
-        <td class="coverage-none">0 / 0 / 20</td>
+        <td class="coverage-none">0 / 0 / 21</td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
@@ -90,7 +90,7 @@
     zephyr/subsys/net/l2/ethernet/ethernet_stats.c
     <div class="toggle-buttons">
       <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">0 covered</button>
-      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">20 uncovered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">21 uncovered</button>
       <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">0 partial covered</button>
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
     </div>
@@ -280,127 +280,127 @@
         <td class="lineno"><a id="l25" href="#l25">25</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ethernet_api</span><span class="w"> </span><span class="o">*</span><span class="n">eth</span><span class="p">;</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">net_if_get_device</span><span class="p">(</span><span class="n">iface</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l26" href="#l26">26</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ethernet_api</span><span class="w"> </span><span class="o">*</span><span class="n">eth</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l27" href="#l27">27</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">NET_MGMT_GET_COMMAND</span><span class="p">(</span><span class="n">mgmt_request</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l28" href="#l28">28</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">case</span><span class="w"> </span><span class="no">NET_REQUEST_STATS_CMD_GET_ETHERNET</span><span class="p">:</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">NET_MGMT_GET_COMMAND</span><span class="p">(</span><span class="n">mgmt_request</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l29" href="#l29">29</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">net_if_l2</span><span class="p">(</span><span class="n">iface</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">NET_L2_GET_NAME</span><span class="p">(</span><span class="n">ETHERNET</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">case</span><span class="w"> </span><span class="no">NET_REQUEST_STATS_CMD_GET_ETHERNET</span><span class="p">:</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l30" href="#l30">30</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENOENT</span><span class="p">;</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">net_if_l2</span><span class="p">(</span><span class="n">iface</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">NET_L2_GET_NAME</span><span class="p">(</span><span class="n">ETHERNET</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l31" href="#l31">31</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="p">}</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENOENT</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l32" href="#l32">32</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">		</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l33" href="#l33">33</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">eth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">net_if_get_device</span><span class="p">(</span><span class="n">iface</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">api</span><span class="p">;</span></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l34" href="#l34">34</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">eth</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="o">||</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">eth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">api</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l35" href="#l35">35</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		    </span><span class="p">(</span><span class="n">eth</span><span class="o">-&gt;</span><span class="n">get_stats</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">eth</span><span class="o">-&gt;</span><span class="n">get_stats_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">eth</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="o">||</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l36" href="#l36">36</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENOENT</span><span class="p">;</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		    </span><span class="p">(</span><span class="n">eth</span><span class="o">-&gt;</span><span class="n">get_stats</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">eth</span><span class="o">-&gt;</span><span class="n">get_stats_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l37" href="#l37">37</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="p">}</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENOENT</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l38" href="#l38">38</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">		</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l39" href="#l39">39</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">len_chk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_stats_eth</span><span class="p">);</span></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l40" href="#l40">40</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">eth</span><span class="o">-&gt;</span><span class="n">get_stats_type</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">len_chk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_stats_eth</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l41" href="#l41">41</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			</span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eth</span><span class="o">-&gt;</span><span class="n">get_stats_type</span><span class="p">(</span><span class="n">net_if_get_device</span><span class="p">(</span><span class="n">iface</span><span class="p">),</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">eth</span><span class="o">-&gt;</span><span class="n">get_stats_type</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l42" href="#l42">42</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">						  </span><span class="n">ETHERNET_STATS_TYPE_ALL</span><span class="p">);</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			</span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eth</span><span class="o">-&gt;</span><span class="n">get_stats_type</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">iface</span><span class="p">,</span><span class="w"> </span><span class="n">ETHERNET_STATS_TYPE_ALL</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l43" href="#l43">43</a></td>
@@ -414,7 +414,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			</span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eth</span><span class="o">-&gt;</span><span class="n">get_stats</span><span class="p">(</span><span class="n">net_if_get_device</span><span class="p">(</span><span class="n">iface</span><span class="p">));</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			</span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">eth</span><span class="o">-&gt;</span><span class="n">get_stats</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">iface</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l45" href="#l45">45</a></td>
@@ -549,7 +549,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

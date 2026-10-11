@@ -44,7 +44,7 @@
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-none">0.0%</td>
-        <td class="coverage-none">0 / 0 / 65</td>
+        <td class="coverage-none">0 / 0 / 67</td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
@@ -81,7 +81,7 @@
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l54">conn_handler_cb (zephyr/subsys/net/lib/shell/conn.c:54)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l55">conn_handler_cb (zephyr/subsys/net/lib/shell/conn.c:55)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
@@ -111,7 +111,7 @@
     zephyr/subsys/net/lib/shell/conn.c
     <div class="toggle-buttons">
       <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">0 covered</button>
-      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">65 uncovered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">67 uncovered</button>
       <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">0 partial covered</button>
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
     </div>
@@ -504,218 +504,218 @@
         <td class="lineno"><a id="l54" href="#l54">54</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">conn_handler_cb</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_conn</span><span class="w"> </span><span class="o">*</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">user_data</span><span class="p">)</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#if defined(CONFIG_NET_NATIVE)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l55" href="#l55">55</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">conn_handler_cb</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_conn</span><span class="w"> </span><span class="o">*</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">user_data</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l56" href="#l56">56</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#if defined(CONFIG_NET_IPV6) &amp;&amp; !defined(CONFIG_NET_IPV4)</span></td>
+        <td class="src "><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l57" href="#l57">57</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define ADDR_LEN NET_IPV6_ADDR_LEN</span></td>
+        <td class="src "><span class="cp">#if defined(CONFIG_NET_IPV6) &amp;&amp; !defined(CONFIG_NET_IPV4)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l58" href="#l58">58</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#elif defined(CONFIG_NET_IPV4) &amp;&amp; !defined(CONFIG_NET_IPV6)</span></td>
+        <td class="src "><span class="cp">#define ADDR_LEN NET_IPV6_ADDR_LEN</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l59" href="#l59">59</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define ADDR_LEN NET_IPV4_ADDR_LEN</span></td>
+        <td class="src "><span class="cp">#elif defined(CONFIG_NET_IPV4) &amp;&amp; !defined(CONFIG_NET_IPV6)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l60" href="#l60">60</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#else</span></td>
+        <td class="src "><span class="cp">#define ADDR_LEN NET_IPV4_ADDR_LEN</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l61" href="#l61">61</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define ADDR_LEN NET_IPV6_ADDR_LEN</span></td>
+        <td class="src "><span class="cp">#else</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l62" href="#l62">62</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "><span class="cp">#define ADDR_LEN NET_IPV6_ADDR_LEN</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l63" href="#l63">63</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_shell_user_data</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_data</span><span class="p">;</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l64" href="#l64">64</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">shell</span><span class="w"> </span><span class="o">*</span><span class="n">sh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="o">-&gt;</span><span class="n">sh</span><span class="p">;</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_shell_user_data</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">user_data</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l65" href="#l65">65</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="o">-&gt;</span><span class="n">user_data</span><span class="p">;</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">shell</span><span class="w"> </span><span class="o">*</span><span class="n">sh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="o">-&gt;</span><span class="n">sh</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l66" href="#l66">66</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="cm">/* +7 for []:port */</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_sockaddr</span><span class="w"> </span><span class="o">*</span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">net_sad</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l67" href="#l67">67</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">addr_local</span><span class="p">[</span><span class="n">ADDR_LEN</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">7</span><span class="p">];</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_sockaddr</span><span class="w"> </span><span class="o">*</span><span class="n">remote</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">net_sad</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">remote_addr</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l68" href="#l68">68</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">addr_remote</span><span class="p">[</span><span class="n">ADDR_LEN</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">7</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="o">-&gt;</span><span class="n">user_data</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l69" href="#l69">69</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">	</span><span class="cm">/* +7 for []:port */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l70" href="#l70">70</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_NET_IPV6</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">sa_family</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NET_AF_INET6</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">addr_local</span><span class="p">[</span><span class="n">ADDR_LEN</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">7</span><span class="p">];</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l71" href="#l71">71</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">snprintk</span><span class="p">(</span><span class="n">addr_local</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">addr_local</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;[%s]:%u&quot;</span><span class="p">,</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="kt">char</span><span class="w"> </span><span class="n">addr_remote</span><span class="p">[</span><span class="n">ADDR_LEN</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">7</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l72" href="#l72">72</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_sprint_ipv6_addr</span><span class="p">(</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l73" href="#l73">73</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">				 </span><span class="o">&amp;</span><span class="n">net_sin6</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin6_addr</span><span class="p">),</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l74" href="#l74">74</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_ntohs</span><span class="p">(</span><span class="n">net_sin6</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin6_port</span><span class="p">));</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l75" href="#l75">75</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">snprintk</span><span class="p">(</span><span class="n">addr_remote</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">addr_remote</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;[%s]:%u&quot;</span><span class="p">,</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l76" href="#l76">76</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_sprint_ipv6_addr</span><span class="p">(</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l77" href="#l77">77</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">				 </span><span class="o">&amp;</span><span class="n">net_sin6</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">remote_addr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin6_addr</span><span class="p">),</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l78" href="#l78">78</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_ntohs</span><span class="p">(</span><span class="n">net_sin6</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">remote_addr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin6_port</span><span class="p">));</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l79" href="#l79">79</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l80" href="#l80">80</a></td>
+        <td class="lineno"><a id="l73" href="#l73">73</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_NET_IPV4</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">sa_family</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NET_AF_INET</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_NET_IPV6</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">ss_family</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NET_AF_INET6</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l74" href="#l74">74</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">snprintk</span><span class="p">(</span><span class="n">addr_local</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">addr_local</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;[%s]:%u&quot;</span><span class="p">,</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l75" href="#l75">75</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_sprint_ipv6_addr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">net_sin6</span><span class="p">(</span><span class="n">local</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin6_addr</span><span class="p">),</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l76" href="#l76">76</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_ntohs</span><span class="p">(</span><span class="n">net_sin6</span><span class="p">(</span><span class="n">local</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin6_port</span><span class="p">));</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l77" href="#l77">77</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">snprintk</span><span class="p">(</span><span class="n">addr_remote</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">addr_remote</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;[%s]:%u&quot;</span><span class="p">,</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l78" href="#l78">78</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_sprint_ipv6_addr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">net_sin6</span><span class="p">(</span><span class="n">remote</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin6_addr</span><span class="p">),</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l79" href="#l79">79</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_ntohs</span><span class="p">(</span><span class="n">net_sin6</span><span class="p">(</span><span class="n">remote</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin6_port</span><span class="p">));</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l80" href="#l80">80</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l81" href="#l81">81</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">snprintk</span><span class="p">(</span><span class="n">addr_local</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">addr_local</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;%s:%d&quot;</span><span class="p">,</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_NET_IPV4</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">ss_family</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NET_AF_INET</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l82" href="#l82">82</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_sprint_ipv4_addr</span><span class="p">(</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">snprintk</span><span class="p">(</span><span class="n">addr_local</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">addr_local</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;%s:%d&quot;</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l83" href="#l83">83</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">				 </span><span class="o">&amp;</span><span class="n">net_sin</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">),</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_sprint_ipv4_addr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">net_sin</span><span class="p">(</span><span class="n">local</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">),</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l84" href="#l84">84</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_ntohs</span><span class="p">(</span><span class="n">net_sin</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin_port</span><span class="p">));</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_ntohs</span><span class="p">(</span><span class="n">net_sin</span><span class="p">(</span><span class="n">local</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin_port</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l85" href="#l85">85</a></td>
@@ -729,140 +729,140 @@
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_sprint_ipv4_addr</span><span class="p">(</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_sprint_ipv4_addr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">net_sin</span><span class="p">(</span><span class="n">remote</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">),</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l87" href="#l87">87</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">				 </span><span class="o">&amp;</span><span class="n">net_sin</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">remote_addr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">),</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_ntohs</span><span class="p">(</span><span class="n">net_sin</span><span class="p">(</span><span class="n">remote</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin_port</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l88" href="#l88">88</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">net_ntohs</span><span class="p">(</span><span class="n">net_sin</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">remote_addr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin_port</span><span class="p">));</span></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l89" href="#l89">89</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">ss_family</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NET_AF_UNSPEC</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l90" href="#l90">90</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">sa_family</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NET_AF_UNSPEC</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">snprintk</span><span class="p">(</span><span class="n">addr_local</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">addr_local</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;AF_UNSPEC&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l91" href="#l91">91</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">snprintk</span><span class="p">(</span><span class="n">addr_local</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">addr_local</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;AF_UNSPEC&quot;</span><span class="p">);</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">ss_family</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NET_AF_PACKET</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l92" href="#l92">92</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">sa_family</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">NET_AF_PACKET</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l93" href="#l93">93</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">snprintk</span><span class="p">(</span><span class="n">addr_local</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">addr_local</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;AF_PACKET&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l94" href="#l94">94</a></td>
+        <td class="lineno"><a id="l93" href="#l93">93</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l95" href="#l95">95</a></td>
+        <td class="lineno"><a id="l94" href="#l94">94</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">snprintk</span><span class="p">(</span><span class="n">addr_local</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">addr_local</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;AF_UNK(%d)&quot;</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l96" href="#l96">96</a></td>
+        <td class="lineno"><a id="l95" href="#l95">95</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">sa_family</span><span class="p">);</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">			 </span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">ss_family</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l97" href="#l97">97</a></td>
+        <td class="lineno"><a id="l96" href="#l96">96</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="w">	</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l98" href="#l98">98</a></td>
+        <td class="lineno"><a id="l97" href="#l97">97</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l99" href="#l99">99</a></td>
+        <td class="lineno"><a id="l98" href="#l98">98</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;[%2d] %p %p  %s</span><span class="se">\t</span><span class="s">%16s</span><span class="se">\t</span><span class="s">%16s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l100" href="#l100">100</a></td>
+        <td class="lineno"><a id="l99" href="#l99">99</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="w">	   </span><span class="p">(</span><span class="o">*</span><span class="n">count</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">cb</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l101" href="#l101">101</a></td>
+        <td class="lineno"><a id="l100" href="#l100">100</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	   </span><span class="n">net_proto2str</span><span class="p">(</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">sa_family</span><span class="p">,</span><span class="w"> </span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">proto</span><span class="p">),</span></td>
+        <td class="src "><span class="w">	   </span><span class="n">net_proto2str</span><span class="p">(</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">local_addr</span><span class="p">.</span><span class="n">ss_family</span><span class="p">,</span><span class="w"> </span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">proto</span><span class="p">),</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l102" href="#l102">102</a></td>
+        <td class="lineno"><a id="l101" href="#l101">101</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="w">	   </span><span class="n">addr_local</span><span class="p">,</span><span class="w"> </span><span class="n">addr_remote</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l103" href="#l103">103</a></td>
+        <td class="lineno"><a id="l102" href="#l102">102</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l104" href="#l104">104</a></td>
+        <td class="lineno"><a id="l103" href="#l103">103</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="p">(</span><span class="o">*</span><span class="n">count</span><span class="p">)</span><span class="o">++</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l105" href="#l105">105</a></td>
+        <td class="lineno"><a id="l104" href="#l104">104</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l105" href="#l105">105</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_NET_NATIVE */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l106" href="#l106">106</a></td>
@@ -1009,7 +1009,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	   </span><span class="n">net_ntohs</span><span class="p">(</span><span class="n">net_sin6_ptr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">local</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin6_port</span><span class="p">),</span></td>
+        <td class="src "><span class="w">	   </span><span class="n">net_ntohs</span><span class="p">(</span><span class="n">net_sin6</span><span class="p">(</span><span class="o">&amp;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">context</span><span class="o">-&gt;</span><span class="n">local</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin6_port</span><span class="p">),</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l127" href="#l127">127</a></td>
@@ -1736,106 +1736,106 @@
         <td class="lineno"><a id="l230" href="#l230">230</a></td>
         <td class="linebranch">
         </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#if defined(CONFIG_NET_NATIVE)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l231" href="#l231">231</a></td>
+        <td class="linebranch">
+        </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">     Handler    Callback  Proto            Local                  Remote</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l231" href="#l231">231</a></td>
+        <td class="lineno"><a id="l232" href="#l232">232</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l232" href="#l232">232</a></td>
+        <td class="lineno"><a id="l233" href="#l233">233</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l233" href="#l233">233</a></td>
+        <td class="lineno"><a id="l234" href="#l234">234</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l234" href="#l234">234</a></td>
+        <td class="lineno"><a id="l235" href="#l235">235</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">net_conn_foreach</span><span class="p">(</span><span class="n">conn_handler_cb</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">user_data</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l235" href="#l235">235</a></td>
+        <td class="lineno"><a id="l236" href="#l236">236</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l236" href="#l236">236</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l237" href="#l237">237</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;No connection handlers found.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l238" href="#l238">238</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="p">}</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;No connection handlers found.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l239" href="#l239">239</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l240" href="#l240">240</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#if defined(CONFIG_NET_TCP)</span></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_NET_NATIVE */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l241" href="#l241">241</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">TCP        Context   Src port Dst port   &quot;</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l242" href="#l242">242</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	   </span><span class="s">&quot;Send-Seq   Send-Ack  MSS    State</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l243" href="#l243">243</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l244" href="#l244">244</a></td>
+        <td class="lineno"><a id="l242" href="#l242">242</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#if defined(CONFIG_NET_TCP)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l243" href="#l243">243</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">TCP        Context   Src port Dst port   &quot;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l244" href="#l244">244</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	   </span><span class="s">&quot;Send-Seq   Send-Ack  MSS    State</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l245" href="#l245">245</a></td>
@@ -1849,7 +1849,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">net_tcp_foreach</span><span class="p">(</span><span class="n">tcp_cb</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">user_data</span><span class="p">);</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l247" href="#l247">247</a></td>
@@ -1863,56 +1863,56 @@
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">net_tcp_foreach</span><span class="p">(</span><span class="n">tcp_cb</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">user_data</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l249" href="#l249">249</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;No TCP connections</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l250" href="#l250">250</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l251" href="#l251">251</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cp">#if CONFIG_NET_TCP_LOG_LEVEL &gt;= LOG_LEVEL_DBG</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l252" href="#l252">252</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="cm">/* Print information about pending packets */</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l253" href="#l253">253</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">tcp_detail_info</span><span class="w"> </span><span class="n">details</span><span class="p">;</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l254" href="#l254">254</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
+        <td class="lineno"><a id="l250" href="#l250">250</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l251" href="#l251">251</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;No TCP connections</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l252" href="#l252">252</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l253" href="#l253">253</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#if CONFIG_NET_TCP_LOG_LEVEL &gt;= LOG_LEVEL_DBG</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l254" href="#l254">254</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">		</span><span class="cm">/* Print information about pending packets */</span></td>
+      </tr>
+      <tr class="source-line">
         <td class="lineno"><a id="l255" href="#l255">255</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src "><span class="w">		</span><span class="k">struct</span><span class="w"> </span><span class="nc">tcp_detail_info</span><span class="w"> </span><span class="n">details</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l256" href="#l256">256</a></td>
@@ -1926,42 +1926,42 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_NET_TCP</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src "><span class="w">		</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l258" href="#l258">258</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">			</span><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">details</span><span class="p">));</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l259" href="#l259">259</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">			</span><span class="n">user_data</span><span class="p">.</span><span class="n">user_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">details</span><span class="p">;</span></td>
+        <td class="src "><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_NET_TCP</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l260" href="#l260">260</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="p">}</span></td>
+        <td class="src "><span class="w">			</span><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">details</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">details</span><span class="p">));</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l261" href="#l261">261</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">			</span><span class="n">user_data</span><span class="p">.</span><span class="n">user_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">details</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l262" href="#l262">262</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="n">net_tcp_foreach</span><span class="p">(</span><span class="n">tcp_sent_list_cb</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">user_data</span><span class="p">);</span></td>
+        <td class="src "><span class="w">		</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l263" href="#l263">263</a></td>
@@ -1975,98 +1975,98 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_NET_TCP</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src "><span class="w">		</span><span class="n">net_tcp_foreach</span><span class="p">(</span><span class="n">tcp_sent_list_cb</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">user_data</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l265" href="#l265">265</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">details</span><span class="p">.</span><span class="n">count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l266" href="#l266">266</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">				</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;No active connections.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span></td>
+        <td class="src "><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_NET_TCP</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l267" href="#l267">267</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">			</span><span class="p">}</span></td>
+        <td class="src "><span class="w">			</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">details</span><span class="p">.</span><span class="n">count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l268" href="#l268">268</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="p">}</span></td>
+        <td class="src "><span class="w">				</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;No active connections.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l269" href="#l269">269</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_NET_TCP_LOG_LEVEL &gt;= LOG_LEVEL_DBG */</span></td>
+        <td class="src "><span class="w">			</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l270" href="#l270">270</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="p">}</span></td>
+        <td class="src "><span class="w">		</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l271" href="#l271">271</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_NET_TCP_LOG_LEVEL &gt;= LOG_LEVEL_DBG */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l272" href="#l272">272</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#if CONFIG_NET_TCP_LOG_LEVEL &lt; LOG_LEVEL_DBG</span></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l273" href="#l273">273</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">PR_INFO</span><span class="p">(</span><span class="s">&quot;Set %s to enable %s support.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l274" href="#l274">274</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="s">&quot;CONFIG_NET_TCP_LOG_LEVEL_DBG&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TCP debugging&quot;</span><span class="p">);</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l275" href="#l275">275</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_NET_TCP_LOG_LEVEL &lt; LOG_LEVEL_DBG */</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l276" href="#l276">276</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
+        <td class="lineno"><a id="l274" href="#l274">274</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#if CONFIG_NET_TCP_LOG_LEVEL &lt; LOG_LEVEL_DBG</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l275" href="#l275">275</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">PR_INFO</span><span class="p">(</span><span class="s">&quot;Set %s to enable %s support.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l276" href="#l276">276</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">		</span><span class="s">&quot;CONFIG_NET_TCP_LOG_LEVEL_DBG&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TCP debugging&quot;</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
         <td class="lineno"><a id="l277" href="#l277">277</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_NET_TCP_LOG_LEVEL &lt; LOG_LEVEL_DBG */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l278" href="#l278">278</a></td>
@@ -2080,28 +2080,28 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#if defined(CONFIG_NET_IPV6_FRAGMENT)</span></td>
+        <td class="src "><span class="cp">#endif</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l280" href="#l280">280</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l281" href="#l281">281</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">#if defined(CONFIG_NET_IPV6_FRAGMENT)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l282" href="#l282">282</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="n">net_ipv6_frag_foreach</span><span class="p">(</span><span class="n">ipv6_frag_cb</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">user_data</span><span class="p">);</span></td>
+        <td class="src "><span class="w">	</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l283" href="#l283">283</a></td>
@@ -2115,63 +2115,63 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="cm">/* Do not print anything if no fragments are pending atm */</span></td>
+        <td class="src "><span class="w">	</span><span class="n">net_ipv6_frag_foreach</span><span class="p">(</span><span class="n">ipv6_frag_cb</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">user_data</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l285" href="#l285">285</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l286" href="#l286">286</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">	</span><span class="cm">/* Do not print anything if no fragments are pending atm */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l287" href="#l287">287</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#else</span></td>
+        <td class="src "><span class="cp">#endif</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l288" href="#l288">288</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="n">PR_INFO</span><span class="p">(</span><span class="s">&quot;Set %s to enable %s support.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l289" href="#l289">289</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="s">&quot;CONFIG_NET_OFFLOAD or CONFIG_NET_NATIVE&quot;</span><span class="p">,</span></td>
+        <td class="src "><span class="cp">#else</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l290" href="#l290">290</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="s">&quot;connection information&quot;</span><span class="p">);</span></td>
+        <td class="src "><span class="w">	</span><span class="n">PR_INFO</span><span class="p">(</span><span class="s">&quot;Set %s to enable %s support.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l291" href="#l291">291</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">		</span><span class="s">&quot;CONFIG_NET_OFFLOAD or CONFIG_NET_NATIVE&quot;</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l292" href="#l292">292</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_NET_OFFLOAD || CONFIG_NET_NATIVE */</span></td>
+        <td class="src "><span class="w">		</span><span class="s">&quot;connection information&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l293" href="#l293">293</a></td>
@@ -2184,46 +2184,60 @@
         <td class="lineno"><a id="l294" href="#l294">294</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_NET_OFFLOAD || CONFIG_NET_NATIVE */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l295" href="#l295">295</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l296" href="#l296">296</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l297" href="#l297">297</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l298" href="#l298">298</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="n">SHELL_SUBCMD_ADD</span><span class="p">((</span><span class="n">net</span><span class="p">),</span><span class="w"> </span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Print information about network connections.&quot;</span><span class="p">,</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l299" href="#l299">299</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		 </span><span class="n">cmd_net_conn</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l300" href="#l300">300</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="n">SHELL_SUBCMD_ADD</span><span class="p">((</span><span class="n">net</span><span class="p">),</span><span class="w"> </span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Print information about network connections.&quot;</span><span class="p">,</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l301" href="#l301">301</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">		 </span><span class="n">cmd_net_conn</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l302" href="#l302">302</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -2236,7 +2250,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

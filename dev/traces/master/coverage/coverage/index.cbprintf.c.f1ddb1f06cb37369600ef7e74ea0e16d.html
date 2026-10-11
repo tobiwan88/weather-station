@@ -95,7 +95,7 @@
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
     </div>
     <div class="nav">
-      <a class="nav prev" href="index.assert.c.b83ac0e3a22f92c423732be7cbeb3152.html"></a>
+      <a class="nav prev" href="index.boot_banner.c.002cfcc2a674436ca7d4d1614d11d7a4.html"></a>
       <a class="nav index" href="index.html"></a>
       <a class="nav next" href="index.cbprintf_complete.c.657e16c121bc963e3fd273c744d075b9.html"></a>
     </div>
@@ -449,7 +449,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">c</span><span class="p">;</span></td>
+        <td class="src "><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="p">)</span><span class="w"> </span><span class="n">c</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l50" href="#l50">50</a></td>
@@ -568,7 +568,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">cbvprintf</span><span class="p">(</span><span class="n">fputc</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="n">ap</span><span class="p">);</span></td>
+        <td class="src "><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">cbvprintf</span><span class="p">((</span><span class="n">cbprintf_cb</span><span class="p">)</span><span class="n">fputc</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="n">ap</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l67" href="#l67">67</a></td>
@@ -687,7 +687,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">cbvprintf</span><span class="p">(</span><span class="n">fputc</span><span class="p">,</span><span class="w"> </span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="n">ap</span><span class="p">);</span></td>
+        <td class="src "><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">cbvprintf</span><span class="p">((</span><span class="n">cbprintf_cb</span><span class="p">)</span><span class="n">fputc</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">format</span><span class="p">,</span><span class="w"> </span><span class="n">ap</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l84" href="#l84">84</a></td>
@@ -969,7 +969,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

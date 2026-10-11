@@ -74,7 +74,7 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l36">_StackCheckHandler (zephyr/kernel/compiler_stack_protect.c:36)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l35">_StackCheckHandler (zephyr/kernel/compiler_stack_protect.c:35)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
@@ -260,311 +260,332 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/kernel_structs.h&gt;</span></td>
+        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/toolchain.h&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l23" href="#l23">23</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/toolchain.h&gt;</span></td>
+        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/linker/sections.h&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l24" href="#l24">24</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/linker/sections.h&gt;</span></td>
+        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/kernel.h&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l25" href="#l25">25</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/kernel.h&gt;</span></td>
+        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/app_memory/app_memdomain.h&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l26" href="#l26">26</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/app_memory/app_memdomain.h&gt;</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l27" href="#l27">27</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm">/**</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l28" href="#l28">28</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">/**</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l29" href="#l29">29</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "><span class="cm"> * @brief Stack canary error handler</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l30" href="#l30">30</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @brief Stack canary error handler</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l31" href="#l31">31</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "><span class="cm"> * This function is invoked when a stack canary error is detected.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l32" href="#l32">32</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * This function is invoked when a stack canary error is detected.</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l33" href="#l33">33</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "><span class="cm"> * @note This function does not return.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l34" href="#l34">34</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @return Does not return</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l35" href="#l35">35</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
         <td class="src "><span class="cm"> */</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l36" href="#l36">36</a></td>
+        <td class="lineno"><a id="l35" href="#l35">35</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">_StackCheckHandler</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l37" href="#l37">37</a></td>
+        <td class="lineno"><a id="l36" href="#l36">36</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l38" href="#l38">38</a></td>
+        <td class="lineno"><a id="l37" href="#l37">37</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="w">	</span><span class="cm">/* Stack canary error is a software fatal condition; treat it as such.</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l39" href="#l39">39</a></td>
+        <td class="lineno"><a id="l38" href="#l38">38</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="cm">	 */</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l40" href="#l40">40</a></td>
+        <td class="lineno"><a id="l39" href="#l39">39</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">z_except_reason</span><span class="p">(</span><span class="n">K_ERR_STACK_CHK_FAIL</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l41" href="#l41">41</a></td>
+        <td class="lineno"><a id="l40" href="#l40">40</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount excludedLine show_excludedLine">&minus;</td>
         <td class="src  excludedLine show_excludedLine"><span class="w">	</span><span class="n">CODE_UNREACHABLE</span><span class="p">;</span><span class="w"> </span><span class="cm">/* </span><span class="cs">LCOV_EXCL_LINE</span><span class="cm"> */</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l42" href="#l42">42</a></td>
+        <td class="lineno"><a id="l41" href="#l41">41</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l43" href="#l43">43</a></td>
+        <td class="lineno"><a id="l42" href="#l42">42</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l44" href="#l44">44</a></td>
+        <td class="lineno"><a id="l43" href="#l43">43</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="cm">/* Global variable */</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l45" href="#l45">45</a></td>
+        <td class="lineno"><a id="l44" href="#l44">44</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l46" href="#l46">46</a></td>
+        <td class="lineno"><a id="l45" href="#l45">45</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="cm">/*</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l47" href="#l47">47</a></td>
+        <td class="lineno"><a id="l46" href="#l46">46</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="cm"> * Symbol referenced by GCC compiler generated code for canary value.</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l48" href="#l48">48</a></td>
+        <td class="lineno"><a id="l47" href="#l47">47</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="cm"> * The canary value gets initialized in z_cstart().</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l49" href="#l49">49</a></td>
+        <td class="lineno"><a id="l48" href="#l48">48</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="cm"> */</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l50" href="#l50">50</a></td>
+        <td class="lineno"><a id="l49" href="#l49">49</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="cp">#ifdef CONFIG_STACK_CANARIES_TLS</span></td>
       </tr>
       <tr class="source-line">
+        <td class="lineno"><a id="l50" href="#l50">50</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#ifdef CONFIG_STACK_CANARIES_TLS_PREPEND</span></td>
+      </tr>
+      <tr class="source-line">
         <td class="lineno"><a id="l51" href="#l51">51</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="n">Z_THREAD_LOCAL</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">__stack_chk_guard</span><span class="p">;</span></td>
+        <td class="src "><span class="n">__attribute__</span><span class="p">((</span><span class="n">section</span><span class="p">(</span><span class="s">&quot;.stack_chk.guard&quot;</span><span class="p">)))</span><span class="w"> </span><span class="n">Z_THREAD_LOCAL</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">__stack_chk_guard</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l52" href="#l52">52</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#elif CONFIG_USERSPACE</span></td>
+        <td class="src "><span class="cp">#else</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l53" href="#l53">53</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="n">K_APP_DMEM</span><span class="p">(</span><span class="n">z_libc_partition</span><span class="p">)</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">__stack_chk_guard</span><span class="p">;</span></td>
+        <td class="src "><span class="n">Z_THREAD_LOCAL</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">__stack_chk_guard</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l54" href="#l54">54</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#else</span></td>
+        <td class="src "><span class="cp">#endif</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l55" href="#l55">55</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="n">__noinit</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">__stack_chk_guard</span><span class="p">;</span></td>
+        <td class="src "><span class="cp">#elif CONFIG_USERSPACE</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l56" href="#l56">56</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "><span class="n">K_APP_DMEM</span><span class="p">(</span><span class="n">z_libc_partition</span><span class="p">)</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">__stack_chk_guard</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l57" href="#l57">57</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">#else</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l58" href="#l58">58</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">/**</span></td>
+        <td class="src "><span class="n">__noinit</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">__stack_chk_guard</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l59" href="#l59">59</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "><span class="cp">#endif</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l60" href="#l60">60</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @brief Referenced by GCC compiler generated code</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l61" href="#l61">61</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "><span class="cm">/**</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l62" href="#l62">62</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * This routine is invoked when a stack canary error is detected, indicating</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l63" href="#l63">63</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * a buffer overflow or stack corruption problem.</span></td>
+        <td class="src "><span class="cm"> * @brief Referenced by GCC compiler generated code</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l64" href="#l64">64</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> */</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l65" href="#l65">65</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="n">FUNC_ALIAS</span><span class="p">(</span><span class="n">_StackCheckHandler</span><span class="p">,</span><span class="w"> </span><span class="n">__stack_chk_fail</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="p">);</span></td>
+        <td class="src "><span class="cm"> * This routine is invoked when a stack canary error is detected, indicating</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l66" href="#l66">66</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm"> * a buffer overflow or stack corruption problem.</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l67" href="#l67">67</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm"> */</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l68" href="#l68">68</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="n">FUNC_ALIAS</span><span class="p">(</span><span class="n">_StackCheckHandler</span><span class="p">,</span><span class="w"> </span><span class="n">__stack_chk_fail</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l69" href="#l69">69</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -577,7 +598,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

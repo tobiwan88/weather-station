@@ -74,8 +74,8 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l121">k_is_user_context (zephyr/include/zephyr/syscall.h:121)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="6870">called 6870 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l120">k_is_user_context (zephyr/include/zephyr/syscall.h:120)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="6976">called 6976 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -95,7 +95,7 @@
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
     </div>
     <div class="nav">
-      <a class="nav prev" href="index.util.h.70aa1905de57005a4cbdd32173e17765.html"></a>
+      <a class="nav prev" href="index.zassert.h.a761ffd6d0e611260d48f37225e7a6ce.html"></a>
       <a class="nav index" href="index.html"></a>
       <a class="nav next" href="index.zbus.h.9805c1d078c6e2ce64dbc4f02a4600cf.html"></a>
     </div>
@@ -945,123 +945,116 @@
         <td class="lineno"><a id="l120" href="#l120">120</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="n">__pinned_func</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l121" href="#l121">121</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount coveredLine show_coveredLine">6870</td>
+        <td class="linecount coveredLine show_coveredLine">6976</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">k_is_user_context</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l122" href="#l122">122</a></td>
+        <td class="lineno"><a id="l121" href="#l121">121</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l123" href="#l123">123</a></td>
+        <td class="lineno"><a id="l122" href="#l122">122</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="cp">#ifdef CONFIG_USERSPACE</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l124" href="#l124">124</a></td>
+        <td class="lineno"><a id="l123" href="#l123">123</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">arch_is_user_context</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l125" href="#l125">125</a></td>
+        <td class="lineno"><a id="l124" href="#l124">124</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="cp">#else</span></td>
       </tr>
       <tr class="source-line">
+        <td class="lineno"><a id="l125" href="#l125">125</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine show_coveredLine">6976</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
         <td class="lineno"><a id="l126" href="#l126">126</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">6870</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l127" href="#l127">127</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l128" href="#l128">128</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l129" href="#l129">129</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">#ifdef __cplusplus</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l130" href="#l130">130</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#ifdef __cplusplus</span></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l131" href="#l131">131</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "><span class="cp">#endif</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l132" href="#l132">132</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l133" href="#l133">133</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* _ASMLANGUAGE */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l134" href="#l134">134</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif </span><span class="cm">/* _ASMLANGUAGE */</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l135" href="#l135">135</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l136" href="#l136">136</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
         <td class="src "><span class="cp">#endif</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l137" href="#l137">137</a></td>
+        <td class="lineno"><a id="l136" href="#l136">136</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -1074,7 +1067,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

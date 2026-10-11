@@ -44,7 +44,7 @@
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-none">0.0%</td>
-        <td class="coverage-none">0 / 0 / 25</td>
+        <td class="coverage-none">0 / 0 / 27</td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
@@ -54,7 +54,7 @@
       <tr>
         <th scope="row">Branches:</th>
         <td class="coverage-none">0.0%</td>
-        <td class="coverage-none">0 / 0 / 10</td>
+        <td class="coverage-none">0 / 0 / 12</td>
       </tr>
     </table>
   </div>
@@ -74,14 +74,14 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 sortable">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l59">settings_runtime_commit (zephyr/subsys/settings/src/settings_runtime.c:59)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l63">settings_runtime_commit (zephyr/subsys/settings/src/settings_runtime.c:63)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l42">settings_runtime_get (zephyr/subsys/settings/src/settings_runtime.c:42)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l46">settings_runtime_get (zephyr/subsys/settings/src/settings_runtime.c:46)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
@@ -111,7 +111,7 @@
     zephyr/subsys/settings/src/settings_runtime.c
     <div class="toggle-buttons">
       <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">0 covered</button>
-      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">25 uncovered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">27 uncovered</button>
       <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">0 partial covered</button>
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
     </div>
@@ -386,119 +386,119 @@
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">arg</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_set</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l38" href="#l38">38</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">arg</span><span class="p">.</span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">len</span><span class="p">;</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENOTSUP</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l39" href="#l39">39</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_set</span><span class="p">(</span><span class="n">name_key</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="n">settings_runtime_read_cb</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">arg</span><span class="p">);</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l40" href="#l40">40</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l41" href="#l41">41</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l42" href="#l42">42</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">settings_runtime_get</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">)</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l43" href="#l43">43</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l44" href="#l44">44</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">settings_handler_static</span><span class="w"> </span><span class="o">*</span><span class="n">ch</span><span class="p">;</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l45" href="#l45">45</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name_key</span><span class="p">;</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l46" href="#l46">46</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l47" href="#l47">47</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">ch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">settings_parse_and_lookup</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">name_key</span><span class="p">);</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l48" href="#l48">48</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l49" href="#l49">49</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l50" href="#l50">50</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="w">	</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l51" href="#l51">51</a></td>
+        <td class="lineno"><a id="l40" href="#l40">40</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
+        <td class="lineno"><a id="l41" href="#l41">41</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">arg</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l42" href="#l42">42</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">arg</span><span class="p">.</span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">len</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l43" href="#l43">43</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_set</span><span class="p">(</span><span class="n">name_key</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="n">settings_runtime_read_cb</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">arg</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l44" href="#l44">44</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l45" href="#l45">45</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l46" href="#l46">46</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">settings_runtime_get</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l47" href="#l47">47</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l48" href="#l48">48</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">settings_handler_static</span><span class="w"> </span><span class="o">*</span><span class="n">ch</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l49" href="#l49">49</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name_key</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l50" href="#l50">50</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l51" href="#l51">51</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">ch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">settings_parse_and_lookup</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">name_key</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
         <td class="lineno"><a id="l52" href="#l52">52</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_get</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l53" href="#l53">53</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENOTSUP</span><span class="p">;</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l54" href="#l54">54</a></td>
@@ -519,136 +519,164 @@
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_get</span><span class="p">(</span><span class="n">name_key</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_get</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l57" href="#l57">57</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENOTSUP</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l58" href="#l58">58</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l59" href="#l59">59</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">settings_runtime_commit</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">)</span></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l60" href="#l60">60</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_get</span><span class="p">(</span><span class="n">name_key</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l61" href="#l61">61</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">settings_handler_static</span><span class="w"> </span><span class="o">*</span><span class="n">ch</span><span class="p">;</span></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l62" href="#l62">62</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name_key</span><span class="p">;</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l63" href="#l63">63</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">settings_runtime_commit</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l64" href="#l64">64</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">ch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">settings_parse_and_lookup</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">name_key</span><span class="p">);</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l65" href="#l65">65</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">settings_handler_static</span><span class="w"> </span><span class="o">*</span><span class="n">ch</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l66" href="#l66">66</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name_key</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l67" href="#l67">67</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="p">}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l68" href="#l68">68</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">ch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">settings_parse_and_lookup</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">name_key</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l69" href="#l69">69</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_commit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l70" href="#l70">70</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_commit</span><span class="p">();</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l71" href="#l71">71</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l72" href="#l72">72</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l73" href="#l73">73</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_commit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l74" href="#l74">74</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="n">ch</span><span class="o">-&gt;</span><span class="n">h_commit</span><span class="p">();</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l75" href="#l75">75</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l76" href="#l76">76</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
         <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l73" href="#l73">73</a></td>
+        <td class="lineno"><a id="l77" href="#l77">77</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="w">	</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l74" href="#l74">74</a></td>
+        <td class="lineno"><a id="l78" href="#l78">78</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l75" href="#l75">75</a></td>
+        <td class="lineno"><a id="l79" href="#l79">79</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -661,7 +689,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

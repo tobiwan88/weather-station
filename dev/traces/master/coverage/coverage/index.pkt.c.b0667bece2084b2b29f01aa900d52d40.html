@@ -960,14 +960,14 @@
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;%p[%ld/%u (%u/%u)]&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">atomic_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pkt</span><span class="o">-&gt;</span><span class="n">atomic_ref</span><span class="p">),</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">		</span><span class="n">PR</span><span class="p">(</span><span class="s">&quot;%p[%ld/%u (%zu/%u)]&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">atomic_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pkt</span><span class="o">-&gt;</span><span class="n">atomic_ref</span><span class="p">),</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l117" href="#l117">117</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		   </span><span class="n">buf</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="n">net_buf_max_len</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span><span class="w"> </span><span class="n">buf</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span></td>
+        <td class="src "><span class="w">		   </span><span class="n">buf</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">,</span><span class="w"> </span><span class="n">net_buf_tailroom</span><span class="p">(</span><span class="n">buf</span><span class="p">),</span><span class="w"> </span><span class="n">buf</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l118" href="#l118">118</a></td>
@@ -1438,7 +1438,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

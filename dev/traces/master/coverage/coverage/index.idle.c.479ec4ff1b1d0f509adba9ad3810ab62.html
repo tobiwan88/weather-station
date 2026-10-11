@@ -74,7 +74,7 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 sortable">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l97">arch_spin_relax (zephyr/kernel/idle.c:97)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l100">arch_spin_relax (zephyr/kernel/idle.c:100)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
@@ -82,7 +82,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l22">idle (zephyr/kernel/idle.c:22)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="71">called 71 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="70">called 70 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -266,7 +266,7 @@
         <td class="lineno"><a id="l22" href="#l22">22</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">71</td>
+        <td class="linecount coveredLine show_coveredLine">70</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">idle</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">unused1</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">unused2</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">unused3</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -322,8 +322,8 @@
         <td class="lineno"><a id="l30" href="#l30">30</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount coveredLine show_coveredLine">5273</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l31" href="#l31">31</a></td>
@@ -385,8 +385,8 @@
         <td class="lineno"><a id="l39" href="#l39">39</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5645</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_SMP</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_SCHED_IPI_SUPPORTED</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_SMP</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">IS_ENABLED</span><span class="p">(</span><span class="n">CONFIG_SCHED_IPI_SUPPORTED</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l40" href="#l40">40</a></td>
@@ -469,8 +469,8 @@
         <td class="lineno"><a id="l51" href="#l51">51</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">5716</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="n">arch_irq_lock</span><span class="p">();</span></td>
+        <td class="linecount coveredLine show_coveredLine">5343</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arch_irq_lock</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l52" href="#l52">52</a></td>
@@ -491,7 +491,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="n">_kernel</span><span class="p">.</span><span class="n">idle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_get_next_timeout_expiry</span><span class="p">();</span></td>
+        <td class="src "><span class="w">		</span><span class="kt">bool</span><span class="w"> </span><span class="n">system_suspended</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l55" href="#l55">55</a></td>
@@ -505,346 +505,367 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="cm">/*</span></td>
+        <td class="src "><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">k_is_pre_kernel</span><span class="p">())</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l57" href="#l57">57</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * Call the suspend hook function of the soc interface</span></td>
+        <td class="src "><span class="w">			</span><span class="cm">/* Value preserving: the helper returns either at most</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l58" href="#l58">58</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * to allow entry into a low power state. The function</span></td>
+        <td class="src "><span class="cm">			 * SYS_CLOCK_MAX_WAIT (== INT32_MAX) or K_TICKS_FOREVER.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l59" href="#l59">59</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * returns false if low power state was not entered, in</span></td>
+        <td class="src "><span class="cm">			 */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l60" href="#l60">60</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * which case, kernel does normal idle processing.</span></td>
+        <td class="src "><span class="w">			</span><span class="n">_kernel</span><span class="p">.</span><span class="n">idle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int32_t</span><span class="p">)</span><span class="n">z_get_next_timeout_expiry</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l61" href="#l61">61</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 *</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l62" href="#l62">62</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * This function is entered with interrupts disabled.</span></td>
+        <td class="src "><span class="w">			</span><span class="cm">/*</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l63" href="#l63">63</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * If a low power state was entered, then the hook</span></td>
+        <td class="src "><span class="cm">			 * Call the suspend hook function of the soc interface</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l64" href="#l64">64</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * function should enable interrupts before exiting.</span></td>
+        <td class="src "><span class="cm">			 * to allow entry into a low power state. The function</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l65" href="#l65">65</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * This is because the kernel does not do its own idle</span></td>
+        <td class="src "><span class="cm">			 * returns false if low power state was not entered, in</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l66" href="#l66">66</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * processing in those cases i.e. skips k_cpu_idle().</span></td>
+        <td class="src "><span class="cm">			 * which case, kernel does normal idle processing.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l67" href="#l67">67</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * The kernel&#39;s idle processing re-enables interrupts</span></td>
+        <td class="src "><span class="cm">			 */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l68" href="#l68">68</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * which is essential for the kernel&#39;s scheduling</span></td>
+        <td class="src "><span class="w">			</span><span class="n">system_suspended</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pm_system_suspend</span><span class="p">(</span><span class="n">_kernel</span><span class="p">.</span><span class="n">idle</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l69" href="#l69">69</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * logic.</span></td>
+        <td class="src "><span class="w">		</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l70" href="#l70">70</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">		 */</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l71" href="#l71">71</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">k_is_pre_kernel</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="n">pm_system_suspend</span><span class="p">(</span><span class="n">_kernel</span><span class="p">.</span><span class="n">idle</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src "><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">system_suspended</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l72" href="#l72">72</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">			</span><span class="n">k_cpu_idle</span><span class="p">();</span></td>
+        <td class="src "><span class="w">			</span><span class="n">arch_irq_unlock</span><span class="p">(</span><span class="n">key</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l73" href="#l73">73</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="p">}</span></td>
+        <td class="src "><span class="w">		</span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l74" href="#l74">74</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#else</span></td>
+        <td class="src "><span class="w">			</span><span class="n">k_cpu_idle</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l75" href="#l75">75</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount coveredLine show_coveredLine">5716</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">k_cpu_idle</span><span class="p">();</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l76" href="#l76">76</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_PM */</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l77" href="#l77">77</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l78" href="#l78">78</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cp">#if !defined(CONFIG_PREEMPT_ENABLED)</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l79" href="#l79">79</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cp"># if !defined(CONFIG_USE_SWITCH) || defined(CONFIG_SPARC)</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l80" href="#l80">80</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="cm">/* A legacy mess: the idle thread is by definition</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l81" href="#l81">81</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * preemptible as far as the modern scheduler is</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l82" href="#l82">82</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * concerned, but older platforms use</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l83" href="#l83">83</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * CONFIG_PREEMPT_ENABLED=n as an optimization hint</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l84" href="#l84">84</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * that interrupt exit always returns to the</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l85" href="#l85">85</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * interrupted context.  So in that setup we need to</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l86" href="#l86">86</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * explicitly yield in the idle thread otherwise</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l87" href="#l87">87</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm">		 * nothing else will run once it starts.</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l88" href="#l88">88</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm">		 */</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l89" href="#l89">89</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_kernel</span><span class="p">.</span><span class="n">ready_q</span><span class="p">.</span><span class="n">cache</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">_current</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l90" href="#l90">90</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">			</span><span class="n">z_swap_unlocked</span><span class="p">();</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l91" href="#l91">91</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="w">		</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
+        <td class="lineno"><a id="l76" href="#l76">76</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#else</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l77" href="#l77">77</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">		</span><span class="n">ARG_UNUSED</span><span class="p">(</span><span class="n">key</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l78" href="#l78">78</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine show_coveredLine">5343</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">k_cpu_idle</span><span class="p">();</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l79" href="#l79">79</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_PM */</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l80" href="#l80">80</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l81" href="#l81">81</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#if !defined(CONFIG_PREEMPT_ENABLED)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l82" href="#l82">82</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp"># if !defined(CONFIG_USE_SWITCH) || defined(CONFIG_SPARC)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l83" href="#l83">83</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">		</span><span class="cm">/* A legacy mess: the idle thread is by definition</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l84" href="#l84">84</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">		 * preemptible as far as the modern scheduler is</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l85" href="#l85">85</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">		 * concerned, but older platforms use</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l86" href="#l86">86</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">		 * CONFIG_PREEMPT_ENABLED=n as an optimization hint</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l87" href="#l87">87</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">		 * that interrupt exit always returns to the</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l88" href="#l88">88</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">		 * interrupted context.  So in that setup we need to</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l89" href="#l89">89</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">		 * explicitly yield in the idle thread otherwise</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l90" href="#l90">90</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">		 * nothing else will run once it starts.</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l91" href="#l91">91</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">		 */</span></td>
+      </tr>
+      <tr class="source-line">
         <td class="lineno"><a id="l92" href="#l92">92</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp"># endif </span><span class="cm">/* !defined(CONFIG_USE_SWITCH) || defined(CONFIG_SPARC) */</span></td>
+        <td class="src "><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_kernel</span><span class="p">.</span><span class="n">ready_q</span><span class="p">.</span><span class="n">cache</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">_current</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l93" href="#l93">93</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif </span><span class="cm">/* !defined(CONFIG_PREEMPT_ENABLED) */</span></td>
+        <td class="src "><span class="w">			</span><span class="n">z_swap_unlocked</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l94" href="#l94">94</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="p">}</span></td>
+        <td class="src "><span class="w">		</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l95" href="#l95">95</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "><span class="cp"># endif </span><span class="cm">/* !defined(CONFIG_USE_SWITCH) || defined(CONFIG_SPARC) */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l96" href="#l96">96</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* !defined(CONFIG_PREEMPT_ENABLED) */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l97" href="#l97">97</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="nf">arch_spin_relax</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l98" href="#l98">98</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l99" href="#l99">99</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">__ASSERT</span><span class="p">(</span><span class="o">!</span><span class="n">arch_irq_unlocked</span><span class="p">(</span><span class="n">arch_irq_lock</span><span class="p">()),</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l100" href="#l100">100</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">		 </span><span class="s">&quot;this is meant to be called with IRQs disabled&quot;</span><span class="p">);</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l101" href="#l101">101</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
+        <td class="lineno"><a id="l100" href="#l100">100</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="nf">arch_spin_relax</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l101" href="#l101">101</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
         <td class="lineno"><a id="l102" href="#l102">102</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">arch_nop</span><span class="p">();</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">__ASSERT</span><span class="p">(</span><span class="o">!</span><span class="n">arch_cpu_irqs_are_enabled</span><span class="p">(),</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l103" href="#l103">103</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">		 </span><span class="s">&quot;this is meant to be called with IRQs disabled&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l104" href="#l104">104</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="n">EXPORT_SYMBOL</span><span class="p">(</span><span class="n">arch_spin_relax</span><span class="p">);</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l105" href="#l105">105</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">arch_nop</span><span class="p">();</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l106" href="#l106">106</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l107" href="#l107">107</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="n">EXPORT_SYMBOL</span><span class="p">(</span><span class="n">arch_spin_relax</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l108" href="#l108">108</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -857,7 +878,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

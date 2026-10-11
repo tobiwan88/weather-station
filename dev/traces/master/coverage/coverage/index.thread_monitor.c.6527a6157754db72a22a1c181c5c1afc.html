@@ -43,8 +43,8 @@
       </tr>
       <tr>
         <th scope="row">Lines:</th>
-        <td class="coverage-medium">76.5%</td>
-        <td class="coverage-medium">26 / 0 / 34</td>
+        <td class="coverage-low">73.7%</td>
+        <td class="coverage-low">28 / 0 / 38</td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
@@ -92,11 +92,11 @@
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="2">called 2 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">68.8%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">27.8%</div>
-    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">40.7%</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">57.9%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l15">z_thread_monitor_exit (zephyr/kernel/thread_monitor.c:15)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="96">called 96 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="28">called 28 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">90.9%</div>
@@ -110,8 +110,8 @@
   <div class="Box-header d-flex flex-space-between sticky">
     zephyr/kernel/thread_monitor.c
     <div class="toggle-buttons">
-      <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">20 covered</button>
-      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">8 uncovered</button>
+      <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">22 covered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">10 uncovered</button>
       <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">6 partial covered</button>
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
     </div>
@@ -231,7 +231,7 @@
         <td class="lineno"><a id="l15" href="#l15">15</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">96</td>
+        <td class="linecount coveredLine show_coveredLine">28</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">z_thread_monitor_exit</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -245,7 +245,7 @@
         <td class="lineno"><a id="l17" href="#l17">17</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">96</td>
+        <td class="linecount coveredLine show_coveredLine">28</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_spinlock_key_t</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">z_thread_monitor_lock</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -262,11 +262,11 @@
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
               <div class="takenBranch">&check; Branch 3 &rightarrow; 4 taken 12 times.</div>
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 84 times.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 16 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">96</td>
+        <td class="linecount coveredLine show_coveredLine">28</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="kr">thread</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">_kernel</span><span class="p">.</span><span class="n">threads</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -301,7 +301,7 @@
         <td class="lineno"><a id="l24" href="#l24">24</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">84</td>
+        <td class="linecount coveredLine show_coveredLine">16</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">prev_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_kernel</span><span class="p">.</span><span class="n">threads</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -310,12 +310,12 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 416 times.</div>
+              <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 160 times.</div>
               <div class="notTakenBranch">&cross; Branch 7 &rightarrow; 9 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">416</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">160</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">prev_thread</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span></td>
       </tr>
       <tr class="source-line">
@@ -324,19 +324,19 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 6 taken 332 times.</div>
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 84 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 6 taken 144 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 16 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount coveredLine show_coveredLine">416</td>
+        <td class="linecount coveredLine show_coveredLine">160</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="p">(</span><span class="kr">thread</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">prev_thread</span><span class="o">-&gt;</span><span class="n">next_thread</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l27" href="#l27">27</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">332</td>
+        <td class="linecount coveredLine show_coveredLine">144</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">prev_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prev_thread</span><span class="o">-&gt;</span><span class="n">next_thread</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -352,19 +352,19 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 9 &rightarrow; 10 taken 84 times.</div>
+              <div class="takenBranch">&check; Branch 9 &rightarrow; 10 taken 16 times.</div>
               <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 11 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">84</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">16</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">		</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">prev_thread</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l30" href="#l30">30</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">84</td>
+        <td class="linecount coveredLine show_coveredLine">16</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">			</span><span class="n">prev_thread</span><span class="o">-&gt;</span><span class="n">next_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">next_thread</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -392,14 +392,14 @@
         <td class="lineno"><a id="l34" href="#l34">34</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">96</td>
+        <td class="linecount coveredLine show_coveredLine">28</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">z_thread_monitor_lock</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l35" href="#l35">35</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">96</td>
+        <td class="linecount coveredLine show_coveredLine">28</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -492,8 +492,8 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
-              <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 9 not taken.</div>
-              <div class="takenBranch">&check; Branch 8 &rightarrow; 15 taken 2 times.</div>
+              <div class="notTakenBranch">&cross; Branch 4 &rightarrow; 5 not taken.</div>
+              <div class="takenBranch">&check; Branch 4 &rightarrow; 7 taken 2 times.</div>
             </div>
           </details>
         </td>
@@ -543,8 +543,8 @@
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 14 &rightarrow; 5 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 14 &rightarrow; 15 not taken.</div>
-              <div class="takenBranch">&check; Branch 26 &rightarrow; 17 taken 4 times.</div>
-              <div class="takenBranch">&check; Branch 26 &rightarrow; 27 taken 2 times.</div>
+              <div class="takenBranch">&check; Branch 18 &rightarrow; 9 taken 4 times.</div>
+              <div class="takenBranch">&check; Branch 18 &rightarrow; 19 taken 2 times.</div>
             </div>
           </details>
         </td>
@@ -603,10 +603,10 @@
               <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 8 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 6 &rightarrow; 7 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 6 &rightarrow; 8 not taken.</div>
-              <div class="notTakenBranch">&cross; Branch 17 &rightarrow; 18 not taken.</div>
-              <div class="takenBranch">&check; Branch 17 &rightarrow; 20 taken 4 times.</div>
-              <div class="notTakenBranch">&cross; Branch 18 &rightarrow; 19 not taken.</div>
-              <div class="notTakenBranch">&cross; Branch 18 &rightarrow; 20 not taken.</div>
+              <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 10 not taken.</div>
+              <div class="takenBranch">&check; Branch 9 &rightarrow; 12 taken 4 times.</div>
+              <div class="notTakenBranch">&cross; Branch 10 &rightarrow; 11 not taken.</div>
+              <div class="notTakenBranch">&cross; Branch 10 &rightarrow; 12 not taken.</div>
             </div>
           </details>
         </td>
@@ -642,8 +642,8 @@
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 9 not taken.</div>
               <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 12 not taken.</div>
-              <div class="notTakenBranch">&cross; Branch 20 &rightarrow; 21 not taken.</div>
-              <div class="takenBranch">&check; Branch 20 &rightarrow; 24 taken 4 times.</div>
+              <div class="notTakenBranch">&cross; Branch 12 &rightarrow; 13 not taken.</div>
+              <div class="takenBranch">&check; Branch 12 &rightarrow; 16 taken 4 times.</div>
             </div>
           </details>
         </td>
@@ -766,8 +766,8 @@
         <td class="lineno"><a id="l82" href="#l82">82</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="n">SYS_PORT_TRACING_FUNC_ENTER</span><span class="p">(</span><span class="n">k_thread</span><span class="p">,</span><span class="w"> </span><span class="n">foreach</span><span class="p">);</span></td>
+        <td class="linecount coveredLine show_coveredLine">2</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">SYS_PORT_TRACING_FUNC_ENTER</span><span class="p">(</span><span class="n">k_thread</span><span class="p">,</span><span class="w"> </span><span class="n">foreach</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l83" href="#l83">83</a></td>
@@ -780,8 +780,8 @@
         <td class="lineno"><a id="l84" href="#l84">84</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="n">SYS_PORT_TRACING_FUNC_EXIT</span><span class="p">(</span><span class="n">k_thread</span><span class="p">,</span><span class="w"> </span><span class="n">foreach</span><span class="p">);</span></td>
+        <td class="linecount coveredLine show_coveredLine">2</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">SYS_PORT_TRACING_FUNC_EXIT</span><span class="p">(</span><span class="n">k_thread</span><span class="p">,</span><span class="w"> </span><span class="n">foreach</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l85" href="#l85">85</a></td>
@@ -815,8 +815,8 @@
         <td class="lineno"><a id="l89" href="#l89">89</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="n">SYS_PORT_TRACING_FUNC_ENTER</span><span class="p">(</span><span class="n">k_thread</span><span class="p">,</span><span class="w"> </span><span class="n">foreach_unlocked</span><span class="p">);</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">SYS_PORT_TRACING_FUNC_ENTER</span><span class="p">(</span><span class="n">k_thread</span><span class="p">,</span><span class="w"> </span><span class="n">foreach_unlocked</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l90" href="#l90">90</a></td>
@@ -829,8 +829,8 @@
         <td class="lineno"><a id="l91" href="#l91">91</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="n">SYS_PORT_TRACING_FUNC_EXIT</span><span class="p">(</span><span class="n">k_thread</span><span class="p">,</span><span class="w"> </span><span class="n">foreach_unlocked</span><span class="p">);</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">SYS_PORT_TRACING_FUNC_EXIT</span><span class="p">(</span><span class="n">k_thread</span><span class="p">,</span><span class="w"> </span><span class="n">foreach_unlocked</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l92" href="#l92">92</a></td>
@@ -979,7 +979,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

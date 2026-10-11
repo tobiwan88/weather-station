@@ -74,22 +74,22 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 sortable">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l146">sys_mutex_init (zephyr/include/zephyr/sys/mutex.h:146)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="59">called 59 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l145">sys_mutex_init (zephyr/include/zephyr/sys/mutex.h:145)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="62">called 62 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l151">sys_mutex_lock (zephyr/include/zephyr/sys/mutex.h:151)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="59">called 59 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l150">sys_mutex_lock (zephyr/include/zephyr/sys/mutex.h:150)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="62">called 62 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l156">sys_mutex_unlock (zephyr/include/zephyr/sys/mutex.h:156)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="59">called 59 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l155">sys_mutex_unlock (zephyr/include/zephyr/sys/mutex.h:155)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="60">called 60 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -302,7 +302,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/sys_clock.h&gt;</span></td>
+        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/sys/clock.h&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l27" href="#l27">27</a></td>
@@ -1065,262 +1065,255 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/kernel_structs.h&gt;</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l136" href="#l136">136</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="k">struct</span><span class="w"> </span><span class="nc">sys_mutex</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l137" href="#l137">137</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="k">struct</span><span class="w"> </span><span class="nc">sys_mutex</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src "><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_mutex</span><span class="w"> </span><span class="n">kernel_mutex</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l138" href="#l138">138</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_mutex</span><span class="w"> </span><span class="n">kernel_mutex</span><span class="p">;</span></td>
+        <td class="src "><span class="p">};</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l139" href="#l139">139</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">};</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l140" href="#l140">140</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">#define SYS_MUTEX_DEFINE(name) \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l141" href="#l141">141</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define SYS_MUTEX_DEFINE(name) \</span></td>
+        <td class="src "><span class="cp">	struct sys_mutex name = { \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l142" href="#l142">142</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">	struct sys_mutex name = { \</span></td>
+        <td class="src "><span class="cp">		.kernel_mutex = Z_MUTEX_INITIALIZER(name.kernel_mutex) \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l143" href="#l143">143</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">		.kernel_mutex = Z_MUTEX_INITIALIZER(name.kernel_mutex) \</span></td>
+        <td class="src "><span class="cp">	}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l144" href="#l144">144</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">	}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l145" href="#l145">145</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
+        <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">sys_mutex_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sys_mutex</span><span class="w"> </span><span class="o">*</span><span class="n">mutex</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l146" href="#l146">146</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">59</td>
-        <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">sys_mutex_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sys_mutex</span><span class="w"> </span><span class="o">*</span><span class="n">mutex</span><span class="p">)</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l147" href="#l147">147</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">kernel_mutex</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l148" href="#l148">148</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">59</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_mutex_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">kernel_mutex</span><span class="p">);</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l149" href="#l149">149</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount coveredLine show_coveredLine">59</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l150" href="#l150">150</a></td>
+        <td class="lineno"><a id="l149" href="#l149">149</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l151" href="#l151">151</a></td>
+        <td class="lineno"><a id="l150" href="#l150">150</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">59</td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">sys_mutex_lock</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sys_mutex</span><span class="w"> </span><span class="o">*</span><span class="n">mutex</span><span class="p">,</span><span class="w"> </span><span class="n">k_timeout_t</span><span class="w"> </span><span class="n">timeout</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l152" href="#l152">152</a></td>
+        <td class="lineno"><a id="l151" href="#l151">151</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
+        <td class="lineno"><a id="l152" href="#l152">152</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine show_coveredLine">62</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">k_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">kernel_mutex</span><span class="p">,</span><span class="w"> </span><span class="n">timeout</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
         <td class="lineno"><a id="l153" href="#l153">153</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">59</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">k_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">kernel_mutex</span><span class="p">,</span><span class="w"> </span><span class="n">timeout</span><span class="p">);</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l154" href="#l154">154</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l155" href="#l155">155</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l156" href="#l156">156</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount coveredLine show_coveredLine">59</td>
+        <td class="linecount coveredLine show_coveredLine">60</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">sys_mutex_unlock</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sys_mutex</span><span class="w"> </span><span class="o">*</span><span class="n">mutex</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l157" href="#l157">157</a></td>
+        <td class="lineno"><a id="l156" href="#l156">156</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
         <td class="src "><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
+        <td class="lineno"><a id="l157" href="#l157">157</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine show_coveredLine">60</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">k_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">kernel_mutex</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
         <td class="lineno"><a id="l158" href="#l158">158</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">59</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">k_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mutex</span><span class="o">-&gt;</span><span class="n">kernel_mutex</span><span class="p">);</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l159" href="#l159">159</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l160" href="#l160">160</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_USERSPACE */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l161" href="#l161">161</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif </span><span class="cm">/* CONFIG_USERSPACE */</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l162" href="#l162">162</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm">/**</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l163" href="#l163">163</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">/**</span></td>
+        <td class="src "><span class="cm"> * @}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l164" href="#l164">164</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @}</span></td>
+        <td class="src "><span class="cm"> */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l165" href="#l165">165</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> */</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l166" href="#l166">166</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">#ifdef __cplusplus</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l167" href="#l167">167</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#ifdef __cplusplus</span></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l168" href="#l168">168</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "><span class="cp">#endif</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l169" href="#l169">169</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l170" href="#l170">170</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l171" href="#l171">171</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
         <td class="src "><span class="cp">#endif </span><span class="cm">/* ZEPHYR_INCLUDE_SYS_MUTEX_H_ */</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l172" href="#l172">172</a></td>
+        <td class="lineno"><a id="l171" href="#l171">171</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -1333,7 +1326,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

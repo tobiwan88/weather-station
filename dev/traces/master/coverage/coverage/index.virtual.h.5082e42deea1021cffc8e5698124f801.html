@@ -82,14 +82,14 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l293">net_virtual_enable (zephyr/include/zephyr/net/virtual.h:293)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="69">called 69 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="68">called 68 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l263">net_virtual_init (zephyr/include/zephyr/net/virtual.h:263)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="69">called 69 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="68">called 68 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -1960,7 +1960,7 @@
         <td class="lineno"><a id="l263" href="#l263">263</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">net_virtual_init</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_if</span><span class="w"> </span><span class="o">*</span><span class="n">iface</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -1981,7 +1981,7 @@
         <td class="lineno"><a id="l266" href="#l266">266</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -2170,7 +2170,7 @@
         <td class="lineno"><a id="l293" href="#l293">293</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">net_virtual_enable</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_if</span><span class="w"> </span><span class="o">*</span><span class="n">iface</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -2191,7 +2191,7 @@
         <td class="lineno"><a id="l296" href="#l296">296</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">69</td>
+        <td class="linecount coveredLine show_coveredLine">68</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -2297,14 +2297,14 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">virtual_interface_api</span><span class="w"> </span><span class="o">*</span><span class="n">virt</span><span class="w"> </span><span class="o">=</span></td>
+        <td class="src "><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">net_if_get_device</span><span class="p">(</span><span class="n">iface</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l312" href="#l312">312</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">virtual_interface_api</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">net_if_get_device</span><span class="p">(</span><span class="n">iface</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">api</span><span class="p">;</span></td>
+        <td class="src "><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">virtual_interface_api</span><span class="w"> </span><span class="o">*</span><span class="n">virt</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l313" href="#l313">313</a></td>
@@ -2318,21 +2318,21 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">virt</span><span class="o">-&gt;</span><span class="n">get_capabilities</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src "><span class="w">	</span><span class="n">NET_ASSERT</span><span class="p">(</span><span class="n">dev</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l315" href="#l315">315</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="k">enum</span><span class="w"> </span><span class="n">virtual_interface_caps</span><span class="p">)</span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l316" href="#l316">316</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="p">}</span></td>
+        <td class="src "><span class="w">	</span><span class="n">virt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">virtual_interface_api</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">api</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l317" href="#l317">317</a></td>
@@ -2346,56 +2346,56 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">virt</span><span class="o">-&gt;</span><span class="n">get_capabilities</span><span class="p">(</span><span class="n">iface</span><span class="p">);</span></td>
+        <td class="src "><span class="w">	</span><span class="n">NET_ASSERT</span><span class="p">(</span><span class="n">virt</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l319" href="#l319">319</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l320" href="#l320">320</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">virt</span><span class="o">-&gt;</span><span class="n">get_capabilities</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l321" href="#l321">321</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define Z_NET_VIRTUAL_INTERFACE_INIT(node_id, dev_id, name, init_fn,	\</span></td>
+        <td class="src "><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="k">enum</span><span class="w"> </span><span class="n">virtual_interface_caps</span><span class="p">)</span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l322" href="#l322">322</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">				     pm, data, config, prio, api, mtu)	\</span></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l323" href="#l323">323</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">	Z_NET_DEVICE_INIT(node_id, dev_id, name, init_fn, pm, data,	\</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l324" href="#l324">324</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">			  config, prio, api, VIRTUAL_L2,		\</span></td>
+        <td class="src "><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">virt</span><span class="o">-&gt;</span><span class="n">get_capabilities</span><span class="p">(</span><span class="n">iface</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l325" href="#l325">325</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">			  NET_L2_GET_CTX_TYPE(VIRTUAL_L2), mtu)</span></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l326" href="#l326">326</a></td>
@@ -2409,528 +2409,570 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define Z_NET_VIRTUAL_INTERFACE_INIT_INSTANCE(node_id, dev_id, name,	\</span></td>
+        <td class="src "><span class="cp">#define Z_NET_VIRTUAL_INTERFACE_INIT(node_id, dev_id, name, init_fn,	\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l328" href="#l328">328</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">					      inst, init_fn, pm, data,	\</span></td>
+        <td class="src "><span class="cp">				     pm, data, config, prio, api, mtu)	\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l329" href="#l329">329</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">					      config, prio, api, mtu)	\</span></td>
+        <td class="src "><span class="cp">	Z_NET_DEVICE_INIT(node_id, dev_id, name, init_fn, pm, data,	\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l330" href="#l330">330</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">	Z_NET_DEVICE_INIT_INSTANCE(node_id, dev_id, name, inst,		\</span></td>
+        <td class="src "><span class="cp">			  config, prio, api, VIRTUAL_L2,		\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l331" href="#l331">331</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">				   init_fn, pm, data,			\</span></td>
+        <td class="src "><span class="cp">			  NET_L2_GET_CTX_TYPE(VIRTUAL_L2), mtu)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l332" href="#l332">332</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">				   config, prio, api, VIRTUAL_L2,	\</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l333" href="#l333">333</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">				   NET_L2_GET_CTX_TYPE(VIRTUAL_L2), mtu)</span></td>
+        <td class="src "><span class="cp">#define Z_NET_VIRTUAL_INTERFACE_INIT_INSTANCE(node_id, dev_id, name,	\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l334" href="#l334">334</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">/** @endcond */</span></td>
+        <td class="src "><span class="cp">					      inst, init_fn, pm, data,	\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l335" href="#l335">335</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">					      config, prio, api, mtu)	\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l336" href="#l336">336</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">/**</span></td>
+        <td class="src "><span class="cp">	Z_NET_DEVICE_INIT_INSTANCE(node_id, dev_id, name, inst,		\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l337" href="#l337">337</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @brief Create a virtual network interface. Binding to another interface</span></td>
+        <td class="src "><span class="cp">				   init_fn, pm, data,			\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l338" href="#l338">338</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *        is done at runtime by calling net_virtual_interface_attach().</span></td>
+        <td class="src "><span class="cp">				   config, prio, api, VIRTUAL_L2,	\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l339" href="#l339">339</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *        The attaching is done automatically when setting up tunneling</span></td>
+        <td class="src "><span class="cp">				   NET_L2_GET_CTX_TYPE(VIRTUAL_L2), mtu)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l340" href="#l340">340</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *        when peer IP address is set in IP tunneling driver.</span></td>
+        <td class="src "><span class="cm">/** @endcond */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l341" href="#l341">341</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l342" href="#l342">342</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param dev_id Network device id.</span></td>
+        <td class="src "><span class="cm">/**</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l343" href="#l343">343</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param name The name this instance of the driver exposes to</span></td>
+        <td class="src "><span class="cm"> * @brief Create a virtual network interface. Binding to another interface</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l344" href="#l344">344</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * the system.</span></td>
+        <td class="src "><span class="cm"> *        is done at runtime by calling net_virtual_interface_attach().</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l345" href="#l345">345</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param init_fn Address to the init function of the driver.</span></td>
+        <td class="src "><span class="cm"> *        The attaching is done automatically when setting up tunneling</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l346" href="#l346">346</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param pm Reference to struct pm_device associated with the device.</span></td>
+        <td class="src "><span class="cm"> *        when peer IP address is set in IP tunneling driver.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l347" href="#l347">347</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * (optional).</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l348" href="#l348">348</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param data Pointer to the device&#39;s private data.</span></td>
+        <td class="src "><span class="cm"> * @param dev_id Network device id.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l349" href="#l349">349</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param config The address to the structure containing the</span></td>
+        <td class="src "><span class="cm"> * @param name The name this instance of the driver exposes to</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l350" href="#l350">350</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * configuration information for this instance of the driver.</span></td>
+        <td class="src "><span class="cm"> * the system.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l351" href="#l351">351</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param prio The initialization level at which configuration occurs.</span></td>
+        <td class="src "><span class="cm"> * @param init_fn Address to the init function of the driver.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l352" href="#l352">352</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param api Provides an initial pointer to the API function struct</span></td>
+        <td class="src "><span class="cm"> * @param pm Reference to struct pm_device associated with the device.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l353" href="#l353">353</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * used by the driver. Can be NULL.</span></td>
+        <td class="src "><span class="cm"> * (optional).</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l354" href="#l354">354</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param mtu Maximum transfer unit in bytes for this network interface.</span></td>
+        <td class="src "><span class="cm"> * @param data Pointer to the device&#39;s private data.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l355" href="#l355">355</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * This is the default value and its value can be tweaked at runtime.</span></td>
+        <td class="src "><span class="cm"> * @param config The address to the structure containing the</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l356" href="#l356">356</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> */</span></td>
+        <td class="src "><span class="cm"> * configuration information for this instance of the driver.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l357" href="#l357">357</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define NET_VIRTUAL_INTERFACE_INIT(dev_id, name, init_fn, pm, data,	\</span></td>
+        <td class="src "><span class="cm"> * @param prio The initialization level at which configuration occurs.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l358" href="#l358">358</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">				   config, prio, api, mtu)		\</span></td>
+        <td class="src "><span class="cm"> * @param api Provides an initial pointer to the API function struct</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l359" href="#l359">359</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">	Z_NET_VIRTUAL_INTERFACE_INIT(DT_INVALID_NODE, dev_id, name,	\</span></td>
+        <td class="src "><span class="cm"> * used by the driver. Can be NULL.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l360" href="#l360">360</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">				     init_fn, pm, data, config, prio,	\</span></td>
+        <td class="src "><span class="cm"> * @param mtu Maximum transfer unit in bytes for this network interface.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l361" href="#l361">361</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">				     api, mtu)</span></td>
+        <td class="src "><span class="cm"> * This is the default value and its value can be tweaked at runtime.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l362" href="#l362">362</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm"> */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l363" href="#l363">363</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">/**</span></td>
+        <td class="src "><span class="cp">#define NET_VIRTUAL_INTERFACE_INIT(dev_id, name, init_fn, pm, data,	\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l364" href="#l364">364</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @brief Create a virtual network interface. Binding to another interface</span></td>
+        <td class="src "><span class="cp">				   config, prio, api, mtu)		\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l365" href="#l365">365</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *        is done at runtime by calling net_virtual_interface_attach().</span></td>
+        <td class="src "><span class="cp">	Z_NET_VIRTUAL_INTERFACE_INIT(DT_INVALID_NODE, dev_id, name,	\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l366" href="#l366">366</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *        The attaching is done automatically when setting up tunneling</span></td>
+        <td class="src "><span class="cp">				     init_fn, pm, data, config, prio,	\</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l367" href="#l367">367</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *        when peer IP address is set in IP tunneling driver.</span></td>
+        <td class="src "><span class="cp">				     api, mtu)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l368" href="#l368">368</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l369" href="#l369">369</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param dev_id Network device id.</span></td>
+        <td class="src "><span class="cm">/**</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l370" href="#l370">370</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param name The name this instance of the driver exposes to</span></td>
+        <td class="src "><span class="cm"> * @brief Create a virtual network interface. Binding to another interface</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l371" href="#l371">371</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * the system.</span></td>
+        <td class="src "><span class="cm"> *        is done at runtime by calling net_virtual_interface_attach().</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l372" href="#l372">372</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param inst instance number</span></td>
+        <td class="src "><span class="cm"> *        The attaching is done automatically when setting up tunneling</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l373" href="#l373">373</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param init_fn Address to the init function of the driver.</span></td>
+        <td class="src "><span class="cm"> *        when peer IP address is set in IP tunneling driver.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l374" href="#l374">374</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param pm Reference to struct pm_device associated with the device.</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l375" href="#l375">375</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * (optional).</span></td>
+        <td class="src "><span class="cm"> * @param dev_id Network device id.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l376" href="#l376">376</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param data Pointer to the device&#39;s private data.</span></td>
+        <td class="src "><span class="cm"> * @param name The name this instance of the driver exposes to</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l377" href="#l377">377</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param config The address to the structure containing the</span></td>
+        <td class="src "><span class="cm"> * the system.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l378" href="#l378">378</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * configuration information for this instance of the driver.</span></td>
+        <td class="src "><span class="cm"> * @param inst instance number</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l379" href="#l379">379</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param prio The initialization level at which configuration occurs.</span></td>
+        <td class="src "><span class="cm"> * @param init_fn Address to the init function of the driver.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l380" href="#l380">380</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param api Provides an initial pointer to the API function struct</span></td>
+        <td class="src "><span class="cm"> * @param pm Reference to struct pm_device associated with the device.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l381" href="#l381">381</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * used by the driver. Can be NULL.</span></td>
+        <td class="src "><span class="cm"> * (optional).</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l382" href="#l382">382</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param mtu Maximum transfer unit in bytes for this network interface.</span></td>
+        <td class="src "><span class="cm"> * @param data Pointer to the device&#39;s private data.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l383" href="#l383">383</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * This is the default value and its value can be tweaked at runtime.</span></td>
+        <td class="src "><span class="cm"> * @param config The address to the structure containing the</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l384" href="#l384">384</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> */</span></td>
+        <td class="src "><span class="cm"> * configuration information for this instance of the driver.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l385" href="#l385">385</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define NET_VIRTUAL_INTERFACE_INIT_INSTANCE(dev_id, name, inst,		 \</span></td>
+        <td class="src "><span class="cm"> * @param prio The initialization level at which configuration occurs.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l386" href="#l386">386</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">					    init_fn, pm, data,		 \</span></td>
+        <td class="src "><span class="cm"> * @param api Provides an initial pointer to the API function struct</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l387" href="#l387">387</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">					    config, prio, api, mtu)	 \</span></td>
+        <td class="src "><span class="cm"> * used by the driver. Can be NULL.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l388" href="#l388">388</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">	Z_NET_VIRTUAL_INTERFACE_INIT_INSTANCE(DT_INVALID_NODE, dev_id,	 \</span></td>
+        <td class="src "><span class="cm"> * @param mtu Maximum transfer unit in bytes for this network interface.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l389" href="#l389">389</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">					      name, inst,		 \</span></td>
+        <td class="src "><span class="cm"> * This is the default value and its value can be tweaked at runtime.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l390" href="#l390">390</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">					      init_fn, pm, data, config, \</span></td>
+        <td class="src "><span class="cm"> */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l391" href="#l391">391</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">					      prio, api, mtu)</span></td>
+        <td class="src "><span class="cp">#define NET_VIRTUAL_INTERFACE_INIT_INSTANCE(dev_id, name, inst,		 \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l392" href="#l392">392</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">					    init_fn, pm, data,		 \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l393" href="#l393">393</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">/**</span></td>
+        <td class="src "><span class="cp">					    config, prio, api, mtu)	 \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l394" href="#l394">394</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @}</span></td>
+        <td class="src "><span class="cp">	Z_NET_VIRTUAL_INTERFACE_INIT_INSTANCE(DT_INVALID_NODE, dev_id,	 \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l395" href="#l395">395</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> */</span></td>
+        <td class="src "><span class="cp">					      name, inst,		 \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l396" href="#l396">396</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">					      init_fn, pm, data, config, \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l397" href="#l397">397</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#ifdef __cplusplus</span></td>
+        <td class="src "><span class="cp">					      prio, api, mtu)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l398" href="#l398">398</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l399" href="#l399">399</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "><span class="cm">/**</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l400" href="#l400">400</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm"> * @}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l401" href="#l401">401</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif </span><span class="cm">/* ZEPHYR_INCLUDE_NET_VIRTUAL_H_ */</span></td>
+        <td class="src "><span class="cm"> */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l402" href="#l402">402</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l403" href="#l403">403</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#ifdef __cplusplus</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l404" href="#l404">404</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l405" href="#l405">405</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l406" href="#l406">406</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l407" href="#l407">407</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* ZEPHYR_INCLUDE_NET_VIRTUAL_H_ */</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l408" href="#l408">408</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -2943,7 +2985,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

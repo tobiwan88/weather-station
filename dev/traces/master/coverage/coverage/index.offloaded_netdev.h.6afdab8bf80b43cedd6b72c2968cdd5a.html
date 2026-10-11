@@ -43,8 +43,8 @@
       </tr>
       <tr>
         <th scope="row">Lines:</th>
-        <td class="coverage-high">100.0%</td>
-        <td class="coverage-high">4 / 0 / 4</td>
+        <td class="coverage-low">66.7%</td>
+        <td class="coverage-low">4 / 0 / 6</td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
@@ -53,8 +53,8 @@
       </tr>
       <tr>
         <th scope="row">Branches:</th>
-        <td class="coverage-low">25.0%</td>
-        <td class="coverage-low">1 / 0 / 4</td>
+        <td class="coverage-low">8.3%</td>
+        <td class="coverage-low">1 / 0 / 12</td>
       </tr>
     </table>
   </div>
@@ -75,9 +75,9 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l77">net_off_is_wifi_offloaded (zephyr/include/zephyr/net/offloaded_netdev.h:77)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="68">called 68 times</div>
-    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
-    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">25.0%</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="67">called 67 times</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">66.7%</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">8.3%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">62.5%</div>
   </div>
 </div>  </details>
@@ -90,7 +90,7 @@
     zephyr/include/zephyr/net/offloaded_netdev.h
     <div class="toggle-buttons">
       <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">3 covered</button>
-      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">0 uncovered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">2 uncovered</button>
       <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">1 partial covered</button>
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
     </div>
@@ -197,14 +197,14 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#ifndef ZEPHYR_INCLUDE_OFFLOADED_NETDEV_H_</span></td>
+        <td class="src "><span class="cp">#ifndef ZEPHYR_INCLUDE_NET_OFFLOADED_NETDEV_H_</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l14" href="#l14">14</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define ZEPHYR_INCLUDE_OFFLOADED_NETDEV_H_</span></td>
+        <td class="src "><span class="cp">#define ZEPHYR_INCLUDE_NET_OFFLOADED_NETDEV_H_</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l15" href="#l15">15</a></td>
@@ -644,7 +644,7 @@
         <td class="lineno"><a id="l77" href="#l77">77</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
+        <td class="linecount coveredLine show_coveredLine">67</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">net_off_is_wifi_offloaded</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_if</span><span class="w"> </span><span class="o">*</span><span class="n">iface</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -658,15 +658,15 @@
         <td class="lineno"><a id="l79" href="#l79">79</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">offloaded_if_api</span><span class="w"> </span><span class="o">*</span><span class="n">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">offloaded_if_api</span><span class="w"> </span><span class="o">*</span><span class="p">)</span></td>
+        <td class="linecount coveredLine show_coveredLine">67</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">net_if_get_device</span><span class="p">(</span><span class="n">iface</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l80" href="#l80">80</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">68</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">net_if_get_device</span><span class="p">(</span><span class="n">iface</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">api</span><span class="p">;</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">offloaded_if_api</span><span class="w"> </span><span class="o">*</span><span class="n">api</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l81" href="#l81">81</a></td>
@@ -678,98 +678,144 @@
       <tr class="source-line">
         <td class="lineno"><a id="l82" href="#l82">82</a></td>
         <td class="linebranch">
-          <details class="linebranchDetails">
-            <summary class="linebranchSummary">1/4</summary>
-            <div class="linebranchContents">
-              <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 4 not taken.</div>
-              <div class="takenBranch">&check; Branch 3 &rightarrow; 7 taken 68 times.</div>
-              <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 6 not taken.</div>
-              <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 7 not taken.</div>
-            </div>
-          </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">68</td>
-        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">api</span><span class="o">-&gt;</span><span class="n">get_type</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">api</span><span class="o">-&gt;</span><span class="n">get_type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">L2_OFFLOADED_NET_IF_TYPE_WIFI</span><span class="p">;</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">NET_ASSERT</span><span class="p">(</span><span class="n">dev</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l83" href="#l83">83</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l84" href="#l84">84</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="linecount coveredLine show_coveredLine">67</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">offloaded_if_api</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">api</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l85" href="#l85">85</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">/**</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l86" href="#l86">86</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @}</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="n">NET_ASSERT</span><span class="p">(</span><span class="n">api</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l87" href="#l87">87</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> */</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l88" href="#l88">88</a></td>
         <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">1/8</summary>
+            <div class="linebranchContents">
+              <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 4 not taken.</div>
+              <div class="takenBranch">&check; Branch 3 &rightarrow; 7 taken 67 times.</div>
+              <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 6 not taken.</div>
+              <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 7 not taken.</div>
+              <div class="notTakenBranch">&cross; Branch 7 &rightarrow; 8 not taken.</div>
+              <div class="notTakenBranch">&cross; Branch 7 &rightarrow; 11 not taken.</div>
+              <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 10 not taken.</div>
+              <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 11 not taken.</div>
+            </div>
+          </details>
         </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">67</td>
+        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">api</span><span class="o">-&gt;</span><span class="n">get_type</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">api</span><span class="o">-&gt;</span><span class="n">get_type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">L2_OFFLOADED_NET_IF_TYPE_WIFI</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l89" href="#l89">89</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#ifdef __cplusplus</span></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l90" href="#l90">90</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l91" href="#l91">91</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "><span class="cm">/**</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l92" href="#l92">92</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm"> * @}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l93" href="#l93">93</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif </span><span class="cm">/* ZEPHYR_INCLUDE_OFFLOADED_NETDEV_H_ */</span></td>
+        <td class="src "><span class="cm"> */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l94" href="#l94">94</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l95" href="#l95">95</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#ifdef __cplusplus</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l96" href="#l96">96</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l97" href="#l97">97</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l98" href="#l98">98</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l99" href="#l99">99</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* ZEPHYR_INCLUDE_NET_OFFLOADED_NETDEV_H_ */</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l100" href="#l100">100</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -782,7 +828,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

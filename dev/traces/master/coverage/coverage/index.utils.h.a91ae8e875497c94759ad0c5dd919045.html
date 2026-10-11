@@ -74,8 +74,8 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l24">linker_is_in_rodata (zephyr/include/zephyr/linker/utils.h:24)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="3350">called 3350 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l30">linker_is_in_rodata (zephyr/include/zephyr/linker/utils.h:30)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="3362">called 3362 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -183,325 +183,486 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stddef.h&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l12" href="#l12">12</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">/**</span></td>
+        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;zephyr/toolchain.h&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l13" href="#l13">13</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @brief Check if address is in read only section.</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l14" href="#l14">14</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "><span class="cm">/**</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l15" href="#l15">15</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * Note that this may return false if the address lies outside</span></td>
+        <td class="src "><span class="cm"> * @brief Check if address is in a read only section.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l16" href="#l16">16</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * the compiler&#39;s default read only sections (e.g. .rodata</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l17" href="#l17">17</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * section), depending on the linker script used. This also</span></td>
+        <td class="src "><span class="cm"> * Checks the default .rodata region as well as any relocated</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l18" href="#l18">18</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * applies to constants with explicit section attributes.</span></td>
+        <td class="src "><span class="cm"> * rodata sections (CCM_RODATA, SMEM_RODATA) whose linker symbols</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l19" href="#l19">19</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "><span class="cm"> * are exposed via weak references.  This ensures that string</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l20" href="#l20">20</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param addr Address.</span></td>
+        <td class="src "><span class="cm"> * literals placed in custom rodata sections by</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l21" href="#l21">21</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "><span class="cm"> * zephyr_code_relocate(LOCATION ..._RODATA) are still recognised</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l22" href="#l22">22</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @return True if address identified within read only section.</span></td>
+        <td class="src "><span class="cm"> * as read-only by cbprintf, preventing the deferred-logging</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l23" href="#l23">23</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> */</span></td>
+        <td class="src "><span class="cm"> * packager from NULLing their pointers and appending copies that</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l24" href="#l24">24</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3350</td>
-        <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">linker_is_in_rodata</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">addr</span><span class="p">)</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm"> * downstream IPC log transports may not reconstruct correctly.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l25" href="#l25">25</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l26" href="#l26">26</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#if defined(CONFIG_LINKER_USE_PINNED_SECTION)</span></td>
+        <td class="src "><span class="cm"> * @param addr Address.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l27" href="#l27">27</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">lnkr_pinned_rodata_start</span><span class="p">[];</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l28" href="#l28">28</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">lnkr_pinned_rodata_end</span><span class="p">[];</span></td>
+        <td class="src "><span class="cm"> * @return True if address identified within any read only section.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l29" href="#l29">29</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm"> */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l30" href="#l30">30</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">lnkr_pinned_rodata_start</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span></td>
+        <td class="linecount coveredLine show_coveredLine">3362</td>
+        <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">linker_is_in_rodata</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">addr</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l31" href="#l31">31</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	    </span><span class="p">((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">lnkr_pinned_rodata_end</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src "><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l32" href="#l32">32</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span></td>
+        <td class="src "><span class="cp">#if defined(CONFIG_ARM) || defined(CONFIG_ARC) || defined(CONFIG_X86) || \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l33" href="#l33">33</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="p">}</span></td>
+        <td class="src "><span class="cp">	defined(CONFIG_ARM64) || defined(CONFIG_RISCV) || defined(CONFIG_SPARC) || \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l34" href="#l34">34</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "><span class="cp">	defined(CONFIG_MIPS) || defined(CONFIG_XTENSA) || defined(CONFIG_RX) || \</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l35" href="#l35">35</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cp">	defined(CONFIG_OPENRISC)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l36" href="#l36">36</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#if defined(CONFIG_ARM) || defined(CONFIG_ARC) || defined(CONFIG_X86) || \</span></td>
+        <td class="src "><span class="w">	</span><span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__rodata_region_start</span><span class="p">[];</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l37" href="#l37">37</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">	defined(CONFIG_ARM64) || defined(CONFIG_RISCV) || defined(CONFIG_SPARC) || \</span></td>
+        <td class="src "><span class="w">	</span><span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__rodata_region_end</span><span class="p">[];</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l38" href="#l38">38</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">	defined(CONFIG_MIPS) || defined(CONFIG_XTENSA) || defined(CONFIG_RX) || \</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l39" href="#l39">39</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">	defined(CONFIG_OPENRISC)</span></td>
+        <td class="src "><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">__rodata_region_start</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l40" href="#l40">40</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__rodata_region_start</span><span class="p">[];</span></td>
+        <td class="src "><span class="w">	    </span><span class="p">((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">__rodata_region_end</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l41" href="#l41">41</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">	</span><span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__rodata_region_end</span><span class="p">[];</span></td>
+        <td class="src "><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l42" href="#l42">42</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define RO_START __rodata_region_start</span></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l43" href="#l43">43</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define RO_END   __rodata_region_end</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l44" href="#l44">44</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#else</span></td>
+        <td class="src "><span class="w">	</span><span class="cm">/* Relocated rodata sections (CCM, SMEM) live outside the default</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l45" href="#l45">45</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define RO_START 0</span></td>
+        <td class="src "><span class="cm">	 * __rodata_region.  zephyr_code_relocate(... CCM_RODATA/SMEM_RODATA)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l46" href="#l46">46</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#define RO_END   0</span></td>
+        <td class="src "><span class="cm">	 * brackets the actual strings with __&lt;mem&gt;_rodata_reloc_start/end</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l47" href="#l47">47</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif</span></td>
+        <td class="src "><span class="cm">	 * (gen_relocate_app.py).  The bare __&lt;mem&gt;_rodata_start/end markers</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l48" href="#l48">48</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm">	 * are zero-sized and never span the strings, so they must NOT be used</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l49" href="#l49">49</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3350</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="p">(((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">RO_START</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cm">	 * here.  Weak symbols let builds without these sections skip the check.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l50" href="#l50">50</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">		</span><span class="p">((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">RO_END</span><span class="p">));</span></td>
+        <td class="src "><span class="cm">	 *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l51" href="#l51">51</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm">	 * This is kept under the same arch guard as __rodata_region: on the</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l52" href="#l52">52</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#undef RO_START</span></td>
+        <td class="src "><span class="cm">	 * native/POSIX targets the symbols never exist, and the native</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l53" href="#l53">53</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#undef RO_END</span></td>
+        <td class="src "><span class="cm">	 * simulator&#39;s &quot;objcopy --localize-symbol&quot; link step strips the weak</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l54" href="#l54">54</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src "><span class="cm">	 * binding off the undefined references, turning them into hard</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l55" href="#l55">55</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm">	 * undefined references that break the final link.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l56" href="#l56">56</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#endif </span><span class="cm">/* ZEPHYR_INCLUDE_LINKER_UTILS_H_ */</span></td>
+        <td class="src "><span class="cm">	 */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l57" href="#l57">57</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="n">__ccm_rodata_reloc_start</span><span class="p">[];</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l58" href="#l58">58</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="n">__ccm_rodata_reloc_end</span><span class="p">[];</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l59" href="#l59">59</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l60" href="#l60">60</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">__ccm_rodata_reloc_start</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l61" href="#l61">61</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	    </span><span class="p">((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">__ccm_rodata_reloc_start</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l62" href="#l62">62</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	    </span><span class="p">((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">__ccm_rodata_reloc_end</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l63" href="#l63">63</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l64" href="#l64">64</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l65" href="#l65">65</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l66" href="#l66">66</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="n">__smem_rodata_reloc_start</span><span class="p">[];</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l67" href="#l67">67</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">extern</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">__weak</span><span class="w"> </span><span class="n">__smem_rodata_reloc_end</span><span class="p">[];</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l68" href="#l68">68</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l69" href="#l69">69</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">__smem_rodata_reloc_start</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l70" href="#l70">70</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	    </span><span class="p">((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">__smem_rodata_reloc_start</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l71" href="#l71">71</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	    </span><span class="p">((</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">__smem_rodata_reloc_end</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l72" href="#l72">72</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">		</span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l73" href="#l73">73</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">	</span><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l74" href="#l74">74</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l75" href="#l75">75</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l76" href="#l76">76</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine show_coveredLine">3362</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l77" href="#l77">77</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l78" href="#l78">78</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l79" href="#l79">79</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#endif </span><span class="cm">/* ZEPHYR_INCLUDE_LINKER_UTILS_H_ */</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="l80" href="#l80">80</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -514,7 +675,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

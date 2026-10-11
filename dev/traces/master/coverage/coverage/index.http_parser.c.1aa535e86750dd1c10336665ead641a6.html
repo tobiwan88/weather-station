@@ -778,7 +778,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * line) to exceed HTTP_MAX_HEADER_SIZE.  This check is here to protect</span></td>
+        <td class="src "><span class="cm"> * line) to exceed CONFIG_HTTP_PARSER_MAX_HEADER_SIZE.  This check is here to protect</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l79" href="#l79">79</a></td>
@@ -820,7 +820,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * make the web a little safer.  HTTP_MAX_HEADER_SIZE is still far bigger</span></td>
+        <td class="src "><span class="cm"> * make the web a little safer.  CONFIG_HTTP_PARSER_MAX_HEADER_SIZE is still far bigger</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l85" href="#l85">85</a></td>
@@ -890,7 +890,7 @@
           </details>
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">9546</td>
-        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">UNLIKELY</span><span class="p">(</span><span class="n">parser</span><span class="o">-&gt;</span><span class="n">nread</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">HTTP_MAX_HEADER_SIZE</span><span class="p">)))</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">UNLIKELY</span><span class="p">(</span><span class="n">parser</span><span class="o">-&gt;</span><span class="n">nread</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">CONFIG_HTTP_PARSER_MAX_HEADER_SIZE</span><span class="p">)))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l94" href="#l94">94</a></td>
@@ -4193,7 +4193,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount coveredLine show_coveredLine">600</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MIN</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span><span class="w"> </span><span class="n">HTTP_MAX_HEADER_SIZE</span><span class="p">);</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">		</span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MIN</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span><span class="w"> </span><span class="n">CONFIG_HTTP_PARSER_MAX_HEADER_SIZE</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l540" href="#l540">540</a></td>
@@ -19286,7 +19286,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>

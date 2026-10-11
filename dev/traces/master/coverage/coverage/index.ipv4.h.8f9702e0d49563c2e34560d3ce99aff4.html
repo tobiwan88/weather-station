@@ -3508,108 +3508,73 @@
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @brief Initialize IPv4 address conflict detection module.</span></td>
+        <td class="src "><span class="cm"> * @brief Process ARP packet in terms of conflict detection.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l482" href="#l482">482</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> */</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l483" href="#l483">483</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="kt">void</span><span class="w"> </span><span class="nf">net_ipv4_acd_init</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span></td>
+        <td class="src "><span class="cm"> * @param iface Network interface the packet was received on.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l484" href="#l484">484</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src "><span class="cm"> * @param pkt ARP packet to process.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l485" href="#l485">485</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm">/**</span></td>
+        <td class="src "><span class="cm"> *</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l486" href="#l486">486</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @brief Process ARP packet in terms of conflict detection.</span></td>
+        <td class="src "><span class="cm"> * @return Return verdict about the packet.</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l487" href="#l487">487</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
+        <td class="src "><span class="cm"> */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l488" href="#l488">488</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param iface Network interface the packet was received on.</span></td>
+        <td class="src "><span class="k">enum</span><span class="w"> </span><span class="n">net_verdict</span><span class="w"> </span><span class="nf">net_ipv4_acd_input</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_if</span><span class="w"> </span><span class="o">*</span><span class="n">iface</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">net_pkt</span><span class="w"> </span><span class="o">*</span><span class="n">pkt</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l489" href="#l489">489</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @param pkt ARP packet to process.</span></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l490" href="#l490">490</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cm"> *</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l491" href="#l491">491</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm"> * @return Return verdict about the packet.</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l492" href="#l492">492</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="cm"> */</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l493" href="#l493">493</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "><span class="k">enum</span><span class="w"> </span><span class="n">net_verdict</span><span class="w"> </span><span class="nf">net_ipv4_acd_input</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_if</span><span class="w"> </span><span class="o">*</span><span class="n">iface</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">net_pkt</span><span class="w"> </span><span class="o">*</span><span class="n">pkt</span><span class="p">);</span></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l494" href="#l494">494</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
-        <td class="src "></td>
-      </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l495" href="#l495">495</a></td>
-        <td class="linebranch">
-        </td>
-        <td class="linecount"></td>
         <td class="src "><span class="cp">#endif </span><span class="cm">/* __IPV4_H */</span></td>
       </tr>
       <tr class="source-line">
-        <td class="lineno"><a id="l496" href="#l496">496</a></td>
+        <td class="lineno"><a id="l491" href="#l491">491</a></td>
         <td class="linebranch">
         </td>
         <td class="linecount"></td>
@@ -3622,7 +3587,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:59:57
+          at 2026-10-11 08:56:26
         </footer>
       </div>
     </div>
