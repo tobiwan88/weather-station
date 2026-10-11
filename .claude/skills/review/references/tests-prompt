@@ -1,0 +1,16 @@
+Focus: test adequacy for a Zephyr firmware change.
+
+Review scope: `{scope}`. Run it with Bash, then read the changed code and the tests beside it.
+
+Test layout: ztest unit tests live in `tests/<module>/`. pytest integration tests live in `tests/integration/pytest/` and must use the harness methods, never raw DUT shell strings.
+
+Check only:
+- Does the change add or alter behavior without a test that would fail on the old code?
+- Edge cases: zero, maximum, boundary values and error returns.
+- New shell commands, HTTP endpoints or sensor data flow: covered by a new or updated test?
+- Ztest assertions check the right condition, not just that the code runs.
+- Integration tests: harness helpers used, `authed_harness` for login paths, `wait_for_*` helpers instead of fixed sleeps.
+
+Project rules: read `.claude/rules/firmware.md`. Do not review correctness, security or style except where a missing test hides a problem.
+
+Output: for each gap, the test file it belongs in and a one-line description, tagged WARNING or NOTE. Then a short summary of what is covered. If coverage is adequate, say "Test coverage is adequate." Keep it under 300 words.

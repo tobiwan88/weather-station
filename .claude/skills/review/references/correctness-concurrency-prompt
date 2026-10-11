@@ -1,0 +1,14 @@
+Focus: correctness and concurrency in a Zephyr firmware change.
+
+Review scope: `{scope}`. Run it with Bash, then read the surrounding code for each change.
+
+Check only:
+- Logic errors: off-by-one, wrong units or Q31 scaling, sign and integer overflow, unchecked return values.
+- Error paths: negative errno returned or logged, never dropped; no half-updated state left behind.
+- zbus listeners, ISR and k_timer callbacks: no blocking, sleeping or mutexes. Heavy work belongs in a subscriber thread or work item.
+- Shared state touched from more than one thread or context needs a lock, an atomic, or a zbus copy.
+- Lifetime: no pointer into a stack frame or a zbus message buffer used after the publisher returns.
+
+Project rules: read `.claude/rules/firmware.md` first. Do not report style or naming.
+
+Output: numbered findings, most severe first. Each has severity (CRITICAL / WARNING / NOTE), `path:line`, the problem, a concrete failure scenario, and the fix. If there are none, say "No correctness or concurrency issues found." Keep it under 300 words.

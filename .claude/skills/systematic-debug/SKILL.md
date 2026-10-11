@@ -1,163 +1,71 @@
 ---
 name: systematic-debug
-description: Use when encountering any Zephyr build failure, twister test failure, native_sim crash, or unexpected runtime behavior — before proposing fixes. Invoke when the user says "debug", "crash", "build fail", "test fail", "EEXIST", "EPOLL", or describes unexpected behavior.
+description: Use for any Zephyr build failure, twister test failure, native_sim crash or unexpected runtime behavior, before proposing a fix. Triggers: "debug", "crash", "build fail", "test fail", "EEXIST", "EPOLL".
 allowed-tools: Read, Bash, Grep, Glob
 ---
 
 # Systematic Debugging for Zephyr
 
-## Overview
+**Core rule:** find the root cause before changing code. A symptom fix hides the bug and usually creates another.
 
-Random fixes waste time and create new bugs. Quick patches mask underlying issues.
+Run all build and test commands through `scripts/ws.sh`. It sets `ZEPHYR_BASE` and runs from the west workspace root, so paths are relative to that root:
 
-**Core principle:** ALWAYS find root cause before attempting fixes. Symptom fixes are failure.
-
+```bash
+scripts/ws.sh 'west build -b native_sim/native/64 -d build/native_sim_native_64/gateway weather-station/apps/gateway'
+scripts/ws.sh 'west twister -p native_sim/native/64 -T weather-station/tests/ --inline-logs -v -N'
 ```
-NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
-```
 
-If you haven't completed Phase 1, you cannot propose fixes.
+## Phase 1: Investigate
 
----
+1. **Reproduce.** Run the failing command again, unchanged. If it does not fail the same way every time, gather more evidence before forming a theory.
+2. **Read the actual error.** Read the whole output: the first failure in the CMake or compiler log, the full stack trace, the twister log. The first error is usually the cause; later ones are often fallout.
+3. **Triage** the symptom with the table below.
+4. **Check recent changes:** `git log --oneline -5` and `git diff --stat HEAD`.
 
-## Phase 1: Root Cause Investigation
+For a failure deep in a chain (build, then twister, then test, then assertion), add temporary diagnostics at each boundary, run once, and find where the data goes wrong. Remove them afterwards.
 
-### 1a. Read error messages completely
+### Triage table
 
-Do not skip past errors or warnings. They often contain the exact solution.
-Read stack traces, CMake output, twister logs, and handler.log completely.
-
-### 1b. Check known failure patterns
-
-Match the error against these common Zephyr patterns before forming hypotheses:
-
-| Symptom | Likely cause | Fix |
+| Symptom | Likely cause | Action |
 |---|---|---|
-| `Zephyr-sdk` version mismatch | SDK not upgraded | `west update` or install SDK |
-| `ZEPHYR_BASE` points to wrong path | Stale env var | `export ZEPHYR_BASE=/home/zephyr/workspace/zephyr` |
-| CMake cache mismatch | Stale CMakeCache.txt | Delete `build/CMakeCache.txt` or use `-p always` |
-| `west update` fetch failures | `name-allowlist` changed | Run `west update --narrow` |
-| Patches not applied after `west update` | Forgot `west patch apply` | Run `west patch apply` |
-| `EPOLL_CTL_ADD: errno=17` (EEXIST) | Concurrent epoll registration | Increase `CONFIG_SNTP_SYNC_PRESYNC_DELAY_MS`; add `k_sleep` before socket open |
-| `CONFIG_ZVFS_POLL_MAX` exhaustion | HTTP server needs ≥ 5 poll slots | Set `CONFIG_ZVFS_POLL_MAX=8` |
-| `CONFIG_NET_MAX_CONTEXTS` exhaustion | HTTP + MQTT + SNTP need ≥ 16 | Set `CONFIG_NET_MAX_CONTEXTS=16` |
-| Twister test timeout | native_sim binary hang | Check if LVGL is enabled (must be `n` in test builds); check `CONFIG_ZVFS_POLL_MAX` |
-| MQTT tests skipped or fail | No mosquitto broker | `mosquitto -p 1883 -d 2>/dev/null` |
-| Undefined reference to `__device_dts_ord_...` | Missing DT node or overlay | Check `apps/gateway/boards/native_sim.overlay` |
-| Kernel panic in zbus listener | Listener blocks/sleeps | Move heavy work to subscriber thread; listeners must not block |
-| `__ASSERT` failure | Internal invariant violated | Check calling code for bad parameters; never assert on external input |
+| Kconfig or DTS error, or a symbol or node that should exist is missing | Stale build output | Rebuild pristine: `west build -p always ...` |
+| A Kconfig or CMake value ignores your change | Stale `CMakeCache.txt` | Delete it from the build dir, or rebuild with `-p always` |
+| `undefined reference to __device_dts_ord_*` | Missing DT node or overlay | Check `weather-station/apps/gateway/boards/native_sim.overlay` |
+| Zephyr SDK version mismatch | SDK out of date | Update the SDK in the container |
+| `west update` fetch failure | Manifest allowlist changed | `scripts/ws.sh 'west update --narrow'` |
+| Upstream Zephyr behavior differs from expected | Patches not applied | `scripts/ws.sh 'west patch apply'`, then rebuild |
+| `EPOLL_CTL_ADD` errno 17 (EEXIST) crash | Two threads opened sockets at once | Follow `.claude/rules/native-sim-net.md` (presync delay) |
+| Socket or poll exhaustion (`ZVFS_POLL_MAX`, `NET_MAX_CONTEXTS`) | Too few slots for HTTP, MQTT, SNTP | Check the limits in `.claude/rules/native-sim-net.md` |
+| Twister timeout | Binary hang, or LVGL enabled in a test build | Confirm LVGL is off; check the poll limits |
+| MQTT tests skipped or failing | No broker on port 1883 | Start a local broker on that port |
+| Fault inside a zbus listener | Listener blocks or sleeps | Move the work to a subscriber thread; see `.claude/rules/firmware.md` |
+| `__ASSERT` failure | Caller passed bad input | Find the caller; never assert on external input |
 
-### 1c. Reproduce consistently
+### Read the twister logs
 
-- Can you trigger the failure reliably?
-- Same command, same environment, same outcome?
-- If not reproducible → gather more data. Don't guess.
+Each suite writes its logs under `twister-out/` in the workspace root. For a failing suite, read:
 
-### 1d. Check recent changes
+- `build.log`: compile, link and Kconfig errors
+- `handler.log`: runtime output and the failing assertion
 
 ```bash
-git diff HEAD~1..HEAD           # what changed?
-git log --oneline -5            # recent commits
-git diff --stat                 # uncommitted changes
+scripts/ws.sh 'find twister-out -name handler.log -o -name build.log'
+scripts/ws.sh 'cat twister-out/native_sim_native_64/<suite-path>/handler.log'
 ```
 
-### 1e. Trace data flow (multi-component systems)
+## Phase 2: Compare with a working example
 
-When the error is deep in a component chain (build → twister → test → assertion):
+- Find code in `lib/` that does the same job and works. List every difference from the broken code; do not assume a difference "can't matter".
+- For subsystem behavior, check the matching Zephyr sample under `zephyr/samples/`.
 
-1. **Add diagnostic output at each boundary**
-2. **Run once to gather evidence**
-3. **Identify which boundary the data changes at**
-4. **Investigate that specific component**
+## Phase 3: One hypothesis, one change
 
-Example for a "sensor event not reaching MQTT" bug:
-```
-Trigger sensor → check zbus publish succeeded → check MQTT subscriber queue count → check MQTT socket write
-```
+1. State it precisely: "X is the root cause because Y."
+2. Test it with the smallest change that can confirm or refute it. One variable at a time.
+3. If it fails, form a new hypothesis. Do not stack fixes on the last attempt.
+4. After 3 failed fixes, stop and escalate to the user. The architecture or assumptions may be wrong.
 
----
+## Phase 4: Fix and verify
 
-## Phase 2: Pattern Analysis
-
-### 2a. Find working examples
-
-Search the codebase for similar working code:
-- Same subsystem, different sensor? Find the sensor that works.
-- Same pattern in a different library? Find the reference implementation.
-- Same pattern in a Zephyr sample? Read `zephyr/samples/` for that subsystem.
-
-### 2b. Compare against references
-
-```bash
-# Find a working example of the same subsystem
-grep -r "similar_pattern" lib/ --include="*.c"
-
-# Check Zephyr samples for the subsystem
-ls zephyr/samples/subsys/<subsystem>/
-```
-
-### 2c. Identify differences
-
-List every difference between the working reference and the broken code.
-Don't assume "that can't matter" — list it anyway.
-
----
-
-## Phase 3: Hypothesis and Testing
-
-### 3a. Form a single hypothesis
-
-"I think X is the root cause because Y."
-
-Be specific. Not: "something is wrong with the config." But: "CONFIG_ZVFS_POLL_MAX=3 is too low because the HTTP server needs 5 poll slots."
-
-### 3b. Test minimally
-
-Make the SMALLEST possible change to test the hypothesis. One variable at a time.
-
-### 3c. Verify before continuing
-
-- Did it work? → Phase 4
-- Didn't work? → Form NEW hypothesis. DON'T add more fixes on top.
-- After 3 failed fixes: STOP. Question the architecture. Escalate to human.
-
----
-
-## Phase 4: Implementation
-
-### 4a. Create a failing test case (if applicable)
-
-For runtime bugs: write a minimal ztest or shell command that reproduces.
-For build failures: document the exact `west build` command.
-
-### 4b. Implement a single fix
-
-Address the root cause. ONE change. No "while I'm here" refactoring.
-
-### 4c. Verify
-
-Run the build test gate (`/build-and-test`). Don't claim fixed without fresh evidence.
-
----
-
-## Red Flags — STOP and Follow Process
-
-| Feeling | Reality |
-|---------|---------|
-| "Quick fix for now, investigate later" | Symptom fix = technical debt |
-| "Just try changing X and see if it works" | That's not debugging, it's guessing |
-| Skipping Phase 1 because "I know what's wrong" | You don't. Read the full error. |
-| "It's probably just a config issue" | "Probably" ≠ root cause identified |
-| Proposing a fix without reading the error message fully | The answer is in the error |
-| "One more fix attempt" (after already tried 3) | Stop at 3. Escalate to human. |
-| "The SDK version mismatch is unrelated" | It's always related |
-| Trusting a build from before `west patch apply` | Re-apply patches and rebuild |
-| Any fix proposed before completing Phase 1 | No root cause = no fix |
-
-## Rules
-
-- Never propose a fix before identifying the root cause
-- Never skip Phase 1 because the error "looks familiar"
-- After 3 failed fix attempts: STOP. Escalate to human.
-- This skill is about finding WHAT is wrong and WHY — NOT about implementing the fix
-- For implementation of the fix: follow the project's `/build-and-test` gate
+1. Make one fix that addresses the root cause. No unrelated refactoring.
+2. Verify with the `build-and-test` gate. Do not claim the bug is fixed without a fresh passing run.
