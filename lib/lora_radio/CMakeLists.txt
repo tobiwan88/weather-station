@@ -4,14 +4,8 @@ if(CONFIG_LORA_RADIO)
 
   zephyr_library()
   zephyr_library_sources(
-    src/lora_radio_main.c
-    src/lora_packet.c
-    src/lora_session.c
-    src/lora_chan.c
-    src/lora_handler_data.c
-    src/lora_handler_rpc.c
-    src/lora_handler_prov.c
-    src/lora_pending.c)
+    src/lora_radio_main.c src/lora_session.c src/lora_chan.c
+    src/lora_handler_data.c src/lora_handler_rpc.c src/lora_pending.c)
   zephyr_library_sources_ifdef(CONFIG_LORA_RADIO_FAKE
                                src/lora_drv_fake_zephyr.c)
   zephyr_library_sources_ifdef(CONFIG_LORA_RADIO_FOTA src/lora_handler_fota.c)

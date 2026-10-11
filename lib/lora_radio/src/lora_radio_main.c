@@ -114,6 +114,65 @@ int lora_radio_publish_data(uint32_t uid, enum sensor_type type, int32_t q31)
 }
 
 /* --------------------------------------------------------------------------
+ * Radio configuration and half-duplex arbitration
+ *
+ * The sx12xx driver refuses lora_config()/lora_send() (-EBUSY) while a
+ * lora_recv() is pending, and applies TX parameters only for config.tx = true.
+ * The RX thread therefore listens in short slices holding radio_lock, and
+ * lora_radio_send() takes the lock between slices.
+ * -------------------------------------------------------------------------- */
+static struct lora_modem_config rx_cfg;
+static struct lora_modem_config tx_cfg;
+static K_MUTEX_DEFINE(radio_lock);
+static bool radio_ready;
+
+int lora_radio_send(const uint8_t *buf, size_t len)
+{
+	if (!radio_ready) {
+		return -ENODEV;
+	}
+	if (buf == NULL || len == 0 || len > LORA_MAX_PACKET_SF7) {
+		return -EINVAL;
+	}
+
+	k_mutex_lock(&radio_lock, K_FOREVER);
+	int ret = lora_config(lora_radio_dev, &tx_cfg);
+
+	if (ret == 0) {
+		ret = lora_send(lora_radio_dev, (uint8_t *)buf, (uint32_t)len);
+	}
+	int rc = lora_config(lora_radio_dev, &rx_cfg);
+
+	if (rc < 0) {
+		LOG_ERR("restoring RX config failed: %d", rc);
+		if (ret == 0) {
+			ret = rc;
+		}
+	}
+	k_mutex_unlock(&radio_lock);
+	return ret;
+}
+
+/* This library is the gateway end of the link: it only receives uplink frames.
+ * Frames flagged DIR_DOWN are downlink (nonce direction 1) and RPC_CMD /
+ * FOTA_CHUNK are downlink-only types; an uplink frame carrying one must never
+ * reach the command handlers, whatever its authentication status.
+ */
+static bool rx_direction_valid(const struct lora_l2_header *hdr)
+{
+	if ((hdr->flags & LORA_FLAG_DIR_DOWN) != 0) {
+		return false;
+	}
+	switch (lora_frame_type(hdr->type_ver)) {
+	case LORA_FRAME_RPC_CMD:
+	case LORA_FRAME_FOTA_CHUNK:
+		return false;
+	default:
+		return true;
+	}
+}
+
+/* --------------------------------------------------------------------------
  * RX thread — main loop
  * -------------------------------------------------------------------------- */
 static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
@@ -125,45 +184,99 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 	uint8_t buf[LORA_MAX_PACKET_SF7];
 	uint8_t payload[LORA_MAX_PAYLOAD_SF7];
 	struct lora_l2_header hdr;
-	uint8_t payload_len;
+	size_t payload_len;
 
 	while (1) {
 		int16_t rssi;
 		int8_t snr;
 
-		int ret = lora_recv(lora_radio_dev, buf, sizeof(buf), K_FOREVER, &rssi, &snr);
+		k_mutex_lock(&radio_lock, K_FOREVER);
+		int ret = lora_recv(lora_radio_dev, buf, sizeof(buf),
+				    K_MSEC(CONFIG_LORA_RADIO_RX_SLICE_MS), &rssi, &snr);
+		k_mutex_unlock(&radio_lock);
 		if (ret < 0) {
+			/* Timeout: gives a waiting lora_radio_send() the lock */
+			k_yield();
 			continue;
 		}
-		uint8_t pkt_len = (uint8_t)ret;
+		size_t pkt_len = (size_t)ret;
 
+		if (pkt_len < sizeof(hdr)) {
+			LOG_DBG("runt frame (%u bytes)", (unsigned int)pkt_len);
+			continue;
+		}
 		memcpy(&hdr, buf, sizeof(hdr));
-		uint16_t src_node = (uint16_t)hdr.src_node[0] | ((uint16_t)hdr.src_node[1] << 8);
+		uint16_t src_node = lora_hdr_src_get(&hdr);
 		struct lora_session *s = lora_session_get(src_node);
-		const uint8_t *key = s ? s->session_key : NULL;
 
-		/* Publish link diagnostics */
-		struct lora_link_event link_evt = {
-			.node_id = src_node,
-			.rssi = rssi,
-			.snr = (uint8_t)snr,
-			.seq_num = (uint16_t)hdr.seq_num[0] | ((uint16_t)hdr.seq_num[1] << 8),
-			.crc_errors = 0,
-		};
-		zbus_chan_pub(&lora_link_chan, &link_evt, K_NO_WAIT);
+		if (!rx_direction_valid(&hdr)) {
+			LOG_DBG("drop frame type 0x%x flags 0x%02x from 0x%04x: wrong direction",
+				lora_frame_type(hdr.type_ver), hdr.flags, src_node);
+			continue;
+		}
 
-		/* Decode */
-		ret = lora_packet_decode(buf, pkt_len, key, &hdr, payload, &payload_len);
+		/* Key lookup is by the (unauthenticated) src node id; the codec
+		 * then authenticates, so a spoofed id only selects a key that
+		 * the frame fails to verify against.
+		 */
+		if (IS_ENABLED(CONFIG_LORA_RADIO_REQUIRE_ENCRYPTION)) {
+			if (!s) {
+				LOG_DBG("drop frame from unknown node 0x%04x", src_node);
+				continue;
+			}
+			if ((hdr.flags & LORA_FLAG_ENCRYPTED) == 0) {
+				if (!s->plain_warned) {
+					s->plain_warned = true;
+					LOG_WRN("dropping plaintext frame from node 0x%04x "
+						"(further drops not logged)",
+						src_node);
+				}
+				continue;
+			}
+		}
+
+		/* A key is passed only for frames that claim to be encrypted: the codec
+		 * then authenticates them. A plaintext frame (only reachable with
+		 * REQUIRE_ENCRYPTION=n) is decoded with key = NULL, explicitly.
+		 */
+		bool encrypted = (hdr.flags & LORA_FLAG_ENCRYPTED) != 0;
+
+		ret = lora_packet_decode(buf, pkt_len, (s && encrypted) ? s->session_key : NULL,
+					 &hdr, payload, sizeof(payload), &payload_len);
 		if (ret < 0) {
 			LOG_WRN("packet decode failed from 0x%04x: %d", src_node, ret);
 			continue;
 		}
 
-		if (s) {
-			s->last_seq_rx = (uint16_t)hdr.seq_num[0] | ((uint16_t)hdr.seq_num[1] << 8);
+		/* Replay state and link statistics are updated for authenticated
+		 * frames only (decode succeeded with a key). Plaintext frames
+		 * (REQUIRE_ENCRYPTION=n, bring-up only) carry an attacker-chosen seq
+		 * and must not move last_seq_rx.
+		 *
+		 * last_seq_rx lives in RAM, so the first authenticated frame after a
+		 * gateway reboot is accepted: a frame recorded earlier can be
+		 * replayed once (residual risk, accepted).
+		 */
+		if (s && encrypted) {
+			if (!lora_session_rx_accept(s, lora_hdr_seq_get(&hdr))) {
+				continue;
+			}
+
+			struct lora_link_event link_evt = {
+				.node_id = src_node,
+				.rssi = rssi,
+				.snr = (uint8_t)snr,
+				.seq_num = lora_hdr_seq_get(&hdr),
+				.crc_errors = 0,
+			};
+			zbus_chan_pub(&lora_link_chan, &link_evt, K_NO_WAIT);
+
 			s->last_rx_ms = k_uptime_get();
 		}
 
+		/* PROV_BEACON/PROV_RESPONSE type IDs stay reserved but are no longer
+		 * dispatched: provisioning is pre-shared-key only.
+		 */
 		switch (lora_frame_type(hdr.type_ver)) {
 		case LORA_FRAME_SENSOR_DATA:
 			lora_handle_sensor_data(src_node, payload, payload_len);
@@ -176,9 +289,6 @@ static void lora_rx_thread_fn(void *p1, void *p2, void *p3)
 			break;
 		case LORA_FRAME_ACK:
 			lora_handle_ack(src_node, payload, payload_len);
-			break;
-		case LORA_FRAME_PROV_BEACON:
-			lora_handle_prov_beacon(&hdr, payload, payload_len);
 			break;
 #ifdef CONFIG_LORA_RADIO_FOTA
 		case LORA_FRAME_FOTA_CHUNK:
@@ -211,32 +321,28 @@ static int lora_radio_init(void)
 		return -ENODEV;
 	}
 
-	struct lora_modem_config cfg = {
-		.frequency = 868000000,
+	rx_cfg = (struct lora_modem_config){
+		.frequency = CONFIG_LORA_RADIO_FREQ_HZ,
 		.bandwidth = bw_to_enum(CONFIG_LORA_RADIO_DEFAULT_BW),
 		.datarate = sf_to_enum(CONFIG_LORA_RADIO_DEFAULT_SF),
 		.coding_rate = CR_4_5,
 		.preamble_len = 8,
-		.tx_power = 14,
+		.tx_power = CONFIG_LORA_RADIO_TX_POWER,
 		.tx = false,
 	};
-	int ret = lora_config(lora_radio_dev, &cfg);
+	tx_cfg = rx_cfg;
+	tx_cfg.tx = true;
+
+	int ret = lora_config(lora_radio_dev, &rx_cfg);
 	if (ret < 0) {
 		LOG_ERR("lora_config failed: %d", ret);
 		return ret;
 	}
+	radio_ready = true;
 
 	lora_session_init();
 	lora_session_restore();
 	lora_pending_init();
-
-#ifdef CONFIG_PSA_CRYPTO
-	ret = lora_prov_init();
-	if (ret < 0) {
-		LOG_WRN("Ed25519 key cache init failed: %d", ret);
-		/* Continue without provisioning capability */
-	}
-#endif
 
 	k_thread_create(&lora_rx_thread_data, lora_rx_stack, CONFIG_LORA_RADIO_RX_THREAD_STACK_SIZE,
 			lora_rx_thread_fn, NULL, NULL, NULL, CONFIG_LORA_RADIO_RX_THREAD_PRIORITY,

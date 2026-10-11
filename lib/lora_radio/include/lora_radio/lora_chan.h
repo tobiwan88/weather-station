@@ -13,7 +13,7 @@ struct lora_link_event {
 	uint16_t node_id;
 	int16_t rssi;
 	uint8_t snr;
-	uint16_t seq_num;
+	uint32_t seq_num;
 	uint16_t crc_errors;
 };
 

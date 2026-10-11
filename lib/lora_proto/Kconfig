@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config LORA_PROTO
+	bool "LoRa wire protocol codec"
+	select PSA_CRYPTO
+	select CRC
+	select PSA_WANT_KEY_TYPE_AES
+	select PSA_WANT_ALG_GCM
+	help
+	  Shared LoRa frame definitions and packet codec (10-byte header,
+	  AES-128-GCM with a 12-byte tag via PSA Crypto, CRC16) used by both
+	  the sensor node (lora_node) and the gateway (lora_radio).
+
+if LORA_PROTO
+
+module = LORA_PROTO
+module-str = LORA_PROTO
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # LORA_PROTO

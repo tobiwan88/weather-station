@@ -8,11 +8,13 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 #include <errno.h>
 #include <string.h>
 #include <zephyr/kernel.h>
+#include <zephyr/sys/byteorder.h>
 
 #include "lora_radio_internal.h"
 #include <io_stream/io_stream.h>
 #include <lora_radio/lora_chan.h>
 #include <lora_radio/lora_frame.h>
+#include <lora_radio/lora_pending.h>
 #include <lora_radio/lora_radio.h>
 #include <lora_radio/lora_session.h>
 
@@ -24,6 +26,10 @@ LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 /* --------------------------------------------------------------------------
  * FOTA sender state machine
  * -------------------------------------------------------------------------- */
+
+BUILD_ASSERT(sizeof(struct lora_fota_chunk) + CONFIG_LORA_RADIO_FOTA_CHUNK_SIZE + LORA_OVERHEAD <=
+		     LORA_MAX_PACKET_SF7,
+	     "FOTA chunk plus frame overhead must fit one LoRa packet");
 
 enum fota_sender_state {
 	FOTA_STATE_IDLE,
@@ -39,6 +45,7 @@ static struct {
 	uint32_t bytes_sent;
 	uint32_t bytes_acked;
 	uint32_t pending_expected_offset; /* stored by ACK handler for callback access */
+	uint32_t inflight_offset;         /* offset of the single in-flight chunk (ACK matching) */
 	uint8_t fota_mode;
 	uint8_t window_size;
 	uint8_t window_sent;
@@ -88,32 +95,52 @@ static int fota_send_chunk(uint16_t node_id, uint32_t offset, const uint8_t *dat
 		return -EINVAL;
 	}
 
-	struct lora_fota_chunk chunk;
+	/* struct lora_fota_chunk ends in a flexible array member, so it cannot hold
+	 * the data: build the payload in a buffer sized for header + chunk.
+	 */
+	uint8_t chunk[sizeof(struct lora_fota_chunk) + CONFIG_LORA_RADIO_FOTA_CHUNK_SIZE];
 
-	chunk.offset = offset;
-	memcpy(chunk.data, data, data_len);
+	if (data_len > CONFIG_LORA_RADIO_FOTA_CHUNK_SIZE) {
+		return -EMSGSIZE;
+	}
+	sys_put_le32(offset, chunk);
+	memcpy(&chunk[sizeof(struct lora_fota_chunk)], data, data_len);
 
 	struct lora_l2_header hdr;
 
 	memset(&hdr, 0, sizeof(hdr));
 	hdr.type_ver = (LORA_FRAME_FOTA_CHUNK << 4) | 0x01;
-	hdr.flags = LORA_FLAG_ACK_REQ | LORA_FLAG_ENCRYPTED;
-	hdr.dst_node[0] = (uint8_t)(node_id & 0xFF);
-	hdr.dst_node[1] = (uint8_t)((node_id >> 8) & 0xFF);
-	hdr.seq_num[0] = (uint8_t)(s->last_seq_tx & 0xFF);
-	hdr.seq_num[1] = (uint8_t)((s->last_seq_tx >> 8) & 0xFF);
+	hdr.flags = LORA_FLAG_ACK_REQ | LORA_FLAG_ENCRYPTED | LORA_FLAG_DIR_DOWN;
+	lora_hdr_dst_set(&hdr, node_id);
+
+	/* Fresh seq per frame: the nonce is derived from it */
+	uint32_t seq;
+	int ret = lora_session_next_tx_seq(&seq);
+
+	if (ret < 0) {
+		return ret;
+	}
+	lora_hdr_seq_set(&hdr, seq);
 
 	uint8_t tx_buf[LORA_MAX_PACKET_SF7];
-	uint8_t tx_len;
-	int ret = lora_packet_encode(&hdr, &chunk, sizeof(chunk.offset) + data_len, s->session_key,
-				     tx_buf, &tx_len);
+	size_t tx_len;
+
+	ret = lora_packet_encode(&hdr, chunk, sizeof(struct lora_fota_chunk) + data_len,
+				 s->session_key, tx_buf, sizeof(tx_buf), &tx_len);
 	if (ret < 0) {
 		return ret;
 	}
 
-	return lora_pending_send_async(node_id, s->last_seq_tx, LORA_FRAME_FOTA_CHUNK, tx_buf,
-				       tx_len, CONFIG_LORA_RADIO_FOTA_RETRY_MS, fota_chunk_cb,
-				       NULL);
+	/* Set before sending so a fast ACK finds it; restored if the slot is busy */
+	uint32_t prev_offset = fota_sender.inflight_offset;
+
+	fota_sender.inflight_offset = offset;
+	ret = lora_pending_send_async(node_id, seq, LORA_FRAME_FOTA_CHUNK, tx_buf, tx_len,
+				      CONFIG_LORA_RADIO_FOTA_RETRY_MS, fota_chunk_cb, NULL);
+	if (ret < 0) {
+		fota_sender.inflight_offset = prev_offset;
+	}
+	return ret;
 }
 
 /* --------------------------------------------------------------------------
@@ -236,14 +263,14 @@ static void fota_start_handler(uint16_t node_id, uint32_t image_size, uint8_t fo
 	fota_sender.bytes_sent = 0;
 	fota_sender.bytes_acked = 0;
 	fota_sender.pending_expected_offset = 0;
+	fota_sender.inflight_offset = 0;
 	fota_sender.fota_mode = fota_mode;
 	fota_sender.window_size = CONFIG_LORA_RADIO_FOTA_WINDOW;
 	fota_sender.window_sent = 0;
 	fota_sender.consecutive_timeouts = 0;
 
 #	if defined(CONFIG_IO_STREAM_FLASH)
-	int rc = io_stream_flash_init(&fota_sender.src_stream,
-				      FIXED_PARTITION_ID(PM_MCUBOOT_SECONDARY));
+	int rc = io_stream_flash_init(&fota_sender.src_stream, PARTITION_ID(slot1_partition));
 	if (rc < 0) {
 		LOG_ERR("FOTA stream init failed: %d", rc);
 		fota_sender.state = FOTA_STATE_IDLE;
@@ -295,15 +322,27 @@ int lora_handle_fota_chunk_ack(uint16_t src_node, const uint8_t *payload, uint8_
 
 	const struct lora_fota_chunk_ack *ack = (const struct lora_fota_chunk_ack *)payload;
 
+	uint32_t acked_offset;
 	uint32_t expected_offset;
 
+	memcpy(&acked_offset, ack->offset, sizeof(acked_offset));
 	memcpy(&expected_offset, ack->expected_offset, sizeof(expected_offset));
+
+	/* The ACK carries the receiver's own seq, and every (re)transmission of a
+	 * chunk uses a new seq, so match on the chunk offset it echoes. Stale ACKs
+	 * of an earlier chunk are ignored.
+	 */
+	if (fota_sender.state == FOTA_STATE_IDLE || src_node != fota_sender.target_node_id ||
+	    acked_offset != fota_sender.inflight_offset) {
+		LOG_DBG("ignoring FOTA ACK for offset %u", acked_offset);
+		return 0;
+	}
 
 	/* Store expected_offset for the callback to read */
 	fota_sender.pending_expected_offset = expected_offset;
 
-	/* Signal pending slot — callback (fota_chunk_cb) handles window advance */
-	lora_pending_ack_match(src_node, 0, ack->status != 0 ? -1 : 0);
+	/* Complete the pending slot — callback (fota_chunk_cb) handles window advance */
+	lora_pending_complete(src_node, LORA_FRAME_FOTA_CHUNK, ack->status != 0 ? -EIO : 0);
 
 	return 0;
 }
@@ -331,8 +370,7 @@ int lora_handle_fota_chunk(uint16_t src_node, const uint8_t *payload, uint8_t pa
 
 	if (!fota_rx_active) {
 #	if defined(CONFIG_IO_STREAM_FLASH)
-		ret = io_stream_flash_init(&fota_rx_stream,
-					   FIXED_PARTITION_ID(PM_MCUBOOT_SECONDARY));
+		ret = io_stream_flash_init(&fota_rx_stream, PARTITION_ID(slot1_partition));
 		if (ret < 0) {
 			LOG_ERR("FOTA RX stream init failed: %d", ret);
 			return ret;
@@ -369,22 +407,23 @@ int lora_handle_fota_chunk(uint16_t src_node, const uint8_t *payload, uint8_t pa
 
 		struct lora_l2_header hdr;
 
+		memset(&hdr, 0, sizeof(hdr));
 		hdr.type_ver = (LORA_FRAME_FOTA_CHUNK_ACK << 4) | 0x01;
-		hdr.flags = 0;
-		hdr.src_node[0] = 0;
-		hdr.src_node[1] = 0;
-		hdr.dst_node[0] = (uint8_t)(src_node & 0xFF);
-		hdr.dst_node[1] = (uint8_t)((src_node >> 8) & 0xFF);
-		hdr.seq_num[0] = 0;
-		hdr.seq_num[1] = 0;
+		hdr.flags = LORA_FLAG_DIR_DOWN;
+		lora_hdr_dst_set(&hdr, src_node);
 
 		struct lora_session *s = lora_session_get(src_node);
 		uint8_t tx_buf[LORA_MAX_PACKET_SF7];
-		uint8_t tx_len;
+		size_t tx_len;
+		uint32_t seq;
 
-		lora_packet_encode(&hdr, &ack, sizeof(ack), s ? s->session_key : NULL, tx_buf,
-				   &tx_len);
-		lora_send(lora_radio_dev, tx_buf, tx_len);
+		if (lora_session_next_tx_seq(&seq) == 0) {
+			lora_hdr_seq_set(&hdr, seq);
+			if (lora_packet_encode(&hdr, &ack, sizeof(ack), s ? s->session_key : NULL,
+					       tx_buf, sizeof(tx_buf), &tx_len) == 0) {
+				(void)lora_radio_send(tx_buf, tx_len);
+			}
+		}
 	}
 	return 0;
 }

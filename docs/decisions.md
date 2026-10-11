@@ -80,8 +80,9 @@ hardware key isolation. Hardware-only feature.
 ## ADR-015 LoRa protocol (supersedes ADR-006)
 LoRa details stay inside the LoRa libraries; consumers only see
 `env_sensor_data` on `sensor_event_chan` (one packet becomes N events, stamped
-with the gateway clock). Frame: 8-byte header (type+version, flags, src, dst,
-seq) plus a 12-byte AES-128-GCM tag after pairing. Sensor data is fire and
+with the gateway clock). Frame: 10-byte header (type+version, flags, src, dst,
+32-bit seq) plus a 12-byte AES-128-GCM tag (header = AAD; nonce = node id |
+direction | seq32, built in `lib/lora_proto`) and CRC16. Sensor data is fire and
 forget; RPC and FOTA chunks use ACK plus retry (3 retries, one RPC pending per
 node). Pairing is button-triggered with a 30 s window and an Ed25519-signed
 response; session keys persist in Settings/NVS. Respect EU868 1 % duty cycle
