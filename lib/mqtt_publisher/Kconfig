@@ -7,7 +7,6 @@ menuconfig MQTT_PUBLISHER
 	depends on SENSOR_EVENT
 	depends on SENSOR_REGISTRY
 	depends on SENSOR_REGISTRY_USER_META
-	depends on SNTP_SYNC
 	select SETTINGS
 	select BASE64
 	depends on CONFIG_CMD
@@ -77,13 +76,6 @@ config MQTT_PUBLISHER_QUEUE_HIGH
 	help
 	  When the queue fills past this threshold, a warning is logged.
 	  Must be less than MQTT_PUBLISHER_QUEUE_DEPTH.
-
-config MQTT_PUBLISHER_EPOCH_CACHE_TTL_MS
-	int "SNTP epoch cache TTL (milliseconds)"
-	default 1000
-	help
-	  Cache the epoch_s value for this duration to avoid repeated
-	  sntp_sync_get_epoch_ms() calls in the publish loop.
 
 config MQTT_PUBLISHER_STACK_SIZE
 	int "Publisher thread stack size (bytes)"

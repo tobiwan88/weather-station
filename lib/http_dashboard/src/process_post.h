@@ -10,8 +10,10 @@
  *
  * Recognised fields:
  *   - trigger_interval_ms=<ms>  — publishes CONFIG_CMD_SET_TRIGGER_INTERVAL
- *   - sntp_server=<host>        — updates the cached SNTP server string
- *   - action=sntp_resync        — publishes CONFIG_CMD_SNTP_RESYNC
+ *   - sntp_server=<host>        — caches the SNTP server and calls
+ *                                  net_config_sntp_set_server() (immediate resync)
+ *   - action=sntp_resync        — calls net_config_sntp_set_server() with the
+ *                                  cached server (immediate resync)
  *   - action=add_location&loc_name=<n>    — calls location_registry_add()
  *   - action=remove_location&loc_name=<n> — calls location_registry_remove()
  *   - sensor_<uid>_<field>=<v>  — updates sensor metadata (requires
@@ -33,8 +35,9 @@ uint32_t config_state_get_trigger_ms(void);
 /**
  * @brief Copy the most recently set SNTP server hostname into @p out.
  *
- * Thread-safe: the copy is performed under a spinlock. @p out receives an
- * empty string if no SNTP server has been set via POST.
+ * Thread-safe: the copy is performed under a spinlock. If no SNTP server has
+ * been set via POST, @p out receives CONFIG_NET_CONFIG_SNTP_INIT_SERVER (or an
+ * empty string when that Kconfig is not set).
  *
  * @param out  Destination buffer.
  * @param len  Size of @p out in bytes (must be > 0).

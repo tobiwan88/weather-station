@@ -6,5 +6,5 @@ menuconfig CONFIG_CMD
 	help
 	  Enables the config_cmd_chan zbus channel. Producers (e.g.
 	  http_dashboard) publish config_cmd_event messages; consumers
-	  (fake_sensors, sntp_sync) subscribe independently and act on
+	  (fake_sensors) subscribe independently and act on
 	  the commands. Producers never call consumers directly.

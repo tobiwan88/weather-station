@@ -52,14 +52,13 @@ def test_trigger_interval_bounds_accepted(authed_harness, restore_trigger_interv
 def test_sntp_resync_accepted(authed_harness):
     """POST action=sntp_resync must be accepted (2xx).
 
-    The SNTP resync runs on a dedicated background thread; the HTTP response
-    is returned immediately.  The DUT applies a CONFIG_SNTP_SYNC_PRESYNC_DELAY_MS
-    settling delay before opening the UDP socket, so subsequent tests must not
-    start until that delay plus the query timeout have elapsed.
+    The resync is an async SNTP query on the net socket service (no thread,
+    no presync delay); the HTTP response is returned immediately.  The query
+    is bounded by CONFIG_NET_CONFIG_SNTP_INIT_TIMEOUT (1000 ms), so subsequent
+    tests must not start until that timeout has elapsed.
     """
     status = authed_harness.request_sntp_resync()
     assert 200 <= status < 300, f"Unexpected HTTP status: {status}"
-    # Wait for the SNTP thread's presync delay (200 ms) + worst-case query
-    # timeout (1000 ms) + margin, so the UDP socket is closed before the next
-    # test opens more HTTP connections.
+    # Worst-case query timeout (1000 ms) + margin, so the UDP socket is closed
+    # before the next test opens more HTTP connections.
     time.sleep(1.5)

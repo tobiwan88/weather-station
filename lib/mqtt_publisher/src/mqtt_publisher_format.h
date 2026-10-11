@@ -3,7 +3,7 @@
  * @file mqtt_publisher_format.h
  * @brief Internal format helpers for mqtt_publisher.
  *
- * Pure functions — no dependency on sensor_registry, sntp_sync, or MQTT.
+ * Pure functions — no dependency on sensor_registry or MQTT.
  * Exposed as non-static so they can be unit-tested from tests/mqtt_publisher.
  */
 
