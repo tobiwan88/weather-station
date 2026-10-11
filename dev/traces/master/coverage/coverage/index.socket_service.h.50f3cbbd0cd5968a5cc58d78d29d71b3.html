@@ -43,13 +43,13 @@
       </tr>
       <tr>
         <th scope="row">Lines:</th>
-        <td class="coverage-none">0.0%</td>
-        <td class="coverage-none">0 / 0 / 4</td>
+        <td class="coverage-low">50.0%</td>
+        <td class="coverage-low">2 / 0 / 4</td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
-        <td class="coverage-none">0.0%</td>
-        <td class="coverage-none">0 / 0 / 2</td>
+        <td class="coverage-low">50.0%</td>
+        <td class="coverage-low">1 / 0 / 2</td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
@@ -75,10 +75,10 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l193">net_socket_service_close (zephyr/include/zephyr/net/socket_service.h:193)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
-    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
-    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l179">net_socket_service_unregister (zephyr/include/zephyr/net/socket_service.h:179)</a>    </div>
@@ -96,8 +96,8 @@
   <div class="Box-header d-flex flex-space-between sticky">
     zephyr/include/zephyr/net/socket_service.h
     <div class="toggle-buttons">
-      <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">0 covered</button>
-      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">4 uncovered</button>
+      <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">2 covered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">2 uncovered</button>
       <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">0 partial covered</button>
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
     </div>
@@ -1463,8 +1463,8 @@
         <td class="lineno"><a id="l193" href="#l193">193</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">net_socket_service_close</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">net_socket_service_desc</span><span class="w"> </span><span class="o">*</span><span class="n">service</span><span class="p">)</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">net_socket_service_close</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">net_socket_service_desc</span><span class="w"> </span><span class="o">*</span><span class="n">service</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l194" href="#l194">194</a></td>
@@ -1477,8 +1477,8 @@
         <td class="lineno"><a id="l195" href="#l195">195</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">net_socket_service_register</span><span class="p">(</span><span class="n">service</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">NET_SOCKET_SERVICE_CLOSE_SOCKETS</span><span class="p">);</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">net_socket_service_register</span><span class="p">(</span><span class="n">service</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">NET_SOCKET_SERVICE_CLOSE_SOCKETS</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l196" href="#l196">196</a></td>
@@ -1711,7 +1711,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 12:10:25
+          at 2026-10-11 15:28:34
         </footer>
       </div>
     </div>

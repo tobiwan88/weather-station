@@ -89,7 +89,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l961">net_if_flag_is_set (zephyr/include/zephyr/net/net_if.h:961)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="557">called 557 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="922">called 922 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
@@ -236,7 +236,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l3352">net_if_is_up (zephyr/include/zephyr/net/net_if.h:3352)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="3">called 3 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="149">called 149 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
@@ -7165,7 +7165,7 @@
         <td class="lineno"><a id="l961" href="#l961">961</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">557</td>
+        <td class="linecount coveredLine show_coveredLine">922</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">net_if_flag_is_set</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_if</span><span class="w"> </span><span class="o">*</span><span class="n">iface</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -7189,11 +7189,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 3 not taken.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 557 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 922 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">557</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">922</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">iface</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -7242,7 +7242,7 @@
         <td class="lineno"><a id="l970" href="#l970">970</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">557</td>
+        <td class="linecount coveredLine show_coveredLine">922</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">atomic_test_bit</span><span class="p">(</span><span class="n">iface</span><span class="o">-&gt;</span><span class="n">if_dev</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -24086,7 +24086,7 @@
         <td class="lineno"><a id="l3352" href="#l3352">3352</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3</td>
+        <td class="linecount coveredLine show_coveredLine">149</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">net_if_is_up</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">net_if</span><span class="w"> </span><span class="o">*</span><span class="n">iface</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -24103,11 +24103,11 @@
             <summary class="linebranchSummary">1/2</summary>
             <div class="linebranchContents">
               <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 3 not taken.</div>
-              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 3 times.</div>
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 4 taken 149 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">3</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">149</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">iface</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -24137,21 +24137,21 @@
           <details class="linebranchDetails">
             <summary class="linebranchSummary">2/4</summary>
             <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 3 times.</div>
+              <div class="takenBranch">&check; Branch 5 &rightarrow; 6 taken 149 times.</div>
               <div class="notTakenBranch">&cross; Branch 5 &rightarrow; 9 not taken.</div>
-              <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 3 times.</div>
+              <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 149 times.</div>
               <div class="notTakenBranch">&cross; Branch 7 &rightarrow; 9 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">6</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">298</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">net_if_flag_is_set</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span><span class="w"> </span><span class="n">NET_IF_UP</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l3359" href="#l3359">3359</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3</td>
+        <td class="linecount coveredLine show_coveredLine">149</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	       </span><span class="n">net_if_flag_is_set</span><span class="p">(</span><span class="n">iface</span><span class="p">,</span><span class="w"> </span><span class="n">NET_IF_RUNNING</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -29614,7 +29614,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 12:10:25
+          at 2026-10-11 15:28:34
         </footer>
       </div>
     </div>
