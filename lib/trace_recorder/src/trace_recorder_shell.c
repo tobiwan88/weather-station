@@ -45,88 +45,54 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 	ARG_UNUSED(argc);
 	ARG_UNUSED(argv);
 
+	/* Lock only while reading scalar state: shell_print can block on the
+	 * UART and must not run with IRQs masked. */
 	k_spinlock_key_t key = k_spin_lock(&trace_lock);
 	uint32_t head = trace_head;
 	uint32_t overflow = trace_overflow;
+	k_spin_unlock(&trace_lock, key);
+
 	uint32_t capacity = CONFIG_TRACE_RECORDER_BUFFER_SIZE;
 	uint32_t valid_count = overflow ? capacity : head;
 
 	shell_print(sh, "--- TRACE DUMP BEGIN ---");
 	shell_print(sh, "records=%u capacity=%u overflow=%u", valid_count, capacity, overflow);
 
-	/* print thread name table */
+	/* Thread name table: copy each name under the lock, print outside it. */
 	shell_print(sh, "thread_names:");
 	for (uint32_t i = 0; i < CONFIG_TRACE_RECORDER_MAX_THREADS; i++) {
-		if (trace_thread_names[i][0] != '\0') {
-			shell_print(sh, "  [%u] %s", i, trace_thread_names[i]);
-		}
-	}
+		char name[CONFIG_THREAD_MAX_NAME_LEN];
 
-#if defined(CONFIG_TRACE_RECORDER_CMD_DUMP_MALLOC)
-	/* Heap-allocated snapshot — reduces stack usage */
-	struct trace_record *snapshot =
-		(struct trace_record *)k_malloc(valid_count * sizeof(struct trace_record));
-
-	if (snapshot != NULL) {
-		memcpy(snapshot, trace_records, valid_count * sizeof(struct trace_record));
+		key = k_spin_lock(&trace_lock);
+		memcpy(name, trace_thread_names[i], sizeof(name));
 		k_spin_unlock(&trace_lock, key);
 
-		shell_print(sh, "records_hex:");
-		const uint8_t *raw = (const uint8_t *)snapshot;
-		uint32_t total_bytes = valid_count * 8;
-		for (uint32_t i = 0; i < total_bytes; i += 16) {
-			uint32_t remain = total_bytes - i;
-			if (remain >= 16) {
-				shell_print(sh,
-					    "%02x%02x%02x%02x%02x%02x%02x%02x"
-					    "%02x%02x%02x%02x%02x%02x%02x%02x",
-					    raw[i], raw[i + 1], raw[i + 2], raw[i + 3], raw[i + 4],
-					    raw[i + 5], raw[i + 6], raw[i + 7], raw[i + 8],
-					    raw[i + 9], raw[i + 10], raw[i + 11], raw[i + 12],
-					    raw[i + 13], raw[i + 14], raw[i + 15]);
-			} else {
-				char buf[128];
-				int off = 0;
-				for (uint32_t j = 0; j < remain; j++) {
-					off += snprintf(buf + off, sizeof(buf) - off, "%02x",
-							raw[i + j]);
-				}
-				shell_print(sh, "%s", buf);
-			}
-		}
-
-		k_free(snapshot);
-	} else {
-		/* k_malloc failed — fall back to per-record iteration */
-		shell_warn(sh, "k_malloc failed, falling back to per-record dump");
-		shell_print(sh, "records_hex:");
-		for (uint32_t i = 0; i < valid_count; i++) {
-			struct trace_record rec = trace_records[i];
-			k_spin_unlock(&trace_lock, key);
-
-			const uint8_t *b = (const uint8_t *)&rec;
-			shell_print(sh, "%02x%02x%02x%02x%02x%02x%02x%02x", b[0], b[1], b[2], b[3],
-				    b[4], b[5], b[6], b[7]);
-
-			if (i + 1 < valid_count) {
-				key = k_spin_lock(&trace_lock);
-			}
+		if (name[0] != '\0') {
+			shell_print(sh, "  [%u] %s", i, name);
 		}
 	}
-#else
-	/* Per-record iteration — no heap, minimal stack */
+
+	/* Records: copy one record at a time under the lock, print outside it.
+	 * Two records per output line (16 bytes). */
 	shell_print(sh, "records_hex:");
 	for (uint32_t i = 0; i < valid_count; i += 2) {
-		struct trace_record r0 = trace_records[i];
+		struct trace_record r0;
 		struct trace_record r1 = {0};
-		if (i + 1 < valid_count) {
-			r1 = trace_records[i + 1];
-		}
+		bool has_r1 = (i + 1 < valid_count);
+
+		key = k_spin_lock(&trace_lock);
+		r0 = trace_records[i];
 		k_spin_unlock(&trace_lock, key);
+
+		if (has_r1) {
+			key = k_spin_lock(&trace_lock);
+			r1 = trace_records[i + 1];
+			k_spin_unlock(&trace_lock, key);
+		}
 
 		const uint8_t *b0 = (const uint8_t *)&r0;
 		const uint8_t *b1 = (const uint8_t *)&r1;
-		uint32_t remain = (i + 1 < valid_count) ? 16 : 8;
+		uint32_t remain = has_r1 ? 16 : 8;
 
 		if (remain >= 16) {
 			shell_print(sh,
@@ -142,12 +108,7 @@ static int cmd_dump(const struct shell *sh, size_t argc, char **argv)
 			}
 			shell_print(sh, "%s", buf);
 		}
-
-		if (i + 1 < valid_count) {
-			key = k_spin_lock(&trace_lock);
-		}
 	}
-#endif
 
 	shell_print(sh, "--- TRACE DUMP END ---");
 	return 0;

@@ -1,0 +1,17 @@
+tests:
+  weather_station.sensor_registry:
+    platform_allow:
+      - native_sim/native/64
+    harness: ztest
+    tags:
+      - sensor_registry
+      - weather_station
+  weather_station.sensor_registry.user_meta:
+    platform_allow:
+      - native_sim/native/64
+    harness: ztest
+    tags:
+      - sensor_registry
+      - weather_station
+    extra_configs:
+      - CONFIG_SENSOR_REGISTRY_USER_META=y

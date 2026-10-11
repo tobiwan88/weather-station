@@ -146,6 +146,15 @@ static int sen0460_decoder_get_size_info(struct sensor_chan_spec chan_spec, size
 	}
 }
 
+/* Scale a raw µg/m³ PM reading to Q31. Values saturate at 1000 µg/m³ (full scale). */
+static q31_t sen0460_ug_to_q31(uint16_t raw)
+{
+	if (raw > 1000) {
+		raw = 1000;
+	}
+	return (q31_t)(((uint64_t)raw * (uint64_t)INT32_MAX) / 1000);
+}
+
 static int sen0460_decoder_decode(const uint8_t *buffer, struct sensor_chan_spec chan_spec,
 				  uint32_t *fit, uint16_t max_count, void *data_out)
 {
@@ -162,20 +171,15 @@ static int sen0460_decoder_decode(const uint8_t *buffer, struct sensor_chan_spec
 	out->header.base_timestamp_ns = edata->timestamp;
 	out->header.reading_count = 1;
 
-	uint16_t raw;
-
 	switch (chan_spec.chan_type) {
 	case SENSOR_CHAN_PM_1_0:
-		raw = edata->raw_pm1_0;
-		out->readings[0].density = (q31_t)(((uint64_t)raw * (uint64_t)INT32_MAX) / 1000);
+		out->readings[0].density = sen0460_ug_to_q31(edata->raw_pm1_0);
 		break;
 	case SENSOR_CHAN_PM_2_5:
-		raw = edata->raw_pm2_5;
-		out->readings[0].density = (q31_t)(((uint64_t)raw * (uint64_t)INT32_MAX) / 1000);
+		out->readings[0].density = sen0460_ug_to_q31(edata->raw_pm2_5);
 		break;
 	case SENSOR_CHAN_PM_10:
-		raw = edata->raw_pm10;
-		out->readings[0].density = (q31_t)(((uint64_t)raw * (uint64_t)INT32_MAX) / 1000);
+		out->readings[0].density = sen0460_ug_to_q31(edata->raw_pm10);
 		break;
 	default:
 		return -EINVAL;

@@ -24,6 +24,27 @@ config FOTA_CONFIRM_DELAY_S
 	  system work queue; keep the delay long enough that other work queue
 	  consumers (MQTT reconnect, SNTP) have completed their init writes.
 
+config FOTA_CONFIRM_REQUIRE_SENSOR_EVENT
+	bool "Confirm only after a sensor event has been published"
+	depends on SENSOR_EVENT
+	select ZBUS_CHANNEL_PUBLISH_STATS
+	help
+	  Before confirming, require at least one event on sensor_event_chan.
+	  A new image that boots but never produces sensor data is then not
+	  confirmed, so MCUboot reverts it on the next reset. Only enable this
+	  when a sensor reports well within
+	  FOTA_CONFIRM_DELAY_S * (FOTA_CONFIRM_MAX_RETRIES + 1) seconds.
+
+config FOTA_CONFIRM_MAX_RETRIES
+	int "Health-check retries before giving up on confirmation"
+	default 6
+	range 0 60
+	help
+	  Number of times the confirm work is rescheduled (every
+	  FOTA_CONFIRM_DELAY_S seconds) while the health check fails. After
+	  the last retry the image is left unconfirmed and MCUboot reverts it
+	  on the next reset.
+
 module = FOTA_CONFIRM
 module-str = FOTA_CONFIRM
 source "subsys/logging/Kconfig.template.log_config"

@@ -9,6 +9,7 @@
  */
 
 #include <zephyr/kernel.h>
+#include <zephyr/sys/atomic.h>
 #include <zephyr/sys/iterable_sections.h>
 #include <zephyr/zbus/zbus.h>
 #include <zephyr/ztest.h>
@@ -31,6 +32,20 @@ static void test_event_cb(const struct zbus_channel *chan)
 
 ZBUS_LISTENER_DEFINE(test_event_listener, test_event_cb);
 
+/* Counts TRIGGER_SOURCE_TIMER events published on sensor_trigger_chan. */
+static atomic_t timer_trigger_count = ATOMIC_INIT(0);
+
+static void test_trigger_cb(const struct zbus_channel *chan)
+{
+	const struct sensor_trigger_event *trig = zbus_chan_const_msg(chan);
+
+	if (trig->source == TRIGGER_SOURCE_TIMER) {
+		atomic_inc(&timer_trigger_count);
+	}
+}
+
+ZBUS_LISTENER_DEFINE(test_trigger_listener, test_trigger_cb);
+
 /* ── Suite setup / teardown ─────────────────────────────────────────────── */
 
 static void *suite_setup(void)
@@ -38,6 +53,10 @@ static void *suite_setup(void)
 	/* Subscribe test listener to sensor_event_chan. */
 	int rc = zbus_chan_add_obs(&sensor_event_chan, &test_event_listener, K_NO_WAIT);
 	zassert_ok(rc, "Failed to add event observer: %d", rc);
+
+	/* Subscribe trigger counter to sensor_trigger_chan. */
+	rc = zbus_chan_add_obs(&sensor_trigger_chan, &test_trigger_listener, K_NO_WAIT);
+	zassert_ok(rc, "Failed to add trigger observer: %d", rc);
 	return NULL;
 }
 
@@ -98,4 +117,35 @@ ZTEST(fake_sensors_suite, test_trigger_produces_event)
 	zassert_true(last_event.type == SENSOR_TYPE_TEMPERATURE ||
 			     last_event.type == SENSOR_TYPE_HUMIDITY,
 		     "Received event has unexpected type %d", last_event.type);
+}
+
+/**
+ * @brief Auto-publish at 50 ms must publish timer triggers from the workqueue,
+ *        and stop publishing once disabled.
+ *
+ * Steps:
+ *   1. Enable auto-publish at 50 ms and sleep 250 ms.
+ *   2. Expect at least 2 TRIGGER_SOURCE_TIMER events.
+ *   3. Disable auto-publish, sleep 150 ms, snapshot the count.
+ *   4. Sleep another 150 ms and expect no further increase.
+ */
+ZTEST(fake_sensors_suite, test_auto_publish_enable_disable)
+{
+	fake_sensors_set_auto_publish_ms(50);
+	k_sleep(K_MSEC(250));
+
+	int enabled_count = atomic_get(&timer_trigger_count);
+
+	zassert_true(enabled_count >= 2, "Expected >= 2 timer triggers while enabled, got %d",
+		     enabled_count);
+
+	fake_sensors_set_auto_publish_ms(0);
+	k_sleep(K_MSEC(150));
+
+	int disabled_count = atomic_get(&timer_trigger_count);
+
+	k_sleep(K_MSEC(150));
+
+	zassert_equal(disabled_count, atomic_get(&timer_trigger_count),
+		      "Timer triggers still arriving after auto-publish disabled");
 }
