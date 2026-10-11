@@ -89,8 +89,46 @@ REMOTE_TRANSPORT_DEFINE(pipe_remote_transport, {
 					       });
 
 /* --------------------------------------------------------------------------
- * Reader thread — blocking FIFO read loop
+ * Reader thread — non-blocking FIFO read loop with polling
  * -------------------------------------------------------------------------- */
+
+/* Maximum time a partially received frame may stall before it is abandoned. */
+#define FRAME_STALL_TIMEOUT_MS 2000
+
+/* Read exactly @p len bytes from a non-blocking FIFO.
+ *
+ * With @p idle_ok, nothing received at all (no writer, or writer idle) returns
+ * -EAGAIN so the caller can poll again. Once a frame has started, the read
+ * waits for the rest of it; a writer that closes mid-frame returns -EPIPE and
+ * a writer that stalls for FRAME_STALL_TIMEOUT_MS returns -ETIMEDOUT.
+ */
+static int fifo_read_exact(int fd, uint8_t *buf, size_t len, bool idle_ok)
+{
+	size_t got = 0;
+	int64_t start = k_uptime_get();
+
+	while (got < len) {
+		ssize_t n = read(fd, buf + got, len - got);
+
+		if (n > 0) {
+			got += (size_t)n;
+		} else if (n == 0) {
+			return (idle_ok && got == 0) ? -EAGAIN : -EPIPE;
+		} else if (errno == EAGAIN) {
+			if (idle_ok && got == 0) {
+				return -EAGAIN;
+			}
+			if (k_uptime_get() - start >= FRAME_STALL_TIMEOUT_MS) {
+				return -ETIMEDOUT;
+			}
+			k_sleep(K_MSEC(100));
+		} else {
+			return -errno;
+		}
+	}
+
+	return 0;
+}
 
 static void pipe_reader_thread(void *a, void *b, void *c)
 {
@@ -99,8 +137,9 @@ static void pipe_reader_thread(void *a, void *b, void *c)
 	ARG_UNUSED(c);
 
 	while (true) {
-		/* open() blocks until the write end is opened (correct FIFO semantics). */
-		int fd = open(CONFIG_PIPE_TRANSPORT_FIFO_PATH, O_RDONLY);
+		/* O_NONBLOCK: open() returns immediately even when no writer is connected.
+		 * The fd stays open, so a writer can connect at any time. */
+		int fd = open(CONFIG_PIPE_TRANSPORT_FIFO_PATH, O_RDONLY | O_NONBLOCK);
 
 		if (fd < 0) {
 			LOG_WRN("fifo open failed (errno=%d), retrying", errno);
@@ -113,48 +152,39 @@ static void pipe_reader_thread(void *a, void *b, void *c)
 		while (true) {
 			/* Read 2-byte little-endian length prefix. */
 			uint8_t len_buf[2];
-			size_t len_received = 0;
-			ssize_t n = 0;
+			int rd = fifo_read_exact(fd, len_buf, sizeof(len_buf), true);
 
-			while (len_received < sizeof(len_buf)) {
-				n = read(fd, len_buf + len_received,
-					 sizeof(len_buf) - len_received);
-				if (n <= 0) {
-					break;
-				}
-				len_received += (size_t)n;
+			if (rd == -EAGAIN) {
+				/* No writer yet, or writer idle: poll again. */
+				k_sleep(K_MSEC(100));
+				continue;
 			}
-
-			if (n == 0) {
-				LOG_INF("pipe_transport: writer disconnected, reopening");
+			if (rd == -EPIPE || rd == -ETIMEDOUT) {
+				/* Writer left or stalled after part of a length prefix:
+				 * the stream is out of sync, so drop it and reopen. */
+				LOG_WRN("pipe_transport: partial length dropped (rc=%d), reopening",
+					rd);
 				break;
 			}
-			if (n < 0) {
-				LOG_WRN("fifo read error (errno=%d)", errno);
+			if (rd < 0) {
+				LOG_WRN("fifo read error (rc=%d), reopening", rd);
 				break;
 			}
 
 			uint16_t payload_len = (uint16_t)len_buf[0] | ((uint16_t)len_buf[1] << 8);
 
-			if (payload_len > SensorReading_size) {
-				LOG_WRN("payload_len=%u exceeds max=%d, discarding frame",
+			if (payload_len == 0 || payload_len > SensorReading_size) {
+				LOG_WRN("invalid payload_len=%u (max=%d), dropping frame and "
+					"reopening",
 					payload_len, SensorReading_size);
 				break;
 			}
 
 			uint8_t payload[SensorReading_size];
-			size_t received = 0;
 
-			while (received < payload_len) {
-				n = read(fd, payload + received, payload_len - received);
-				if (n <= 0) {
-					break;
-				}
-				received += (size_t)n;
-			}
-
-			if (received < payload_len) {
-				LOG_WRN("truncated payload (got=%zu want=%u), discarding", received,
+			rd = fifo_read_exact(fd, payload, payload_len, false);
+			if (rd < 0) {
+				LOG_WRN("truncated payload (rc=%d want=%u), reopening", rd,
 					payload_len);
 				break;
 			}
@@ -207,6 +237,7 @@ static void pipe_reader_thread(void *a, void *b, void *c)
 		}
 
 		close(fd);
+		k_sleep(K_MSEC(100));
 	}
 }
 

@@ -5,6 +5,7 @@
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/sys/atomic.h>
 #include <zephyr/sys/crc.h>
 #include <zephyr/zbus/zbus.h>
 
@@ -27,9 +28,42 @@ struct __packed uart_lora_wire {
 BUILD_ASSERT(sizeof(struct uart_lora_wire) == WIRE_PAYLOAD_LEN, "uart_lora_wire size mismatch");
 
 ZBUS_CHAN_DECLARE(sensor_event_chan);
-ZBUS_SUBSCRIBER_DEFINE(uart_lora_sender_sub, 4);
+K_MSGQ_DEFINE_STATIC(uart_lora_sender_q, sizeof(struct env_sensor_data), 8, 4);
+
+/* Cumulative count of events dropped because the queue was full. */
+static atomic_t queue_drops = ATOMIC_INIT(0);
 
 static const struct device *uart_dev;
+
+static bool is_power_of_ten(uint32_t n)
+{
+	if (n == 0U) {
+		return false;
+	}
+	while (n % 10U == 0U) {
+		n /= 10U;
+	}
+	return n == 1U;
+}
+
+/* Runs in publisher context, must not block. Copy the event into the queue
+ * that the sender thread drains.
+ */
+static void sensor_event_cb(const struct zbus_channel *chan)
+{
+	const struct env_sensor_data *evt = zbus_chan_const_msg(chan);
+
+	if (k_msgq_put(&uart_lora_sender_q, evt, K_NO_WAIT) != 0) {
+		/* Log at 1, 10, 100, ... drops to avoid spamming. */
+		uint32_t n = (uint32_t)atomic_inc(&queue_drops) + 1U;
+
+		if (is_power_of_ten(n)) {
+			LOG_WRN("sender queue full, dropped %u events", n);
+		}
+	}
+}
+
+ZBUS_LISTENER_DEFINE(uart_lora_sender_listener, sensor_event_cb);
 
 static void send_frame(const struct env_sensor_data *evt)
 {
@@ -57,20 +91,13 @@ static void uart_lora_sender_thread(void *a, void *b, void *c)
 	ARG_UNUSED(b);
 	ARG_UNUSED(c);
 
-	const struct zbus_channel *chan;
 	struct env_sensor_data evt;
 	int ret;
 
 	while (true) {
-		ret = zbus_sub_wait(&uart_lora_sender_sub, &chan, K_FOREVER);
+		ret = k_msgq_get(&uart_lora_sender_q, &evt, K_FOREVER);
 		if (ret) {
-			LOG_ERR("zbus_sub_wait error: %d", ret);
-			continue;
-		}
-
-		ret = zbus_chan_read(&sensor_event_chan, &evt, K_NO_WAIT);
-		if (ret) {
-			LOG_WRN("zbus_chan_read failed: %d", ret);
+			LOG_ERR("k_msgq_get error: %d", ret);
 			continue;
 		}
 
@@ -90,7 +117,7 @@ static int uart_lora_sender_init(void)
 		return -ENODEV;
 	}
 
-	int rc = zbus_chan_add_obs(&sensor_event_chan, &uart_lora_sender_sub, K_NO_WAIT);
+	int rc = zbus_chan_add_obs(&sensor_event_chan, &uart_lora_sender_listener, K_NO_WAIT);
 	if (rc != 0) {
 		LOG_ERR("add obs sensor_event_chan: %d", rc);
 		return rc;

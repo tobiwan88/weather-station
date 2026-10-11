@@ -162,6 +162,15 @@ class ShellHarness:
         return " ".join(lines).strip()
 
     # ------------------------------------------------------------------
+    # remote_sensor commands
+    # ------------------------------------------------------------------
+
+    def list_remote_sensors(self) -> list[int]:
+        """Return uids registered via remote transports (``remote_sensor list``)."""
+        lines = self._exec("remote_sensor list")
+        return [int(m.group(1), 16) for line in lines if (m := re.search(r"uid=0x([0-9a-fA-F]+)", line))]
+
+    # ------------------------------------------------------------------
     # help
     # ------------------------------------------------------------------
 
