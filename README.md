@@ -13,7 +13,7 @@ A vibe-coded IoT weather station built on [Zephyr RTOS v4.5.0-rc1](https://zephy
 
 ---
 
-Design rationale: [`docs/adr/`](docs/adr/README.md) · Architecture: [`docs/architecture/`](docs/architecture/README.md)
+Design decisions: [`docs/decisions.md`](docs/decisions.md) · Architecture: [`docs/architecture/`](docs/architecture/README.md)
 
 ---
 

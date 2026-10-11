@@ -1,6 +1,6 @@
 # Concurrency
 
-> Design rationale: [ADR-002](../adr/ADR-002-zbus-as-system-bus.md), [ADR-004](../adr/ADR-004-trigger-driven-sampling.md).
+> Design rationale: [decisions](../decisions.md).
 
 ## Execution Contexts
 

@@ -1,6 +1,6 @@
 # CI and Developer Environment
 
-> Design rationale: [ADR-010](../adr/ADR-010-ci-and-dev-environment.md).
+> Design rationale: [decisions](../decisions.md).
 
 The project uses a single container image — `ghcr.io/tobiwan88/zephyr_docker` — for both local development (VS Code devcontainer) and CI (GitHub Actions). This eliminates "works on my machine" failures: the same image, same activation steps, same commands work in both environments.
 

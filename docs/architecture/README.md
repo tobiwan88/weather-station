@@ -4,7 +4,6 @@ These documents cover the system architecture. Read in order for a complete pict
 
 | Document | What it explains |
 |---|---|
-| [architecture-constraints.md](architecture-constraints.md) | Auto-generated constraint summary from all ADRs — read this first |
 | [system-overview.md](system-overview.md) | Goals, layers, library roles, and design rules |
 | [event-bus.md](event-bus.md) | Why two channels, the trigger–event split, ISR safety, and message design |
 | [composition-model.md](composition-model.md) | How Kconfig + SYS_INIT eliminates explicit wiring in `main.c` |

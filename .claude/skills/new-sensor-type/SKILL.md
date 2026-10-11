@@ -22,7 +22,7 @@ Fake sensors are for native_sim and tests only. They must never be enabled in a 
    - `0x0011`–`0x001F` outdoor
    - `0x0021`+ remote sensor nodes
    - `0x0101`+ test-only
-   The full allocation table is in `docs/architecture/architecture-constraints.md`.
+   The full allocation table is in `docs/architecture/system-overview.md`.
 3. **Dry run, then scaffold**:
    ```bash
    scripts/scaffold-sensor.sh <type_name> "<description>" <value_milli> <uid> <range_min> <range_max> <unit> --dry-run
