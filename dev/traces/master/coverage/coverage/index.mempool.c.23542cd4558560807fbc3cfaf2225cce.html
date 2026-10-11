@@ -103,7 +103,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l106">k_malloc (zephyr/kernel/mempool.c:106)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1326">called 1326 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1327">called 1327 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -117,14 +117,14 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l182">k_thread_system_pool_assign (zephyr/kernel/mempool.c:182)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="73">called 73 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="72">called 72 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l15">z_alloc_helper (zephyr/kernel/mempool.c:15)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1326">called 1326 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1327">called 1327 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">86.7%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">81.8%</div>
@@ -280,7 +280,7 @@
         <td class="lineno"><a id="l15" href="#l15">15</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">z_alloc_helper</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_heap</span><span class="w"> </span><span class="o">*</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">align</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -343,7 +343,7 @@
         <td class="lineno"><a id="l24" href="#l24">24</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">22</td>
+        <td class="linecount coveredLine show_coveredLine">23</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">__ASSERT</span><span class="p">((</span><span class="n">align</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">align</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -411,11 +411,11 @@
               <div class="notTakenBranch">&cross; Branch 3 &rightarrow; 4 not taken.</div>
               <div class="takenBranch">&check; Branch 3 &rightarrow; 5 taken 1304 times.</div>
               <div class="notTakenBranch">&cross; Branch 9 &rightarrow; 10 not taken.</div>
-              <div class="takenBranch">&check; Branch 9 &rightarrow; 11 taken 22 times.</div>
+              <div class="takenBranch">&check; Branch 9 &rightarrow; 11 taken 23 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">1326</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">1327</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size_add_overflow</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">heap_ref</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">size</span><span class="p">))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -436,7 +436,7 @@
         <td class="lineno"><a id="l36" href="#l36">36</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">__align</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">align</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">heap_ref</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -478,21 +478,21 @@
         <td class="lineno"><a id="l42" href="#l42">42</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k_spin_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">heap</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l43" href="#l43">43</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sys_heap_allocator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">heap</span><span class="o">-&gt;</span><span class="n">heap</span><span class="p">,</span><span class="w"> </span><span class="n">__align</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l44" href="#l44">44</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">k_spin_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">heap</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -511,11 +511,11 @@
               <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 9 not taken.</div>
               <div class="takenBranch">&check; Branch 8 &rightarrow; 10 taken 1304 times.</div>
               <div class="notTakenBranch">&cross; Branch 14 &rightarrow; 15 not taken.</div>
-              <div class="takenBranch">&check; Branch 14 &rightarrow; 16 taken 22 times.</div>
+              <div class="takenBranch">&check; Branch 14 &rightarrow; 16 taken 23 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">1326</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">1327</td>
         <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">	</span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mem</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
@@ -543,28 +543,28 @@
         <td class="lineno"><a id="l50" href="#l50">50</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">heap_ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mem</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l51" href="#l51">51</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="o">*</span><span class="n">heap_ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">heap</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l52" href="#l52">52</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">mem</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">++</span><span class="n">heap_ref</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l53" href="#l53">53</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">22</td>
+        <td class="linecount coveredLine show_coveredLine">23</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="n">__ASSERT</span><span class="p">(</span><span class="n">align</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">((</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">mem</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">align</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span></td>
       </tr>
       <tr class="source-line">
@@ -585,7 +585,7 @@
         <td class="lineno"><a id="l56" href="#l56">56</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">mem</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -942,7 +942,7 @@
         <td class="lineno"><a id="l106" href="#l106">106</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">k_malloc</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -970,7 +970,7 @@
         <td class="lineno"><a id="l110" href="#l110">110</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_alloc_helper</span><span class="p">(</span><span class="n">_SYSTEM_HEAP</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">sys_heap_noalign_alloc</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
@@ -998,7 +998,7 @@
         <td class="lineno"><a id="l114" href="#l114">114</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1326</td>
+        <td class="linecount coveredLine show_coveredLine">1327</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
@@ -1488,7 +1488,7 @@
         <td class="lineno"><a id="l182" href="#l182">182</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">73</td>
+        <td class="linecount coveredLine show_coveredLine">72</td>
         <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">k_thread_system_pool_assign</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">k_thread</span><span class="w"> </span><span class="o">*</span><span class="kr">thread</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
@@ -1502,14 +1502,14 @@
         <td class="lineno"><a id="l184" href="#l184">184</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">73</td>
+        <td class="linecount coveredLine show_coveredLine">72</td>
         <td class="src  coveredLine show_coveredLine"><span class="w">	</span><span class="kr">thread</span><span class="o">-&gt;</span><span class="n">resource_pool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_SYSTEM_HEAP</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l185" href="#l185">185</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine show_coveredLine">73</td>
+        <td class="linecount coveredLine show_coveredLine">72</td>
         <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
@@ -1764,7 +1764,7 @@
         <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/8.6">GCOVR (Version 8.6)</a>
-          at 2026-10-11 07:37:18
+          at 2026-10-11 07:59:57
         </footer>
       </div>
     </div>

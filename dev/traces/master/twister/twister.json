@@ -1,10 +1,10 @@
 {
     "environment":{
         "os":"Linux",
-        "zephyr_version":"f5d4dac21132",
+        "zephyr_version":"52393b54dce4",
         "toolchain":"zephyr/gnu",
-        "commit_date":"2026-10-11T07:34:57Z",
-        "run_date":"2026-10-11T07:35:00+00:00",
+        "commit_date":"2026-10-11T07:57:33Z",
+        "run_date":"2026-10-11T07:57:35+00:00",
         "options":{
             "help":null,
             "zephyr_base":null,
@@ -33,13 +33,13 @@
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/mqtt_publisher",
-            "run_id":"df914a36d0630729006d94ddc07ca273",
+            "run_id":"97c2b7e02db1c72fcb9f919e5ed92236",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
-            "execution_time":"0.03",
-            "build_time":"20.50",
+            "execution_time":"0.02",
+            "build_time":"12.69",
             "testcases":[
                 {
                     "identifier":"weather_station.mqtt_publisher.format_suite.topic_str_temperature",
@@ -208,13 +208,13 @@
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/sensor_event",
-            "run_id":"63fe5923c4d8fb32b171ac26e42b675c",
+            "run_id":"57c35b1ff630cf9fdce5335bd6e269f4",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
-            "execution_time":"0.07",
-            "build_time":"14.73",
+            "execution_time":"0.01",
+            "build_time":"14.87",
             "testcases":[
                 {
                     "identifier":"weather_station.sensor_event.sensor_event_suite.q31_temperature_roundtrip",
@@ -250,6 +250,56 @@
                     "identifier":"weather_station.sensor_event.sensor_event_suite.env_sensor_data_size",
                     "execution_time":"0.00",
                     "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_event.sensor_event_suite.q31_temperature_min_roundtrip",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_event.sensor_event_suite.q31_temperature_max_roundtrip",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_event.sensor_event_suite.q31_humidity_min_roundtrip",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_event.sensor_event_suite.q31_humidity_max_roundtrip",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_event.sensor_event_suite.q31_temperature_clamp",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_event.sensor_event_suite.q31_humidity_clamp",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_event.sensor_event_suite.q31_temperature_midrange_after_clamp",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_event.sensor_event_suite.sensor_type_enum_values_distinct",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_event.sensor_event_suite.env_sensor_data_memcpy",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_event.sensor_event_suite.q31_pressure_gas_low_clamp",
+                    "execution_time":"0.00",
+                    "status":"passed"
                 }
             ]
         },
@@ -258,13 +308,13 @@
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/trace_recorder",
-            "run_id":"8dd8724a7c9ad3848243ed1c7258d1e4",
+            "run_id":"e88d1f5e5b403c83d5379bf90c7e4049",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
-            "execution_time":"0.02",
-            "build_time":"19.45",
+            "execution_time":"0.01",
+            "build_time":"14.51",
             "testcases":[
                 {
                     "identifier":"weather_station.trace_recorder.trace_recorder_suite.record_size",
@@ -299,45 +349,45 @@
             ]
         },
         {
-            "name":"weather_station.trace_recorder_malloc",
+            "name":"weather_station.trace_recorder_shell",
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/trace_recorder",
-            "run_id":"0f289291f254afed9f49e388199984de",
+            "run_id":"c6322b9a3cf2d5778342eaa94a42f6e1",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
-            "execution_time":"0.02",
-            "build_time":"20.20",
+            "execution_time":"0.01",
+            "build_time":"14.39",
             "testcases":[
                 {
-                    "identifier":"weather_station.trace_recorder_malloc.trace_recorder_suite.record_size",
+                    "identifier":"weather_station.trace_recorder_shell.trace_recorder_suite.record_size",
                     "execution_time":"0.00",
                     "status":"passed"
                 },
                 {
-                    "identifier":"weather_station.trace_recorder_malloc.trace_recorder_suite.initial_state",
+                    "identifier":"weather_station.trace_recorder_shell.trace_recorder_suite.initial_state",
                     "execution_time":"0.00",
                     "status":"passed"
                 },
                 {
-                    "identifier":"weather_station.trace_recorder_malloc.trace_recorder_suite.ring_buffer_wrap",
+                    "identifier":"weather_station.trace_recorder_shell.trace_recorder_suite.ring_buffer_wrap",
                     "execution_time":"0.00",
                     "status":"passed"
                 },
                 {
-                    "identifier":"weather_station.trace_recorder_malloc.trace_recorder_suite.isr_events",
+                    "identifier":"weather_station.trace_recorder_shell.trace_recorder_suite.isr_events",
                     "execution_time":"0.00",
                     "status":"passed"
                 },
                 {
-                    "identifier":"weather_station.trace_recorder_malloc.trace_recorder_suite.idle_event",
+                    "identifier":"weather_station.trace_recorder_shell.trace_recorder_suite.idle_event",
                     "execution_time":"0.00",
                     "status":"passed"
                 },
                 {
-                    "identifier":"weather_station.trace_recorder_malloc.trace_recorder_suite.switched_in_priority",
+                    "identifier":"weather_station.trace_recorder_shell.trace_recorder_suite.switched_in_priority",
                     "execution_time":"0.00",
                     "status":"passed"
                 }
@@ -348,13 +398,13 @@
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/io_stream",
-            "run_id":"ab7ecb50d619cce5085b5cbcce0def94",
+            "run_id":"a7e7f87b868ae88aeff1c54633f1638c",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
             "execution_time":"0.02",
-            "build_time":"19.86",
+            "build_time":"19.02",
             "testcases":[
                 {
                     "identifier":"weather_station.io_stream.io_stream_suite.buffer_write_then_read",
@@ -438,13 +488,13 @@
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/io_stream",
-            "run_id":"f9a6fbd6f20b81e8efc173ef51723e63",
+            "run_id":"641f82ca60aef88dc9a70561c74945f9",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
-            "execution_time":"0.03",
-            "build_time":"26.28",
+            "execution_time":"0.02",
+            "build_time":"20.96",
             "testcases":[
                 {
                     "identifier":"weather_station.io_stream_flash.io_stream_suite.buffer_write_then_read",
@@ -528,13 +578,13 @@
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/fake_sensors",
-            "run_id":"0dc66f6bcb0f3dfa9bc94f22d4eeea70",
+            "run_id":"433c99a8f7ed5cecc4466483a95c8522",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
             "execution_time":"0.01",
-            "build_time":"27.51",
+            "build_time":"20.91",
             "testcases":[
                 {
                     "identifier":"weather_station.fake_sensors.fake_sensors_suite.fake_sensor_count",
@@ -545,6 +595,11 @@
                     "identifier":"weather_station.fake_sensors.fake_sensors_suite.trigger_produces_event",
                     "execution_time":"0.00",
                     "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.fake_sensors.fake_sensors_suite.auto_publish_enable_disable",
+                    "execution_time":"0.58",
+                    "status":"passed"
                 }
             ]
         },
@@ -553,13 +608,13 @@
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/remote_sensor_uid",
-            "run_id":"d81d39bfdfda85c93ef41658a133262f",
+            "run_id":"f770244c9b78e7f5fd74907be764ceec",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
-            "execution_time":"0.02",
-            "build_time":"27.01",
+            "execution_time":"0.07",
+            "build_time":"21.94",
             "testcases":[
                 {
                     "identifier":"weather_station.remote_sensor_uid.remote_sensor_uid_suite.uid_from_addr_prefix_bits",
@@ -623,13 +678,13 @@
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/remote_sensor_manager",
-            "run_id":"e736cfd9eb3a2af1c615f5fdecac4f99",
+            "run_id":"fdd66b868a8c34cf2db0ad43ee53a292",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
-            "execution_time":"0.09",
-            "build_time":"31.31",
+            "execution_time":"0.05",
+            "build_time":"20.67",
             "testcases":[
                 {
                     "identifier":"weather_station.remote_sensor_manager.remote_sensor_manager_suite.fake_transport_registered",
@@ -663,22 +718,22 @@
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/integration",
-            "run_id":"15ee279ce20c6fb02910fa8570c9023a",
+            "run_id":"72cf5352f1dec8f2413a3fa283a78ab0",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
-            "execution_time":"54.27",
-            "build_time":"48.69",
+            "execution_time":"52.74",
+            "build_time":"37.64",
             "testcases":[
                 {
                     "identifier":"weather_station.integration.test_set_trigger_interval_via_http",
-                    "execution_time":"1.54",
+                    "execution_time":"1.35",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_trigger_interval_bounds_accepted",
-                    "execution_time":"3.61",
+                    "execution_time":"3.48",
                     "status":"passed"
                 },
                 {
@@ -693,7 +748,7 @@
                 },
                 {
                     "identifier":"weather_station.integration.test_unauthenticated_page_redirects",
-                    "execution_time":"0.34",
+                    "execution_time":"0.33",
                     "status":"passed"
                 },
                 {
@@ -703,62 +758,62 @@
                 },
                 {
                     "identifier":"weather_station.integration.test_login_bad_credentials",
-                    "execution_time":"0.39",
+                    "execution_time":"0.42",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_login_success_sets_cookie",
-                    "execution_time":"0.39",
+                    "execution_time":"0.41",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_post_config_without_auth_returns_401",
-                    "execution_time":"1.40",
+                    "execution_time":"1.44",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_post_config_with_wrong_bearer_token_returns_401",
-                    "execution_time":"1.41",
+                    "execution_time":"1.43",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_logout_invalidates_session",
-                    "execution_time":"1.18",
+                    "execution_time":"1.21",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_change_credentials_wrong_old_pass",
-                    "execution_time":"1.06",
+                    "execution_time":"1.11",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_change_credentials_success",
-                    "execution_time":"2.49",
+                    "execution_time":"2.47",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_bearer_token_accesses_api",
-                    "execution_time":"0.31",
+                    "execution_time":"0.29",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_api_token_rotate",
-                    "execution_time":"6.77",
+                    "execution_time":"6.60",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_dashboard_page_reachable",
-                    "execution_time":"0.46",
+                    "execution_time":"0.41",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_api_data_endpoint_returns_json",
-                    "execution_time":"0.48",
+                    "execution_time":"0.43",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_api_data_has_sensor_entries",
-                    "execution_time":"0.46",
+                    "execution_time":"0.45",
                     "status":"passed"
                 },
                 {
@@ -768,87 +823,87 @@
                 },
                 {
                     "identifier":"weather_station.integration.test_api_data_reading_schema",
-                    "execution_time":"0.41",
-                    "status":"passed"
-                },
-                {
-                    "identifier":"weather_station.integration.test_api_data_has_all_sensor_uids",
                     "execution_time":"0.42",
                     "status":"passed"
                 },
                 {
-                    "identifier":"weather_station.integration.test_api_config_endpoint_returns_json",
-                    "execution_time":"0.40",
+                    "identifier":"weather_station.integration.test_api_data_has_all_sensor_uids",
+                    "execution_time":"0.43",
                     "status":"passed"
                 },
                 {
-                    "identifier":"weather_station.integration.test_api_config_includes_api_token",
+                    "identifier":"weather_station.integration.test_api_config_endpoint_returns_json",
                     "execution_time":"0.41",
                     "status":"passed"
                 },
                 {
+                    "identifier":"weather_station.integration.test_api_config_omits_api_token",
+                    "execution_time":"0.42",
+                    "status":"passed"
+                },
+                {
                     "identifier":"weather_station.integration.test_api_locations_endpoint_returns_json",
-                    "execution_time":"0.40",
+                    "execution_time":"0.39",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_post_trigger_interval_accepted",
-                    "execution_time":"1.31",
+                    "execution_time":"1.30",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_post_config_returns_ok_json",
-                    "execution_time":"0.53",
+                    "execution_time":"0.54",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_two_back_to_back_posts",
-                    "execution_time":"4.72",
+                    "execution_time":"4.70",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_mqtt_config_in_get_api",
-                    "execution_time":"0.45",
+                    "execution_time":"0.39",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_mqtt_set_broker_via_http",
-                    "execution_time":"2.21",
+                    "execution_time":"2.11",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_mqtt_set_gateway_via_http",
-                    "execution_time":"2.16",
+                    "execution_time":"2.12",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_mqtt_set_keepalive_via_http",
-                    "execution_time":"2.17",
+                    "execution_time":"2.11",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_mqtt_set_auth_via_http",
-                    "execution_time":"2.18",
+                    "execution_time":"2.11",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_mqtt_pub_status_shows_config",
-                    "execution_time":"0.24",
+                    "execution_time":"0.22",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_mqtt_pub_enable_disable",
-                    "execution_time":"0.28",
+                    "execution_time":"0.25",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_mqtt_pub_set_server",
-                    "execution_time":"1.22",
+                    "execution_time":"1.17",
                     "status":"passed"
                 },
                 {
                     "identifier":"weather_station.integration.test_mqtt_pub_set_gateway",
-                    "execution_time":"1.18",
+                    "execution_time":"1.17",
                     "status":"passed"
                 },
                 {
@@ -898,7 +953,7 @@
                 },
                 {
                     "identifier":"weather_station.integration.test_set_value_reflected_in_http",
-                    "execution_time":"0.43",
+                    "execution_time":"0.42",
                     "status":"passed"
                 },
                 {
@@ -1015,7 +1070,7 @@
                 },
                 {
                     "identifier":"weather_station.integration.test_help_lists_fake_sensors",
-                    "execution_time":"0.23",
+                    "execution_time":"0.22",
                     "status":"passed"
                 },
                 {
@@ -1045,7 +1100,7 @@
                 },
                 {
                     "identifier":"weather_station.integration.test_manual_trigger_fires",
-                    "execution_time":"0.23",
+                    "execution_time":"0.22",
                     "status":"passed"
                 },
                 {
@@ -1060,13 +1115,13 @@
             "arch":"posix",
             "platform":"native_sim/native/64",
             "path":"../weather-station/tests/lora_session",
-            "run_id":"c48f935bfb36ae08168ec4e56bf2d8b0",
+            "run_id":"0ebd66d918c0bcad764cf2668fd184d7",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
-            "execution_time":"0.05",
-            "build_time":"29.79",
+            "execution_time":"0.03",
+            "build_time":"19.61",
             "testcases":[
                 {
                     "identifier":"weather_station.lora_session.lora_session_suite.add_get_remove",
@@ -1096,17 +1151,167 @@
             ]
         },
         {
-            "name":"weather_station.lora_packet",
+            "name":"weather_station.sensor_registry",
             "arch":"posix",
             "platform":"native_sim/native/64",
-            "path":"../weather-station/tests/lora_packet",
-            "run_id":"93a779b2937c28107dde35bb15c36023",
+            "path":"../weather-station/tests/sensor_registry",
+            "run_id":"b5145f2c573b6686b70abcfbb5688667",
             "runnable":true,
             "retries":0,
             "toolchain":"host/gnu",
             "status":"passed",
-            "execution_time":"0.07",
-            "build_time":"30.04",
+            "execution_time":"0.02",
+            "build_time":"21.88",
+            "testcases":[
+                {
+                    "identifier":"weather_station.sensor_registry.sensor_registry_suite.register_and_lookup",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.sensor_registry_suite.register_remote_sensor",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.sensor_registry_suite.lookup_missing_uid",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.sensor_registry_suite.register_null_entry_returns_einval",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.sensor_registry_suite.register_duplicate_uid_returns_eexist",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.sensor_registry_suite.count_increases_with_registration",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.sensor_registry_suite.foreach_visits_all",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.sensor_registry_suite.foreach_early_exit",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.sensor_registry_suite.z_register_full_registry_returns_enomem",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                }
+            ]
+        },
+        {
+            "name":"weather_station.sensor_registry.user_meta",
+            "arch":"posix",
+            "platform":"native_sim/native/64",
+            "path":"../weather-station/tests/sensor_registry",
+            "run_id":"b00521f912630b011baad6eec5cd610d",
+            "runnable":true,
+            "retries":0,
+            "toolchain":"host/gnu",
+            "status":"passed",
+            "execution_time":"0.03",
+            "build_time":"21.21",
+            "testcases":[
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.register_and_lookup",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.register_remote_sensor",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.lookup_missing_uid",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.register_null_entry_returns_einval",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.register_duplicate_uid_returns_eexist",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.count_increases_with_registration",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.foreach_visits_all",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.foreach_early_exit",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.copy_display_name_label_fallback",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.copy_returns_set_value",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.copy_location_empty_by_default",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.copy_truncates_and_terminates",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.copy_unknown_uid_returns_enoent",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.copy_invalid_args_return_einval",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.sensor_registry.user_meta.sensor_registry_suite.z_register_full_registry_returns_enomem",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                }
+            ]
+        },
+        {
+            "name":"weather_station.lora_packet",
+            "arch":"posix",
+            "platform":"native_sim/native/64",
+            "path":"../weather-station/tests/lora_packet",
+            "run_id":"3f3ad939af9f4b1a72663f32e822347e",
+            "runnable":true,
+            "retries":0,
+            "toolchain":"host/gnu",
+            "status":"passed",
+            "execution_time":"0.11",
+            "build_time":"21.32",
             "testcases":[
                 {
                     "identifier":"weather_station.lora_packet.lora_packet_suite.frame_type_extract",
@@ -1160,6 +1365,81 @@
                 },
                 {
                     "identifier":"weather_station.lora_packet.lora_packet_suite.packet_size_constants",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                }
+            ]
+        },
+        {
+            "name":"weather_station.location_registry",
+            "arch":"posix",
+            "platform":"native_sim/native/64",
+            "path":"../weather-station/tests/location_registry",
+            "run_id":"f9248d106865a7fb6b5a9403627a8760",
+            "runnable":true,
+            "retries":0,
+            "toolchain":"host/gnu",
+            "status":"passed",
+            "execution_time":"0.07",
+            "build_time":"21.51",
+            "testcases":[
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.add_single",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.add_multiple",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.add_null_returns_einval",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.add_too_long_returns_enametoolong",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.add_duplicate_returns_eexist",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.remove_existing",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.remove_missing_returns_enoent",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.remove_middle_preserves_order",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.foreach_visits_all",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.foreach_early_exit",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.exists_empty_registry",
+                    "execution_time":"0.00",
+                    "status":"passed"
+                },
+                {
+                    "identifier":"weather_station.location_registry.location_registry_suite.add_full_registry_returns_enomem",
                     "execution_time":"0.00",
                     "status":"passed"
                 }
