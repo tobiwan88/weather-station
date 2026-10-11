@@ -68,6 +68,9 @@ jobs:
           - app: gateway
             board: frdm_mcxn947/mcxn947/cpu0
             board-label: frdm-mcxn947
+          - app: lora_bridge
+            board: wio_e5_mini
+            board-label: wio-e5-mini
 
     steps:
       - uses: actions/checkout@v4

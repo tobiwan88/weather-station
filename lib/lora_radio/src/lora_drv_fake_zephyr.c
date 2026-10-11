@@ -47,7 +47,7 @@ static void fake_free(struct fake_packet *pkt)
 	}
 }
 
-static int fake_config(const struct device *dev, struct lora_modem_config *config)
+static int fake_config(const struct device *dev, const struct lora_modem_config *config)
 {
 	(void)dev;
 	(void)config;
