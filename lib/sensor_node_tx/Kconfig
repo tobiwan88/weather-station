@@ -26,6 +26,15 @@ config SENSOR_NODE_TX_MAX_READINGS
 	  Maximum number of sensor readings to buffer before transmission.
 	  Limited by the LoRa payload budget at the configured spreading factor.
 
+config SENSOR_NODE_TX_READINGS_PER_PACKET
+	int "Readings per LoRa packet"
+	default 5
+	range 1 5
+	help
+	  Maximum number of 5-byte readings sent in one LoRa packet. A batch
+	  larger than this is split into several packets. Unsent readings are
+	  requeued when a packet fails.
+
 config SENSOR_NODE_TX_LOG_LEVEL
 	int "Log level"
 	default 3
