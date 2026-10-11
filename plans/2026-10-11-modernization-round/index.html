@@ -959,23 +959,23 @@ merged on green CI before the next phase starts.</p>
       | dashboard <code>fota.c</code> | mcumgr <code>img_mgmt</code> | defer: changes upload protocol and UI |
       | <code>fake_sensors</code> | sensor emulators | keep: trigger/Q31 model is the point |
       | sensors, HTTP server, MQTT, settings | — | already upstream APIs |</li>
-<li>[ ] remote_sensor_manager: discovery/scan listeners keep one pending slot → back-to-back events are lost; use a small k_msgq</li>
+<li>[x] remote_sensor_manager: discovery/scan listeners keep one pending slot → back-to-back events are lost; use a small k_msgq</li>
 </ul>
 <h2 id="phase-5-sub-sensor-end-to-end-gateway-hardening">Phase 5 — Sub-sensor end-to-end + gateway hardening</h2>
 <ul>
-<li>[ ] <code>SENSOR_NODE_TX</code> silently resolves to n on outdoor_sensor_node and sensor-node (<code>depends on CONFIG_CMD</code>,
+<li>[x] <code>SENSOR_NODE_TX</code> silently resolves to n on outdoor_sensor_node and sensor-node (<code>depends on CONFIG_CMD</code>,
       which no node app enables) → the nodes never transmit. Use <code>select CONFIG_CMD</code>.</li>
-<li>[ ] lora_e5_mini: <code>ENTROPY_STM32_RNG=y</code> resolves to n (<code>&amp;rng</code> disabled in DT) → no entropy for PSA</li>
-<li>[ ] native_sim: enable <code>PIPE_TRANSPORT</code> on gateway, make node→gateway test non-skipping</li>
-<li>[ ] LoRa batching: split batches to ≤ 5 readings, requeue on failure</li>
-<li>[ ] Single LoRa packet codec shared by node and gateway, unit-tested</li>
-<li>[ ] Crypto: one tag length, reboot-safe nonce, reject plaintext from unpaired nodes;
+<li>[x] lora_e5_mini: <code>ENTROPY_STM32_RNG=y</code> resolves to n (<code>&amp;rng</code> disabled in DT) → no entropy for PSA</li>
+<li>[x] native_sim: enable <code>PIPE_TRANSPORT</code> on gateway, make node→gateway test non-skipping</li>
+<li>[x] LoRa batching: split batches to ≤ 5 readings, requeue on failure</li>
+<li>[x] Single LoRa packet codec shared by node and gateway, unit-tested</li>
+<li>[x] Crypto: one tag length, reboot-safe nonce, reject plaintext from unpaired nodes;
       <code>PSA_ALG_ED25519</code> → <code>PSA_ALG_PURE_EDDSA</code> (TF-PSA-Crypto 1.1), <code>&amp;key_id</code> passed by pointer in lora_packet.c</li>
-<li>[ ] Integration tests: local <code>CONFIG_SNTP_SERVER</code> instead of a public NTP IP (hermetic tests)</li>
-<li>[ ] Pairing on the node side; dev key out of source</li>
-<li>[ ] ACK-request + seq dedup; FOTA seq/window fixes</li>
-<li>[ ] Dashboard: force password change on first boot, login throttling</li>
-<li>[ ] Hardware sensor UID fallbacks (BME680 0x0011, SEN0460 0x0021) overlap the fake range 0x0001–0x00FF</li>
+<li>[x] Integration tests: local <code>CONFIG_SNTP_SERVER</code> instead of a public NTP IP (hermetic tests)</li>
+<li>[x] Pairing on the node side; dev key out of source</li>
+<li>[x] ACK-request + seq dedup; FOTA seq/window fixes</li>
+<li>[x] Dashboard: force password change on first boot, login throttling</li>
+<li>[x] Hardware sensor UID fallbacks (BME680 0x0011, SEN0460 0x0021) overlap the fake range 0x0001–0x00FF</li>
 </ul>
 
 

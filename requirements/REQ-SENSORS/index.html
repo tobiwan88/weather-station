@@ -1064,12 +1064,10 @@
 <h3 id="req-sensors-004-one-event-one-measurement">REQ-SENSORS-004 — One Event = One Measurement</h3>
 <p>The system shall publish exactly one zbus event per individual measurement. Correlated readings (e.g., temperature + humidity from BME680) are published as separate events with the same sensor_uid.</p>
 <h3 id="req-sensors-005-sensor-uid-identity">REQ-SENSORS-005 — Sensor UID Identity</h3>
-<p>The system shall use <code>sensor_uid</code> (16-bit) as the unique identity key for every sensor. UIDs shall never be hardcoded in consumer code — use <code>sensor_registry</code> for lookup.
-- Fake sensor UIDs: 0x0001–0x00FF
-- Real hardware UIDs: 0x0100+
-- Gateway-local/indoor: 0x0001–0x000F
-- Gateway outdoor: 0x0011–0x001F
-- Remote nodes: 0x0021–0x00FF</p>
+<p>The system shall use <code>sensor_uid</code> (32-bit) as the unique identity key for every sensor. UIDs shall never be hardcoded in consumer code — use <code>sensor_registry</code> for lookup.
+- Fake sensors: 0x00000001–0x000000FF
+- Gateway-local hardware: 0x00000100–0x00000FFF
+- Remote node sensors: <code>(prefix &lt;&lt; 16) | (node_id &lt;&lt; 4) | type</code>, derived by <code>remote_sensor</code></p>
 <h3 id="req-sensors-006-fake-sensor-subsystem">REQ-SENSORS-006 — Fake Sensor Subsystem</h3>
 <p>The system shall provide fake sensors as a production-quality library (<code>lib/fake_sensors/</code>) that is devicetree-defined, shell-interactive, trigger-driven, and self-registering via <code>STRUCT_SECTION_ITERABLE</code>.
 - <code>CONFIG_FAKE_SENSORS</code> shall never be <code>y</code> in production/release builds.

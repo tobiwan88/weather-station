@@ -1462,20 +1462,20 @@ and must be unique across all overlay files in the project.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>0x0001–0x000F</code></td>
-<td>Gateway-local / indoor sensors</td>
+<td><code>0x00000001–0x000000FF</code></td>
+<td>Fake sensors (native_sim and tests only)</td>
 </tr>
 <tr>
-<td><code>0x0011–0x001F</code></td>
-<td>Gateway outdoor sensors</td>
+<td><code>0x00000100–0x00000FFF</code></td>
+<td>Gateway-local hardware sensors (Kconfig fallbacks: BME680 <code>0x0101</code>, SEN0460 <code>0x0111</code>; set <code>sensor-uid</code> in DT)</td>
 </tr>
 <tr>
-<td><code>0x0021–0x00FF</code></td>
-<td>Remote sensor nodes (LoRa, BLE, etc.)</td>
+<td><code>(prefix &lt;&lt; 16) \| (node &lt;&lt; 4) \| type</code></td>
+<td>Remote node sensors, derived by <code>remote_sensor</code> (e.g. <code>0x0F001D50</code>); see <code>remote_sensor.h</code></td>
 </tr>
 <tr>
-<td><code>0x0101+</code></td>
-<td>Test-only instances</td>
+<td><code>0xFFFFFFFF</code></td>
+<td>Broadcast trigger target</td>
 </tr>
 </tbody>
 </table>
